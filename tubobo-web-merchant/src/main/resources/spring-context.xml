@@ -108,5 +108,11 @@
 		
 	</beans>
 
+	<bean id="pushService" class="com.xinguang.tubobo.push.impl.PushServiceImpl">
+		<constructor-arg index="0" value="${ali.push.region.id}}"/>
+		<constructor-arg index="1" value="${ali.push.access.key.id}"/>
+		<constructor-arg index="2" value="${ali.push.access.key.secret}"/>
+		<constructor-arg index="3" value="${iosApnsEnv}"/>
+	</bean>
 
 </beans>

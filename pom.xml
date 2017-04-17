@@ -104,6 +104,8 @@
 
         <org.springframework.amqp.version>1.7.1.RELEASE</org.springframework.amqp.version>
         <com.rabbitmq.version>4.1.0</com.rabbitmq.version>
+        <tubobo.push-api.version>1.0-SNAPSHOT</tubobo.push-api.version>
+
     </properties>
 
     <!--远程仓库的配�? -->
@@ -178,6 +180,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.xinguang.tubobo</groupId>
+                <artifactId>push-api</artifactId>
+                <version>${tubobo.push-api.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.xinguang</groupId>
                 <artifactId>tubobo-common</artifactId>

@@ -15,6 +15,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>push-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.xinguang</groupId>
             <artifactId>tubobo-common</artifactId>
         </dependency>
