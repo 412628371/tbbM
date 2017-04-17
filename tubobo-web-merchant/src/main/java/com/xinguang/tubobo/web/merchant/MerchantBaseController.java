@@ -51,13 +51,13 @@ public abstract class MerchantBaseController <P, R>{
         // 验证登录
         if (needLogin()) {
             // 验证token
-//            XgUserResCheckToken check = tokenServiceInterface.checkToken(token);
-//            if (!check.isSuc()) {
-//                return new ClientResp(check.getCode(),check.getErrorMsg());
-//            }
-//            userId = check.getData().getUserId();
+            XgUserResCheckToken check = tokenServiceInterface.checkToken(token);
+            if (!check.isSuc()) {
+                return new ClientResp(check.getCode(),check.getErrorMsg());
+            }
+            userId = check.getData().getUserId();
 
-            userId="888";
+//            userId="888";
         }
 
         if (needIndetify()){
