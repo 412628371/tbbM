@@ -49,6 +49,6 @@
     </dependencies>
 
     <build>
-        <finalName>tubobo-web-merchant</finalName>
+        <finalName>tubobo-merchant</finalName>
     </build>
 </project>
