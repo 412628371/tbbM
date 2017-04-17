@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/rabbit
+		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
+       default-lazy-init="true">
+
+    <bean id="rabbitmqConnectionFactory"  class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+        <constructor-arg value="localhost" />
+        <property name="username" value="${rabbitmq.username}" />
+        <property name="password" value="${rabbitmq.password}" />
+        <property name="addresses" value="${rabbitmq.address}" />
+        <property name="virtualHost" value="${rabbitmq.virtualHost}" />
+        <property name="channelCacheSize" value="${rabbitmq.channelCacheSize}" />
+    </bean>
+
+    <bean id="rabbitAdmin"  class="org.springframework.amqp.rabbit.core.RabbitAdmin">
+        <constructor-arg ref="rabbitmqConnectionFactory" />
+    </bean>
+    <!-- 创建rabbitTemplate 消息模板类 -->
+    <bean id="rabbitTemplate"  class="org.springframework.amqp.rabbit.core.RabbitTemplate">
+        <constructor-arg ref="rabbitmqConnectionFactory"></constructor-arg>
+    </bean>
+
+
+
+    <!-- 延迟消息start -->
+    <rabbit:topic-exchange name="tubobo_merchant_payTimeout_delay_exchange" delayed="true">
+        <rabbit:bindings>
+            <rabbit:binding queue="tubobo_merchant_payTimeout_delayQueue" pattern="merchant.pay.delay.notify" />
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+    <rabbit:queue name="tubobo_merchant_payTimeout_delayQueue" durable="true" auto-declare="true" auto-delete="false" />
+    <rabbit:template id="delayMsgTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="tubobo_merchant_payTimeout_delay_exchange" />
+    <bean id="payTimeoutHandler" class="com.xinguang.tubobo.impl.merchant.handler.OrderPayTimeoutHandler"></bean>
+    <rabbit:listener-container
+            connection-factory="rabbitmqConnectionFactory"
+            acknowledge="manual"
+            channel-transacted="false">
+        <rabbit:listener queues="tubobo_merchant_payTimeout_delayQueue"
+                         ref="payTimeoutHandler"  method="onMessage"/>
+    </rabbit:listener-container>
+    <!-- 延时消息end  -->
+    </beans>

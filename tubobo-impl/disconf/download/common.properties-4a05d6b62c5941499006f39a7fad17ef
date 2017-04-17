@@ -1,0 +1,60 @@
+#mysql database setting
+jdbc.type=mysql
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://172.16.1.181:3306/tubobo_merchant?useUnicode=true&characterEncoding=utf-8
+jdbc.username=tuboboM
+jdbc.password=tubobo123456
+#jdbc.url=jdbc:mysql://114.55.246.13:3306/wenwenweb?useUnicode=true&characterEncoding=utf-8
+#jdbc.username=wenwenweb
+#jdbc.password=mustnotshowothers#9lkw327
+
+#pool settings
+jdbc.pool.minIdle=3
+jdbc.pool.maxActive=20
+
+#hibernate settings
+hibernate.search.default.indexBase=indexes
+hibernate.show_sql=false
+
+#########################################redis config###########################
+redis.name=develop_environment_redis
+redis.prefix=null
+redis.expiration=30
+redis.host=172.16.1.22
+redis.port=6379
+redis.pass=tbbkfTEST
+
+##\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd
+redis.pool.maxIdle=300
+redis.pool.maxActive=600
+redis.pool.maxWait=1000
+#\ufffd\u6bb\ufffd\u221\ufffd\ufffd\ufffd\ufffd\u2b1\ufffd\ufffd\ufffd\ufffd\ufffd\u427\ufffd\ufffd
+redis.pool.testOnBorrow=true
+
+redis.statistics.delay=0
+redis.statistics.intevalPeriod=20000
+redis.statistics.statisticSwitch=true
+
+
+
+##########################rabbitmq config #################
+##connection address,if cluster,divided by ,
+rabbitmq.address=172.16.1.57:5672
+rabbitmq.username=tuchao
+rabbitmq.password=tuchao
+rabbitmq.virtualHost=/tubobo
+rabbitmq.channelCacheSize=5
+##timeout by millisecond
+rabbitmq.channelCheckoutTimeout=5000
+rabbitmq.queue.businessAcceptQueue=businessAcceptQueue
+rabbitmq.queue.msgAcceptQueue=msgAcceptQueue
+#rabbitmq.exchange.name=business-msgcenter-exchange
+server.platformID=tubobo
+
+######################### dubbo\ufffd\ufffd\ufffd\ufffd ####################################
+dubbo.appname=tubobo_merchant
+dubbo.zkAddress= 172.16.1.181:2181
+dubbo.protocolname=dubbo
+dubbo.port=20882
+dubbo.zk=zookeeper
+dubbo.group=xinguang
