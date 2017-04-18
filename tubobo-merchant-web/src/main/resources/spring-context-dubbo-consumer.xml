@@ -13,8 +13,6 @@
 
 
 	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
-	<dubbo:reference id="userSMSService" interface="com.xinguang.usercentergate.api.UserSMSServiceInterface" group="${dubbo.group}" check="false" version="0.0.1"/>
-	<dubbo:reference id="userService" interface="com.xinguang.usercentergate.api.UserServiceInterface" group="${dubbo.group}" check="false" version="0.0.1"/>
 	<dubbo:reference id="tokenService" interface="com.xinguang.usercentergate.api.TokenServiceInterface" group="${dubbo.group}" check="false" version="0.0.1"/>
 
 	<dubbo:reference id="tbbAccountService" interface="com.xinguang.tubobo.account.api.TbbAccountService"  group="${dubbo.group}" version="0.0.1" check="false"/>
