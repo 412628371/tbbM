@@ -21,8 +21,10 @@
 	<dubbo:protocol name="${dubbo.protocolname}" port="${dubbo.port}"  />
 
 	<!-- 声明需要暴露的服务接口 -->
-	<dubbo:service interface="com.xinguang.tubobo.api.merchant.MerchantToTaskCenterServiceInterface" ref="merchantToTaskCenterService" />
-	<dubbo:service interface="com.xinguang.tubobo.api.merchant.MerchantToAdminServiceInterface" ref="merchantToAdminService" />
+	<dubbo:service interface="com.xinguang.tubobo.api.merchant.MerchantToTaskCenterServiceInterface" ref="merchantToTaskCenterService"
+				   group="${dubbo.group}" version="0.0.1"/>
+	<dubbo:service interface="com.xinguang.tubobo.api.merchant.MerchantToAdminServiceInterface" ref="merchantToAdminService"
+				   group="${dubbo.group}" version="0.0.1"/>
 
 	<!-- 和本地bean一样实现服务 -->
 	<bean id="merchantToTaskCenterService" class="com.xinguang.tubobo.impl.merchant.service.MerchantToTaskCenterServiceImpl" />
