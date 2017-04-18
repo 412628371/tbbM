@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/account/pay")
-public class MerchantAccountPayController extends MerchantBaseController<ReqAccountPay,EnumRespCode> {
+public class MerchantAccountPayController extends MerchantBaseController<ReqAccountPay,Object> {
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
@@ -31,6 +31,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
     private MerchantOrderService merchantOrderService;
     @Override
     protected EnumRespCode doService(String userId, ReqAccountPay req) throws ClientException {
+        logger.info("支付请求：userId:{}, orderNo:{} , ",userId,req.getOrderNo());
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
         if (null == infoEntity){
             throw new ClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
@@ -42,6 +43,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         PayRequest payRequest = new PayRequest();
         payRequest.setAccountId(infoEntity.getAccountId());
         payRequest.setAmount(ConvertUtil.convertYuanToFen(orderEntity.getPayAmount()));
+        logger.info("支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payRequest.getAmount());
 //        payRequest.setOrderId();
         TbbAccountResponse<PayInfo> response = tbbAccountService.pay(payRequest);
         if (response != null && response.isSucceeded()){
@@ -50,17 +52,16 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             merchantOrderService.merchantPay(infoEntity.getUserId(),req.getOrderNo(),payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
-            return EnumRespCode.SUCCESS;
+            return null;
         }else {
             if (response == null){
                 logger.error("pay  FAIL.orderNo:{}, accountId:{}}",
                         req.getOrderNo(),infoEntity.getAccountId());
-
             }else {
                 logger.error("pay  FAIL.orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
                         req.getOrderNo(),infoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
             }
-            return EnumRespCode.ACCOUNT_PAY_FAIL;
+            throw  new ClientException(EnumRespCode.ACCOUNT_PAY_FAIL);
         }
     }
 }

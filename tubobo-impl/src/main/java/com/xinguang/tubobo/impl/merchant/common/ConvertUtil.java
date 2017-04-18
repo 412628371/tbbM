@@ -5,6 +5,8 @@ package com.xinguang.tubobo.impl.merchant.common;
  */
 public class ConvertUtil {
     public static Long convertYuanToFen(Double yuan){
+        if (yuan == null || yuan < 0)
+            return 0L;
         return Math.round(yuan*100);
     }
 
