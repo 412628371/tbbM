@@ -6,6 +6,7 @@
 package com.xinguang.tubobo.api.merchant.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class MerchantOrderDTO implements Serializable{
 
@@ -45,6 +46,88 @@ public class MerchantOrderDTO implements Serializable{
 	private Double receiverLatitude;
 
 	private Double dispatchRadius;//分派半径，单位：米
+
+	private Date orderTime;//下单时间
+	private Date cancelTime;//取消时间
+	private Date closeTime;//关闭时间
+	private Date expiredTime;//超时时间
+	private Date grabOrderTime;//接单时间
+	private Date grabItemTime;//取货时间
+	private Date finishOrderTime;//送达时间
+	protected Date createDate;
+	protected Date updateDate;
+
+	public Date getOrderTime() {
+		return orderTime;
+	}
+
+	public void setOrderTime(Date orderTime) {
+		this.orderTime = orderTime;
+	}
+
+	public Date getCancelTime() {
+		return cancelTime;
+	}
+
+	public void setCancelTime(Date cancelTime) {
+		this.cancelTime = cancelTime;
+	}
+
+	public Date getCloseTime() {
+		return closeTime;
+	}
+
+	public void setCloseTime(Date closeTime) {
+		this.closeTime = closeTime;
+	}
+
+	public Date getExpiredTime() {
+		return expiredTime;
+	}
+
+	public void setExpiredTime(Date expiredTime) {
+		this.expiredTime = expiredTime;
+	}
+
+	public Date getGrabOrderTime() {
+		return grabOrderTime;
+	}
+
+	public void setGrabOrderTime(Date grabOrderTime) {
+		this.grabOrderTime = grabOrderTime;
+	}
+
+	public Date getGrabItemTime() {
+		return grabItemTime;
+	}
+
+	public void setGrabItemTime(Date grabItemTime) {
+		this.grabItemTime = grabItemTime;
+	}
+
+	public Date getFinishOrderTime() {
+		return finishOrderTime;
+	}
+
+	public void setFinishOrderTime(Date finishOrderTime) {
+		this.finishOrderTime = finishOrderTime;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
 
 	public String getOrderNo() {
 		return orderNo;

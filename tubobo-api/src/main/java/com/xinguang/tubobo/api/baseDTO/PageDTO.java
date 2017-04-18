@@ -1,12 +1,13 @@
 package com.xinguang.tubobo.api.baseDTO;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 分页类
  */
-public class PageDTO<T>{
+public class PageDTO<T> implements Serializable {
 	
 	private int pageNo;
 	private int pageSize;
