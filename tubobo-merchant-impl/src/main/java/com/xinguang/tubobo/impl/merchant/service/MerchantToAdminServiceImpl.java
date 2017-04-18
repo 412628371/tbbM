@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
@@ -29,6 +30,7 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
      */
     @Override
     public MerchantInfoDTO findByUserId(String userId) {
+        if (StringUtils.isBlank(userId)) return null;
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
         if (merchant != null){
             MerchantInfoDTO dto = new MerchantInfoDTO();
@@ -98,5 +100,22 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
             }
         }
         return new PageDTO<MerchantOrderDTO>(page.getPageNo(),page.getPageSize(),page.getCount(),dtoList);
+    }
+
+    /**
+     * 查询商家订单详情
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public MerchantOrderDTO findMerchantOrderDetail(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) return null;
+        MerchantOrderEntity order = merchantOrderService.findByOrderNo(orderNo);
+        if (order != null){
+            MerchantOrderDTO dto = new MerchantOrderDTO();
+            BeanUtils.copyProperties(order,dto);
+            return dto;
+        }
+        return null;
     }
 }
