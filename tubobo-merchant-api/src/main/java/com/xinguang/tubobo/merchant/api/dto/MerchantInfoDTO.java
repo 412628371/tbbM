@@ -11,6 +11,7 @@ import java.util.Date;
 public class MerchantInfoDTO implements Serializable{
 
 	private String userId;
+	private Long accountId;
 
 	private String merchantStatus;
 	private String merchantName;//商家店铺名称
@@ -30,6 +31,14 @@ public class MerchantInfoDTO implements Serializable{
 	private boolean pushMsgOrderExpired;
 	private boolean pushMsgOrderGrabed;
 	private boolean pushMsgOrderFinished;
+
+	public Long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
+	}
 
 	public String getName() {
 		return name;
