@@ -13,6 +13,7 @@ public class MerchantOrderDTO implements Serializable{
 	private String orderNo;//订单No
 	private String orderType;
 	private String orderTitle;
+	private String orderStatus;//订单状态
 
 	private Integer payAmount;//支付总金额
 	private Integer deliveryFee;//配送费
@@ -56,6 +57,42 @@ public class MerchantOrderDTO implements Serializable{
 	private Date finishOrderTime;//送达时间
 	protected Date createDate;
 	protected Date updateDate;
+
+	private String riderId;
+	private String riderName;
+	private String riderPhone;
+
+	public String getRiderId() {
+		return riderId;
+	}
+
+	public void setRiderId(String riderId) {
+		this.riderId = riderId;
+	}
+
+	public String getRiderName() {
+		return riderName;
+	}
+
+	public void setRiderName(String riderName) {
+		this.riderName = riderName;
+	}
+
+	public String getRiderPhone() {
+		return riderPhone;
+	}
+
+	public void setRiderPhone(String riderPhone) {
+		this.riderPhone = riderPhone;
+	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
 	public Date getOrderTime() {
 		return orderTime;

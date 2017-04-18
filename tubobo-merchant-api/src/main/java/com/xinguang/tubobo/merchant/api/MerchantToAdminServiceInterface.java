@@ -44,4 +44,10 @@ public interface MerchantToAdminServiceInterface {
      */
     public PageDTO<MerchantOrderDTO> findMerchantOrderPage(int pageNo, int pageSize, MerchantOrderDTO dto);
 
+    /**
+     * 查询商家订单详情
+     * @param orderNo
+     * @return
+     */
+    public MerchantOrderDTO findMerchantOrderDetail(String orderNo);
 }
