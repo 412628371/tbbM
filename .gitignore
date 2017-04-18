@@ -2,3 +2,4 @@
 tubobo-web-admin/target/
 target/
 *.iml
+out/

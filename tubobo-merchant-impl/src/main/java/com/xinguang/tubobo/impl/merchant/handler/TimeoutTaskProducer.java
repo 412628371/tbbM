@@ -2,7 +2,6 @@ package com.xinguang.tubobo.impl.merchant.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,17 +15,17 @@ import java.text.SimpleDateFormat;
 @Component
 public class TimeoutTaskProducer {
     private Logger logger = LoggerFactory.getLogger(TimeoutTaskProducer.class);
-    @Autowired
-    @Qualifier(value = "delayMsgTemplate")
-    private RabbitTemplate delayMsgTemplate;
+//    @Autowired
+//    @Qualifier(value = "delayMsgTemplate")
+//    private RabbitTemplate delayMsgTemplate;
 
     public void sendMessage(String msg) {
         logger.info("to send message:{}",msg);
 //        final int xdelay= 5*1000;
-        final SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        MessageBuilder message = MessageBuilder.withBody(msg.getBytes());
-        delayMsgTemplate.convertAndSend(message);
-        logger.info("订单支付加入延时队列。。。orderNo: "+msg);
+//        final SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        MessageBuilder message = MessageBuilder.withBody(msg.getBytes());
+//        delayMsgTemplate.convertAndSend(message);
+//        logger.info("订单支付加入延时队列。。。orderNo: "+msg);
 //        logger.info("消息加入延时队列："+message.toString());
 //        //发送延迟消息
 //        delayMsgTemplate.convertAndSend("task.delay.notify", message,
