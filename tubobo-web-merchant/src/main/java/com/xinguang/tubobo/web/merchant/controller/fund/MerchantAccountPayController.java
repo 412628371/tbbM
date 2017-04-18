@@ -48,12 +48,12 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             long payId = response.getData().getId();
 
             merchantOrderService.merchantPay(infoEntity.getUserId(),req.getOrderNo(),payId);
-            logger.info("withdraw confirm SUCCESS. merchantName:{}, merchantPhone:{}, accountId:{}, withdrawId:{}, amount:{}",
-                    infoEntity.getRealName(),infoEntity.getPhone(),infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
+            logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
+                    ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
             return EnumRespCode.SUCCESS;
         }else {
-            logger.error("withdraw confirm FAIL. riderName:{}, riderPhone:{}, accountId:{}, withdrawId:{}, amount:{}, errorCode:{}, errorMsg{}",
-                    infoEntity.getRealName(),infoEntity.getPhone(),infoEntity.getAccountId(),response.getData().getId(),payRequest,response.getErrorCode(),response.getMessage());
+            logger.error("pay  FAIL.orderNo:{}, accountId:{}, payId:{},, errorCode:{}, errorMsg{}",
+                    req.getOrderNo(),infoEntity.getAccountId(),response.getData().getId(),payRequest,response.getErrorCode(),response.getMessage());
             return EnumRespCode.ACCOUNT_PAY_FAIL;
         }
     }

@@ -46,6 +46,7 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
         if (response != null && response.isSucceeded()){
             return EnumRespCode.SUCCESS;
         } else {
+            logger.error("充值失败，userId: {},errorCode:{},errorMsg:{}",userId,response.getErrorCode(),response.getMessage());
             return EnumRespCode.FAIL;
         }
     }
