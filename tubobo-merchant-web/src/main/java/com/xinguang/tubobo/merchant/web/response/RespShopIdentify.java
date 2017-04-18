@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2017/4/14.
  */
-public class ShopIdentifyResponse implements Serializable {
+public class RespShopIdentify implements Serializable {
     private String identifyStatus;
 
     public String getIdentifyStatus() {
