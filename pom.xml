@@ -14,7 +14,6 @@
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>tubobo-common</module>
         <module>tubobo-api</module>
         <module>tubobo-api-merchant</module>
         <module>tubobo-impl</module>
@@ -25,7 +24,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tubobo.version>1.0-SNAPSHOT</tubobo.version>
         <tubobo-impl.version>1.1-SNAPSHOT</tubobo-impl.version>
-        <tubobo-api-rider.version>0.0.7-SNAPSHOT</tubobo-api-rider.version>
         <tubobo-api-merchant.version>0.0.7-SNAPSHOT</tubobo-api-merchant.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
         <tubobo-account-api-version>1.0-SNAPSHOT</tubobo-account-api-version>
@@ -187,18 +185,8 @@
             </dependency>
             <dependency>
                 <groupId>com.xinguang</groupId>
-                <artifactId>tubobo-common</artifactId>
-                <version>${tubobo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.xinguang</groupId>
                 <artifactId>tubobo-api</artifactId>
                 <version>${tubobo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.xinguang</groupId>
-                <artifactId>tubobo-api-rider</artifactId>
-                <version>${tubobo-api-rider.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.xinguang</groupId>
@@ -213,11 +201,6 @@
             <dependency>
                 <groupId>com.xinguang</groupId>
                 <artifactId>tubobo-web-admin</artifactId>
-                <version>${tubobo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.xinguang</groupId>
-                <artifactId>tubobo-web-rider</artifactId>
                 <version>${tubobo.version}</version>
             </dependency>
             <dependency>
@@ -666,18 +649,6 @@
                 <version>${disconf-client.version}</version>
             </dependency>
 
-            <!-- dubbo -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>dubbo</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>spring</artifactId>
-                        <groupId>org.springframework</groupId>
-                    </exclusion>
-                </exclusions>
-                <version>${alibaba.dubbo.version}</version>
-            </dependency>
 
             <!-- rabbitmq 相关jar-->
             <dependency>
@@ -694,25 +665,6 @@
                 <groupId>org.springframework.amqp</groupId>
                 <artifactId>spring-rabbit</artifactId>
                 <version>${org.springframework.amqp.version}</version>
-            </dependency>
-            <!-- 容器自带 -->
-            <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
-                <version>${javax.el.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>${servlet.api.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>jsp-api</artifactId>
-                <version>${jsp-api.version}</version>
-                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

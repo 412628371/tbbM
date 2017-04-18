@@ -16,14 +16,6 @@
     <dependencies>
         <dependency>
             <groupId>com.xinguang</groupId>
-            <artifactId>tubobo-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.xinguang</groupId>
-            <artifactId>tubobo-api-rider</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.xinguang</groupId>
             <artifactId>tubobo-api-merchant</artifactId>
         </dependency>
 

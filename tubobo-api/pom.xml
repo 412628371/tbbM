@@ -13,10 +13,6 @@
     <artifactId>tubobo-api</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.xinguang</groupId>
-            <artifactId>tubobo-common</artifactId>
-        </dependency>
 
     </dependencies>
 
