@@ -52,8 +52,14 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
                     ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
             return EnumRespCode.SUCCESS;
         }else {
-            logger.error("pay  FAIL.orderNo:{}, accountId:{}, payId:{},, errorCode:{}, errorMsg{}",
-                    req.getOrderNo(),infoEntity.getAccountId(),response.getData().getId(),payRequest,response.getErrorCode(),response.getMessage());
+            if (response == null){
+                logger.error("pay  FAIL.orderNo:{}, accountId:{}}",
+                        req.getOrderNo(),infoEntity.getAccountId());
+
+            }else {
+                logger.error("pay  FAIL.orderNo:{}, accountId:{}, payId:{},, errorCode:{}, errorMsg{}",
+                        req.getOrderNo(),infoEntity.getAccountId(),response.getData().getId(),response.getErrorCode(),response.getMessage());
+            }
             return EnumRespCode.ACCOUNT_PAY_FAIL;
         }
     }
