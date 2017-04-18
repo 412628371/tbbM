@@ -13,7 +13,7 @@
 	<import resource="spring-context.xml" />
 
 	<!-- 使用Annotation自动注册Bean,只扫描@Controller -->
-	<context:component-scan base-package="com.xinguang.tubobo.web.merchant" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
+	<context:component-scan base-package="com.xinguang.tubobo.merchant.web" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
