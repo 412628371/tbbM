@@ -7,7 +7,6 @@ package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
-import com.hzmux.hzcms.common.service.BaseService;
 import com.hzmux.hzcms.common.utils.IdGen;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
@@ -28,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
-import static org.apache.zookeeper.server.ServerCnxn.me;
 
 @Service
 @Transactional(readOnly = true)
@@ -80,7 +78,7 @@ public class MerchantOrderService extends BaseService {
 		entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
 		merchantOrderDao.save(entity);
 		//将订单加入支付超时队列
-		timeoutTaskProducer.sendMessage(orderNo, MerchantConstants.PAY_EXPIRED_TIME_BY_SECONDS);
+		timeoutTaskProducer.sendMessage(orderNo);
 		return orderNo;
 	}
 

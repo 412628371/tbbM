@@ -41,6 +41,7 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
         rechargeRequest.setTarget(TbbConstants.OperationTarget.BALANCE);
         rechargeRequest.setClientIp(ConvertUtil.handleNullString(req.getClientIp()));
         rechargeRequest.setTitle(MerchantConstants.MERCHANT_RECHARGE_TITLE);
+        rechargeRequest.setChannel(TbbConstants.Channel.ALI_PAY);
         TbbAccountResponse<RechargeInfo> response = tbbAccountService.recharge(rechargeRequest);
         if (response != null && response.isSucceeded()){
             return EnumRespCode.SUCCESS;

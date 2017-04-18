@@ -51,8 +51,9 @@ public enum EnumRespCode {
 	MERCHANT_UN_IDENTIFIED("10101", "商家未认证，不允许操作"),
 	MERCHANT_NOT_EXISTS("10102", "商家不存在"),
 	MERCHANT_CANT_CANCEL("10200", "订单不存在或状态不允许取消"),
-	MERCHANT_CANT_DELETE("10200", "订单不存在或状态不允许删除"),
-	MERCHANT_ORDER_NOT_EXIST("10201", "订单不存在"),
+	MERCHANT_CANT_DELETE("10201", "订单不存在或状态不允许删除"),
+	MERCHANT_ORDER_NOT_EXIST("10202", "订单不存在"),
+	MERCHANT_RIDER_LOCATION_NOT_FOUND("10203", "未找到骑手位置"),
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
 
 	RIDER_APPLY_REPEAT("20010", "该用户已申请骑士，请勿重复操作"),
