@@ -14,17 +14,16 @@
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>tubobo-api</module>
-        <module>tubobo-api-merchant</module>
-        <module>tubobo-impl</module>
-        <module>tubobo-web-merchant</module>
+        <module>tubobo-merchant-api</module>
+        <module>tubobo-merchant-impl</module>
+        <module>tubobo-merchant-web</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <tubobo.version>1.0-SNAPSHOT</tubobo.version>
-        <tubobo-impl.version>1.1-SNAPSHOT</tubobo-impl.version>
-        <tubobo-api-merchant.version>0.0.7-SNAPSHOT</tubobo-api-merchant.version>
+        <tubobo.merchant.web.version>1.0-SNAPSHOT</tubobo.merchant.web.version>
+        <tubobo.merchant.impl.version>1.0-SNAPSHOT</tubobo.merchant.impl.version>
+        <tubobo.merchant.api.version>0.0.8-SNAPSHOT</tubobo.merchant.api.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
         <tubobo-account-api-version>1.0-SNAPSHOT</tubobo-account-api-version>
         <tubobo-push-api-version>1.0-SNAPSHOT</tubobo-push-api-version>
@@ -102,7 +101,6 @@
 
         <org.springframework.amqp.version>1.7.1.RELEASE</org.springframework.amqp.version>
         <com.rabbitmq.version>4.1.0</com.rabbitmq.version>
-        <tubobo.push-api.version>1.0-SNAPSHOT</tubobo.push-api.version>
 
     </properties>
 
@@ -179,34 +177,19 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.xinguang.tubobo</groupId>
-                <artifactId>push-api</artifactId>
-                <version>${tubobo.push-api.version}</version>
+                <groupId>com.xinguang</groupId>
+                <artifactId>tubobo-merchant-api</artifactId>
+                <version>${tubobo.merchant.api.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.xinguang</groupId>
-                <artifactId>tubobo-api</artifactId>
-                <version>${tubobo.version}</version>
+                <artifactId>tubobo-merchant-impl</artifactId>
+                <version>${tubobo.merchant.impl.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.xinguang</groupId>
-                <artifactId>tubobo-api-merchant</artifactId>
-                <version>${tubobo-api-merchant.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.xinguang</groupId>
-                <artifactId>tubobo-impl</artifactId>
-                <version>${tubobo-impl.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.xinguang</groupId>
-                <artifactId>tubobo-web-admin</artifactId>
-                <version>${tubobo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.xinguang</groupId>
-                <artifactId>tubobo-web-merchant</artifactId>
-                <version>${tubobo.version}</version>
+                <artifactId>tubobo-merchant-web</artifactId>
+                <version>${tubobo.merchant.web.version}</version>
             </dependency>
 
             <dependency>

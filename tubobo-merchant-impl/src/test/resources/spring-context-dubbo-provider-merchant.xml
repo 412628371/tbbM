@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   http://www.springframework.org/schema/beans/spring-beans.xsd
+	   http://code.alibabatech.com/schema/dubbo
+	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+	   http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 加载配置属性文件 -->
+	<!--<context:property-placeholder ignore-unresolvable="true" location="classpath*:usercenter-gate-impl.properties" />-->
+
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="${dubbo.appname}" />
+	<!-- 使用multicast广播注册中心暴露服务地址 -->
+	<dubbo:registry protocol="${dubbo.zk}" group="${dubbo.group}" address="${dubbo.zkAddress}" />
+	<!-- 用dubbo协议在20880端口暴露服务 -->
+	<dubbo:protocol name="${dubbo.protocolname}" port="${dubbo.port}"  />
+
+	<!-- 声明需要暴露的服务接口 -->
+	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface" ref="merchantToTaskCenterService" />
+	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface" ref="merchantToAdminService" />
+
+	<!-- 和本地bean一样实现服务 -->
+	<bean id="merchantToTaskCenterService" class="com.xinguang.tubobo.impl.merchant.service.MerchantToTaskCenterServiceImpl" />
+	<bean id="merchantToAdminService" class="com.xinguang.tubobo.impl.merchant.service.MerchantToAdminServiceImpl" />
+
+</beans>
