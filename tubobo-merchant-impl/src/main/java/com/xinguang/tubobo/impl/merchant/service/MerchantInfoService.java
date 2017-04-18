@@ -50,7 +50,6 @@ public class MerchantInfoService extends BaseService {
 			return EnumRespCode.MERCHANT_APPLY_REPEAT;
 		}
 		entity.setUserId(userId);
-//		merchant.setId(IdGen.uuid());
 		entity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
 		entity.setCreateDate(new Date());
 		entity.setUserId(userId);

@@ -5,6 +5,8 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -15,16 +17,16 @@ import java.io.Serializable;
 public class CreateOrderRequest implements Serializable {
     @NotBlank(message = "收货人地址详情不能为空")
     private String receiverAddressDetail;
-//    @Length(min = 1,max = 100,message = "省长度不符")
+//    @Size(min = 1,max = 100,message = "省长度不符")
     private String receiverAddressProvince;
-//    @Length(min = 1,max = 100,message = "市长度不符")
+//    @Size(min = 1,max = 100,message = "市长度不符")
     private String receiverAddressCity;//地址缩略
-//    @Length(max = 100,message = "区长度过大")
+//    @Size(max = 100,message = "区长度过大")
     private String receiverAddressDistrict;//地址名称
     private String receiverAddressStreet;//地址名称
     private String receiverGdPoiId;
-
-    @Range(min = 0,message = "配送费错误")
+//TODO
+    @Range(min = 1,max = 100000,message = "配送费错误")
     private Double deliveryFee;
     private Double tipFee;
 
@@ -32,12 +34,12 @@ public class CreateOrderRequest implements Serializable {
     private String payMethod;
 
     @Range(min=0,max=180,message="收货人位置纬度必须在0度至180度之间")
-    private double receiverLatitude;
+    private Double receiverLatitude;
     @Range(min=0,max=180,message="经度必须在0度至180度之间")
-    private double receiverLongitude;
+    private Double receiverLongitude;
 
 //    @Length(min = 1,max = 100,message = "收货人姓名长度错误")
-    @NotBlank(message = "收货人姓名不能为空")
+//    @NotBlank(message = "收货人姓名不能为空")
     private String receiverName;
     @NotBlank(message = "电话格式错误")
     private String receiverPhone;

@@ -1,10 +1,12 @@
 package com.xinguang.tubobo.merchant.web.response;
 
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2017/4/13.
  */
-public class MerchantInfoResponse {
+public class MerchantInfoResponse implements Serializable{
     private String addressProvince;//详细地址
     private String addressCity;//地址缩略
     private String addressDistrict;//地址名称
@@ -15,17 +17,24 @@ public class MerchantInfoResponse {
     private String idCardFrontImageUrl;
     private String avatarUrl;
 
-    private String identifyStatus;
+    private String merchantStatus;
 
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     private String phone;
-    private String shopName;
 
     private String idCardNo;
     private String realName;
     private String merchantName;
+
+    public String getMerchantStatus() {
+        return merchantStatus;
+    }
+
+    public void setMerchantStatus(String merchantStatus) {
+        this.merchantStatus = merchantStatus;
+    }
 
     public String getAddressProvince() {
         return addressProvince;
@@ -91,27 +100,20 @@ public class MerchantInfoResponse {
         this.avatarUrl = avatarUrl;
     }
 
-    public String getIdentifyStatus() {
-        return identifyStatus;
-    }
 
-    public void setIdentifyStatus(String identifyStatus) {
-        this.identifyStatus = identifyStatus;
-    }
-
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
@@ -123,13 +125,6 @@ public class MerchantInfoResponse {
         this.phone = phone;
     }
 
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
-    }
 
     public String getIdCardNo() {
         return idCardNo;

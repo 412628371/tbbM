@@ -17,19 +17,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import static com.sun.tools.doclint.Entity.ne;
+
 /**
  * Created by Administrator on 2017/4/15.
  */
 @Controller
 @RequestMapping("/account/recharge")
-public class MerchantAccountRechargrController extends MerchantBaseController<ReqAccountRecharge,EnumRespCode> {
+public class MerchantAccountRechargrController extends MerchantBaseController<ReqAccountRecharge,Object> {
 
     @Autowired
     private TbbAccountService tbbAccountService;
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Override
-    protected EnumRespCode doService(String userId, ReqAccountRecharge req) throws MerchantClientException {
+    protected Object doService(String userId, ReqAccountRecharge req) throws MerchantClientException {
 
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (entity == null){
@@ -44,10 +46,10 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
         rechargeRequest.setChannel(TbbConstants.Channel.ALI_PAY);
         TbbAccountResponse<RechargeInfo> response = tbbAccountService.recharge(rechargeRequest);
         if (response != null && response.isSucceeded()){
-            return EnumRespCode.SUCCESS;
+            return null;
         } else {
             logger.error("充值失败，userId: {},errorCode:{},errorMsg:{}",userId,response.getErrorCode(),response.getMessage());
-            return EnumRespCode.FAIL;
+            throw  new MerchantClientException(EnumRespCode.ACCOUNT_RECHARGE_FAIL);
         }
     }
 }

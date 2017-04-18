@@ -33,4 +33,13 @@ public class GeoLocation implements Serializable{
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("GeoLocation: ")
+                .append("userId : ").append(userId)
+                .append(", latitude: ").append(latitude)
+                .append(", longitude: ").append(longitude);
+        return super.toString();
+    }
 }

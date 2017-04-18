@@ -12,6 +12,8 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
+import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.TaskCenterToMerchantServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
@@ -44,6 +46,9 @@ public class MerchantOrderService extends BaseService {
 	TaskCenterToMerchantServiceInterface taskCenterToMerchantServiceInterface;
 
 	@Autowired
+	private DeliveryFeeService deliveryFeeService;
+
+	@Autowired
 	private TbbAccountService tbbAccountService;
 
 
@@ -59,22 +64,34 @@ public class MerchantOrderService extends BaseService {
 	 * 商家提交订单
 	 */
 	@Transactional(readOnly = false)
-	public String order(String userId,MerchantOrderEntity entity){
+	public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
 		MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
+		double distance = deliveryFeeService.sumDeliveryDistance(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude(),null);
 		//TODO 按规则生成orderNo.
 		String orderNo = IdGen.uuid();
 		entity.setOrderNo(orderNo);
-		entity.setSenderName(infoEntity.getRealName());
-		entity.setSenderPhone(infoEntity.getPhone());
-		entity.setSenderLongitude(infoEntity.getLongitude());
-		entity.setSenderLatitude(infoEntity.getLatitude());
-		entity.setSenderAddressProvince(infoEntity.getAddressProvince());
-		entity.setSenderAddressCity(infoEntity.getAddressCity());
-		entity.setSenderAddressDistrict(infoEntity.getAddressDistrict());
+		entity.setSenderName(ConvertUtil.handleNullString(infoEntity.getRealName()));
+		entity.setSenderPhone(ConvertUtil.handleNullString(infoEntity.getPhone()));
+		if (null != infoEntity.getLongitude()){
+			entity.setSenderLongitude(infoEntity.getLongitude());
+		}
+		if (null != infoEntity.getLatitude()){
+			entity.setSenderLatitude(infoEntity.getLatitude());
+		}
+		entity.setDeliveryDistance(distance);
+		entity.setSenderAddressProvince(ConvertUtil.handleNullString(infoEntity.getAddressProvince()));
+		entity.setSenderAddressCity(ConvertUtil.handleNullString(infoEntity.getAddressCity()));
+		entity.setSenderAddressDistrict(ConvertUtil.handleNullString(infoEntity.getAddressDistrict()));
 
-		entity.setSenderAddressStreet(infoEntity.getAddressStreet());
-		entity.setSenderAddressDetail(infoEntity.getAddressDetail());
-		entity.setPayAmount(entity.getDeliveryFee()+entity.getTipFee());
+		entity.setSenderAddressStreet(ConvertUtil.handleNullString(infoEntity.getAddressStreet()));
+		entity.setSenderAddressDetail(ConvertUtil.handleNullString(infoEntity.getAddressDetail()));
+		if (entity.getDeliveryFee() != null){
+			if (entity.getTipFee() == null){
+				entity.setPayAmount(entity.getDeliveryFee());
+			}else {
+				entity.setPayAmount(entity.getDeliveryFee()+entity.getTipFee());
+			}
+		}
 		entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
 		merchantOrderDao.save(entity);
 		//将订单加入支付超时队列
@@ -95,8 +112,6 @@ public class MerchantOrderService extends BaseService {
 		MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
 		BeanUtils.copyProperties(entity,merchantOrderDTO);
 		taskCenterToMerchantServiceInterface.merchantOrder(merchantOrderDTO);
-//		merchantOrderDTO.setReceiverAddress(entity.getReceiverAddressFull());
-//		merchantOrderDTO.setSenderAddress(entity.getSenderAddressFull());
 		return count;
 	}
 

@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.impl.test.service;
 
+import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
@@ -21,7 +22,7 @@ public class MerchantOrderServiceUnitTest extends BaseJunit4Test {
     @Test
     @Transactional
     @Rollback()
-    public void testUpdateOrderStatus(){
+    public void testUpdateOrderStatus() throws MerchantClientException {
         String userId = "1234";
         MerchantOrderEntity orderRO = new MerchantOrderEntity();
         orderRO.setReceiverName("xqh");

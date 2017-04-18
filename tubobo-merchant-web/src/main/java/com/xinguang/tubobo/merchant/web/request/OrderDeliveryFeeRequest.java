@@ -36,4 +36,19 @@ public class OrderDeliveryFeeRequest {
     public void setReceiverLongitude(Double receiverLongitude) {
         this.receiverLongitude = receiverLongitude;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" [goodsType]: ").append(goodsType)
+                .append(", [receiverLatitude]").append(receiverLatitude)
+                .append(", [receiverLongitude]: ").append(receiverLongitude);
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        OrderDeliveryFeeRequest request= new OrderDeliveryFeeRequest();
+        request.setReceiverLatitude(12345.0);
+        System.out.print(request.toString());
+    }
 }

@@ -66,6 +66,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String receiverAddressDetail;//收货人地址名称
 	private Double receiverLongitude;
 	private Double receiverLatitude;
+	private Double deliveryDistance;
 
 	private Double dispatchRadius;//分派半径，单位：米
 
@@ -130,6 +131,9 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	}
 
 	public Double getDeliveryFee() {
+		if (deliveryFee == null){
+			return 0.0;
+		}
 		return deliveryFee;
 	}
 
@@ -138,6 +142,9 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	}
 
 	public Double getTipFee() {
+		if (tipFee == null){
+			return 0.0;
+		}
 		return tipFee;
 	}
 
@@ -415,5 +422,13 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	public void setRiderPhone(String riderPhone) {
 		this.riderPhone = ConvertUtil.handleNullString(riderPhone);
+	}
+
+	public Double getDeliveryDistance() {
+		return deliveryDistance;
+	}
+
+	public void setDeliveryDistance(Double deliveryDistance) {
+		this.deliveryDistance = deliveryDistance;
 	}
 }

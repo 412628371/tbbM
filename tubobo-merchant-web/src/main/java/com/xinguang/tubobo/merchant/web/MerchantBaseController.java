@@ -3,7 +3,10 @@ package com.xinguang.tubobo.merchant.web;
 import com.google.common.collect.Lists;
 import com.hzmux.hzcms.common.beanvalidator.BeanValidators;
 import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.web.response.ClientResp;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -31,6 +34,8 @@ public abstract class MerchantBaseController <P, R>{
     protected Validator validator;
     @Autowired
     private TokenServiceInterface tokenServiceInterface;
+    @Autowired
+    MerchantInfoService merchantInfoService;
 
     @RequestMapping(method = RequestMethod.POST, value = "", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
@@ -60,9 +65,13 @@ public abstract class MerchantBaseController <P, R>{
 //            userId="888";
         }
 
-        if (needIndetify()){
-            //TODO 是否认证判断
-
+        if (needIdentify()){
+            // 是否认证判断
+            MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
+            if (entity == null || !EnumAuthentication.SUCCESS.getValue().equals(entity.getMerchantStatus())){
+                return  new ClientResp(EnumRespCode.MERCHANT_UN_IDENTIFIED.getValue(),
+                        EnumRespCode.MERCHANT_UN_IDENTIFIED.getDesc());
+            }
         }
         // 处理业务
         try {
@@ -80,7 +89,7 @@ public abstract class MerchantBaseController <P, R>{
      *
      * @return
      */
-    protected boolean needIndetify() {
+    protected boolean needIdentify() {
         return true;
     }
     /**

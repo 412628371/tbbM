@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = "/account/withdraw")
-public class MerchantAccountWithdrawController extends MerchantBaseController<ReqAccountWithdraw,EnumRespCode> {
+public class MerchantAccountWithdrawController extends MerchantBaseController<ReqAccountWithdraw,Object> {
 
 	@Autowired
 	private MerchantInfoService merchantInfoService;
@@ -26,7 +26,7 @@ public class MerchantAccountWithdrawController extends MerchantBaseController<Re
 	private TbbAccountService tbbAccountService;
 
 	@Override
-	protected EnumRespCode doService(String userId, ReqAccountWithdraw req) throws MerchantClientException {
+	protected Object doService(String userId, ReqAccountWithdraw req) throws MerchantClientException {
 		MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
 		if (merchant == null){
 			throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
@@ -41,16 +41,16 @@ public class MerchantAccountWithdrawController extends MerchantBaseController<Re
 			if (withdrawConfirmResponse != null && withdrawConfirmResponse.isSucceeded()){
 				logger.info("withdraw confirm SUCCESS. merchantName:{}, merchantPhone:{}, accountId:{}, withdrawId:{}, amount:{}",
 						merchant.getRealName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount());
-				return EnumRespCode.SUCCESS;
+				return null;
 			}else {
 				logger.error("withdraw confirm FAIL. riderName:{}, riderPhone:{}, accountId:{}, withdrawId:{}, amount:{}, errorCode:{}, errorMsg{}",
 						merchant.getRealName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount(),withdrawConfirmResponse.getErrorCode(),withdrawConfirmResponse.getMessage());
-				return EnumRespCode.ACCOUNT_WITHDRAW_COMFIRM_FAIL;
+				throw new MerchantClientException(EnumRespCode.ACCOUNT_WITHDRAW_COMFIRM_FAIL);
 			}
 		} else {
 			logger.error("withdraw apply FAIL. merchantName:{}, merchantPhone:{}, accountId:{}, amount:{}, errorCode:{}, errorMsg{}",
 					merchant.getRealName(),merchant.getPhone(),merchant.getAccountId(),req.getAmount(),withdrawResponse.getErrorCode(),withdrawResponse.getMessage());
-			return EnumRespCode.ACCOUNT_WITHDRAW_APPLY_FAIL;
+			throw new MerchantClientException(EnumRespCode.ACCOUNT_WITHDRAW_APPLY_FAIL);
 		}
 	}
 }

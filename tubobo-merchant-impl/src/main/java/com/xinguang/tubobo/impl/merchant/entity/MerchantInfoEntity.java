@@ -5,6 +5,7 @@
  */
 package com.xinguang.tubobo.impl.merchant.entity;
 
+import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
@@ -39,8 +40,8 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private String avatarUrl;
 	private String idCardFrontImageUrl;
 	private String idCardBackImageUrl;
-	private double longitude;
-	private double latitude;
+	private Double longitude;
+	private Double latitude;
 	private Date applyDate;
 	private Date verifyDate;
 
@@ -61,7 +62,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getMerchantStatus() {
-		return merchantStatus;
+		return ConvertUtil.handleNullString(merchantStatus);
 	}
 
 	public void setMerchantStatus(String merchantStatus) {
@@ -69,7 +70,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getMerchantName() {
-		return merchantName;
+		return ConvertUtil.handleNullString(merchantName);
 	}
 
 	public void setMerchantName(String merchantName) {
@@ -77,7 +78,8 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getRealName() {
-		return realName;
+
+		return ConvertUtil.handleNullString(realName);
 	}
 
 	public void setRealName(String realName) {
@@ -85,7 +87,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getPhone() {
-		return phone;
+		return  ConvertUtil.handleNullString(phone);
 	}
 
 	public void setPhone(String phone) {
@@ -93,7 +95,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getIdCardNo() {
-		return idCardNo;
+		return ConvertUtil.handleNullString(idCardNo);
 	}
 
 	public void setIdCardNo(String idCardNo) {
@@ -101,7 +103,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getAddressProvince() {
-		return addressProvince;
+		return ConvertUtil.handleNullString(addressProvince);
 	}
 
 	public void setAddressProvince(String addressProvince) {
@@ -109,7 +111,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getAddressCity() {
-		return addressCity;
+		return ConvertUtil.handleNullString(addressCity);
 	}
 
 	public void setAddressCity(String addressCity) {
@@ -117,7 +119,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getAddressDistrict() {
-		return addressDistrict;
+		return ConvertUtil.handleNullString(addressDistrict);
 	}
 
 	public void setAddressDistrict(String addressDistrict) {
@@ -133,7 +135,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getAddressStreet() {
-		return addressStreet;
+		return ConvertUtil.handleNullString(addressStreet);
 	}
 
 	public void setAddressStreet(String addressStreet) {
@@ -141,7 +143,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getAvatarUrl() {
-		return avatarUrl;
+		return ConvertUtil.handleNullString(avatarUrl);
 	}
 
 	public void setAvatarUrl(String avatarUrl) {
@@ -149,7 +151,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public String getIdCardFrontImageUrl() {
-		return idCardFrontImageUrl;
+		return ConvertUtil.handleNullString(idCardFrontImageUrl);
 	}
 
 	public void setIdCardFrontImageUrl(String idCardFrontImageUrl) {
@@ -161,18 +163,29 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	}
 
 	public void setIdCardBackImageUrl(String idCardBackImageUrl) {
+
 		this.idCardBackImageUrl = idCardBackImageUrl;
 	}
 
-	public double getLongitude() {
+	public Double getLongitude() {
+		if (longitude == null){
+			return 0.0;
+		}
 		return longitude;
 	}
 
-	public void setLongitude(double longitude) {
+	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
 
-	public double getLatitude() {
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLatitude() {
+		if (latitude == null){
+			return 0.0;
+		}
 		return latitude;
 	}
 
