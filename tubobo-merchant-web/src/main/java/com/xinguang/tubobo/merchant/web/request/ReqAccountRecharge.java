@@ -9,7 +9,7 @@ import javax.validation.constraints.Min;
  * Created by Administrator on 2017/4/15.
  */
 public class ReqAccountRecharge {
-    @NotBlank(message = "充值方式不能为空")
+//    @NotBlank(message = "充值方式不能为空")
     private String chargeType;
     private String clientIp;
     @DecimalMin(value = "0.01",message = "金额不能小于一分")

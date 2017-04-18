@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
  * Created by Administrator on 2017/4/15.
  */
 public class ReqAccountPay {
-    @NotBlank(message = "订单编号不存在")
+    @NotBlank(message = "订单编号不能为空")
    private String orderNo;
    private String payMethod;
 

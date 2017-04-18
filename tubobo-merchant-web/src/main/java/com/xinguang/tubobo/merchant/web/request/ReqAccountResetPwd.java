@@ -1,12 +1,14 @@
 package com.xinguang.tubobo.merchant.web.request;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.validation.constraints.Size;
 
 public class ReqAccountResetPwd {
 
-    @Size(min = 1, message = "oldPwd 不能为空")
+    @NotBlank( message = "oldPwd 不能为空")
     private String oldPwd;
-    @Size(min = 1, message = "newPwd 不能为空")
+    @NotBlank(message = "newPwd 不能为空")
     private String newPwd;
 
     public String getOldPwd() {

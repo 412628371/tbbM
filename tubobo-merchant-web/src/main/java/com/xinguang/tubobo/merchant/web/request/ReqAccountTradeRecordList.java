@@ -1,5 +1,7 @@
 package com.xinguang.tubobo.merchant.web.request;
 
+import org.hibernate.validator.constraints.Range;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -8,8 +10,7 @@ public class ReqAccountTradeRecordList {
     @Min(value = 1 ,message = "pageNo 最小为1")
     private int pageNo;
 
-    @Min(value = 10 ,message = "pageSize 取值为10-20")
-    @Max(value = 20 ,message = "pageSize 取值为10-20")
+    @Range(min = 1,max = 20 ,message = "pageSize 取值为1至20")
     private int pageSize;
 
 //    RECHARGE("200"),

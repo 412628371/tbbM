@@ -11,7 +11,7 @@ import javax.validation.constraints.Min;
 public class OrderListRequest {
     @NotBlank(message = "订单状态不能为空")
     private String orderStatus;
-    @Range(min = 2,max = 20 ,message = "pageSize 取值为2至20")
+    @Range(min = 1,max = 20 ,message = "pageSize 取值为1至20")
     private Integer pageSize;
     @Min(value = 1 ,message = "pageNo 最小为1")
     private Integer pageNo;

@@ -15,13 +15,13 @@ import java.io.Serializable;
  */
 public class ShopIdentifyRequest implements Serializable {
 
-    @Range(min = 1,max = 100,message = "省不能为空")
+//    @Size(min = 1,max = 100,message = "省不能为空")
     private String addressProvince;//详细地址
-    @Range(min = 1,max = 100,message = "市不能为空")
+//    @Size(min = 1,max = 100,message = "市不能为空")
     private String addressCity;//地址缩略
-    @Range(max = 100,message = "区长度过大")
+//    @Size(max = 100,message = "区长度过大")
     private String addressDistrict;//地址名称
-    @Range(min = 1,max = 100,message = "门牌号长度不符")
+//    @Size(min = 1,max = 100,message = "门牌号长度不符")
     private String addressDetail;//地址名称
     private String addressStreet;//地址名称
 
@@ -39,7 +39,7 @@ public class ShopIdentifyRequest implements Serializable {
     private String idCardNo;
     @NotBlank(message = "姓名不能为空")
     private String realName;
-    @Pattern(regexp= ValidUtils.contractPhonePattern,message = "电话格式错误")
+    @NotBlank(message = "电话格式错误")
     private String phone;
     @NotBlank(message = "店铺名称不能为空")
     private String merchantName;

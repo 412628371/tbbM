@@ -15,11 +15,11 @@ import java.io.Serializable;
 public class CreateOrderRequest implements Serializable {
     @NotBlank(message = "收货人地址详情不能为空")
     private String receiverAddressDetail;
-    @Length(min = 1,max = 100,message = "省长度不符")
+//    @Length(min = 1,max = 100,message = "省长度不符")
     private String receiverAddressProvince;
-    @Length(min = 1,max = 100,message = "市长度不符")
+//    @Length(min = 1,max = 100,message = "市长度不符")
     private String receiverAddressCity;//地址缩略
-    @Length(max = 100,message = "区长度过大")
+//    @Length(max = 100,message = "区长度过大")
     private String receiverAddressDistrict;//地址名称
     private String receiverAddressStreet;//地址名称
     private String receiverGdPoiId;
@@ -28,7 +28,7 @@ public class CreateOrderRequest implements Serializable {
     private Double deliveryFee;
     private Double tipFee;
 
-    @NotBlank(message = "支付方式不能为空")
+//    @NotBlank(message = "支付方式不能为空")
     private String payMethod;
 
     @Range(min=0,max=180,message="收货人位置纬度必须在0度至180度之间")
@@ -36,9 +36,10 @@ public class CreateOrderRequest implements Serializable {
     @Range(min=0,max=180,message="经度必须在0度至180度之间")
     private double receiverLongitude;
 
-    @Length(min = 1,max = 100,message = "收货人姓名长度错误")
+//    @Length(min = 1,max = 100,message = "收货人姓名长度错误")
+    @NotBlank(message = "收货人姓名不能为空")
     private String receiverName;
-    @Pattern(regexp= ValidUtils.contractPhonePattern,message = "电话格式错误")
+    @NotBlank(message = "电话格式错误")
     private String receiverPhone;
 
     private String orderRemarks;
