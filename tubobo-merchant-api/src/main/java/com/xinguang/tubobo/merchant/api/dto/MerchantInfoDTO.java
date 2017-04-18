@@ -15,38 +15,21 @@ public class MerchantInfoDTO implements Serializable{
 
 	private String merchantStatus;
 	private String merchantName;//商家店铺名称
-	private String name;//商家姓名
+	private String realName;//商家姓名
 	private String phone;
 	private String idCardNo;
-	private String standardAddress;//省市区地址
-	private String detailAddress;//详细地址
-	private String headImage;
-	private String idCardImageFront;
-	private String idCardImageBack;
+	private String addressProvince;//详细地址
+	private String addressCity;//地址缩略
+	private String addressDistrict;//地址名称
+	private String addressDetail;//地址详情
+	private String addressStreet;//地址名称
+	private String avatarUrl;
+	private String idCardFrontImageUrl;
+	private String idCardBackImageUrl;
 	private double longitude;
 	private double latitude;
 	private Date applyDate;
 	private Date verifyDate;
-
-	private boolean pushMsgOrderExpired;
-	private boolean pushMsgOrderGrabed;
-	private boolean pushMsgOrderFinished;
-
-	public Long getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(Long accountId) {
-		this.accountId = accountId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getUserId() {
 		return userId;
@@ -54,6 +37,14 @@ public class MerchantInfoDTO implements Serializable{
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public Long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
 	}
 
 	public String getMerchantStatus() {
@@ -72,6 +63,14 @@ public class MerchantInfoDTO implements Serializable{
 		this.merchantName = merchantName;
 	}
 
+	public String getRealName() {
+		return realName;
+	}
+
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+
 	public String getPhone() {
 		return phone;
 	}
@@ -88,44 +87,68 @@ public class MerchantInfoDTO implements Serializable{
 		this.idCardNo = idCardNo;
 	}
 
-	public String getStandardAddress() {
-		return standardAddress;
+	public String getAddressProvince() {
+		return addressProvince;
 	}
 
-	public void setStandardAddress(String standardAddress) {
-		this.standardAddress = standardAddress;
+	public void setAddressProvince(String addressProvince) {
+		this.addressProvince = addressProvince;
 	}
 
-	public String getDetailAddress() {
-		return detailAddress;
+	public String getAddressCity() {
+		return addressCity;
 	}
 
-	public void setDetailAddress(String detailAddress) {
-		this.detailAddress = detailAddress;
+	public void setAddressCity(String addressCity) {
+		this.addressCity = addressCity;
 	}
 
-	public String getHeadImage() {
-		return headImage;
+	public String getAddressDistrict() {
+		return addressDistrict;
 	}
 
-	public void setHeadImage(String headImage) {
-		this.headImage = headImage;
+	public void setAddressDistrict(String addressDistrict) {
+		this.addressDistrict = addressDistrict;
 	}
 
-	public String getIdCardImageFront() {
-		return idCardImageFront;
+	public String getAddressDetail() {
+		return addressDetail;
 	}
 
-	public void setIdCardImageFront(String idCardImageFront) {
-		this.idCardImageFront = idCardImageFront;
+	public void setAddressDetail(String addressDetail) {
+		this.addressDetail = addressDetail;
 	}
 
-	public String getIdCardImageBack() {
-		return idCardImageBack;
+	public String getAddressStreet() {
+		return addressStreet;
 	}
 
-	public void setIdCardImageBack(String idCardImageBack) {
-		this.idCardImageBack = idCardImageBack;
+	public void setAddressStreet(String addressStreet) {
+		this.addressStreet = addressStreet;
+	}
+
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+
+	public String getIdCardFrontImageUrl() {
+		return idCardFrontImageUrl;
+	}
+
+	public void setIdCardFrontImageUrl(String idCardFrontImageUrl) {
+		this.idCardFrontImageUrl = idCardFrontImageUrl;
+	}
+
+	public String getIdCardBackImageUrl() {
+		return idCardBackImageUrl;
+	}
+
+	public void setIdCardBackImageUrl(String idCardBackImageUrl) {
+		this.idCardBackImageUrl = idCardBackImageUrl;
 	}
 
 	public double getLongitude() {
@@ -158,29 +181,5 @@ public class MerchantInfoDTO implements Serializable{
 
 	public void setVerifyDate(Date verifyDate) {
 		this.verifyDate = verifyDate;
-	}
-
-	public boolean isPushMsgOrderExpired() {
-		return pushMsgOrderExpired;
-	}
-
-	public void setPushMsgOrderExpired(boolean pushMsgOrderExpired) {
-		this.pushMsgOrderExpired = pushMsgOrderExpired;
-	}
-
-	public boolean isPushMsgOrderGrabed() {
-		return pushMsgOrderGrabed;
-	}
-
-	public void setPushMsgOrderGrabed(boolean pushMsgOrderGrabed) {
-		this.pushMsgOrderGrabed = pushMsgOrderGrabed;
-	}
-
-	public boolean isPushMsgOrderFinished() {
-		return pushMsgOrderFinished;
-	}
-
-	public void setPushMsgOrderFinished(boolean pushMsgOrderFinished) {
-		this.pushMsgOrderFinished = pushMsgOrderFinished;
 	}
 }
