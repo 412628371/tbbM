@@ -3,8 +3,8 @@ package com.xinguang.tubobo.impl.merchant.service;
 import com.hzmux.hzcms.common.utils.LocationUtil;
 import com.xinguang.tubobo.impl.merchant.common.Config;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
-import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
