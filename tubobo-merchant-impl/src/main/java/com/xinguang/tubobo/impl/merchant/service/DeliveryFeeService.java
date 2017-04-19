@@ -19,10 +19,14 @@ public class DeliveryFeeService  {
     MerchantInfoService merchantInfoService;
     @Autowired
     Config config;
-    public double sumDeliveryDistance(String userId,double lat,double lng,String goodsType) throws MerchantClientException {
+
+    public double sumDeliveryDistance(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (null == entity)
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+        if (lat==null || lng == null){
+            throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
+        }
         double distance = LocationUtil.getDistance(lat,lng,entity.getLatitude(),entity.getLongitude());
         if (distance > config.getMaxDeliveryMills()){
             throw new MerchantClientException(EnumRespCode.MERCHANT_DELIVERY_DISTANCE_TOO_FAR);
