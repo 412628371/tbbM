@@ -20,6 +20,9 @@ public class MerchantOrderDTO implements Serializable{
 	private Integer tipFee;//小费
 
 	private Long payId;//支付ID
+	private String payStatus;//支付状态
+	private String payMethod;//支付方式
+	private Date payTime;//付款时间
 
 	private Integer expireSeconds;//过期时间 单位秒
 
@@ -61,6 +64,30 @@ public class MerchantOrderDTO implements Serializable{
 	private String riderId;
 	private String riderName;
 	private String riderPhone;
+
+	public String getPayStatus() {
+		return payStatus;
+	}
+
+	public void setPayStatus(String payStatus) {
+		this.payStatus = payStatus;
+	}
+
+	public String getPayMethod() {
+		return payMethod;
+	}
+
+	public void setPayMethod(String payMethod) {
+		this.payMethod = payMethod;
+	}
+
+	public Date getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Date payTime) {
+		this.payTime = payTime;
+	}
 
 	public String getRiderId() {
 		return riderId;
