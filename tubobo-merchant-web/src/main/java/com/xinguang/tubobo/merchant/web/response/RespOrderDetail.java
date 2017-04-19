@@ -1,11 +1,12 @@
 package com.xinguang.tubobo.merchant.web.response;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Administrator on 2017/4/14.
  */
-public class RespOrderDetail {
+public class RespOrderDetail implements Serializable{
     private String orderNo;//订单No
     private String orderStatus;//订单状态
     private String orderRemark;
@@ -38,6 +39,16 @@ public class RespOrderDetail {
 
     private String riderName;
     private String riderPhone;
+
+    private Integer expiredMilSeconds;//过期间隔毫秒数
+
+    public Integer getExpiredMilSeconds() {
+        return expiredMilSeconds;
+    }
+
+    public void setExpiredMilSeconds(Integer expiredMilSeconds) {
+        this.expiredMilSeconds = expiredMilSeconds;
+    }
 
     public String getOrderNo() {
         return orderNo;

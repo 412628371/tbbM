@@ -33,7 +33,6 @@ import java.util.Date;
 @Service
 @Transactional(readOnly = true)
 public class MerchantOrderService extends BaseService {
-
 	@Autowired
 	private MerchantOrderDao merchantOrderDao;
 
@@ -82,7 +81,6 @@ public class MerchantOrderService extends BaseService {
 		entity.setSenderAddressProvince(ConvertUtil.handleNullString(infoEntity.getAddressProvince()));
 		entity.setSenderAddressCity(ConvertUtil.handleNullString(infoEntity.getAddressCity()));
 		entity.setSenderAddressDistrict(ConvertUtil.handleNullString(infoEntity.getAddressDistrict()));
-
 		entity.setSenderAddressStreet(ConvertUtil.handleNullString(infoEntity.getAddressStreet()));
 		entity.setSenderAddressDetail(ConvertUtil.handleNullString(infoEntity.getAddressDetail()));
 		if (entity.getDeliveryFee() != null){
@@ -171,11 +169,7 @@ public class MerchantOrderService extends BaseService {
 	 */
 	@Transactional(readOnly = false)
 	public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime){
-		String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_order_time = :p2, rider_id = :p3, rider_name = :p4, rider_phone = :p5 " +
-				"where order_no = :p6 and order_status = :p7 and del_flag = '0' ";
-		int count = merchantOrderDao.updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_PICK.getValue(),grabOrderTime,riderId,riderName,riderPhone,orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
-		merchantOrderDao.getSession().clear();
-		return count;
+		return merchantOrderDao.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime);
 	}
 
 	/**
@@ -183,11 +177,7 @@ public class MerchantOrderService extends BaseService {
 	 */
 	@Transactional(readOnly = false)
 	public int riderGrabItem(String orderNo, Date grabItemTime){
-		String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_item_time = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
-		int count =  merchantOrderDao.updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.DELIVERYING.getValue(),
-				grabItemTime,orderNo, EnumMerchantOrderStatus.WAITING_PICK.getValue()));
-		merchantOrderDao.getSession().clear();
-		return count;
+		return merchantOrderDao.riderGrabItem(orderNo,grabItemTime);
 	}
 
 	/**
@@ -195,24 +185,19 @@ public class MerchantOrderService extends BaseService {
 	 */
 	@Transactional(readOnly = false)
 	public int riderFinishOrder(String orderNo, Date finishOrderTime){
-		String sqlString = "update tubobo_merchant_order set order_status = :p1, finish_order_time = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
-		int count =  merchantOrderDao.updateBySql(sqlString,
-				new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,orderNo,
-						EnumMerchantOrderStatus.DELIVERYING.getValue()));
-		merchantOrderDao.getSession().clear();
-		return count;
+		return merchantOrderDao.riderFinishOrder(orderNo,finishOrderTime);
 	}
 
+	@Transactional(readOnly = false)
+	public void payExpired(String orderNo){
+		merchantOrderDao.payExpire(orderNo);
+	}
 	/**
 	 * 订单超时
 	 */
 	@Transactional(readOnly = false)
 	public int orderExpire(String orderNo){
-		String sqlString = "update tubobo_merchant_order set order_status = :p1, update_date = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
-		int count =  merchantOrderDao.updateBySql(sqlString,
-				new Parameter(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),new Date(),orderNo,
-						EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
-		merchantOrderDao.getSession().clear();
+		int count =merchantOrderDao.orderExpire(orderNo);
 		return count;
 	}
 
@@ -221,10 +206,7 @@ public class MerchantOrderService extends BaseService {
 	 */
 	@Transactional(readOnly = false)
 	public int adminClose(String orderNo){
-		String sqlString = "update tubobo_merchant_order set order_status = :p1, close_time = :p2 where order_no = :p3 and del_flag = '0' ";
-		int count =  merchantOrderDao.updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CLOSE.getValue(),new Date(),orderNo));
-		merchantOrderDao.getSession().clear();
-		return count;
+		return merchantOrderDao.adminClose(orderNo);
 	}
 
 	/**

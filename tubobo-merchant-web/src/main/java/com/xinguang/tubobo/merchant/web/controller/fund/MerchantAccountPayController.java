@@ -41,6 +41,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
         PayRequest payRequest = new PayRequest();
+        payRequest.setPwd(infoEntity.getPayPassword());
         payRequest.setAccountId(infoEntity.getAccountId());
         payRequest.setAmount(ConvertUtil.convertYuanToFen(orderEntity.getPayAmount()));
         logger.info("支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payRequest.getAmount());

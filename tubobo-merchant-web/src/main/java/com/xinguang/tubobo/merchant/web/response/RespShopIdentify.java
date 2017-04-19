@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2017/4/14.
  */
-public class RespShopIdentify implements Serializable {
+public class RespShopIdentify  {
     private String addressProvince;//详细地址
     private String addressCity;//地址缩略
     private String addressDistrict;//地址名称

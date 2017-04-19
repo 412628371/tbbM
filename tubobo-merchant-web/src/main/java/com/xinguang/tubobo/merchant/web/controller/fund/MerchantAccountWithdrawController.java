@@ -32,7 +32,8 @@ public class MerchantAccountWithdrawController extends MerchantBaseController<Re
 			throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
 		}
 		// 提现申请
-		WithdrawRequest withdrawRequest = new WithdrawRequest(req.getAmount(), merchant.getAccountId(), TbbConstants.OperationTarget.BALANCE);
+		WithdrawRequest withdrawRequest = new WithdrawRequest(req.getAmount(), merchant.getAccountId(),
+				TbbConstants.OperationTarget.BALANCE,merchant.getPayPassword());
 		TbbAccountResponse<WithdrawInfo> withdrawResponse = tbbAccountService.withdraw(withdrawRequest);
 		if (withdrawResponse != null && withdrawResponse.isSucceeded()){
 			// 提现申请确认

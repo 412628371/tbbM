@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqOrderDetail;
@@ -19,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class OrderDetailController extends MerchantBaseController<ReqOrderDetail,RespOrderDetail> {
     @Autowired
     MerchantOrderService merchantOrderService;
+    @Autowired
+    Config config;
     @Override
     protected RespOrderDetail doService(String userId, ReqOrderDetail req) throws MerchantClientException {
         MerchantOrderEntity entity = merchantOrderService.findByOrderNo(req.getOrderNo());
         RespOrderDetail respOrderDetail = new RespOrderDetail();
         BeanUtils.copyProperties(entity,respOrderDetail);
-
+        respOrderDetail.setExpiredMilSeconds(config.getPayExpiredMilSeconds());
         return respOrderDetail;
     }
 }

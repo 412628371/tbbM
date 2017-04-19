@@ -9,7 +9,10 @@ import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.service.BaseService;
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
+import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantInfoDao;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
@@ -29,6 +32,9 @@ public class MerchantInfoService extends BaseService {
 	@Autowired
 	private MerchantInfoDao merchantInfoDao;
 
+	@Autowired
+	MerchantPushSettingsDao merchantPushSettingsDao;
+
 	public MerchantInfoEntity findByUserId(String userId){
 		if (StringUtils.isBlank(userId)) return null;
 		String sqlString = "select * from tubobo_merchant_info where del_flag = '0' and user_id = :p1 ";
@@ -46,8 +52,14 @@ public class MerchantInfoService extends BaseService {
 	@Transactional(readOnly = false)
 	public EnumRespCode merchantApply(String userId, MerchantInfoEntity entity) {
 		MerchantInfoEntity merchant = findByUserId(userId);
-		if (merchant != null){
+		if (merchant != null && EnumAuthentication.SUCCESS.getValue().equals(merchant.getMerchantStatus())){
 			return EnumRespCode.MERCHANT_APPLY_REPEAT;
+		}
+		if (null != merchant){
+			MerchantSettingsEntity entitySetting = merchantPushSettingsDao.findByUserId(userId);
+			if (entitySetting != null){
+				merchantPushSettingsDao.deleteById(entitySetting.getId());
+			}
 		}
 		entity.setUserId(userId);
 		entity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
@@ -56,6 +68,9 @@ public class MerchantInfoService extends BaseService {
 		entity.setApplyDate(new Date());
 		entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
 		merchantInfoDao.save(entity);
+		MerchantSettingsEntity settingsEntity = new MerchantSettingsEntity();
+		settingsEntity.setUserId(userId);
+		merchantPushSettingsDao.save(settingsEntity);
 		return EnumRespCode.SUCCESS;
 	}
 

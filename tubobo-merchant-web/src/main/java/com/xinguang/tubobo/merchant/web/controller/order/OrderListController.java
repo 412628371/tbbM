@@ -7,7 +7,7 @@ import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
-import com.xinguang.tubobo.merchant.web.request.OrderListRequest;
+import com.xinguang.tubobo.merchant.web.request.ReqOrderList;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,12 +21,12 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/order/list")
-public class OrderListController extends MerchantBaseController<OrderListRequest,PageDTO<RespOrderItem>> {
+public class OrderListController extends MerchantBaseController<ReqOrderList,PageDTO<RespOrderItem>> {
     @Autowired
     MerchantOrderService merchantOrderService;
 
     @Override
-    protected PageDTO<RespOrderItem> doService(String userId, OrderListRequest req) throws MerchantClientException {
+    protected PageDTO<RespOrderItem> doService(String userId, ReqOrderList req) throws MerchantClientException {
         MerchantOrderEntity entity = new MerchantOrderEntity();
         entity.setOrderStatus(req.getOrderStatus());
         Page<MerchantOrderEntity> page = merchantOrderService.findMerchantOrderPage(req.getPageNo(),req.getPageSize(),entity);

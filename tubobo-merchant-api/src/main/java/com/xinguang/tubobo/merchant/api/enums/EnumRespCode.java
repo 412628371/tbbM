@@ -11,7 +11,7 @@ public enum EnumRespCode {
 
 
 
-	MERCHANT_APPLY_REPEAT("10100", "商家已存在，请勿重复操作"),
+	MERCHANT_APPLY_REPEAT("10100", "商家已认证成功，不允许重复认证"),
 	MERCHANT_UN_IDENTIFIED("10101", "商家未认证通过，不允许操作"),
 	MERCHANT_NOT_EXISTS("10102", "商家不存在"),
 	MERCHANT_CANT_CANCEL("10200", "订单不存在或状态不允许取消"),

@@ -6,38 +6,65 @@
 		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
        default-lazy-init="true">
 
-    <!--<bean id="rabbitmqConnectionFactory"  class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">-->
-        <!--<constructor-arg value="localhost" />-->
-        <!--<property name="username" value="${rabbitmq.username}" />-->
-        <!--<property name="password" value="${rabbitmq.password}" />-->
-        <!--<property name="addresses" value="${rabbitmq.address}" />-->
-        <!--<property name="virtualHost" value="${rabbitmq.virtualHost}" />-->
-        <!--<property name="channelCacheSize" value="${rabbitmq.channelCacheSize}" />-->
-    <!--</bean>-->
+    <bean id="rabbitmqConnectionFactory"  class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+        <constructor-arg value="localhost" />
+        <property name="username" value="${rabbitmq.username}" />
+        <property name="password" value="${rabbitmq.password}" />
+        <property name="addresses" value="${rabbitmq.address}" />
+        <property name="virtualHost" value="${rabbitmq.virtualHost}" />
+        <property name="channelCacheSize" value="${rabbitmq.channelCacheSize}" />
+    </bean>
 
-    <!--<bean id="rabbitAdmin"  class="org.springframework.amqp.rabbit.core.RabbitAdmin">-->
-        <!--<constructor-arg ref="rabbitmqConnectionFactory" />-->
-    <!--</bean>-->
-    <!--&lt;!&ndash; 创建rabbitTemplate 消息模板类 &ndash;&gt;-->
-    <!--<rabbit:template id="delayMsgTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="trade_direct" />-->
+    <bean id="rabbitAdmin"  class="org.springframework.amqp.rabbit.core.RabbitAdmin">
+        <constructor-arg ref="rabbitmqConnectionFactory" />
+    </bean>
+    <!-- 创建rabbitTemplate 消息模板类 -->
+    <rabbit:template id="delayMsgTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="merchant_payExpired_delay_exchange" />
+
+    <!-- 队列声明 -->
+    <rabbit:queue id="queue_merchant_payExpired_normal" name="queue_merchant_payExpired_normal" durable="true" auto-delete="false" exclusive="false">
+        <rabbit:queue-arguments>
+            <!--<entry key="routing-key" value="merchant_payExpired_routeKey_normal"/>-->
+            <entry key="x-dead-letter-exchange" value="merchant_payExpired_delay_exchange"/>
+            <entry key="x-dead-letter-routing-key" value="merchant_payExpired_routeKey_delay"/>
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+
+    <!-- 监听处理器 -->
+    <!-- ################ 延迟队列生产者配置 ################ -->
+    <rabbit:admin connection-factory="rabbitmqConnectionFactory" />
+    <!--<bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />-->
+    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory" exchange="merchant_payExpired_delay_exchange" />
+
+    <rabbit:queue id="queue_merchant_payExpired_delay" name="queue_merchant_payExpired_delay" durable="true" auto-delete="false" exclusive="false">
+        <rabbit:queue-arguments>
+            <entry key="x-message-ttl" value="${merchant.pay.expired.milliseconds}" value-type="java.lang.Long"/>
+            <entry key="x-dead-letter-exchange" value="merchant_payExpired_delay_exchange"/>
+            <entry key="x-dead-letter-routing-key" value="merchant_payExpired_routeKey_normal"/>
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+
+    <!-- work exchange -->
+    <rabbit:direct-exchange name="merchant_payExpired_delay_exchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="queue_merchant_payExpired_normal" key="merchant_payExpired_routeKey_normal"/>
+            <rabbit:binding queue="queue_merchant_payExpired_delay" key="merchant_payExpired_routeKey_delay"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
 
 
-    <!--<bean id="payTimeoutHandler" class="com.xinguang.tubobo.impl.merchant.handler.OrderPayTimeoutHandler"></bean>-->
+    <bean id="payTimeoutHandler" class="com.xinguang.tubobo.impl.merchant.handler.OrderPayTimeoutHandler"></bean>
 
-    <!--&lt;!&ndash; 延迟消息start &ndash;&gt;-->
-    <!--<rabbit:topic-exchange name="tubobo_merchant_payTimeout_delay_exchange" delayed="true">-->
-        <!--<rabbit:bindings>-->
-            <!--<rabbit:binding queue="tubobo_merchant_payTimeout_delayQueue" pattern="merchant.pay.delay.notify" />-->
-        <!--</rabbit:bindings>-->
-    <!--</rabbit:topic-exchange>-->
-    <!--<rabbit:queue name="tubobo_merchant_payTimeout_delayQueue" durable="true" auto-declare="true" auto-delete="false" />-->
-    <!--<rabbit:template id="delayMsgTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="tubobo_merchant_payTimeout_delay_exchange" />-->
-    <!--<rabbit:listener-container-->
-            <!--connection-factory="rabbitmqConnectionFactory"-->
-            <!--acknowledge="manual"-->
-            <!--channel-transacted="false">-->
-        <!--<rabbit:listener queues="tubobo_merchant_payTimeout_delayQueue"-->
-                         <!--ref="payTimeoutHandler"  method="onMessage"/>-->
-    <!--</rabbit:listener-container>-->
-    <!-- 延时消息end  -->
+    <bean id="messageListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
+        <constructor-arg ref="payTimeoutHandler" />
+        <property name="defaultListenerMethod" value="onMessage"></property>
+        <!--<property name="messageConverter" ref="serializerMessageConverter"></property>-->
+    </bean>
+
+    <!-- 用于消息的监听的容器类SimpleMessageListenerContainer,监听队列  queues可以传多个-->
+    <bean id="listenerContainer"  class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        <property name="queues" ref="queue_merchant_payExpired_normal"></property>
+        <property name="connectionFactory" ref="rabbitmqConnectionFactory"></property>
+        <property name="messageListener" ref="messageListenerAdapter"></property>
+    </bean>
     </beans>

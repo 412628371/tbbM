@@ -22,4 +22,13 @@ public class MerchantSettingsService {
         int count = settingsDao.updatePushSettings(entity);
         return count == 1;
     }
+
+    /**
+     * 根据userId找设置
+     * @param userId
+     * @return
+     */
+    public MerchantSettingsEntity findBuUserId(String userId){
+        return settingsDao.findByUserId(userId);
+    }
 }

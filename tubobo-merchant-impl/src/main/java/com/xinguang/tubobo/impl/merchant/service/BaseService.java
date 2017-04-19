@@ -1,6 +1,6 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
-import com.xinguang.tubobo.impl.merchant.common.Config;
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

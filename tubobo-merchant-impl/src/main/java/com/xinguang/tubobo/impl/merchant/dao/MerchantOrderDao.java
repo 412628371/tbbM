@@ -14,6 +14,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,41 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
     }
 
+    /**
+     * 超时未抢单
+     * @param orderNo
+     * @return
+     */
+    public int orderExpire(String orderNo){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, update_date = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
+        int count =  updateBySql(sqlString,
+                new Parameter(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),new Date(),orderNo,
+                        EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
+        getSession().clear();
+        return count;
+    }
+
+    /**
+     * 超时未支付
+     * @param orderNo
+     * @return
+     */
+    public int payExpire(String orderNo){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, update_date = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
+        int count =  updateBySql(sqlString,
+                new Parameter(EnumMerchantOrderStatus.CANCEL_PAY_OVERTIME.getValue(),new Date(),orderNo,
+                        EnumMerchantOrderStatus.INIT.getValue()));
+        getSession().clear();
+        return count;
+    }
+
+    /***
+     * 订单支付
+     * @param merchantId
+     * @param orderNo
+     * @param payId
+     * @return
+     */
     public int merchantPay(String merchantId,String orderNo,long payId){
         String sqlString = "update tubobo_merchant_order set order_status = :p1, pay_status = :p2, pay_time = :p3 ,pay_id = :p4 where sender_id = :p5 and order_no = :p6 and order_status = :p7 and del_flag = '0' ";
         int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_GRAB.getValue(),
@@ -38,6 +74,58 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         getSession().clear();
         return count;
     }
+
+    /**
+     * 骑手抢单
+     * @param riderId
+     * @param riderName
+     * @param riderPhone
+     * @param orderNo
+     * @param grabOrderTime
+     * @return
+     */
+    public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_order_time = :p2, rider_id = :p3, rider_name = :p4, rider_phone = :p5 " +
+                "where order_no = :p6 and order_status = :p7 and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_PICK.getValue(),grabOrderTime,riderId,riderName,riderPhone,orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
+        getSession().clear();
+        return count;
+    }
+
+    /**
+     * 骑手取货
+     * @param orderNo
+     * @param grabItemTime
+     * @return
+     */
+    public int riderGrabItem(String orderNo, Date grabItemTime){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_item_time = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
+        int count =  updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.DELIVERYING.getValue(),
+                grabItemTime,orderNo, EnumMerchantOrderStatus.WAITING_PICK.getValue()));
+        getSession().clear();
+        return count;
+    }
+
+    /**
+     * 骑手完成送货
+     * @param orderNo
+     * @param finishOrderTime
+     * @return
+     */
+    public int riderFinishOrder(String orderNo, Date finishOrderTime){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, finish_order_time = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
+        int count =  updateBySql(sqlString,
+                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,orderNo,
+                        EnumMerchantOrderStatus.DELIVERYING.getValue()));
+        getSession().clear();
+        return count;
+    }
+    /**
+     *
+     * @param merchantId
+     * @param orderNo
+     * @return
+     */
     public boolean merchantCancel(String merchantId,String orderNo){
         String[] orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
         String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 where sender_id = :p3 and order_no = :p4 and order_status in (:p5) and del_flag = '0' ";
@@ -92,5 +180,17 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         sb.append(" order by create_date desc ");
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
+    }
+
+    /**
+     * 管理员关闭订单
+     * @param orderNo
+     * @return
+     */
+    public int adminClose(String orderNo){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, close_time = :p2 where order_no = :p3 and del_flag = '0' ";
+        int count =  updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CLOSE.getValue(),new Date(),orderNo));
+        getSession().clear();
+        return count;
     }
 }

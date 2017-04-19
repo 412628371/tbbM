@@ -45,6 +45,16 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Date applyDate;
 	private Date verifyDate;
 
+	private String payPassword;
+
+	public String getPayPassword() {
+		return payPassword;
+	}
+
+	public void setPayPassword(String payPassword) {
+		this.payPassword = payPassword;
+	}
+
 	public String getUserId() {
 		return userId;
 	}

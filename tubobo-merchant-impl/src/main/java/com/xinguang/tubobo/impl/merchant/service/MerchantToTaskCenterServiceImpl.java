@@ -7,6 +7,7 @@ import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.push.PushService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.Date;
 public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServiceInterface {
 
     Logger logger = LoggerFactory.getLogger(MerchantToTaskCenterServiceImpl.class);
+    @Autowired
+    MerchantPushService pushService;
     @Autowired
     private MerchantOrderService merchantOrderService;
 
@@ -31,7 +34,12 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
      */
     @Override
     public boolean riderGrabOrder(String riderId, String riderName, String riderPhone, String orderNo, Date grabOrderTime) {
-        //TODO 发送被抢单通知
+        MerchantOrderEntity entity = merchantOrderService.findByOrderNo(orderNo);
+        if (null == entity){
+            logger.error("骑手已接单通知，未找到订单。orderNo:{}",orderNo);
+            return false;
+        }
+        pushService.noticeGrab(entity.getUserId());
         return merchantOrderService.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
     }
 
@@ -42,7 +50,6 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
      */
     @Override
     public boolean riderGrabItem(String orderNo, Date grabItemTime) {
-        //TODO 发送骑手取货通知
         return merchantOrderService.riderGrabItem(orderNo,grabItemTime) > 0;
     }
 
@@ -53,16 +60,25 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
      */
     @Override
     public boolean riderFinishOrder(String orderNo, Date finishOrderTime) {
-        //TODO 发送骑手完成送货通知
+        MerchantOrderEntity entity = merchantOrderService.findByOrderNo(orderNo);
+        if (null == entity){
+            logger.error("骑手完成配送，未找到订单。orderNo:{}",orderNo);
+            return false;
+        }
+        //发送骑手完成送货通知
+        pushService.noticeFinished(entity.getUserId());
+
         return merchantOrderService.riderFinishOrder(orderNo,finishOrderTime) > 0;
     }
 
     @Override
     public boolean orderExpire(String orderNo) {
         MerchantOrderEntity entity = merchantOrderService.findByOrderNo(orderNo);
-        if (null == entity)
+        if (null == entity){
+            logger.error("超时无人接单,退款出错。订单不存在，orderNo: "+orderNo);
             return false;
-        logger.error("超时无人接单,退款出错。订单不存在，orderNo: "+orderNo);
+        }
+        pushService.noticeGrabTimeout(entity.getUserId());
         PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
                 MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
         TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);

@@ -13,6 +13,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountRecharge;
+import com.xinguang.tubobo.merchant.web.response.RespAccountRecharge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,14 +24,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/account/recharge")
-public class MerchantAccountRechargrController extends MerchantBaseController<ReqAccountRecharge,Object> {
+public class MerchantAccountRechargrController extends MerchantBaseController<ReqAccountRecharge,RespAccountRecharge> {
 
     @Autowired
     private TbbAccountService tbbAccountService;
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Override
-    protected Object doService(String userId, ReqAccountRecharge req) throws MerchantClientException {
+    protected RespAccountRecharge doService(String userId, ReqAccountRecharge req) throws MerchantClientException {
 
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (entity == null){
@@ -45,7 +46,9 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
         rechargeRequest.setChannel(TbbConstants.Channel.ALI_PAY);
         TbbAccountResponse<RechargeInfo> response = tbbAccountService.recharge(rechargeRequest);
         if (response != null && response.isSucceeded()){
-            return null;
+            RespAccountRecharge respAccountRecharge = new RespAccountRecharge();
+            respAccountRecharge.setPayInfo(response.getData().getPayInfo());
+            return respAccountRecharge;
         } else {
             logger.error("充值失败，userId: {},errorCode:{},errorMsg:{}",userId,response.getErrorCode(),response.getMessage());
             throw  new MerchantClientException(EnumRespCode.ACCOUNT_RECHARGE_FAIL);

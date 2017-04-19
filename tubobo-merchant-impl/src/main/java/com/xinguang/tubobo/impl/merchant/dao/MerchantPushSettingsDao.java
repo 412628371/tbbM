@@ -25,9 +25,9 @@ public class MerchantPushSettingsDao extends BaseDao<MerchantSettingsEntity> {
         MerchantSettingsEntity existEntity = findByUserId(entity.getUserId());
         if (existEntity == null){
             existEntity = new MerchantSettingsEntity();
-            if (entity.getDeviceToken()!= null){
-                existEntity.setDeviceToken(entity.getDeviceToken());
-            }
+//            if (entity.getDeviceToken()!= null){
+//                existEntity.setDeviceToken(entity.getDeviceToken());
+//            }
             existEntity.setPushMsgOrderExpired(true);
             existEntity.setPushMsgOrderFinished(true);
             existEntity.setPushMsgOrderGrabed(true);
@@ -49,19 +49,12 @@ public class MerchantPushSettingsDao extends BaseDao<MerchantSettingsEntity> {
             hqlSb.append(", t.pushMsgOrderGrabed = :grabed ");
             map.put("grabed",entity.getPushMsgOrderGrabed());
         }
-        if (entity.getDeviceToken() != null){
-            hqlSb.append(", t.deviceToken = :deviceToken ");
-            map.put("deviceToken",entity.getDeviceToken());
-        }
+//        if (entity.getDeviceToken() != null){
+//            hqlSb.append(", t.deviceToken = :deviceToken ");
+//            map.put("deviceToken",entity.getDeviceToken());
+//        }
         hqlSb.append(" where userId = :userId ").append(" and delFlag=:delFlag ");
         Query query = getSession().createQuery(hqlSb.toString());
-//        query.setParameter("updateDate",new Date());
-//        query.setParameter("expired",entity.getPushMsgOrderExpired());
-//        query.setParameter("finished",entity.getPushMsgOrderFinished());
-//        query.setParameter("grabed",entity.getPushMsgOrderGrabed());
-//        query.setParameter("deviceToken",entity.getDeviceToken());
-//        query.setParameter("delFlag",entity.getDelFlag());
-//        query.setParameter("userId",entity.getUserId());
         map.put("userId",entity.getUserId());
         map.put("delFlag",entity.DEL_FLAG_NORMAL);
         query.setProperties(map);
@@ -69,9 +62,12 @@ public class MerchantPushSettingsDao extends BaseDao<MerchantSettingsEntity> {
         getSession().clear();
         return  result;
     }
-    public MerchantSettingsEntity findByUserId(String orderNo){
+    public void deleteBuUserId(String userId){
+
+    }
+    public MerchantSettingsEntity findByUserId(String userId){
         String sqlString = "select * from tubobo_merchant_settings where user_id = :p1 and del_flag = '0' ";
-        List<MerchantSettingsEntity> list = findBySql(sqlString, new Parameter(orderNo), MerchantSettingsEntity.class);
+        List<MerchantSettingsEntity> list = findBySql(sqlString, new Parameter(userId), MerchantSettingsEntity.class);
         if (list != null && list.size() > 0){
             return list.get(0);
         }else {

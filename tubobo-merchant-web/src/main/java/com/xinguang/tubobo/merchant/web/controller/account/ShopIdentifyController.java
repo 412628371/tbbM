@@ -4,6 +4,7 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.AccountInfoRequest;
 import com.xinguang.tubobo.account.api.response.AccountInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.common.RandomUtil;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -33,15 +34,17 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
         logger.info("收到店铺申请请求 ：{}，",req.toString() );
         // 生成账户信息
         AccountInfoRequest request = new AccountInfoRequest();
-        request.setUserId(userId);
         request.setName(req.getRealName());
         request.setPhone(req.getPhone());
         MerchantInfoEntity entity = translateRequestToEntity(userId,req);
-        TbbAccountResponse<AccountInfo> response = tbbAccountService.createAccount(request);
+        String password = RandomUtil.getRandomString(8);
+
+        TbbAccountResponse<AccountInfo> response = tbbAccountService.createAccount(userId,password,request);
         if (response != null && response.isSucceeded() && null != response.getData()){
             logger.info("create account info SUCCESS. request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.getData().toString());
             Long accountId = response.getData().getId();
             entity.setAccountId(accountId);
+           entity.setPayPassword(password);
             EnumRespCode respCode =merchantInfoService.merchantApply(userId,entity);
             if (respCode.getValue() != EnumRespCode.SUCCESS.getValue()){
                 throw new MerchantClientException(respCode);
@@ -51,6 +54,7 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
             if (null != entity1){
                 BeanUtils.copyProperties(entity1,resp);
             }
+
             return resp;
         }else{
             logger.error("create account info FAIL. errorCode:{}, errorMsg:{}, request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.toString());
