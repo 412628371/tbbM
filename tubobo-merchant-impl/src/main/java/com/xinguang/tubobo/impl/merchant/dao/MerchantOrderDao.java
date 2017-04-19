@@ -49,8 +49,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         String[] orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(),
                 EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),
                 EnumMerchantOrderStatus.CANCEL.getValue(),EnumMerchantOrderStatus.CANCEL_PAY_OVERTIME.getValue()};
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 where sender_id = :p3 and order_no = :p4 and order_status in (:p5) and del_flag = '0' ";
-        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),new Date(),merchantId,orderNo,orderStatusArr));
+        String sqlString = "update tubobo_merchant_order set del_flag = :p1, update_date = :p2 where sender_id = :p3 and order_no = :p4 and order_status in (:p5) and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(MerchantOrderEntity.DEL_FLAG_DELETE,new Date(),merchantId,orderNo,orderStatusArr));
         getSession().clear();
         return count;
     }

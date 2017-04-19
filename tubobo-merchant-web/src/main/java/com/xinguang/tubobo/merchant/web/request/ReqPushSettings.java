@@ -4,9 +4,18 @@ package com.xinguang.tubobo.merchant.web.request;
  * Created by Administrator on 2017/4/15.
  */
 public class ReqPushSettings {
+    private String deviceToken;
     private Boolean pushMsgOrderExpired;
     private Boolean pushMsgOrderGrabed;
     private Boolean pushMsgOrderFinished;
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 
     public Boolean getPushMsgOrderExpired() {
         return pushMsgOrderExpired;

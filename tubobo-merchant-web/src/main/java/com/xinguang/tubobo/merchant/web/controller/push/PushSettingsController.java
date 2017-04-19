@@ -20,10 +20,21 @@ public class PushSettingsController extends MerchantBaseController<ReqPushSettin
     MerchantSettingsService settingsService;
     @Override
     protected EnumRespCode doService(String userId, ReqPushSettings req) throws MerchantClientException {
-        MerchantSettingsEntity entity = new MerchantSettingsEntity(userId);
-        entity.setPushMsgOrderGrabed(req.getPushMsgOrderGrabed());
-        entity.setPushMsgOrderFinished(req.getPushMsgOrderFinished());
-        entity.setPushMsgOrderExpired(req.getPushMsgOrderExpired());
+        MerchantSettingsEntity entity = new MerchantSettingsEntity();
+        entity.setUserId(userId);
+        if (null != req.getPushMsgOrderGrabed()){
+            entity.setPushMsgOrderGrabed(req.getPushMsgOrderGrabed());
+        }
+        if (null!=req.getPushMsgOrderFinished()){
+            entity.setPushMsgOrderFinished(req.getPushMsgOrderFinished());
+        }
+        if (null != req.getPushMsgOrderExpired()){
+            entity.setPushMsgOrderExpired(req.getPushMsgOrderExpired());
+        }
+        if (null != req.getDeviceToken()){
+            entity.setDeviceToken(req.getDeviceToken());
+        }
+
         Boolean result = settingsService.updateSettings(entity);
         if (!result){
             throw new MerchantClientException(EnumRespCode.MERCHANT_PUSH_SETTINGS_FAILURE);

@@ -21,33 +21,7 @@ public class MerchantSettingsEntity extends BaseMerchantEntity {
     private Boolean pushMsgOrderExpired;
     private Boolean pushMsgOrderGrabed;
     private Boolean pushMsgOrderFinished;
-
-    public MerchantSettingsEntity(String userId){
-        this.userId = userId;
-    }
-    public boolean isPushMsgOrderExpired() {
-        return pushMsgOrderExpired;
-    }
-
-    public void setPushMsgOrderExpired(boolean pushMsgOrderExpired) {
-        this.pushMsgOrderExpired = pushMsgOrderExpired;
-    }
-
-    public boolean isPushMsgOrderGrabed() {
-        return pushMsgOrderGrabed;
-    }
-
-    public void setPushMsgOrderGrabed(boolean pushMsgOrderGrabed) {
-        this.pushMsgOrderGrabed = pushMsgOrderGrabed;
-    }
-
-    public boolean isPushMsgOrderFinished() {
-        return pushMsgOrderFinished;
-    }
-
-    public void setPushMsgOrderFinished(boolean pushMsgOrderFinished) {
-        this.pushMsgOrderFinished = pushMsgOrderFinished;
-    }
+    private String deviceToken;
 
     public String getUserId() {
         return userId;
@@ -55,5 +29,37 @@ public class MerchantSettingsEntity extends BaseMerchantEntity {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Boolean getPushMsgOrderExpired() {
+        return pushMsgOrderExpired;
+    }
+
+    public void setPushMsgOrderExpired(Boolean pushMsgOrderExpired) {
+        this.pushMsgOrderExpired = pushMsgOrderExpired;
+    }
+
+    public Boolean getPushMsgOrderGrabed() {
+        return pushMsgOrderGrabed;
+    }
+
+    public void setPushMsgOrderGrabed(Boolean pushMsgOrderGrabed) {
+        this.pushMsgOrderGrabed = pushMsgOrderGrabed;
+    }
+
+    public Boolean getPushMsgOrderFinished() {
+        return pushMsgOrderFinished;
+    }
+
+    public void setPushMsgOrderFinished(Boolean pushMsgOrderFinished) {
+        this.pushMsgOrderFinished = pushMsgOrderFinished;
+    }
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }
