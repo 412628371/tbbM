@@ -35,4 +35,9 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
         BeanUtils.copyProperties(merchantInfoEntity,response);
         return response;
     }
+
+    @Override
+    protected boolean needIdentify() {
+        return false;
+    }
 }

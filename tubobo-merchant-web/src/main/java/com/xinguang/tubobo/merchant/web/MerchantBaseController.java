@@ -68,9 +68,19 @@ public abstract class MerchantBaseController <P, R>{
         if (needIdentify()){
             // 是否认证判断
             MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
-            if (entity == null || !EnumAuthentication.SUCCESS.getValue().equals(entity.getMerchantStatus())){
-                return  new ClientResp(EnumRespCode.MERCHANT_UN_IDENTIFIED.getValue(),
-                        EnumRespCode.MERCHANT_UN_IDENTIFIED.getDesc());
+            if (entity == null){
+                return  new ClientResp(EnumRespCode.MERCHANT_NOT_EXISTS.getValue(),
+                        EnumRespCode.MERCHANT_NOT_EXISTS.getDesc());
+            }
+            if (entity != null){
+                if (EnumAuthentication.FROZEN.getValue().equals(entity.getMerchantStatus())){
+                    return  new ClientResp(EnumRespCode.MERCHANT_FROZEN.getValue(),
+                            EnumRespCode.MERCHANT_FROZEN.getDesc());
+                }
+            }
+            if ( EnumAuthentication.APPLY.getValue().equals(entity.getMerchantStatus())){
+                return  new ClientResp(EnumRespCode.MERCHANT_VERIFYING.getValue(),
+                        EnumRespCode.MERCHANT_VERIFYING.getDesc());
             }
         }
         // 处理业务
