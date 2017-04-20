@@ -109,6 +109,15 @@ public class MerchantOrderService extends BaseService {
 		MerchantOrderEntity entity = merchantOrderDao.findByOrderNo(orderNo);
 		MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
 		BeanUtils.copyProperties(entity,merchantOrderDTO);
+		if (entity.getPayAmount() != null){
+			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
+		}
+		if (entity.getDeliveryFee() != null){
+			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getDeliveryFee()).intValue());
+		}
+		if (entity.getTipFee() != null){
+			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
+		}
 		taskCenterToMerchantServiceInterface.merchantOrder(merchantOrderDTO);
 		return count;
 	}

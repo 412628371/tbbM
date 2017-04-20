@@ -65,24 +65,24 @@ public abstract class MerchantBaseController <P, R>{
 //            userId="888";
         }
 
-        if (needIdentify()){
-            // 是否认证判断
-            MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
-            if (entity == null){
-                return  new ClientResp(EnumRespCode.MERCHANT_NOT_EXISTS.getValue(),
-                        EnumRespCode.MERCHANT_NOT_EXISTS.getDesc());
-            }
-            if (entity != null){
-                if (EnumAuthentication.FROZEN.getValue().equals(entity.getMerchantStatus())){
-                    return  new ClientResp(EnumRespCode.MERCHANT_FROZEN.getValue(),
-                            EnumRespCode.MERCHANT_FROZEN.getDesc());
-                }
-            }
-            if ( EnumAuthentication.APPLY.getValue().equals(entity.getMerchantStatus())){
-                return  new ClientResp(EnumRespCode.MERCHANT_VERIFYING.getValue(),
-                        EnumRespCode.MERCHANT_VERIFYING.getDesc());
-            }
-        }
+//        if (needIdentify()){
+//            // 是否认证判断
+//            MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
+//            if (entity == null){
+//                return  new ClientResp(EnumRespCode.MERCHANT_NOT_EXISTS.getValue(),
+//                        EnumRespCode.MERCHANT_NOT_EXISTS.getDesc());
+//            }
+//            if (entity != null){
+//                if (EnumAuthentication.FROZEN.getValue().equals(entity.getMerchantStatus())){
+//                    return  new ClientResp(EnumRespCode.MERCHANT_FROZEN.getValue(),
+//                            EnumRespCode.MERCHANT_FROZEN.getDesc());
+//                }
+//            }
+//            if ( EnumAuthentication.APPLY.getValue().equals(entity.getMerchantStatus())){
+//                return  new ClientResp(EnumRespCode.MERCHANT_VERIFYING.getValue(),
+//                        EnumRespCode.MERCHANT_VERIFYING.getDesc());
+//            }
+//        }
         // 处理业务
         try {
             R res = doService(userId,req);
@@ -103,7 +103,7 @@ public abstract class MerchantBaseController <P, R>{
         return true;
     }
     /**
-     * 默认验证登录，子类可以重写此方法以关闭登录验证
+     * 默认验证登录s，子类可以重写此方法以关闭登录验证
      *
      * @return
      */

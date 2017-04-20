@@ -37,6 +37,7 @@ public class MerchantOrderDTO implements Serializable{
 	private String senderAddress;//发货人地址
 	private Double senderLongitude;
 	private Double senderLatitude;
+	private String senderAvatar;
 
 	private String receiverId;//收货人id
 	private String receiverName;//收货人姓名

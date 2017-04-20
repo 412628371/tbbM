@@ -57,7 +57,7 @@ public class MerchantPushService {
         if (entity == null || !entity.getPushMsgOrderFinished())
             return;
         pushToUser(userId,config.getNoticeFinishedTemplate());
-        logger.info("订单配送完成，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTemplate());
+        logger.info("订单配送完成，通知商家。userId: {}, content: {}",userId,config.getNoticeFinishedTemplate());
     }
 
     /**
@@ -69,6 +69,6 @@ public class MerchantPushService {
         if (entity == null || !entity.getPushMsgOrderExpired())
             return;
         pushToUser(userId,config.getNoticeGrabedTimeoutTemplate());
-        logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTemplate());
+        logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTimeoutTemplate());
     }
 }
