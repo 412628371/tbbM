@@ -4,9 +4,10 @@ package com.xinguang.tubobo.impl.merchant.common;
  * Created by Administrator on 2017/4/13.
  */
 public class MerchantConstants {
+    public static final String DEFAULT_PAY_PASSWORD = "111111";
     public static final String TOKEN_HEADER = "Authorization";
     public static final Double DISPATCH_RADIUS_BY_MILLS = 3000.00;
-    public static final int PAY_EXPIRED_TIME_BY_SECONDS = 1800;
+    public static final int PAY_EXPIRED_TIME_BY_MilSECONDS = 600000;
 
     public static final String REQ_ORDER_CANCEL = "CANCEL";
     public static final String REQ_ORDER_DELETE = "DELETE";

@@ -87,7 +87,9 @@ public class Config {
 
     @DisconfFileItem(name = "merchant.pay.expired.milliseconds", associateField = "payExpiredMilSeconds")
     public Integer getPayExpiredMilSeconds() {
-
+        if (null == payExpiredMilSeconds){
+            return MerchantConstants.PAY_EXPIRED_TIME_BY_MilSECONDS;
+        }
         return payExpiredMilSeconds;
     }
 

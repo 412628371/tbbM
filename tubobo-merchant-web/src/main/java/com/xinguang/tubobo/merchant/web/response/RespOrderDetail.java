@@ -40,14 +40,17 @@ public class RespOrderDetail implements Serializable{
     private String riderName;
     private String riderPhone;
 
-    private Integer expiredMilSeconds;//过期间隔毫秒数
+    private Integer payExpiredMilSeconds;//过期间隔毫秒数
 
-    public Integer getExpiredMilSeconds() {
-        return expiredMilSeconds;
+    private Integer grabExpiredMilSeconds;//抢单过期间隔毫秒数
+    private Date   grabExpiredStartTime	;//抢单过期开始时间
+
+    public Integer getPayExpiredMilSeconds() {
+        return payExpiredMilSeconds;
     }
 
-    public void setExpiredMilSeconds(Integer expiredMilSeconds) {
-        this.expiredMilSeconds = expiredMilSeconds;
+    public void setPayExpiredMilSeconds(Integer payExpiredMilSeconds) {
+        this.payExpiredMilSeconds = payExpiredMilSeconds;
     }
 
     public String getOrderNo() {
@@ -266,6 +269,22 @@ public class RespOrderDetail implements Serializable{
         this.riderPhone = riderPhone;
     }
 
+    public Integer getGrabExpiredMilSeconds() {
+        return grabExpiredMilSeconds;
+    }
+
+    public void setGrabExpiredMilSeconds(Integer grabExpiredMilSeconds) {
+        this.grabExpiredMilSeconds = grabExpiredMilSeconds;
+    }
+
+    public Date getGrabExpiredStartTime() {
+        return grabExpiredStartTime;
+    }
+
+    public void setGrabExpiredStartTime(Date grabExpiredStartTime) {
+        this.grabExpiredStartTime = grabExpiredStartTime;
+    }
+
     @Override
     public String toString() {
         return "RespOrderDetail{" +
@@ -296,7 +315,9 @@ public class RespOrderDetail implements Serializable{
                 ", receiverLatitude=" + receiverLatitude +
                 ", riderName='" + riderName + '\'' +
                 ", riderPhone='" + riderPhone + '\'' +
-                ", expiredMilSeconds=" + expiredMilSeconds +
+                ", payExpiredMilSeconds=" + payExpiredMilSeconds +
+                ", grabExpiredMilSeconds=" + grabExpiredMilSeconds +
+                ", grabExpiredStartTime=" + grabExpiredStartTime +
                 '}';
     }
 }

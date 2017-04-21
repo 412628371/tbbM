@@ -11,12 +11,14 @@ public enum EnumRespCode {
 	MERCHANT_VERIFYING("10101", "商家信息正在审核中，请耐心等待"),
 	MERCHANT_NOT_EXISTS("10102", "商家不存在"),
 	MERCHANT_FROZEN("10103", "商家被冻结,请联系客服"),
-	MERCHANT_CANT_CANCEL("10200", "订单不存在或状态不允许取消"),
-	MERCHANT_CANT_DELETE("10201", "订单不存在或状态不允许删除"),
+	MERCHANT_CANT_CANCEL("10200", "订单状态不允许取消"),
+	MERCHANT_CANT_DELETE("10201", "订单状态不允许删除"),
 	MERCHANT_ORDER_NOT_EXIST("10202", "订单不存在"),
 	MERCHANT_RIDER_LOCATION_NOT_FOUND("10203", "未找到骑手位置"),
 	MERCHANT_REPEAT_PAY("10204", "订单已支付，不能重复支付"),
 	MERCHANT_CANT_ORDER("10205", "未认证成功或被冻结的用户不能发送订单"),
+
+
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
 
 	MERCHANT_DELIVERY_DISTANCE_TOO_FAR("10301", "超过配送范围 请重新输入地址"),

@@ -4,6 +4,7 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.AccountInfoRequest;
 import com.xinguang.tubobo.account.api.response.AccountInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.common.RandomUtil;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -39,7 +40,7 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
             request.setName(req.getRealName());
             request.setPhone(req.getPhone());
             MerchantInfoEntity entity = translateRequestToEntity(userId,req);
-            String password = RandomUtil.getRandomString(8);
+            String password = MerchantConstants.DEFAULT_PAY_PASSWORD;
             TbbAccountResponse<AccountInfo> response = tbbAccountService.createAccount(userId,password,request);
             if (response != null && response.isSucceeded() && null != response.getData()){
                 logger.info("create account info SUCCESS. request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.getData().toString());
