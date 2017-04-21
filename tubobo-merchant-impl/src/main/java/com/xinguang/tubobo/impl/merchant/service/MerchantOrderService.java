@@ -23,6 +23,7 @@ import com.xinguang.tubobo.impl.merchant.dao.MerchantOrderDao;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -113,10 +114,12 @@ public class MerchantOrderService extends BaseService {
 	 */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public int merchantPay(String merchantId,String orderNo,long payId){
-		int count = merchantOrderDao.merchantPay(merchantId,orderNo,payId);
+	public void merchantPay(String merchantId,String orderNo,long payId) throws MerchantClientException {
+		Date payDate = new Date();
+		int count = merchantOrderDao.merchantPay(merchantId,orderNo,payId,payDate);
 		if (count != 1){
-			return count;
+			logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",merchantId,orderNo);
+			throw new MerchantClientException(EnumRespCode.FAIL);
 		}
 		MerchantOrderEntity entity = merchantOrderDao.findByOrderNo(orderNo);
 		MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
@@ -132,8 +135,12 @@ public class MerchantOrderService extends BaseService {
 		}
 		merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
 				+ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
-		taskCenterToMerchantServiceInterface.merchantOrder(merchantOrderDTO);
-		return count;
+		try {
+			taskCenterToMerchantServiceInterface.merchantOrder(merchantOrderDTO);
+		}catch (Exception e){
+			logger.error("调用任务中心发单出错，orderNo:{}",orderNo,e);
+		}
+
 	}
 
 	/**
@@ -240,7 +247,7 @@ public class MerchantOrderService extends BaseService {
 	 * 商家订单分页查询
 	 */
 	@Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#entity.getSenderId()+'_'+#pageNo+'_'+#pageSize+'_'+#entity.getOrderStatus()")
-	public Page<MerchantOrderEntity> findMerchantOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
-		return merchantOrderDao.findMerchantOrderPage(pageNo,pageSize,entity);
+	public Page<MerchantOrderEntity> findMerchantOrderPage(String userId,int pageNo, int pageSize, MerchantOrderEntity entity){
+		return merchantOrderDao.findMerchantOrderPage(userId,pageNo,pageSize,entity);
 	}
 }

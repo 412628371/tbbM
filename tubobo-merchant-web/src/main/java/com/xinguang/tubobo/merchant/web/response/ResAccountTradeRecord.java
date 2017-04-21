@@ -4,18 +4,27 @@ import java.util.Date;
 
 public class ResAccountTradeRecord {
 
-    private long amount;
+    private String recordId;
+    private String amount;
     private String type;
-    private long currentBalance;
-    private long currentFrozen;
-    private long currentDeposit;
+    private String currentBalance;
+    private String currentFrozen;
+    private String currentDeposit;
     private Date createTime;
 
-    public long getAmount() {
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
+
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -27,27 +36,27 @@ public class ResAccountTradeRecord {
         this.type = type;
     }
 
-    public long getCurrentBalance() {
+    public String getCurrentBalance() {
         return currentBalance;
     }
 
-    public void setCurrentBalance(long currentBalance) {
+    public void setCurrentBalance(String currentBalance) {
         this.currentBalance = currentBalance;
     }
 
-    public long getCurrentFrozen() {
+    public String getCurrentFrozen() {
         return currentFrozen;
     }
 
-    public void setCurrentFrozen(long currentFrozen) {
+    public void setCurrentFrozen(String currentFrozen) {
         this.currentFrozen = currentFrozen;
     }
 
-    public long getCurrentDeposit() {
+    public String getCurrentDeposit() {
         return currentDeposit;
     }
 
-    public void setCurrentDeposit(long currentDeposit) {
+    public void setCurrentDeposit(String currentDeposit) {
         this.currentDeposit = currentDeposit;
     }
 

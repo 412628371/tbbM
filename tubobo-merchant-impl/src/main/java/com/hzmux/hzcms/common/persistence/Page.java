@@ -5,6 +5,7 @@
  */
 package com.hzmux.hzcms.common.persistence;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import com.hzmux.hzcms.common.utils.CookieUtils;
  * @version 2014-10-01
  * @param <T>
  */
-public class Page<T> {
+public class Page<T> implements Serializable{
 	
 	private int pageNo = 1; // 当前页码
 	private int pageSize = 10; // 页面大小，设置为“-1”表示不进行分页（分页无效）

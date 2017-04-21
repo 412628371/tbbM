@@ -36,7 +36,7 @@ public class MerchantOrderServiceUnitTest extends BaseJunit4Test {
         String orderNo =  merchantOrderService.order(userId,orderRO);
 
         MerchantOrderEntity entity0 = merchantOrderService.findByOrderNo("qqq");
-        int payResult = merchantOrderService.merchantPay(userId,"qqq",19000);
+        merchantOrderService.merchantPay(userId,"qqq",19000);
         MerchantOrderEntity entity = merchantOrderService.findByOrderNo("qqq");
         Assert.assertEquals(EnumMerchantOrderStatus.WAITING_GRAB.getValue(),entity.getOrderStatus());
 

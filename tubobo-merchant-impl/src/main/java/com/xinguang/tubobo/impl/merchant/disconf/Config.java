@@ -44,7 +44,7 @@ public class Config {
     @DisconfFileItem(name = "task.grab.expires.milseconds", associateField = "taskGrabExpiredMilSeconds")
     public Integer getTaskGrabExpiredMilSeconds() {
         if (null == taskGrabExpiredMilSeconds){
-            return 30000;
+            return MerchantConstants.GRAB_EXPIRED_TIME_BY_MilSECONDS;
         }
         return taskGrabExpiredMilSeconds;
     }

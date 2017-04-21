@@ -67,8 +67,8 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
             RespOrderPay respOrderPay = new RespOrderPay();
-            respOrderPay.setOrderExpiredStartTime(new Date());
-            respOrderPay.setExpiredMilSeconds(config.getPayExpiredMilSeconds());
+            respOrderPay.setGrabExpiredStartTime(new Date());
+            respOrderPay.setGrabExpiredMilSeconds(config.getPayExpiredMilSeconds());
             return respOrderPay;
         }else {
             if (response == null){

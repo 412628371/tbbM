@@ -6,22 +6,22 @@ import java.util.Date;
  * Created by Administrator on 2017/4/21.
  */
 public class RespOrderPay {
-    private Date orderExpiredStartTime;
-    private Integer expiredMilSeconds;
+    private Date grabExpiredStartTime;
+    private Integer grabExpiredMilSeconds;
 
-    public Date getOrderExpiredStartTime() {
-        return orderExpiredStartTime;
+    public Date getGrabExpiredStartTime() {
+        return grabExpiredStartTime;
     }
 
-    public void setOrderExpiredStartTime(Date orderExpiredStartTime) {
-        this.orderExpiredStartTime = orderExpiredStartTime;
+    public void setGrabExpiredStartTime(Date grabExpiredStartTime) {
+        this.grabExpiredStartTime = grabExpiredStartTime;
     }
 
-    public Integer getExpiredMilSeconds() {
-        return expiredMilSeconds;
+    public Integer getGrabExpiredMilSeconds() {
+        return grabExpiredMilSeconds;
     }
 
-    public void setExpiredMilSeconds(Integer expiredMilSeconds) {
-        this.expiredMilSeconds = expiredMilSeconds;
+    public void setGrabExpiredMilSeconds(Integer grabExpiredMilSeconds) {
+        this.grabExpiredMilSeconds = grabExpiredMilSeconds;
     }
 }

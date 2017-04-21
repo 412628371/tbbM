@@ -32,7 +32,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     }
 
     public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
-        String sqlString = "select * from tubobo_merchant_order where sender_id = :p1 and order_no = :p2 and del_flag = '0' ";
+        String sqlString = "select * from tubobo_merchant_order where user_id = :p1 and order_no = :p2 and del_flag = '0' ";
         List<MerchantOrderEntity> list = findBySql(sqlString, new Parameter(merchantId,orderNo), MerchantOrderEntity.class);
         if (list != null && list.size() > 0){
             return list.get(0);
@@ -76,10 +76,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param payId
      * @return
      */
-    public int merchantPay(String merchantId,String orderNo,long payId){
+    public int merchantPay(String merchantId,String orderNo,long payId,Date payDate){
         String sqlString = "update tubobo_merchant_order set order_status = :p1, pay_status = :p2, pay_time = :p3 ,pay_id = :p4 where sender_id = :p5 and order_no = :p6 and order_status = :p7 and del_flag = '0' ";
         int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_GRAB.getValue(),
-                EnumPayStatus.PAID.getValue(),new Date(),payId,
+                EnumPayStatus.PAID.getValue(),payDate,payId,
                 merchantId,orderNo, EnumMerchantOrderStatus.INIT.getValue()));
         getSession().clear();
         return count;
@@ -155,10 +155,14 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     /**
      * 商家订单分页查询
      */
-    public Page<MerchantOrderEntity> findMerchantOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
+    public Page<MerchantOrderEntity> findMerchantOrderPage(String userId,int pageNo, int pageSize, MerchantOrderEntity entity){
         Parameter parameter = new Parameter();
         StringBuffer sb = new StringBuffer();
         sb.append("select * from tubobo_merchant_order where del_flag = '0' ");
+        if (com.hzmux.hzcms.common.utils.StringUtils.isNotBlank(userId)){
+            sb.append("and  user_id = :userId  ");
+            parameter.put("userId", userId);
+        }
         if (StringUtils.isNotBlank(entity.getSenderId())){
             sb.append("and sender_id = :sender_id ");
             parameter.put("sender_id", entity.getSenderId());

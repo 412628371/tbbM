@@ -90,7 +90,7 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if (dto != null){
             BeanUtils.copyProperties(dto,entity);
         }
-        Page<MerchantOrderEntity> page = merchantOrderService.findMerchantOrderPage(pageNo,pageSize,entity);
+        Page<MerchantOrderEntity> page = merchantOrderService.findMerchantOrderPage(null,pageNo,pageSize,entity);
         List<MerchantOrderDTO> dtoList = new ArrayList<>();
         if (page!= null && page.getList() != null && page.getList().size() > 0){
             for (MerchantOrderEntity order : page.getList()){

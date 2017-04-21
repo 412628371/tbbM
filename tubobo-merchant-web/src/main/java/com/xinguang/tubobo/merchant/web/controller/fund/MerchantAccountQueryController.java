@@ -3,6 +3,7 @@ package com.xinguang.tubobo.merchant.web.controller.fund;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.response.AccountInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -32,12 +33,26 @@ public class MerchantAccountQueryController extends MerchantBaseController<Objec
 
 		TbbAccountResponse<AccountInfo> response = tbbAccountService.getAccountInfo(entity.getAccountId());
 		if (response != null && response.isSucceeded()){
-			ResAccountInfo res = new ResAccountInfo();
-			BeanUtils.copyProperties(response.getData(),res);
+			AccountInfo accountInfo = response.getData();
+			ResAccountInfo res = convertMoney(accountInfo);
 			return res;
 		}else{
 			logger.error("查询资金账户出错，userId: "+userId+" accountId: "+entity.getAccountId());
 			throw new MerchantClientException(EnumRespCode.ACCOUNT_INFO_NOT_EXIST);
 		}
+	}
+
+	/**
+	 * 金额转换
+	 * @param accountInfo
+	 * @return
+     */
+	public ResAccountInfo convertMoney(AccountInfo accountInfo){
+		ResAccountInfo res = new ResAccountInfo();
+		BeanUtils.copyProperties(accountInfo,res);
+		res.setBalance(ConvertUtil.formatMoneyToString(accountInfo.getBalance()));
+		res.setDeposit(ConvertUtil.formatMoneyToString(accountInfo.getDeposit()));
+		res.setFrozen(ConvertUtil.formatMoneyToString(accountInfo.getFrozen()));
+		return res;
 	}
 }

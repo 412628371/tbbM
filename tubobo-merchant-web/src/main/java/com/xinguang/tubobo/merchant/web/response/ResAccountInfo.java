@@ -2,34 +2,35 @@ package com.xinguang.tubobo.merchant.web.response;
 
 public class ResAccountInfo {
 
-    private long balance;
-    private long frozen;
-    private long deposit;
+    private String  balance;
+    private String frozen;
+    private String deposit;
 
     private String bankCard;
     private String bankName;
 
-    public long getBalance() {
+
+    public String getBalance() {
         return balance;
     }
 
-    public void setBalance(long balance) {
+    public void setBalance(String balance) {
         this.balance = balance;
     }
 
-    public long getFrozen() {
+    public String getFrozen() {
         return frozen;
     }
 
-    public void setFrozen(long frozen) {
+    public void setFrozen(String frozen) {
         this.frozen = frozen;
     }
 
-    public long getDeposit() {
+    public String getDeposit() {
         return deposit;
     }
 
-    public void setDeposit(long deposit) {
+    public void setDeposit(String deposit) {
         this.deposit = deposit;
     }
 

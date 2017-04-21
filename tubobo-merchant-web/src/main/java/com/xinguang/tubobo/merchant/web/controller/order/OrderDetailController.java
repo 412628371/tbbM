@@ -32,6 +32,8 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
         RespOrderDetail respOrderDetail = new RespOrderDetail();
         BeanUtils.copyProperties(entity,respOrderDetail);
         respOrderDetail.setPayExpiredMilSeconds(config.getPayExpiredMilSeconds());
+        respOrderDetail.setGrabExpiredStartTime(entity.getPayTime());
+        respOrderDetail.setGrabExpiredMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return respOrderDetail;
     }
 }

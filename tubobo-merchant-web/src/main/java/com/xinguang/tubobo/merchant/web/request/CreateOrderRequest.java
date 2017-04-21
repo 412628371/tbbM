@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class CreateOrderRequest implements Serializable {
     @Size(min = 1,max = 200,message = "收货人地址详情不能为空")
     private String receiverAddressDetail;
-    @Size(min = 1,max = 100,message = "省长度不符")
+//    @Size(min = 1,max = 100,message = "省长度不符")
     private String receiverAddressProvince;
 //    @Size(min = 1,max = 100,message = "市长度不符")
     private String receiverAddressCity;//地址缩略
