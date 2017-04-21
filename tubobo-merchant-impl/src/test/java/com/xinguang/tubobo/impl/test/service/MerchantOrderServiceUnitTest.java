@@ -45,11 +45,11 @@ public class MerchantOrderServiceUnitTest extends BaseJunit4Test {
 //        Assert.assertEquals(EnumMerchantOrderStatus.OVERTIME.getValue(),entity2.getOrderStatus());
         boolean cancelCount = merchantOrderService.meachantCancel("1234","qqq");
         Assert.assertEquals(true,cancelCount);
-        int grabCount = merchantOrderService.riderGrabOrder("111","hhh","18911111111","qqq",new Date());
+        int grabCount = merchantOrderService.riderGrabOrder("","111","hhh","18911111111","qqq",new Date());
         Assert.assertEquals(1,grabCount);
-        int pickCount = merchantOrderService.riderGrabItem("qqq",new Date());
+        int pickCount = merchantOrderService.riderGrabItem("","qqq",new Date());
         Assert.assertEquals(1,pickCount);
-        int finishCount = merchantOrderService.riderFinishOrder("qqq",new Date());
+        int finishCount = merchantOrderService.riderFinishOrder("","qqq",new Date());
         Assert.assertEquals(1,finishCount);
     }
 }

@@ -46,7 +46,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if (null == infoEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
-        MerchantOrderEntity orderEntity = merchantOrderService.findByOrderNo(req.getOrderNo());
+        MerchantOrderEntity orderEntity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         if (null == orderEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }

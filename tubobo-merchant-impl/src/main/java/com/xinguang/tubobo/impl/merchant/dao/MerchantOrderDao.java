@@ -31,6 +31,16 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
     }
 
+    public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
+        String sqlString = "select * from tubobo_merchant_order where sender_id = :p1 and order_no = :p2 and del_flag = '0' ";
+        List<MerchantOrderEntity> list = findBySql(sqlString, new Parameter(merchantId,orderNo), MerchantOrderEntity.class);
+        if (list != null && list.size() > 0){
+            return list.get(0);
+        }else {
+            return null;
+        }
+    }
+
     /**
      * 超时未抢单
      * @param orderNo

@@ -12,6 +12,7 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -24,6 +25,8 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,9 +64,15 @@ public class MerchantOrderService extends BaseService {
 		return merchantOrderDao.findByOrderNo(orderNo);
 	}
 
+	@Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_'+#orderNo")
+	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
+		return merchantOrderDao.findByMerchantIdAndOrderNo(merchantId,orderNo);
+	}
+
 	/**
 	 * 商家提交订单
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#userId+'_*'")
 	@Transactional(readOnly = false)
 	public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
 		MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
@@ -102,6 +111,7 @@ public class MerchantOrderService extends BaseService {
 	/**
 	 * 商家付款
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
 	public int merchantPay(String merchantId,String orderNo,long payId){
 		int count = merchantOrderDao.merchantPay(merchantId,orderNo,payId);
@@ -129,6 +139,7 @@ public class MerchantOrderService extends BaseService {
 	/**
 	 * 商家取消订单
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
 	public boolean meachantCancel(String merchantId,String orderNo){
 		MerchantOrderEntity entity = merchantOrderDao.findByOrderNo(orderNo);
@@ -169,9 +180,11 @@ public class MerchantOrderService extends BaseService {
 		}
 		return false;
 	}
+
 	/**
 	 * 商家删除订单
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
 	public int deleteOrder(String merchantId,String orderNo){
 		int count =  merchantOrderDao.deleteOrder(merchantId,orderNo);
@@ -180,51 +193,53 @@ public class MerchantOrderService extends BaseService {
 	/**
 	 * 骑手抢单
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime){
+	public int riderGrabOrder(String merchantId,String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime){
 		return merchantOrderDao.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime);
 	}
 
 	/**
 	 * 骑手取货
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public int riderGrabItem(String orderNo, Date grabItemTime){
+	public int riderGrabItem(String merchantId,String orderNo, Date grabItemTime){
 		return merchantOrderDao.riderGrabItem(orderNo,grabItemTime);
 	}
 
 	/**
 	 * 骑手完成订单
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public int riderFinishOrder(String orderNo, Date finishOrderTime){
+	public int riderFinishOrder(String merchantId,String orderNo, Date finishOrderTime){
 		return merchantOrderDao.riderFinishOrder(orderNo,finishOrderTime);
 	}
 
+	/**
+	 * 支付超时
+	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public void payExpired(String orderNo){
+	public void payExpired(String merchantId,String orderNo){
 		merchantOrderDao.payExpire(orderNo);
 	}
+
 	/**
 	 * 订单超时
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public int orderExpire(String orderNo){
+	public int orderExpire(String merchantId,String orderNo){
 		int count =merchantOrderDao.orderExpire(orderNo);
 		return count;
 	}
 
 	/**
-	 * 后台关闭订单
-	 */
-	@Transactional(readOnly = false)
-	public int adminClose(String orderNo){
-		return merchantOrderDao.adminClose(orderNo);
-	}
-
-	/**
 	 * 商家订单分页查询
 	 */
+	@Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#entity.getSenderId()+'_'+#pageNo+'_'+#pageSize+'_'+#entity.getOrderStatus()")
 	public Page<MerchantOrderEntity> findMerchantOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
 		return merchantOrderDao.findMerchantOrderPage(pageNo,pageSize,entity);
 	}

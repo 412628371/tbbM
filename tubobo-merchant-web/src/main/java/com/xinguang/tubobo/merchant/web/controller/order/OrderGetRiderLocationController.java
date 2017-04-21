@@ -26,7 +26,7 @@ public class OrderGetRiderLocationController extends MerchantBaseController<ReqO
     private TaskCenterToMerchantServiceInterface taskCenterToMerchantServiceInterface;
     @Override
     protected RespRiderLocation doService(String userId, ReqOrderRiderLocation req) throws MerchantClientException {
-        MerchantOrderEntity entity = merchantOrderService.findByOrderNo(req.getOrderNo());
+        MerchantOrderEntity entity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         if (entity == null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }

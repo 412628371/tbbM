@@ -9,6 +9,7 @@ import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.service.BaseService;
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
@@ -19,6 +20,8 @@ import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +38,7 @@ public class MerchantInfoService extends BaseService {
 	@Autowired
 	MerchantPushSettingsDao merchantPushSettingsDao;
 
+	@Cacheable(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	public MerchantInfoEntity findByUserId(String userId){
 		if (StringUtils.isBlank(userId)) return null;
 		String sqlString = "select * from tubobo_merchant_info where del_flag = '0' and user_id = :p1 ";
@@ -49,6 +53,7 @@ public class MerchantInfoService extends BaseService {
 	/**
 	 * 申请商家
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public boolean merchantApply(String userId, MerchantInfoEntity entity) {
 		entity.setUserId(userId);
@@ -63,6 +68,8 @@ public class MerchantInfoService extends BaseService {
 		merchantPushSettingsDao.save(settingsEntity);
 		return true;
 	}
+
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public boolean merchantUpdate(MerchantInfoEntity entity){
 		entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
@@ -74,6 +81,7 @@ public class MerchantInfoService extends BaseService {
 	/**
 	 * 审核商家状态
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int merchantStatusVerify(String userId,String merchantStatus,String updateBy) {
 		int result;
@@ -91,6 +99,7 @@ public class MerchantInfoService extends BaseService {
 	/**
 	 * 更新头像
 	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int updateHeadImage(String userId,String picUrl) {
 
