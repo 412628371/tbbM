@@ -25,7 +25,7 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
     Config config;
     @Override
     protected RespOrderDetail doService(String userId, ReqOrderDetail req) throws MerchantClientException {
-        MerchantOrderEntity entity = merchantOrderService.findByOrderNo(req.getOrderNo());
+        MerchantOrderEntity entity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         if(null == entity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }

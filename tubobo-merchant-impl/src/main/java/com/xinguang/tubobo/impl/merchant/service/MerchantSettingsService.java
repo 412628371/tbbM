@@ -1,8 +1,11 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
+import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,6 +21,7 @@ public class MerchantSettingsService {
      * @param entity
      * @return
      */
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantSettings_'+#userId")
     public boolean updateSettings(MerchantSettingsEntity entity){
         int count = settingsDao.updatePushSettings(entity);
         return count == 1;
@@ -28,6 +32,7 @@ public class MerchantSettingsService {
      * @param userId
      * @return
      */
+    @Cacheable(value= RedisCache.MERCHANT,key="'merchantSettings_'+#userId")
     public MerchantSettingsEntity findBuUserId(String userId){
         return settingsDao.findByUserId(userId);
     }

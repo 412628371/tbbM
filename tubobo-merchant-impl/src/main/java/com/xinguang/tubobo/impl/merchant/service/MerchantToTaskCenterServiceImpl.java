@@ -40,7 +40,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
             return false;
         }
         pushService.noticeGrab(entity.getUserId());
-        return merchantOrderService.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
+        return merchantOrderService.riderGrabOrder(entity.getSenderId(),riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
     }
 
     /**
@@ -50,7 +50,12 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
      */
     @Override
     public boolean riderGrabItem(String orderNo, Date grabItemTime) {
-        return merchantOrderService.riderGrabItem(orderNo,grabItemTime) > 0;
+        MerchantOrderEntity entity = merchantOrderService.findByOrderNo(orderNo);
+        if (null == entity){
+            logger.error("骑手取货，未找到订单。orderNo:{}",orderNo);
+            return false;
+        }
+        return merchantOrderService.riderGrabItem(entity.getSenderId(), orderNo,grabItemTime) > 0;
     }
 
     /**
@@ -68,7 +73,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         //发送骑手完成送货通知
         pushService.noticeFinished(entity.getUserId());
 
-        return merchantOrderService.riderFinishOrder(orderNo,finishOrderTime) > 0;
+        return merchantOrderService.riderFinishOrder(entity.getSenderId(),orderNo,finishOrderTime) > 0;
     }
 
     @Override
@@ -85,7 +90,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         if (resp != null || resp.isSucceeded()){
             logger.error("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
                     "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-            merchantOrderService.orderExpire(orderNo);
+            merchantOrderService.orderExpire(entity.getSenderId(),orderNo);
             return true;
         }else {
             logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo+
