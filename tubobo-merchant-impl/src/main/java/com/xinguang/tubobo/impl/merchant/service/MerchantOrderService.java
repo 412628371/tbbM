@@ -147,7 +147,7 @@ public class MerchantOrderService extends BaseService {
 			if (result){
 				if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
 					PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
-							MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
+							MerchantConstants.PAY_REJECT_REMARKS_CANCEL);
 					TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
 					if (resp != null || resp.isSucceeded()){
 						logger.error("订单取消，资金平台退款成功，userId: "+merchantId+" orderNo: "+orderNo+

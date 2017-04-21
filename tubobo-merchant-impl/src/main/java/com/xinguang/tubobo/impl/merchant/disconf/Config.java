@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.disconf;
 
 import com.baidu.disconf.client.common.annotations.DisconfFile;
 import com.baidu.disconf.client.common.annotations.DisconfFileItem;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
@@ -15,12 +16,39 @@ import javax.persistence.criteria.CriteriaBuilder;
 @DisconfFile(filename = "common.properties")
 public class Config {
 
+    private Double dispatchRadiusMils;//派单半径米
+    private Integer taskGrabExpiredMilSeconds;//过期毫秒数
     private Integer payExpiredMilSeconds;//过期毫秒数
     private Integer maxDeliveryMills;
     private Long aliPushAppKey;
     private String noticeGrabedTemplate;
     private String noticeGrabedTimeoutTemplate;
     private String noticeFinishedTemplate;
+
+    @DisconfFileItem(name = "dispatch.radius.mils", associateField = "dispatchRadiusMils")
+    public Double getDispatchRadiusMils() {
+        if (null == dispatchRadiusMils){
+            return MerchantConstants.DISPATCH_RADIUS_BY_MILLS;
+        }
+        return dispatchRadiusMils;
+    }
+
+    public void setDispatchRadiusMils(Double dispatchRadiusMils) {
+        this.dispatchRadiusMils = dispatchRadiusMils;
+    }
+
+    public void setTaskGrabExpiredMilSeconds(Integer taskGrabExpiredMilSeconds) {
+        this.taskGrabExpiredMilSeconds = taskGrabExpiredMilSeconds;
+    }
+
+    @DisconfFileItem(name = "task.grab.expires.milseconds", associateField = "taskGrabExpiredMilSeconds")
+    public Integer getTaskGrabExpiredMilSeconds() {
+        if (null == taskGrabExpiredMilSeconds){
+            return 30000;
+        }
+        return taskGrabExpiredMilSeconds;
+    }
+
 
     @DisconfFileItem(name = "merchant.notice.grabed.template", associateField = "noticeGrabedTemplate")
     public String getNoticeGrabedTemplate() {
@@ -59,6 +87,7 @@ public class Config {
 
     @DisconfFileItem(name = "merchant.pay.expired.milliseconds", associateField = "payExpiredMilSeconds")
     public Integer getPayExpiredMilSeconds() {
+
         return payExpiredMilSeconds;
     }
 

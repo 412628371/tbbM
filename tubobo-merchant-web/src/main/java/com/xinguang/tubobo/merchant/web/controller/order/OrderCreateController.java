@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_CANT_ORDER;
@@ -32,13 +34,15 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
     MerchantOrderService merchantOrderService;
     @Autowired
     MerchantInfoService merchantInfoService;
+    @Resource
+    Config config;
     @Override
     protected CreateOrderResponse doService(String userId, CreateOrderRequest req) throws MerchantClientException {
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
         if (null == infoEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
-        if (EnumAuthentication.SUCCESS.getValue().equals(infoEntity.getMerchantStatus())){
+        if (!EnumAuthentication.SUCCESS.getValue().equals(infoEntity.getMerchantStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_ORDER);
         }
         MerchantOrderEntity entity = translateRequestToEntity(userId,req);
@@ -56,7 +60,7 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         entity.setOrderTime(new Date());
         entity.setPayStatus(EnumPayStatus.UNPAY.getValue());
-        entity.setDispatchRadius(MerchantConstants.DISPATCH_RADIUS_BY_MILLS);
+        entity.setDispatchRadius(config.getDispatchRadiusMils());
 
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
         return entity;

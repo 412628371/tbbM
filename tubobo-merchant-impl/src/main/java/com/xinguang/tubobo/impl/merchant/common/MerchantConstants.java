@@ -11,6 +11,6 @@ public class MerchantConstants {
     public static final String REQ_ORDER_CANCEL = "CANCEL";
     public static final String REQ_ORDER_DELETE = "DELETE";
     public static final String MERCHANT_RECHARGE_TITLE = "商家充值";
-    public static final String PAY_REJECT_REMARKS_OVERTIME = "超时无人接单，自动取消订单";
-    public static final String PAY_REJECT_REMARKS_CANCEL = "商家取消订单";
+    public static final String PAY_REJECT_REMARKS_OVERTIME = "暂无人接单，订单已取消";
+    public static final String PAY_REJECT_REMARKS_CANCEL = "订单已取消  ";
 }
