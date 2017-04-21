@@ -4,6 +4,7 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -14,9 +15,13 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountPay;
+import com.xinguang.tubobo.merchant.web.response.RespOrderPay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
+import java.util.Date;
 
 import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_REPEAT_PAY;
 
@@ -25,15 +30,17 @@ import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_REPEA
  */
 @Controller
 @RequestMapping("/account/pay")
-public class MerchantAccountPayController extends MerchantBaseController<ReqAccountPay,Object> {
+public class MerchantAccountPayController extends MerchantBaseController<ReqAccountPay,RespOrderPay> {
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
     private TbbAccountService tbbAccountService;
     @Autowired
     private MerchantOrderService merchantOrderService;
+    @Resource
+    Config config;
     @Override
-    protected EnumRespCode doService(String userId, ReqAccountPay req) throws MerchantClientException {
+    protected RespOrderPay doService(String userId, ReqAccountPay req) throws MerchantClientException {
         logger.info("支付请求：userId:{}, request:{} , ",userId,req.toString());
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
         if (null == infoEntity){
@@ -59,7 +66,10 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             merchantOrderService.merchantPay(infoEntity.getUserId(),req.getOrderNo(),payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
-            return null;
+            RespOrderPay respOrderPay = new RespOrderPay();
+            respOrderPay.setOrderExpiredStartTime(new Date());
+            respOrderPay.setExpiredMilSeconds(config.getPayExpiredMilSeconds());
+            return respOrderPay;
         }else {
             if (response == null){
                 logger.error("pay  FAIL.orderNo:{}, accountId:{}}",
