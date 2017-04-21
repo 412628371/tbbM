@@ -26,4 +26,12 @@ public class ReqOrderOperate {
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
+
+    @Override
+    public String toString() {
+        return "ReqOrderOperate{" +
+                "orderNo='" + orderNo + '\'' +
+                ", command='" + command + '\'' +
+                '}';
+    }
 }

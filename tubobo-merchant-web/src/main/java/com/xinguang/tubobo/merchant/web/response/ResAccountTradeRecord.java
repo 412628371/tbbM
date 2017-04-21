@@ -58,4 +58,16 @@ public class ResAccountTradeRecord {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    @Override
+    public String toString() {
+        return "ResAccountTradeRecord{" +
+                "amount=" + amount +
+                ", type='" + type + '\'' +
+                ", currentBalance=" + currentBalance +
+                ", currentFrozen=" + currentFrozen +
+                ", currentDeposit=" + currentDeposit +
+                ", createTime=" + createTime +
+                '}';
+    }
 }

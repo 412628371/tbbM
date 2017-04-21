@@ -5,19 +5,16 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/4/13.
  */
 public class CreateOrderRequest implements Serializable {
-    @NotBlank(message = "收货人地址详情不能为空")
+    @Size(min = 1,max = 200,message = "收货人地址详情不能为空")
     private String receiverAddressDetail;
-//    @Size(min = 1,max = 100,message = "省长度不符")
+    @Size(min = 1,max = 100,message = "省长度不符")
     private String receiverAddressProvince;
 //    @Size(min = 1,max = 100,message = "市长度不符")
     private String receiverAddressCity;//地址缩略
@@ -156,5 +153,25 @@ public class CreateOrderRequest implements Serializable {
 
     public void setOrderRemarks(String orderRemarks) {
         this.orderRemarks = orderRemarks;
+    }
+
+    @Override
+    public String toString() {
+        return "CreateOrderRequest{" +
+                "receiverAddressDetail='" + receiverAddressDetail + '\'' +
+                ", receiverAddressProvince='" + receiverAddressProvince + '\'' +
+                ", receiverAddressCity='" + receiverAddressCity + '\'' +
+                ", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
+                ", receiverAddressStreet='" + receiverAddressStreet + '\'' +
+                ", receiverGdPoiId='" + receiverGdPoiId + '\'' +
+                ", deliveryFee=" + deliveryFee +
+                ", tipFee=" + tipFee +
+                ", payMethod='" + payMethod + '\'' +
+                ", receiverLatitude=" + receiverLatitude +
+                ", receiverLongitude=" + receiverLongitude +
+                ", receiverName='" + receiverName + '\'' +
+                ", receiverPhone='" + receiverPhone + '\'' +
+                ", orderRemarks='" + orderRemarks + '\'' +
+                '}';
     }
 }

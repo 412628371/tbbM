@@ -2,6 +2,7 @@ package com.xinguang.tubobo.merchant.web.controller.order;
 
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqOrderDetail;
 import com.xinguang.tubobo.merchant.web.response.RespOrderDetail;
@@ -25,6 +26,9 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
     @Override
     protected RespOrderDetail doService(String userId, ReqOrderDetail req) throws MerchantClientException {
         MerchantOrderEntity entity = merchantOrderService.findByOrderNo(req.getOrderNo());
+        if(null == entity){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
+        }
         RespOrderDetail respOrderDetail = new RespOrderDetail();
         BeanUtils.copyProperties(entity,respOrderDetail);
         respOrderDetail.setExpiredMilSeconds(config.getPayExpiredMilSeconds());

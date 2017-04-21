@@ -48,4 +48,15 @@ public class ResAccountInfo {
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
+
+    @Override
+    public String toString() {
+        return "ResAccountInfo{" +
+                "balance=" + balance +
+                ", frozen=" + frozen +
+                ", deposit=" + deposit +
+                ", bankCard='" + bankCard + '\'' +
+                ", bankName='" + bankName + '\'' +
+                '}';
+    }
 }

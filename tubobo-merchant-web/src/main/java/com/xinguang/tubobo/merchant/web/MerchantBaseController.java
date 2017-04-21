@@ -62,7 +62,6 @@ public abstract class MerchantBaseController <P, R>{
             }
             userId = check.getData().getUserId();
 
-//            userId="888";
         }
 
 //        if (needIdentify()){
@@ -90,6 +89,9 @@ public abstract class MerchantBaseController <P, R>{
         }catch (MerchantClientException e){
             logger.error(e.getMessage(),e);
             return new ClientResp(e.getCode() , e.getErrorMsg());
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            return new ClientResp(EnumRespCode.BUSY.getValue() , EnumRespCode.BUSY.getDesc());
         }
 
     }

@@ -16,4 +16,11 @@ public class ReqOrderDetail {
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
+
+    @Override
+    public String toString() {
+        return "ReqOrderDetail{" +
+                "orderNo='" + orderNo + '\'' +
+                '}';
+    }
 }

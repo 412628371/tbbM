@@ -26,4 +26,12 @@ public class ReqAccountResetPwd {
     public void setNewPwd(String newPwd) {
         this.newPwd = newPwd;
     }
+
+    @Override
+    public String toString() {
+        return "ReqAccountResetPwd{" +
+                "oldPwd='" + oldPwd + '\'' +
+                ", newPwd='" + newPwd + '\'' +
+                '}';
+    }
 }

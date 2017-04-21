@@ -182,4 +182,29 @@ public class MerchantInfoDTO implements Serializable{
 	public void setVerifyDate(Date verifyDate) {
 		this.verifyDate = verifyDate;
 	}
+
+	@Override
+	public String toString() {
+		return "MerchantInfoDTO{" +
+				"userId='" + userId + '\'' +
+				", accountId=" + accountId +
+				", merchantStatus='" + merchantStatus + '\'' +
+				", merchantName='" + merchantName + '\'' +
+				", realName='" + realName + '\'' +
+				", phone='" + phone + '\'' +
+				", idCardNo='" + idCardNo + '\'' +
+				", addressProvince='" + addressProvince + '\'' +
+				", addressCity='" + addressCity + '\'' +
+				", addressDistrict='" + addressDistrict + '\'' +
+				", addressDetail='" + addressDetail + '\'' +
+				", addressStreet='" + addressStreet + '\'' +
+				", avatarUrl='" + avatarUrl + '\'' +
+				", idCardFrontImageUrl='" + idCardFrontImageUrl + '\'' +
+				", idCardBackImageUrl='" + idCardBackImageUrl + '\'' +
+				", longitude=" + longitude +
+				", latitude=" + latitude +
+				", applyDate=" + applyDate +
+				", verifyDate=" + verifyDate +
+				'}';
+	}
 }

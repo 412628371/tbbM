@@ -21,6 +21,7 @@ public class ShopHeadImageUploadController extends MerchantBaseController<ShopHe
     MerchantInfoService merchantInfoService;
     @Override
     protected EnumRespCode doService(String userId, ShopHeadImageUploadRequest req) throws MerchantClientException {
+        logger.info("用户头像上传，usedId:{}, request: {}",userId,req.toString());
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (null == entity){
             return EnumRespCode.MERCHANT_NOT_EXISTS;

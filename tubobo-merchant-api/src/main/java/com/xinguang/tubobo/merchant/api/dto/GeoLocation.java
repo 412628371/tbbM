@@ -36,10 +36,10 @@ public class GeoLocation implements Serializable{
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("GeoLocation: ")
-                .append("userId : ").append(userId)
-                .append(", latitude: ").append(latitude)
-                .append(", longitude: ").append(longitude);
-        return super.toString();
+        return "GeoLocation{" +
+                "userId='" + userId + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
     }
 }

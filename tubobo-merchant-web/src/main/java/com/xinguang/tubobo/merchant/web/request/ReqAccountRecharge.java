@@ -38,4 +38,13 @@ public class ReqAccountRecharge {
     public void setClientIp(String clientIp) {
         this.clientIp = clientIp;
     }
+
+    @Override
+    public String toString() {
+        return "ReqAccountRecharge{" +
+                "chargeType='" + chargeType + '\'' +
+                ", clientIp='" + clientIp + '\'' +
+                ", amount=" + amount +
+                '}';
+    }
 }

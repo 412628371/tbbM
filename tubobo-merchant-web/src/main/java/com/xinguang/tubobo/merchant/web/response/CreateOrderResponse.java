@@ -15,4 +15,11 @@ public class CreateOrderResponse implements Serializable{
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
+
+    @Override
+    public String toString() {
+        return "CreateOrderResponse{" +
+                "orderNo='" + orderNo + '\'' +
+                '}';
+    }
 }

@@ -11,6 +11,13 @@ public class ReqAccountWithdraw {
         return amount;
     }
 
+    @Override
+    public String toString() {
+        return "ReqAccountWithdraw{" +
+                "amount=" + amount +
+                '}';
+    }
+
     public void setAmount(long amount) {
         this.amount = amount;
     }

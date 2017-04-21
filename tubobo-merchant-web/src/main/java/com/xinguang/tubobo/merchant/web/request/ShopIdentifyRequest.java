@@ -24,6 +24,7 @@ public class ShopIdentifyRequest implements Serializable {
 //    @Size(min = 1,max = 100,message = "门牌号长度不符")
     private String addressDetail;//地址名称
     private String addressStreet;//地址名称
+    private String addressRoomNo;//门牌号
 
     @NotBlank(message = "身份证正面图片不能为空")
     private String idCardBackImageUrl;
@@ -44,6 +45,13 @@ public class ShopIdentifyRequest implements Serializable {
     @NotBlank(message = "店铺名称不能为空")
     private String merchantName;
 
+    public String getAddressRoomNo() {
+        return addressRoomNo;
+    }
+
+    public void setAddressRoomNo(String addressRoomNo) {
+        this.addressRoomNo = addressRoomNo;
+    }
 
     public ShopIdentifyRequest() {
     }
@@ -150,5 +158,24 @@ public class ShopIdentifyRequest implements Serializable {
 
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
+    }
+
+    @Override
+    public String toString() {
+        return "ShopIdentifyRequest{" +
+                "addressProvince='" + addressProvince + '\'' +
+                ", addressCity='" + addressCity + '\'' +
+                ", addressDistrict='" + addressDistrict + '\'' +
+                ", addressDetail='" + addressDetail + '\'' +
+                ", addressStreet='" + addressStreet + '\'' +
+                ", idCardBackImageUrl='" + idCardBackImageUrl + '\'' +
+                ", idCardFrontImageUrl='" + idCardFrontImageUrl + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", idCardNo='" + idCardNo + '\'' +
+                ", realName='" + realName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", merchantName='" + merchantName + '\'' +
+                '}';
     }
 }

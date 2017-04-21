@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 public class ValidUtils {
 
 	public static final String contractPhonePattern = "(1\\d{10})|(((0\\d{2,3})(-)?)(\\d{7,8})((-)?(\\d{3,}))?)$";
+	public static final String phonePattern = "1\\d{10}";
 	/**
 	 * 验证手机格式
 	 */

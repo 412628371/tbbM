@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MerchantInfoDao extends BaseDao<MerchantInfoEntity> {
-	
+
 }

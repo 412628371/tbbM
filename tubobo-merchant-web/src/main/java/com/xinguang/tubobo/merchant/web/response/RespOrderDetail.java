@@ -265,4 +265,38 @@ public class RespOrderDetail implements Serializable{
     public void setRiderPhone(String riderPhone) {
         this.riderPhone = riderPhone;
     }
+
+    @Override
+    public String toString() {
+        return "RespOrderDetail{" +
+                "orderNo='" + orderNo + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", orderRemark='" + orderRemark + '\'' +
+                ", payAmount=" + payAmount +
+                ", deliveryFee=" + deliveryFee +
+                ", tipFee=" + tipFee +
+                ", payStatus='" + payStatus + '\'' +
+                ", payMethod='" + payMethod + '\'' +
+                ", payTime=" + payTime +
+                ", orderTime=" + orderTime +
+                ", cancelTime=" + cancelTime +
+                ", closeTime=" + closeTime +
+                ", expiredTime=" + expiredTime +
+                ", grabOrderTime=" + grabOrderTime +
+                ", grabItemTime=" + grabItemTime +
+                ", finishOrderTime=" + finishOrderTime +
+                ", receiverName='" + receiverName + '\'' +
+                ", receiverPhone='" + receiverPhone + '\'' +
+                ", receiverAddressProvince='" + receiverAddressProvince + '\'' +
+                ", receiverAddressCity='" + receiverAddressCity + '\'' +
+                ", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
+                ", receiverAddressStreet='" + receiverAddressStreet + '\'' +
+                ", receiverAddressDetail='" + receiverAddressDetail + '\'' +
+                ", receiverLongitude=" + receiverLongitude +
+                ", receiverLatitude=" + receiverLatitude +
+                ", riderName='" + riderName + '\'' +
+                ", riderPhone='" + riderPhone + '\'' +
+                ", expiredMilSeconds=" + expiredMilSeconds +
+                '}';
+    }
 }

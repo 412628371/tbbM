@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.merchant.web.response;
 
-import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/4/14.
@@ -11,6 +10,7 @@ public class RespShopIdentify  {
     private String addressDistrict;//地址名称
     private String addressDetail;//地址名称
     private String addressStreet;//地址名称
+    private String addressRoomNo;//门牌号
 
     private String idCardBackImageUrl;
     private String idCardFrontImageUrl;
@@ -26,6 +26,14 @@ public class RespShopIdentify  {
     private String idCardNo;
     private String realName;
     private String merchantName;
+
+    public String getAddressRoomNo() {
+        return addressRoomNo;
+    }
+
+    public void setAddressRoomNo(String addressRoomNo) {
+        this.addressRoomNo = addressRoomNo;
+    }
 
     public String getAddressProvince() {
         return addressProvince;
@@ -149,8 +157,22 @@ public class RespShopIdentify  {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("merchantName: ").append(merchantName);
-        return sb.toString();
+        return "RespShopIdentify{" +
+                "addressProvince='" + addressProvince + '\'' +
+                ", addressCity='" + addressCity + '\'' +
+                ", addressDistrict='" + addressDistrict + '\'' +
+                ", addressDetail='" + addressDetail + '\'' +
+                ", addressStreet='" + addressStreet + '\'' +
+                ", idCardBackImageUrl='" + idCardBackImageUrl + '\'' +
+                ", idCardFrontImageUrl='" + idCardFrontImageUrl + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", merchantStatus='" + merchantStatus + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", phone='" + phone + '\'' +
+                ", idCardNo='" + idCardNo + '\'' +
+                ", realName='" + realName + '\'' +
+                ", merchantName='" + merchantName + '\'' +
+                '}';
     }
 }

@@ -16,4 +16,11 @@ public class ShopHeadImageUploadRequest {
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
+
+    @Override
+    public String toString() {
+        return "ShopHeadImageUploadRequest{" +
+                "avatarUrl='" + avatarUrl + '\'' +
+                '}';
+    }
 }

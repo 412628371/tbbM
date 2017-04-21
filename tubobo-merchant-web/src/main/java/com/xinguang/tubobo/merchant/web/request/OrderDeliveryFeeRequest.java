@@ -39,11 +39,11 @@ public class OrderDeliveryFeeRequest {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" [goodsType]: ").append(goodsType)
-                .append(", [receiverLatitude]").append(receiverLatitude)
-                .append(", [receiverLongitude]: ").append(receiverLongitude);
-        return sb.toString();
+        return "OrderDeliveryFeeRequest{" +
+                "goodsType='" + goodsType + '\'' +
+                ", receiverLatitude=" + receiverLatitude +
+                ", receiverLongitude=" + receiverLongitude +
+                '}';
     }
 
     public static void main(String[] args) {

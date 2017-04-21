@@ -219,4 +219,33 @@ public class RespOrderItem {
     public void setReceiverLatitude(double receiverLatitude) {
         this.receiverLatitude = receiverLatitude;
     }
+
+    @Override
+    public String toString() {
+        return "RespOrderItem{" +
+                "orderNo='" + orderNo + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", orderRemark='" + orderRemark + '\'' +
+                ", deliveryFee=" + deliveryFee +
+                ", tipFee=" + tipFee +
+                ", riderName='" + riderName + '\'' +
+                ", riderPhone='" + riderPhone + '\'' +
+                ", orderTime=" + orderTime +
+                ", cancelTime=" + cancelTime +
+                ", closeTime=" + closeTime +
+                ", expiredTime=" + expiredTime +
+                ", grabOrderTime=" + grabOrderTime +
+                ", grabItemTime=" + grabItemTime +
+                ", finishOrderTime=" + finishOrderTime +
+                ", receiverName='" + receiverName + '\'' +
+                ", receiverPhone='" + receiverPhone + '\'' +
+                ", receiverAddressProvince='" + receiverAddressProvince + '\'' +
+                ", receiverAddressCity='" + receiverAddressCity + '\'' +
+                ", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
+                ", receiverAddressStreet='" + receiverAddressStreet + '\'' +
+                ", receiverAddressDetail='" + receiverAddressDetail + '\'' +
+                ", receiverLongitude=" + receiverLongitude +
+                ", receiverLatitude=" + receiverLatitude +
+                '}';
+    }
 }

@@ -44,8 +44,16 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Double latitude;
 	private Date applyDate;
 	private Date verifyDate;
-
+	private String addressRoomNo;//门牌号
 	private String payPassword;
+
+	public String getAddressRoomNo() {
+		return addressRoomNo;
+	}
+
+	public void setAddressRoomNo(String addressRoomNo) {
+		this.addressRoomNo = addressRoomNo;
+	}
 
 	public String getPayPassword() {
 		return payPassword;

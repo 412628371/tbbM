@@ -149,4 +149,25 @@ public class MerchantInfoResponse implements Serializable{
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
     }
+
+    @Override
+    public String toString() {
+        return "MerchantInfoResponse{" +
+                "addressProvince='" + addressProvince + '\'' +
+                ", addressCity='" + addressCity + '\'' +
+                ", addressDistrict='" + addressDistrict + '\'' +
+                ", addressDetail='" + addressDetail + '\'' +
+                ", addressStreet='" + addressStreet + '\'' +
+                ", idCardBackImageUrl='" + idCardBackImageUrl + '\'' +
+                ", idCardFrontImageUrl='" + idCardFrontImageUrl + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", merchantStatus='" + merchantStatus + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", phone='" + phone + '\'' +
+                ", idCardNo='" + idCardNo + '\'' +
+                ", realName='" + realName + '\'' +
+                ", merchantName='" + merchantName + '\'' +
+                '}';
+    }
 }

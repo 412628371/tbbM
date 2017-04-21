@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
+import static org.apache.zookeeper.server.ServerCnxn.me;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -118,6 +120,8 @@ public class MerchantOrderService extends BaseService {
 		if (entity.getTipFee() != null){
 			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
 		}
+		merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
+				+ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
 		taskCenterToMerchantServiceInterface.merchantOrder(merchantOrderDTO);
 		return count;
 	}

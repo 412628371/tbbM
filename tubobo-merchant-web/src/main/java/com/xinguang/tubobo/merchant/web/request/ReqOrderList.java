@@ -39,4 +39,13 @@ public class ReqOrderList {
     public void setPageNo(int pageNo) {
         this.pageNo = pageNo;
     }
+
+    @Override
+    public String toString() {
+        return "ReqOrderList{" +
+                "orderStatus='" + orderStatus + '\'' +
+                ", pageSize=" + pageSize +
+                ", pageNo=" + pageNo +
+                '}';
+    }
 }

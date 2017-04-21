@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqOrderOperate;
@@ -20,6 +21,10 @@ public class OrderOperateController extends MerchantBaseController<ReqOrderOpera
     MerchantOrderService merchantOrderService;
     @Override
     protected EnumRespCode doService(String userId, ReqOrderOperate req) throws MerchantClientException {
+        MerchantOrderEntity entity = merchantOrderService.findByOrderNo(req.getOrderNo());
+        if (null == entity){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
+        }
         if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())){
             boolean count = merchantOrderService.meachantCancel(userId,req.getOrderNo());
             if (!count){

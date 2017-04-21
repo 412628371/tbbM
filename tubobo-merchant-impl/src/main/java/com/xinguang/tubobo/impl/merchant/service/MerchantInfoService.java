@@ -50,17 +50,7 @@ public class MerchantInfoService extends BaseService {
 	 * 申请商家
 	 */
 	@Transactional(readOnly = false)
-	public EnumRespCode merchantApply(String userId, MerchantInfoEntity entity) {
-		MerchantInfoEntity merchant = findByUserId(userId);
-		if (merchant != null && EnumAuthentication.SUCCESS.getValue().equals(merchant.getMerchantStatus())){
-			return EnumRespCode.MERCHANT_APPLY_REPEAT;
-		}
-		if (null != merchant){
-			MerchantSettingsEntity entitySetting = merchantPushSettingsDao.findByUserId(userId);
-			if (entitySetting != null){
-				merchantPushSettingsDao.deleteById(entitySetting.getId());
-			}
-		}
+	public boolean merchantApply(String userId, MerchantInfoEntity entity) {
 		entity.setUserId(userId);
 		entity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
 		entity.setCreateDate(new Date());
@@ -71,7 +61,14 @@ public class MerchantInfoService extends BaseService {
 		MerchantSettingsEntity settingsEntity = new MerchantSettingsEntity();
 		settingsEntity.setUserId(userId);
 		merchantPushSettingsDao.save(settingsEntity);
-		return EnumRespCode.SUCCESS;
+		return true;
+	}
+	@Transactional(readOnly = false)
+	public boolean merchantUpdate(MerchantInfoEntity entity){
+		entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
+		entity.setUpdateDate(new Date());
+		merchantInfoDao.save(entity);
+		return true;
 	}
 
 	/**

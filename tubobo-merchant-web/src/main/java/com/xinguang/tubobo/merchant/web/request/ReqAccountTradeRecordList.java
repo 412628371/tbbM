@@ -44,4 +44,13 @@ public class ReqAccountTradeRecordList {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "ReqAccountTradeRecordList{" +
+                "pageNo=" + pageNo +
+                ", pageSize=" + pageSize +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

@@ -15,4 +15,10 @@ public class ConvertUtil {
             return "";
         return nullStr;
     }
+
+    public static void main(String[] args) {
+        Double test = 10000000.00;
+        Integer testInteger = convertYuanToFen(test).intValue();
+        System.out.println(testInteger);
+    }
 }

@@ -22,6 +22,14 @@ public class ReqAccountPay {
         return payMethod;
     }
 
+    @Override
+    public String toString() {
+        return "ReqAccountPay{" +
+                "orderNo='" + orderNo + '\'' +
+                ", payMethod='" + payMethod + '\'' +
+                '}';
+    }
+
     public void setPayMethod(String payMethod) {
         this.payMethod = payMethod;
     }

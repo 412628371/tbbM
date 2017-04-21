@@ -53,6 +53,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String senderAddressDistrict;//寄货人地址名称
 	private String senderAddressStreet;//寄货人地址名称
 	private String senderAddressDetail;//寄货人地址名称
+	private String senderAddressRoomNo;//寄货人地址名称
 	private Double senderLongitude;
 	private Double senderLatitude;
 
@@ -430,5 +431,13 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	public void setDeliveryDistance(Double deliveryDistance) {
 		this.deliveryDistance = deliveryDistance;
+	}
+
+	public String getSenderAddressRoomNo() {
+		return senderAddressRoomNo;
+	}
+
+	public void setSenderAddressRoomNo(String senderAddressRoomNo) {
+		this.senderAddressRoomNo = senderAddressRoomNo;
 	}
 }

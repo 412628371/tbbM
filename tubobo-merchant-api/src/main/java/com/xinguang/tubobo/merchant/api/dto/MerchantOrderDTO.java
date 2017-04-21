@@ -19,6 +19,59 @@ public class MerchantOrderDTO implements Serializable{
 	private Integer deliveryFee;//配送费
 	private Integer tipFee;//小费
 
+	@Override
+	public String toString() {
+		return "MerchantOrderDTO{" +
+				"orderNo='" + orderNo + '\'' +
+				", orderType='" + orderType + '\'' +
+				", orderTitle='" + orderTitle + '\'' +
+				", orderStatus='" + orderStatus + '\'' +
+				", payAmount=" + payAmount +
+				", deliveryFee=" + deliveryFee +
+				", tipFee=" + tipFee +
+				", payId=" + payId +
+				", payStatus='" + payStatus + '\'' +
+				", payMethod='" + payMethod + '\'' +
+				", payTime=" + payTime +
+				", expireSeconds=" + expireSeconds +
+				", senderId='" + senderId + '\'' +
+				", senderName='" + senderName + '\'' +
+				", senderPhone='" + senderPhone + '\'' +
+				", senderAddressProvince='" + senderAddressProvince + '\'' +
+				", senderAddressCity='" + senderAddressCity + '\'' +
+				", senderAddressDistrict='" + senderAddressDistrict + '\'' +
+				", senderAddressStreet='" + senderAddressStreet + '\'' +
+				", senderAddressDetail='" + senderAddressDetail + '\'' +
+				", senderAddress='" + senderAddress + '\'' +
+				", senderLongitude=" + senderLongitude +
+				", senderLatitude=" + senderLatitude +
+				", senderAvatar='" + senderAvatar + '\'' +
+				", receiverId='" + receiverId + '\'' +
+				", receiverName='" + receiverName + '\'' +
+				", receiverPhone='" + receiverPhone + '\'' +
+				", receiverAddressProvince='" + receiverAddressProvince + '\'' +
+				", receiverAddressCity='" + receiverAddressCity + '\'' +
+				", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
+				", receiverAddressStreet='" + receiverAddressStreet + '\'' +
+				", receiverAddressDetail='" + receiverAddressDetail + '\'' +
+				", receiverLongitude=" + receiverLongitude +
+				", receiverLatitude=" + receiverLatitude +
+				", dispatchRadius=" + dispatchRadius +
+				", orderTime=" + orderTime +
+				", cancelTime=" + cancelTime +
+				", closeTime=" + closeTime +
+				", expiredTime=" + expiredTime +
+				", grabOrderTime=" + grabOrderTime +
+				", grabItemTime=" + grabItemTime +
+				", finishOrderTime=" + finishOrderTime +
+				", createDate=" + createDate +
+				", updateDate=" + updateDate +
+				", riderId='" + riderId + '\'' +
+				", riderName='" + riderName + '\'' +
+				", riderPhone='" + riderPhone + '\'' +
+				'}';
+	}
+
 	private Long payId;//支付ID
 	private String payStatus;//支付状态
 	private String payMethod;//支付方式

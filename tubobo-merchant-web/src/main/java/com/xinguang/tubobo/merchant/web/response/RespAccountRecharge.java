@@ -15,4 +15,11 @@ public class RespAccountRecharge {
     public void setPayInfo(String payInfo) {
         this.payInfo = payInfo;
     }
+
+    @Override
+    public String toString() {
+        return "RespAccountRecharge{" +
+                "payInfo='" + payInfo + '\'' +
+                '}';
+    }
 }

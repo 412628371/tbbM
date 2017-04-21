@@ -33,4 +33,13 @@ public class RespSettingsQuery {
     public void setPushMsgOrderGrabed(Boolean pushMsgOrderGrabed) {
         this.pushMsgOrderGrabed = pushMsgOrderGrabed;
     }
+
+    @Override
+    public String toString() {
+        return "RespSettingsQuery{" +
+                "pushMsgOrderExpired=" + pushMsgOrderExpired +
+                ", pushMsgOrderFinished=" + pushMsgOrderFinished +
+                ", pushMsgOrderGrabed=" + pushMsgOrderGrabed +
+                '}';
+    }
 }

@@ -22,6 +22,7 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
     MerchantInfoService merchantInfoService;
     @Override
     protected MerchantInfoResponse doService(String userId, Object req) throws MerchantClientException {
+        logger.info("店铺信息查询，userId: {}",userId);
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (null == entity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
@@ -40,4 +41,5 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
     protected boolean needIdentify() {
         return false;
     }
+
 }

@@ -13,4 +13,11 @@ public class OrderDeliveryFeeResponse {
     public void setDeliveryFee(Double deliveryFee) {
         this.deliveryFee = deliveryFee;
     }
+
+    @Override
+    public String toString() {
+        return "OrderDeliveryFeeResponse{" +
+                "deliveryFee=" + deliveryFee +
+                '}';
+    }
 }

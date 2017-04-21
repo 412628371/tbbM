@@ -16,4 +16,11 @@ public class ReqOrderRiderLocation {
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
+
+    @Override
+    public String toString() {
+        return "ReqOrderRiderLocation{" +
+                "orderNo='" + orderNo + '\'' +
+                '}';
+    }
 }

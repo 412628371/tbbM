@@ -22,4 +22,12 @@ public class RespRiderLocation {
     public void setLongtitude(Double longtitude) {
         this.longtitude = longtitude;
     }
+
+    @Override
+    public String toString() {
+        return "RespRiderLocation{" +
+                "latitude=" + latitude +
+                ", longtitude=" + longtitude +
+                '}';
+    }
 }

@@ -4,6 +4,7 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -16,6 +17,8 @@ import com.xinguang.tubobo.merchant.web.request.ReqAccountPay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_REPEAT_PAY;
 
 /**
  * Created by Administrator on 2017/4/15.
@@ -31,7 +34,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
     private MerchantOrderService merchantOrderService;
     @Override
     protected EnumRespCode doService(String userId, ReqAccountPay req) throws MerchantClientException {
-        logger.info("支付请求：userId:{}, orderNo:{} , ",userId,req.getOrderNo());
+        logger.info("支付请求：userId:{}, request:{} , ",userId,req.toString());
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
         if (null == infoEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
@@ -39,6 +42,9 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         MerchantOrderEntity orderEntity = merchantOrderService.findByOrderNo(req.getOrderNo());
         if (null == orderEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
+        }
+        if(EnumPayStatus.PAID.getValue().equals(orderEntity.getPayStatus())){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_REPEAT_PAY);
         }
         PayRequest payRequest = new PayRequest();
         payRequest.setPwd(infoEntity.getPayPassword());

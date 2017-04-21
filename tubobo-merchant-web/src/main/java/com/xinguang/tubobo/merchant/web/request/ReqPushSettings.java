@@ -40,4 +40,14 @@ public class ReqPushSettings {
     public void setPushMsgOrderFinished(Boolean pushMsgOrderFinished) {
         this.pushMsgOrderFinished = pushMsgOrderFinished;
     }
+
+    @Override
+    public String toString() {
+        return "ReqPushSettings{" +
+                "deviceToken='" + deviceToken + '\'' +
+                ", pushMsgOrderExpired=" + pushMsgOrderExpired +
+                ", pushMsgOrderGrabed=" + pushMsgOrderGrabed +
+                ", pushMsgOrderFinished=" + pushMsgOrderFinished +
+                '}';
+    }
 }
