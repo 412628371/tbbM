@@ -28,8 +28,9 @@ public class OrderListController extends MerchantBaseController<ReqOrderList,Pag
     @Override
     protected PageDTO<RespOrderItem> doService(String userId, ReqOrderList req) throws MerchantClientException {
         MerchantOrderEntity entity = new MerchantOrderEntity();
+        entity.setUserId(userId);
         entity.setOrderStatus(req.getOrderStatus());
-        Page<MerchantOrderEntity> page = merchantOrderService.findMerchantOrderPage(userId,req.getPageNo(),req.getPageSize(),entity);
+        Page<MerchantOrderEntity> page = merchantOrderService.merchantQueryOrderPage(req.getPageNo(),req.getPageSize(),entity);
         List<RespOrderItem> list = new ArrayList<>(page.getPageNo());
         if (page!= null && page.getList() != null && page.getList().size() > 0) {
             for (MerchantOrderEntity task :page.getList()) {

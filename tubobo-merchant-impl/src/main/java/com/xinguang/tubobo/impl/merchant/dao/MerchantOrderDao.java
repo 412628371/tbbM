@@ -155,18 +155,14 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     /**
      * 商家订单分页查询
      */
-    public Page<MerchantOrderEntity> findMerchantOrderPage(String userId,int pageNo, int pageSize, MerchantOrderEntity entity){
+    public Page<MerchantOrderEntity> findMerchantOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
         Parameter parameter = new Parameter();
         StringBuffer sb = new StringBuffer();
         sb.append("select * from tubobo_merchant_order where del_flag = '0' ");
-        if (com.hzmux.hzcms.common.utils.StringUtils.isNotBlank(userId)){
-            sb.append("and  user_id = :userId  ");
-            parameter.put("userId", userId);
-        }
-        if (StringUtils.isNotBlank(entity.getSenderId())){
-            sb.append("and sender_id = :sender_id ");
-            parameter.put("sender_id", entity.getSenderId());
-        }
+        if (StringUtils.isNotBlank(entity.getUserId())){
+            sb.append("and user_id = :user_id  ");
+            parameter.put("user_id", entity.getUserId());
+         }
         if (StringUtils.isNotBlank(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", entity.getOrderStatus());

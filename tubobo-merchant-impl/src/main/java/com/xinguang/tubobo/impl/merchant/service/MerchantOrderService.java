@@ -244,10 +244,17 @@ public class MerchantOrderService extends BaseService {
 	}
 
 	/**
-	 * 商家订单分页查询
+	 * 商家查询订单分页（缓存）
 	 */
-	@Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#entity.getSenderId()+'_'+#pageNo+'_'+#pageSize+'_'+#entity.getOrderStatus()")
-	public Page<MerchantOrderEntity> findMerchantOrderPage(String userId,int pageNo, int pageSize, MerchantOrderEntity entity){
-		return merchantOrderDao.findMerchantOrderPage(userId,pageNo,pageSize,entity);
+	@Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#entity.getUserId()+'_'+#pageNo+'_'+#pageSize+'_'+#entity.getOrderStatus()")
+	public Page<MerchantOrderEntity> merchantQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
+		return merchantOrderDao.findMerchantOrderPage(pageNo,pageSize,entity);
+	}
+
+	/**
+	 * 后台查询分页（不缓存）
+	 */
+	public Page<MerchantOrderEntity> adminQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
+		return merchantOrderDao.findMerchantOrderPage(pageNo,pageSize,entity);
 	}
 }
