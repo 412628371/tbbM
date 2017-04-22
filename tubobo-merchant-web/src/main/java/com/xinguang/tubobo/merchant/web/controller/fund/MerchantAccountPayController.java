@@ -37,7 +37,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
     private TbbAccountService tbbAccountService;
     @Autowired
     private MerchantOrderService merchantOrderService;
-    @Autowired
+    @Resource
     Config config;
     @Override
     protected RespOrderPay doService(String userId, ReqAccountPay req) throws MerchantClientException {

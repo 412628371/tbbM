@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.Resource;
+
 /**
  * Created by Administrator on 2017/4/14.
  */
@@ -21,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class OrderDetailController extends MerchantBaseController<ReqOrderDetail,RespOrderDetail> {
     @Autowired
     MerchantOrderService merchantOrderService;
-    @Autowired
+    @Resource
     Config config;
     @Override
     protected RespOrderDetail doService(String userId, ReqOrderDetail req) throws MerchantClientException {

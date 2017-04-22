@@ -23,6 +23,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	private String cancelReason;
 	private Long payId;
 	private String userId;//商家ID
 	private String orderNo;//订单No
@@ -439,5 +440,13 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	public void setSenderAddressRoomNo(String senderAddressRoomNo) {
 		this.senderAddressRoomNo = senderAddressRoomNo;
+	}
+
+	public String getCancelReason() {
+		return cancelReason;
+	}
+
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
 	}
 }

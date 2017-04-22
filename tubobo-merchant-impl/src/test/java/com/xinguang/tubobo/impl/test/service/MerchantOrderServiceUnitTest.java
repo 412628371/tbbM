@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.test.service;
 
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
@@ -43,7 +44,7 @@ public class MerchantOrderServiceUnitTest extends BaseJunit4Test {
 //        int expireResult = merchantOrderService.orderExpire("qqq");
 //        MerchantOrderEntity entity2 = merchantOrderService.findByOrderNo("qqq");
 //        Assert.assertEquals(EnumMerchantOrderStatus.OVERTIME.getValue(),entity2.getOrderStatus());
-        boolean cancelCount = merchantOrderService.meachantCancel("1234","qqq");
+        boolean cancelCount = merchantOrderService.cancelOrder("1234","qqq");
         Assert.assertEquals(true,cancelCount);
         int grabCount = merchantOrderService.riderGrabOrder("","111","hhh","18911111111","qqq",new Date());
         Assert.assertEquals(1,grabCount);

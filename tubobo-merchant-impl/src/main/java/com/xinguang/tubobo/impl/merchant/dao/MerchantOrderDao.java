@@ -9,6 +9,7 @@ import com.hzmux.hzcms.common.persistence.BaseDao;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
@@ -47,9 +48,12 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @return
      */
     public int orderExpire(String orderNo){
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, update_date = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
+        String sqlString = "update tubobo_merchant_order set order_status = :p1," +
+                " update_date = :p2, cancel_time= :p3, cancel_reason= :p4  where order_no = :p5 and " +
+                "order_status = :p6 and del_flag = '0' ";
         int count =  updateBySql(sqlString,
-                new Parameter(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),new Date(),orderNo,
+                new Parameter(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),new Date(),new Date(),
+                        EnumCancelReason.GRAB_OVERTIME.getValue(),orderNo,
                         EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
         getSession().clear();
         return count;
@@ -61,10 +65,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @return
      */
     public int payExpire(String orderNo){
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, update_date = :p2 where order_no = :p3 and order_status = :p4 and del_flag = '0' ";
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, update_date = :p2 ,cancel_reason = :p3 where order_no = :p4 and order_status = :p5 and del_flag = '0' ";
         int count =  updateBySql(sqlString,
-                new Parameter(EnumMerchantOrderStatus.CANCEL_PAY_OVERTIME.getValue(),new Date(),orderNo,
-                        EnumMerchantOrderStatus.INIT.getValue()));
+                new Parameter(EnumMerchantOrderStatus.CANCEL_PAY_OVERTIME.getValue(),new Date(),EnumCancelReason.PAY_OVERTIME.getValue(),
+                        orderNo,EnumMerchantOrderStatus.INIT.getValue()));
         getSession().clear();
         return count;
     }
@@ -136,10 +140,12 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param orderNo
      * @return
      */
-    public boolean merchantCancel(String merchantId,String orderNo){
+    public boolean merchantCancel(String merchantId,String orderNo,String cancelReason){
         String[] orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 where sender_id = :p3 and order_no = :p4 and order_status in (:p5) and del_flag = '0' ";
-        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),new Date(),merchantId,orderNo,orderStatusArr));
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 where sender_id = :p4 and order_no = :p5 and order_status in (:p6) and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
+                new Date(),cancelReason,merchantId,
+                orderNo,orderStatusArr));
         getSession().clear();
         return count == 1;
     }

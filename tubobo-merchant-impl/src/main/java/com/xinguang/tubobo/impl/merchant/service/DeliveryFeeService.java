@@ -8,6 +8,8 @@ import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 
 /**
  * Created by Administrator on 2017/4/14.
@@ -17,7 +19,7 @@ public class DeliveryFeeService  {
 
     @Autowired
     MerchantInfoService merchantInfoService;
-    @Autowired
+    @Resource
     Config config;
 
     public double sumDeliveryDistance(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {

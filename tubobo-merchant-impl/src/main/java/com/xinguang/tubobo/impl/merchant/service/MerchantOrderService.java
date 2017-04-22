@@ -15,6 +15,7 @@ import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.TaskCenterToMerchantServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
@@ -148,12 +149,13 @@ public class MerchantOrderService extends BaseService {
 	 */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public boolean meachantCancel(String merchantId,String orderNo){
+	public boolean cancelOrder(String merchantId,String orderNo){
 		MerchantOrderEntity entity = merchantOrderDao.findByOrderNo(orderNo);
 		if (null == entity )
 			return false;
 		if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
-			boolean cancelResult = merchantOrderDao.merchantCancel(merchantId,orderNo);
+			boolean cancelResult = merchantOrderDao.merchantCancel(merchantId,orderNo,
+					EnumCancelReason.PAY_MERCHANT.getValue());
 			if (!cancelResult){
 				logger.error("商家取消订单，更改订单状态出错，userId: "+merchantId+" orderNo: "+orderNo);
 			}
@@ -170,7 +172,8 @@ public class MerchantOrderService extends BaseService {
 					if (resp != null || resp.isSucceeded()){
 						logger.error("订单取消，资金平台退款成功，userId: "+merchantId+" orderNo: "+orderNo+
 								"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-						boolean cancelResult = merchantOrderDao.merchantCancel(merchantId,orderNo);
+						boolean cancelResult = merchantOrderDao.merchantCancel(merchantId,orderNo,
+								EnumCancelReason.GRAB_MERCHANT.getValue());
 						if (!cancelResult){
 							logger.error("商家取消订单，更改订单状态出错，userId: "+merchantId+" orderNo: "+orderNo);
 						}

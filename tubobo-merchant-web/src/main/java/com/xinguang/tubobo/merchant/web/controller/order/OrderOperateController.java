@@ -26,7 +26,7 @@ public class OrderOperateController extends MerchantBaseController<ReqOrderOpera
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
         if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())){
-            boolean count = merchantOrderService.meachantCancel(userId,req.getOrderNo());
+            boolean count = merchantOrderService.cancelOrder(userId,req.getOrderNo());
             if (!count){
                 throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_CANCEL);
             }
