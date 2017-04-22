@@ -17,6 +17,8 @@ public enum EnumRespCode {
 	MERCHANT_RIDER_LOCATION_NOT_FOUND("10203", "未找到骑手位置"),
 	MERCHANT_REPEAT_PAY("10204", "订单已支付，不能重复支付"),
 	MERCHANT_CANT_ORDER("10205", "未认证成功或被冻结的用户不能发送订单"),
+	MERCHANT_UNPAY_CNACELING("10206", "订单支付超时,取消中"),
+	MERCHANT_UNGRAB_CANCELING("10207", "订单无人接单超时,取消中"),
 
 
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),

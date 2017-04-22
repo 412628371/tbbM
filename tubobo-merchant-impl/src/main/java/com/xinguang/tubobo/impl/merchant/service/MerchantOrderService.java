@@ -132,7 +132,7 @@ public class MerchantOrderService extends BaseService {
 			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getDeliveryFee()).intValue());
 		}
 		if (entity.getTipFee() != null){
-			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
+			merchantOrderDTO.setTipFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
 		}
 		merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
 				+ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
