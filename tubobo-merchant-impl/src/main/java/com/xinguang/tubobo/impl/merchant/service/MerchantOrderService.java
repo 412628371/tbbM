@@ -150,7 +150,7 @@ public class MerchantOrderService extends BaseService {
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
 	public boolean cancelOrder(String merchantId,String orderNo){
-		MerchantOrderEntity entity = merchantOrderDao.findByOrderNo(orderNo);
+		MerchantOrderEntity entity = merchantOrderDao.findByMerchantIdAndOrderNo(merchantId,orderNo);
 		if (null == entity )
 			return false;
 		if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
