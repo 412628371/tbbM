@@ -104,7 +104,7 @@ public class Config {
     @DisconfFileItem(name = "merchant.deliveryMills.max", associateField = "maxDeliveryMills")
     public Integer getMaxDeliveryMills() {
         if (maxDeliveryMills == null){
-            return 50000;
+            return 4000;
         }
         return maxDeliveryMills;
     }
