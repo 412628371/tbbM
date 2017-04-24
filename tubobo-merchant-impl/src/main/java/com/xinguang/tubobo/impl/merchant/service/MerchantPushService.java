@@ -26,12 +26,13 @@ public class MerchantPushService {
     @Autowired
     MerchantSettingsService settingsService;
 
-    public void pushToUser(String userId,String content){
+    public void pushToUser(String userId,String content,String title){
         List<String> list = new ArrayList<>(1);
         list.add(userId);
         Options options = Options.builder()
                 .setTargetType(Constance.TargetType.ACCOUNT)
                 .setDeviceType(Constance.DeviceType.ALL)
+                .setTitle(title)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         pushService.push(content,pushAppKey,list,options);
@@ -45,7 +46,7 @@ public class MerchantPushService {
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderGrabed())
             return;
-        pushToUser(userId,config.getNoticeGrabedTemplate());
+        pushToUser(userId,config.getNoticeGrabedTemplate(),config.getNoticeGrabedTemplate());
         logger.info("订单被接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTemplate());
     }
 
@@ -57,7 +58,7 @@ public class MerchantPushService {
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderFinished())
             return;
-        pushToUser(userId,config.getNoticeFinishedTemplate());
+        pushToUser(userId,config.getNoticeFinishedTemplate(),config.getNoticeFinishedTemplate());
         logger.info("订单配送完成，通知商家。userId: {}, content: {}",userId,config.getNoticeFinishedTemplate());
     }
 
@@ -69,7 +70,7 @@ public class MerchantPushService {
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderExpired())
             return;
-        pushToUser(userId,config.getNoticeGrabedTimeoutTemplate());
+        pushToUser(userId,config.getNoticeGrabedTimeoutTemplate(),config.getNoticeGrabedTimeoutTemplate());
         logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTimeoutTemplate());
     }
 }
