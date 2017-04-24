@@ -68,15 +68,6 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String receiverAddressDetail;//收货人地址名称
 	private String receiverAddressRoomNo;//收货人地址名称
 
-	public String getReceiverAddressRoomNo() {
-		return receiverAddressRoomNo;
-	}
-
-	public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
-		this.receiverAddressRoomNo = receiverAddressRoomNo;
-	}
-
-
 	private Double receiverLongitude;
 	private Double receiverLatitude;
 	private Double deliveryDistance;
@@ -86,6 +77,14 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String riderId;
 	private String riderName;
 	private String riderPhone;
+
+	public String getReceiverAddressRoomNo() {
+		return receiverAddressRoomNo;
+	}
+
+	public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
+		this.receiverAddressRoomNo = receiverAddressRoomNo;
+	}
 
 	public Long getPayId() {
 		return payId;

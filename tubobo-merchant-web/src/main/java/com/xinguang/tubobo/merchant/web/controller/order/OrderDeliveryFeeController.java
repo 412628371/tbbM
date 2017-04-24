@@ -21,7 +21,7 @@ public class OrderDeliveryFeeController extends MerchantBaseController<OrderDeli
     @Override
     protected OrderDeliveryFeeResponse doService(String userId, OrderDeliveryFeeRequest req) throws MerchantClientException {
         logger.info("计算配送费请求, userId:{}, OrderDeliveryFeeRequest:{}",userId,req.toString());
-        Double fee = deliveryFeeService.sumDeliveryDistance(userId,req.getReceiverLatitude(),
+        Double fee = deliveryFeeService.sumDeliveryFeeByLocation(userId,req.getReceiverLatitude(),
                 req.getReceiverLongitude(),req.getGoodsType());
         OrderDeliveryFeeResponse response = new OrderDeliveryFeeResponse();
         response.setDeliveryFee(fee);

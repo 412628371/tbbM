@@ -21,7 +21,7 @@ public class RespOrderDetail implements Serializable{
     private String orderStatus;//订单状态
     private String orderRemark;
 
-    private int payAmount;//支付总金额
+    private Double payAmount;//支付总金额
     private Double deliveryFee;//配送费
     private Double tipFee;//小费
     private String payStatus;//支付状态
@@ -45,8 +45,8 @@ public class RespOrderDetail implements Serializable{
     private String receiverAddressStreet;//收货人地址名称
     private String receiverAddressDetail;//收货人地址名称
     private String receiverAddressRoomNo;//收货人地址名称
-    private double receiverLongitude;
-    private double receiverLatitude;
+    private Double receiverLongitude;
+    private Double receiverLatitude;
 
     private String riderName;
     private String riderPhone;
@@ -88,12 +88,20 @@ public class RespOrderDetail implements Serializable{
         this.orderRemark = orderRemark;
     }
 
-    public int getPayAmount() {
+    public Double getPayAmount() {
         return payAmount;
     }
 
-    public void setPayAmount(int payAmount) {
+    public void setPayAmount(Double payAmount) {
         this.payAmount = payAmount;
+    }
+
+    public void setReceiverLongitude(Double receiverLongitude) {
+        this.receiverLongitude = receiverLongitude;
+    }
+
+    public void setReceiverLatitude(Double receiverLatitude) {
+        this.receiverLatitude = receiverLatitude;
     }
 
     public Double getDeliveryFee() {

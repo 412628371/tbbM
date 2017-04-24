@@ -24,6 +24,10 @@ public class Config {
     private String noticeGrabedTemplate;
     private String noticeGrabedTimeoutTemplate;
     private String noticeFinishedTemplate;
+    private String noticeGrabedTitle;
+    private String noticeGrabedTimeoutTitle;
+    private String noticeFinishedTitle;
+
 
     @DisconfFileItem(name = "dispatch.radius.mils", associateField = "dispatchRadiusMils")
     public Double getDispatchRadiusMils() {
@@ -100,12 +104,39 @@ public class Config {
     @DisconfFileItem(name = "merchant.deliveryMills.max", associateField = "maxDeliveryMills")
     public Integer getMaxDeliveryMills() {
         if (maxDeliveryMills == null){
-            return 50000;
+            return 4000;
         }
         return maxDeliveryMills;
     }
 
     public void setMaxDeliveryMills(Integer maxDeliveryMills) {
         this.maxDeliveryMills = maxDeliveryMills;
+    }
+
+    @DisconfFileItem(name = "merchant.notice.grabed.title", associateField = "noticeGrabedTitle")
+    public String getNoticeGrabedTitle() {
+        return noticeGrabedTitle;
+    }
+
+    public void setNoticeGrabedTitle(String noticeGrabedTitle) {
+        this.noticeGrabedTitle = noticeGrabedTitle;
+    }
+
+    @DisconfFileItem(name = "merchant.notice.grabTimeout.title", associateField = "noticeGrabedTimeoutTitle")
+    public String getNoticeGrabedTimeoutTitle() {
+        return noticeGrabedTimeoutTitle;
+    }
+
+    public void setNoticeGrabedTimeoutTitle(String noticeGrabedTimeoutTitle) {
+        this.noticeGrabedTimeoutTitle = noticeGrabedTimeoutTitle;
+    }
+
+    @DisconfFileItem(name = "merchant.notice.finished.title", associateField = "noticeFinishedTitle")
+    public String getNoticeFinishedTitle() {
+        return noticeFinishedTitle;
+    }
+
+    public void setNoticeFinishedTitle(String noticeFinishedTitle) {
+        this.noticeFinishedTitle = noticeFinishedTitle;
     }
 }

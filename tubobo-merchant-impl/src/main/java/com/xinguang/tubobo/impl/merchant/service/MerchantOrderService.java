@@ -78,7 +78,7 @@ public class MerchantOrderService extends BaseService {
 	@Transactional(readOnly = false)
 	public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
 		MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
-		double distance = deliveryFeeService.sumDeliveryDistance(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude(),null);
+		double distance = deliveryFeeService.sumDeliveryDistance(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude());
 		//TODO 按规则生成orderNo.
 		String orderNo = IdGen.uuid();
 		entity.setOrderNo(orderNo);
@@ -115,27 +115,13 @@ public class MerchantOrderService extends BaseService {
 	 */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public void merchantPay(String merchantId,String orderNo,long payId) throws MerchantClientException {
+	public void merchantPay(MerchantOrderDTO merchantOrderDTO,String merchantId,String orderNo,long payId) throws MerchantClientException {
 		Date payDate = new Date();
 		int count = merchantOrderDao.merchantPay(merchantId,orderNo,payId,payDate);
 		if (count != 1){
 			logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",merchantId,orderNo);
 			throw new MerchantClientException(EnumRespCode.FAIL);
 		}
-		MerchantOrderEntity entity = merchantOrderDao.findByOrderNo(orderNo);
-		MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
-		BeanUtils.copyProperties(entity,merchantOrderDTO);
-		if (entity.getPayAmount() != null){
-			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
-		}
-		if (entity.getDeliveryFee() != null){
-			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getDeliveryFee()).intValue());
-		}
-		if (entity.getTipFee() != null){
-			merchantOrderDTO.setTipFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
-		}
-		merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
-				+ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
 		try {
 			taskCenterToMerchantServiceInterface.merchantOrder(merchantOrderDTO);
 		}catch (Exception e){

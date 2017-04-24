@@ -19,6 +19,7 @@ public enum EnumRespCode {
 	MERCHANT_CANT_ORDER("10205", "未认证成功或被冻结的用户不能发送订单"),
 	MERCHANT_UNPAY_CNACELING("10206", "订单支付超时,取消中"),
 	MERCHANT_UNGRAB_CANCELING("10207", "订单无人接单超时,取消中"),
+	MERCHANT_CANT_PAY("10208", "订单状态不允许支付"),
 
 
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
@@ -29,7 +30,9 @@ public enum EnumRespCode {
 	ACCOUNT_INFO_NOT_EXIST("30020", "账户信息不存在"),
 	ACCOUNT_WITHDRAW_APPLY_FAIL("30030", "提现申请操作失败"),
 	ACCOUNT_WITHDRAW_COMFIRM_FAIL("30040", "提现申请确认操作失败"),
-	ACCOUNT_PAY_FAIL("30050", "支付操作失败"),
+	ACCOUNT_NOT_ENOUGH("30050", "余额不足，支付失败"),
+	ACCOUNT_PWD_ERROR("30051", "密码错误，支付失败"),
+	ACCOUNT_PAY_FAIL("30052", "支付失败"),
 	ACCOUNT_RECHARGE_FAIL("30060", "充值操作失败");
 
 
