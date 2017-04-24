@@ -66,6 +66,17 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String receiverAddressDistrict;//收货人地址名称
 	private String receiverAddressStreet;//收货人地址名称
 	private String receiverAddressDetail;//收货人地址名称
+	private String receiverAddressRoomNo;//收货人地址名称
+
+	public String getReceiverAddressRoomNo() {
+		return receiverAddressRoomNo;
+	}
+
+	public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
+		this.receiverAddressRoomNo = receiverAddressRoomNo;
+	}
+
+
 	private Double receiverLongitude;
 	private Double receiverLatitude;
 	private Double deliveryDistance;

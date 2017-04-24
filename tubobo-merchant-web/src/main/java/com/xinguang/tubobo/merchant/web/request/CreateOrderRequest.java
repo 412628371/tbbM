@@ -21,6 +21,7 @@ public class CreateOrderRequest implements Serializable {
 //    @Size(max = 100,message = "区长度过大")
     private String receiverAddressDistrict;//地址名称
     private String receiverAddressStreet;//地址名称
+    private String receiverAddressRoomNo;//地址名称
     private String receiverGdPoiId;
 //TODO
     @Range(min = 1,max = 100000,message = "配送费错误")

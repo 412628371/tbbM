@@ -44,6 +44,7 @@ public class RespOrderDetail implements Serializable{
     private String receiverAddressDistrict;//收货人地址名称
     private String receiverAddressStreet;//收货人地址名称
     private String receiverAddressDetail;//收货人地址名称
+    private String receiverAddressRoomNo;//收货人地址名称
     private double receiverLongitude;
     private double receiverLatitude;
 
@@ -293,6 +294,14 @@ public class RespOrderDetail implements Serializable{
 
     public void setGrabExpiredStartTime(Date grabExpiredStartTime) {
         this.grabExpiredStartTime = grabExpiredStartTime;
+    }
+
+    public String getReceiverAddressRoomNo() {
+        return receiverAddressRoomNo;
+    }
+
+    public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
+        this.receiverAddressRoomNo = receiverAddressRoomNo;
     }
 
     @Override
