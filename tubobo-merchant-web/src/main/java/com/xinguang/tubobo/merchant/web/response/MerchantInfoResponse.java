@@ -7,6 +7,7 @@ import java.io.Serializable;
  * Created by Administrator on 2017/4/13.
  */
 public class MerchantInfoResponse implements Serializable{
+    private String userId;
     private String addressProvince;//详细地址
     private String addressCity;//地址缩略
     private String addressDistrict;//地址名称
@@ -27,6 +28,14 @@ public class MerchantInfoResponse implements Serializable{
     private String idCardNo;
     private String realName;
     private String merchantName;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getMerchantStatus() {
         return merchantStatus;

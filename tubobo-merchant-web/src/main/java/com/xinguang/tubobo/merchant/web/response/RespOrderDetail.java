@@ -7,6 +7,16 @@ import java.util.Date;
  * Created by Administrator on 2017/4/14.
  */
 public class RespOrderDetail implements Serializable{
+    private String cancelReason;//
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
+
     private String orderNo;//订单No
     private String orderStatus;//订单状态
     private String orderRemark;

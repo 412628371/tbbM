@@ -33,7 +33,8 @@ public class MerchantPushService {
                 .setTargetType(Constance.TargetType.ACCOUNT)
                 .setDeviceType(Constance.DeviceType.ALL)
                 .build();
-        pushService.push(content,config.getAliPushAppKey(),list,options);
+        Long pushAppKey = config.getAliPushAppKey();
+        pushService.push(content,pushAppKey,list,options);
     }
 
     /**

@@ -30,7 +30,7 @@ public enum EnumRespCode {
 	ACCOUNT_WITHDRAW_APPLY_FAIL("30030", "提现申请操作失败"),
 	ACCOUNT_WITHDRAW_COMFIRM_FAIL("30040", "提现申请确认操作失败"),
 	ACCOUNT_PAY_FAIL("30050", "支付操作失败"),
-	ACCOUNT_RECHARGE_FAIL("30060", "支付操作失败");
+	ACCOUNT_RECHARGE_FAIL("30060", "充值操作失败");
 
 
 
