@@ -10,100 +10,21 @@ import java.util.Date;
 
 public class MerchantOrderDTO implements Serializable{
 
+	private String cancelReason;
+	private Long payId;
+	private String userId;//商家ID
 	private String orderNo;//订单No
-	private String orderType;
-	private String orderTitle;
 	private String orderStatus;//订单状态
+	private String orderType;
+	private String orderRemark;
 
+	private Integer expireMilSeconds;//过期毫秒数
 	private Integer payAmount;//支付总金额
 	private Integer deliveryFee;//配送费
 	private Integer tipFee;//小费
-
-	@Override
-	public String toString() {
-		return "MerchantOrderDTO{" +
-				"orderNo='" + orderNo + '\'' +
-				", orderType='" + orderType + '\'' +
-				", orderTitle='" + orderTitle + '\'' +
-				", orderStatus='" + orderStatus + '\'' +
-				", payAmount=" + payAmount +
-				", deliveryFee=" + deliveryFee +
-				", tipFee=" + tipFee +
-				", payId=" + payId +
-				", payStatus='" + payStatus + '\'' +
-				", payMethod='" + payMethod + '\'' +
-				", payTime=" + payTime +
-				", expireSeconds=" + expireSeconds +
-				", senderId='" + senderId + '\'' +
-				", senderName='" + senderName + '\'' +
-				", senderPhone='" + senderPhone + '\'' +
-				", senderAddressProvince='" + senderAddressProvince + '\'' +
-				", senderAddressCity='" + senderAddressCity + '\'' +
-				", senderAddressDistrict='" + senderAddressDistrict + '\'' +
-				", senderAddressStreet='" + senderAddressStreet + '\'' +
-				", senderAddressDetail='" + senderAddressDetail + '\'' +
-				", senderAddress='" + senderAddress + '\'' +
-				", senderLongitude=" + senderLongitude +
-				", senderLatitude=" + senderLatitude +
-				", senderAvatar='" + senderAvatar + '\'' +
-				", receiverId='" + receiverId + '\'' +
-				", receiverName='" + receiverName + '\'' +
-				", receiverPhone='" + receiverPhone + '\'' +
-				", receiverAddressProvince='" + receiverAddressProvince + '\'' +
-				", receiverAddressCity='" + receiverAddressCity + '\'' +
-				", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
-				", receiverAddressStreet='" + receiverAddressStreet + '\'' +
-				", receiverAddressDetail='" + receiverAddressDetail + '\'' +
-				", receiverLongitude=" + receiverLongitude +
-				", receiverLatitude=" + receiverLatitude +
-				", dispatchRadius=" + dispatchRadius +
-				", orderTime=" + orderTime +
-				", cancelTime=" + cancelTime +
-				", closeTime=" + closeTime +
-				", expiredTime=" + expiredTime +
-				", grabOrderTime=" + grabOrderTime +
-				", grabItemTime=" + grabItemTime +
-				", finishOrderTime=" + finishOrderTime +
-				", createDate=" + createDate +
-				", updateDate=" + updateDate +
-				", riderId='" + riderId + '\'' +
-				", riderName='" + riderName + '\'' +
-				", riderPhone='" + riderPhone + '\'' +
-				'}';
-	}
-
-	private Long payId;//支付ID
 	private String payStatus;//支付状态
 	private String payMethod;//支付方式
 	private Date payTime;//付款时间
-
-	private Integer expireSeconds;//过期时间 单位秒
-
-	private String senderId;//发货人id
-	private String senderName;//发货人名称
-	private String senderPhone;//发货人联系方式
-	private String senderAddressProvince;//
-	private String senderAddressCity;//
-	private String senderAddressDistrict;//
-	private String senderAddressStreet;//
-	private String senderAddressDetail;//
-	private String senderAddress;//发货人地址
-	private Double senderLongitude;
-	private Double senderLatitude;
-	private String senderAvatar;
-
-	private String receiverId;//收货人id
-	private String receiverName;//收货人姓名
-	private String receiverPhone;//收货人联系方式
-	private String receiverAddressProvince;//收货人省
-	private String receiverAddressCity;//收货人市
-	private String receiverAddressDistrict;//收货人区
-	private String receiverAddressStreet;//收货人街道
-	private String receiverAddressDetail;//收货人市详细地址
-	private Double receiverLongitude;
-	private Double receiverLatitude;
-
-	private Double dispatchRadius;//分派半径，单位：米
 
 	private Date orderTime;//下单时间
 	private Date cancelTime;//取消时间
@@ -112,12 +33,44 @@ public class MerchantOrderDTO implements Serializable{
 	private Date grabOrderTime;//接单时间
 	private Date grabItemTime;//取货时间
 	private Date finishOrderTime;//送达时间
-	protected Date createDate;
-	protected Date updateDate;
+
+	private String senderId;//发货人id
+	private String senderName;//发货人名称
+	private String senderPhone;//发货人联系方式
+	private String senderAddressProvince;//收货人详细地址
+	private String senderAddressCity;//寄货人地址名称
+	private String senderAddressDistrict;//寄货人地址名称
+	private String senderAddressStreet;//寄货人地址名称
+	private String senderAddressDetail;//寄货人地址名称
+	private String senderAddressRoomNo;//寄货人地址名称
+	private Double senderLongitude;
+	private Double senderLatitude;
+	private String  senderAvatar;
+
+	private String receiverId;//收货人id
+	private String receiverName;//收货人姓名
+	private String receiverPhone;//收货人联系方式
+	private String receiverAddressProvince;//收货人详细地址
+	private String receiverAddressCity;//收货人地址名称
+	private String receiverAddressDistrict;//收货人地址名称
+	private String receiverAddressStreet;//收货人地址名称
+	private String receiverAddressDetail;//收货人地址名称
+	private String receiverAddressRoomNo;//收货人地址名称
+
+	private Double receiverLongitude;
+	private Double receiverLatitude;
+	private Double deliveryDistance;
+
+	private Double dispatchRadius;//分派半径，单位：米
 
 	private String riderId;
 	private String riderName;
 	private String riderPhone;
+
+	protected Date createDate;
+	protected String createBy;
+	protected Date updateDate;
+	protected String updateBy;
 
 	public String getPayStatus() {
 		return payStatus;
@@ -263,13 +216,6 @@ public class MerchantOrderDTO implements Serializable{
 		this.orderType = orderType;
 	}
 
-	public String getOrderTitle() {
-		return orderTitle;
-	}
-
-	public void setOrderTitle(String orderTitle) {
-		this.orderTitle = orderTitle;
-	}
 
 	public Integer getPayAmount() {
 		return payAmount;
@@ -303,12 +249,60 @@ public class MerchantOrderDTO implements Serializable{
 		this.payId = payId;
 	}
 
-	public Integer getExpireSeconds() {
-		return expireSeconds;
+	public String getCancelReason() {
+		return cancelReason;
 	}
 
-	public void setExpireSeconds(Integer expireSeconds) {
-		this.expireSeconds = expireSeconds;
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getOrderRemark() {
+		return orderRemark;
+	}
+
+	public void setOrderRemark(String orderRemark) {
+		this.orderRemark = orderRemark;
+	}
+
+	public Integer getExpireMilSeconds() {
+		return expireMilSeconds;
+	}
+
+	public void setExpireMilSeconds(Integer expireMilSeconds) {
+		this.expireMilSeconds = expireMilSeconds;
+	}
+
+	public Double getDeliveryDistance() {
+		return deliveryDistance;
+	}
+
+	public void setDeliveryDistance(Double deliveryDistance) {
+		this.deliveryDistance = deliveryDistance;
+	}
+
+	public String getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	public String getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
 	}
 
 	public String getSenderId() {
@@ -375,13 +369,6 @@ public class MerchantOrderDTO implements Serializable{
 		this.senderAddressDetail = senderAddressDetail;
 	}
 
-	public String getSenderAddress() {
-		return senderAddress;
-	}
-
-	public void setSenderAddress(String senderAddress) {
-		this.senderAddress = senderAddress;
-	}
 
 	public Double getSenderLongitude() {
 		return senderLongitude;
@@ -486,4 +473,30 @@ public class MerchantOrderDTO implements Serializable{
 	public void setDispatchRadius(Double dispatchRadius) {
 		this.dispatchRadius = dispatchRadius;
 	}
+
+	public String getSenderAddressRoomNo() {
+		return senderAddressRoomNo;
+	}
+
+	public void setSenderAddressRoomNo(String senderAddressRoomNo) {
+		this.senderAddressRoomNo = senderAddressRoomNo;
+	}
+
+	public String getSenderAvatar() {
+		return senderAvatar;
+	}
+
+	public void setSenderAvatar(String senderAvatar) {
+		this.senderAvatar = senderAvatar;
+	}
+
+	public String getReceiverAddressRoomNo() {
+		return receiverAddressRoomNo;
+	}
+
+	public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
+		this.receiverAddressRoomNo = receiverAddressRoomNo;
+	}
+
+
 }

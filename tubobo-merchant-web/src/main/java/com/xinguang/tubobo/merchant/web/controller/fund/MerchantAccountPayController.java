@@ -2,9 +2,12 @@ package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayRequest;
+import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
+import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -16,6 +19,7 @@ import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountPay;
 import com.xinguang.tubobo.merchant.web.response.RespOrderPay;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import java.util.Date;
 
+import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_CANT_PAY;
 import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_REPEAT_PAY;
 
 /**
@@ -53,17 +58,19 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if(EnumPayStatus.PAID.getValue().equals(orderEntity.getPayStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_REPEAT_PAY);
         }
-        PayRequest payRequest = new PayRequest();
-        payRequest.setPwd(infoEntity.getPayPassword());
+        if (EnumMerchantOrderStatus.CANCEL.getValue().equals(orderEntity.getPayStatus())){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_PAY);
+        }
+        PayWithOutPwdRequest payRequest = new PayWithOutPwdRequest();
+//        payRequest.setPwd(infoEntity.getPayPassword());
         payRequest.setAccountId(infoEntity.getAccountId());
         payRequest.setAmount(ConvertUtil.convertYuanToFen(orderEntity.getPayAmount()));
         logger.info("支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payRequest.getAmount());
-//        payRequest.setOrderId();
-        TbbAccountResponse<PayInfo> response = tbbAccountService.pay(payRequest);
+        TbbAccountResponse<PayInfo> response = tbbAccountService.payWithOutPwd(payRequest);
         if (response != null && response.isSucceeded()){
             long payId = response.getData().getId();
-
-            merchantOrderService.merchantPay(infoEntity.getUserId(),req.getOrderNo(),payId);
+            MerchantOrderDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
+            merchantOrderService.merchantPay(orderDTO,infoEntity.getUserId(),req.getOrderNo(),payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
             RespOrderPay respOrderPay = new RespOrderPay();
@@ -75,10 +82,30 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
                 logger.error("pay  FAIL.orderNo:{}, accountId:{}}",
                         req.getOrderNo(),infoEntity.getAccountId());
             }else {
-                logger.error("pay  FAIL.orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
+                if (response.getErrorCode().equals(TbbAccountResponse.ErrorCode.ERROR_AMOUNT_NOT_ENOUGH)){
+                    throw  new MerchantClientException(EnumRespCode.ACCOUNT_NOT_ENOUGH);
+                }
+                logger.error("pay  FAIL.,余额不足。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
                         req.getOrderNo(),infoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
             }
             throw  new MerchantClientException(EnumRespCode.ACCOUNT_PAY_FAIL);
         }
+    }
+    private MerchantOrderDTO buildMerchantOrderDTO(MerchantOrderEntity entity,MerchantInfoEntity infoEntity){
+        MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
+        BeanUtils.copyProperties(entity,merchantOrderDTO);
+        if (entity.getPayAmount() != null){
+            merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
+        }
+        if (entity.getDeliveryFee() != null){
+            merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getDeliveryFee()).intValue());
+        }
+        if (entity.getTipFee() != null){
+            merchantOrderDTO.setTipFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
+        }
+        merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
+                +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
+        merchantOrderDTO.setSenderAvatar(infoEntity.getAvatarUrl());
+        return merchantOrderDTO;
     }
 }

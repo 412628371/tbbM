@@ -22,7 +22,29 @@ public class DeliveryFeeService  {
     @Resource
     Config config;
 
-    public double sumDeliveryDistance(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
+    public double sumDeliveryFeeByDistance(String userId,double distance,String goodsType) throws MerchantClientException {
+//        double distance = sumDeliveryDistance(userId);
+        double fee = 4;
+        //TODO 配置,
+        if (distance > 1000){
+            distance-=1000;
+        }
+        double overDistance = Math.round((distance/1000))*2;
+        fee += overDistance;
+        return fee;
+    }
+    public double sumDeliveryFeeByLocation(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
+        double distance = sumDeliveryDistance(userId,lat,lng);
+        double fee = 4;
+        //TODO 配置,
+        if (distance > 1000){
+            distance-=1000;
+        }
+        double overDistance = Math.round((distance/1000))*2;
+        fee += overDistance;
+        return fee;
+    }
+    public double sumDeliveryDistance(String userId,Double lat,Double lng) throws MerchantClientException {
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (null == entity)
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
@@ -33,13 +55,6 @@ public class DeliveryFeeService  {
         if (distance > config.getMaxDeliveryMills()){
             throw new MerchantClientException(EnumRespCode.MERCHANT_DELIVERY_DISTANCE_TOO_FAR);
         }
-        double fee = 4;
-        //TODO 配置,
-        if (distance > 1000){
-            distance-=1000;
-        }
-        double overDistance = Math.round((distance/1000))*2;
-        fee += overDistance;
-        return fee;
+        return distance;
     }
 }

@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.test.service;
 
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
@@ -8,6 +9,7 @@ import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
 import com.xinguang.tubobo.impl.test.base.BaseJunit4Test;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +39,9 @@ public class MerchantOrderServiceUnitTest extends BaseJunit4Test {
         String orderNo =  merchantOrderService.order(userId,orderRO);
 
         MerchantOrderEntity entity0 = merchantOrderService.findByOrderNo("qqq");
-        merchantOrderService.merchantPay(userId,"qqq",19000);
+        MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
+        BeanUtils.copyProperties(entity0,merchantOrderDTO);
+        merchantOrderService.merchantPay(merchantOrderDTO,userId,"qqq",19000);
         MerchantOrderEntity entity = merchantOrderService.findByOrderNo("qqq");
         Assert.assertEquals(EnumMerchantOrderStatus.WAITING_GRAB.getValue(),entity.getOrderStatus());
 
