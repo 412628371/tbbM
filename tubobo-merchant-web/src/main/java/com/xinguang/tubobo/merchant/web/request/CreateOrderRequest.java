@@ -82,6 +82,14 @@ public class CreateOrderRequest implements Serializable {
         this.receiverAddressStreet = receiverAddressStreet;
     }
 
+    public String getReceiverAddressRoomNo() {
+        return receiverAddressRoomNo;
+    }
+
+    public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
+        this.receiverAddressRoomNo = receiverAddressRoomNo;
+    }
+
     public String getReceiverGdPoiId() {
         return receiverGdPoiId;
     }
@@ -114,19 +122,19 @@ public class CreateOrderRequest implements Serializable {
         this.payMethod = payMethod;
     }
 
-    public double getReceiverLatitude() {
+    public Double getReceiverLatitude() {
         return receiverLatitude;
     }
 
-    public void setReceiverLatitude(double receiverLatitude) {
+    public void setReceiverLatitude(Double receiverLatitude) {
         this.receiverLatitude = receiverLatitude;
     }
 
-    public double getReceiverLongitude() {
+    public Double getReceiverLongitude() {
         return receiverLongitude;
     }
 
-    public void setReceiverLongitude(double receiverLongitude) {
+    public void setReceiverLongitude(Double receiverLongitude) {
         this.receiverLongitude = receiverLongitude;
     }
 
@@ -154,22 +162,6 @@ public class CreateOrderRequest implements Serializable {
         this.orderRemarks = orderRemarks;
     }
 
-    public String getReceiverAddressRoomNo() {
-        return receiverAddressRoomNo;
-    }
-
-    public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
-        this.receiverAddressRoomNo = receiverAddressRoomNo;
-    }
-
-    public void setReceiverLatitude(Double receiverLatitude) {
-        this.receiverLatitude = receiverLatitude;
-    }
-
-    public void setReceiverLongitude(Double receiverLongitude) {
-        this.receiverLongitude = receiverLongitude;
-    }
-
     @Override
     public String toString() {
         return "CreateOrderRequest{" +
@@ -178,6 +170,7 @@ public class CreateOrderRequest implements Serializable {
                 ", receiverAddressCity='" + receiverAddressCity + '\'' +
                 ", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
                 ", receiverAddressStreet='" + receiverAddressStreet + '\'' +
+                ", receiverAddressRoomNo='" + receiverAddressRoomNo + '\'' +
                 ", receiverGdPoiId='" + receiverGdPoiId + '\'' +
                 ", deliveryFee=" + deliveryFee +
                 ", tipFee=" + tipFee +
