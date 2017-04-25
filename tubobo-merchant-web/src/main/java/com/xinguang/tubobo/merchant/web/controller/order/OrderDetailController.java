@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -52,6 +53,7 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
         respOrderDetail.setPayExpiredMilSeconds(config.getPayExpiredMilSeconds());
         respOrderDetail.setGrabExpiredStartTime(entity.getPayTime());
         respOrderDetail.setGrabExpiredMilSeconds(config.getTaskGrabExpiredMilSeconds());
+        respOrderDetail.setOrderRemarks(ConvertUtil.handleNullString(entity.getOrderRemark()));
         return respOrderDetail;
     }
 }

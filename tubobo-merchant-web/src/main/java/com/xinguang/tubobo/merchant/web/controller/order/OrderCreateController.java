@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
@@ -61,7 +62,7 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
         entity.setOrderTime(new Date());
         entity.setPayStatus(EnumPayStatus.UNPAY.getValue());
         entity.setDispatchRadius(config.getDispatchRadiusMils());
-
+        entity.setOrderRemark(ConvertUtil.handleNullString(request.getOrderRemarks()));
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
         return entity;
     }

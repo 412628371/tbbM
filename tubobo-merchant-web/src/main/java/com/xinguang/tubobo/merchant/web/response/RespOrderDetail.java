@@ -19,7 +19,7 @@ public class RespOrderDetail implements Serializable{
 
     private String orderNo;//订单No
     private String orderStatus;//订单状态
-    private String orderRemark;
+    private String orderRemarks;
 
     private Double payAmount;//支付总金额
     private Double deliveryFee;//配送费
@@ -80,13 +80,6 @@ public class RespOrderDetail implements Serializable{
         this.orderStatus = orderStatus;
     }
 
-    public String getOrderRemark() {
-        return orderRemark;
-    }
-
-    public void setOrderRemark(String orderRemark) {
-        this.orderRemark = orderRemark;
-    }
 
     public Double getPayAmount() {
         return payAmount;
@@ -312,12 +305,20 @@ public class RespOrderDetail implements Serializable{
         this.receiverAddressRoomNo = receiverAddressRoomNo;
     }
 
+    public String getOrderRemarks() {
+        return orderRemarks;
+    }
+
+    public void setOrderRemarks(String orderRemarks) {
+        this.orderRemarks = orderRemarks;
+    }
+
     @Override
     public String toString() {
         return "RespOrderDetail{" +
                 "orderNo='" + orderNo + '\'' +
                 ", orderStatus='" + orderStatus + '\'' +
-                ", orderRemark='" + orderRemark + '\'' +
+                ", orderRemarks='" + orderRemarks + '\'' +
                 ", payAmount=" + payAmount +
                 ", deliveryFee=" + deliveryFee +
                 ", tipFee=" + tipFee +
