@@ -40,7 +40,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
             return false;
         }
         pushService.noticeGrab(entity.getUserId());
-        return merchantOrderService.riderGrabOrder(entity.getSenderId(),riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
+        return merchantOrderService.riderGrabOrder(entity.getUserId(),riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
     }
 
     /**
@@ -55,7 +55,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
             logger.error("骑手取货，未找到订单。orderNo:{}",orderNo);
             return false;
         }
-        return merchantOrderService.riderGrabItem(entity.getSenderId(), orderNo,grabItemTime) > 0;
+        return merchantOrderService.riderGrabItem(entity.getUserId(), orderNo,grabItemTime) > 0;
     }
 
     /**

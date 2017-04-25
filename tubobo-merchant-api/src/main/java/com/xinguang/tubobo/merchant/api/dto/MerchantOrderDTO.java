@@ -498,5 +498,62 @@ public class MerchantOrderDTO implements Serializable{
 		this.receiverAddressRoomNo = receiverAddressRoomNo;
 	}
 
-
+	@Override
+	public String toString() {
+		return "MerchantOrderDTO{" +
+				"cancelReason='" + cancelReason + '\'' +
+				", payId=" + payId +
+				", userId='" + userId + '\'' +
+				", orderNo='" + orderNo + '\'' +
+				", orderStatus='" + orderStatus + '\'' +
+				", orderType='" + orderType + '\'' +
+				", orderRemark='" + orderRemark + '\'' +
+				", expireMilSeconds=" + expireMilSeconds +
+				", payAmount=" + payAmount +
+				", deliveryFee=" + deliveryFee +
+				", tipFee=" + tipFee +
+				", payStatus='" + payStatus + '\'' +
+				", payMethod='" + payMethod + '\'' +
+				", payTime=" + payTime +
+				", orderTime=" + orderTime +
+				", cancelTime=" + cancelTime +
+				", closeTime=" + closeTime +
+				", expiredTime=" + expiredTime +
+				", grabOrderTime=" + grabOrderTime +
+				", grabItemTime=" + grabItemTime +
+				", finishOrderTime=" + finishOrderTime +
+				", senderId='" + senderId + '\'' +
+				", senderName='" + senderName + '\'' +
+				", senderPhone='" + senderPhone + '\'' +
+				", senderAddressProvince='" + senderAddressProvince + '\'' +
+				", senderAddressCity='" + senderAddressCity + '\'' +
+				", senderAddressDistrict='" + senderAddressDistrict + '\'' +
+				", senderAddressStreet='" + senderAddressStreet + '\'' +
+				", senderAddressDetail='" + senderAddressDetail + '\'' +
+				", senderAddressRoomNo='" + senderAddressRoomNo + '\'' +
+				", senderLongitude=" + senderLongitude +
+				", senderLatitude=" + senderLatitude +
+				", senderAvatar='" + senderAvatar + '\'' +
+				", receiverId='" + receiverId + '\'' +
+				", receiverName='" + receiverName + '\'' +
+				", receiverPhone='" + receiverPhone + '\'' +
+				", receiverAddressProvince='" + receiverAddressProvince + '\'' +
+				", receiverAddressCity='" + receiverAddressCity + '\'' +
+				", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
+				", receiverAddressStreet='" + receiverAddressStreet + '\'' +
+				", receiverAddressDetail='" + receiverAddressDetail + '\'' +
+				", receiverAddressRoomNo='" + receiverAddressRoomNo + '\'' +
+				", receiverLongitude=" + receiverLongitude +
+				", receiverLatitude=" + receiverLatitude +
+				", deliveryDistance=" + deliveryDistance +
+				", dispatchRadius=" + dispatchRadius +
+				", riderId='" + riderId + '\'' +
+				", riderName='" + riderName + '\'' +
+				", riderPhone='" + riderPhone + '\'' +
+				", createDate=" + createDate +
+				", createBy='" + createBy + '\'' +
+				", updateDate=" + updateDate +
+				", updateBy='" + updateBy + '\'' +
+				'}';
+	}
 }

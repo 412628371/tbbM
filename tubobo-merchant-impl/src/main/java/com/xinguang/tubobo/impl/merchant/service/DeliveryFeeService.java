@@ -28,6 +28,8 @@ public class DeliveryFeeService  {
         //TODO 配置,
         if (distance > 1000){
             distance-=1000;
+        }else {
+            return fee;
         }
         double overDistance = Math.round((distance/1000))*2;
         fee += overDistance;
