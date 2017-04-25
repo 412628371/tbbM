@@ -35,7 +35,8 @@ public class OrderGetRiderLocationController extends MerchantBaseController<ReqO
             throw new MerchantClientException(EnumRespCode.MERCHANT_RIDER_LOCATION_NOT_FOUND);
         }
         RespRiderLocation respRiderLocation = new RespRiderLocation();
-        BeanUtils.copyProperties(location,respRiderLocation);
+        respRiderLocation.setLatitude(location.getLatitude());
+        respRiderLocation.setLongtitude(location.getLongitude());
         return respRiderLocation;
     }
 }
