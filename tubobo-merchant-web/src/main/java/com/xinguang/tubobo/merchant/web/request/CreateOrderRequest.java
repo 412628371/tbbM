@@ -1,7 +1,5 @@
 package com.xinguang.tubobo.merchant.web.request;
 
-import com.hzmux.hzcms.common.utils.ValidUtils;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
@@ -154,6 +152,22 @@ public class CreateOrderRequest implements Serializable {
 
     public void setOrderRemarks(String orderRemarks) {
         this.orderRemarks = orderRemarks;
+    }
+
+    public String getReceiverAddressRoomNo() {
+        return receiverAddressRoomNo;
+    }
+
+    public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
+        this.receiverAddressRoomNo = receiverAddressRoomNo;
+    }
+
+    public void setReceiverLatitude(Double receiverLatitude) {
+        this.receiverLatitude = receiverLatitude;
+    }
+
+    public void setReceiverLongitude(Double receiverLongitude) {
+        this.receiverLongitude = receiverLongitude;
     }
 
     @Override

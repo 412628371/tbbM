@@ -36,6 +36,7 @@ public class MerchantPushService {
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         pushService.push(content,pushAppKey,list,options);
+        logger.info("状态通知已发送给userId:{}",userId);
     }
 
     /**
