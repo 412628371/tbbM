@@ -69,7 +69,9 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         TbbAccountResponse<PayInfo> response = tbbAccountService.payWithOutPwd(payRequest);
         if (response != null && response.isSucceeded()){
             long payId = response.getData().getId();
+            orderEntity.setPayId(payId);
             MerchantOrderDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
+            orderDTO.setPayId(payId);
             merchantOrderService.merchantPay(orderDTO,infoEntity.getUserId(),req.getOrderNo(),payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
