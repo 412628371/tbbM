@@ -34,6 +34,7 @@ public class OrderGetRiderLocationController extends MerchantBaseController<ReqO
         if (null == location){
             throw new MerchantClientException(EnumRespCode.MERCHANT_RIDER_LOCATION_NOT_FOUND);
         }
+        logger.info("查询骑手位置信息：userId:{},orderNo:{},geoLocation:{}",userId,req.getOrderNo(),location.toString());
         RespRiderLocation respRiderLocation = new RespRiderLocation();
         respRiderLocation.setLatitude(location.getLatitude());
         respRiderLocation.setLongtitude(location.getLongitude());
