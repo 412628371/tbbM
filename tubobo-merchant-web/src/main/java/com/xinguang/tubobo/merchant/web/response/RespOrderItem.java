@@ -33,6 +33,7 @@ public class RespOrderItem {
     private String receiverAddressDistrict;//收货人地址名称
     private String receiverAddressStreet;//收货人地址名称
     private String receiverAddressDetail;//收货人地址名称
+    private String receiverAddressRoomNo;//收货人地址名称
     private double receiverLongitude;
     private double receiverLatitude;
 
@@ -220,6 +221,14 @@ public class RespOrderItem {
         this.receiverLatitude = receiverLatitude;
     }
 
+    public String getReceiverAddressRoomNo() {
+        return receiverAddressRoomNo;
+    }
+
+    public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
+        this.receiverAddressRoomNo = receiverAddressRoomNo;
+    }
+
     @Override
     public String toString() {
         return "RespOrderItem{" +
@@ -244,6 +253,7 @@ public class RespOrderItem {
                 ", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
                 ", receiverAddressStreet='" + receiverAddressStreet + '\'' +
                 ", receiverAddressDetail='" + receiverAddressDetail + '\'' +
+                ", receiverAddressRoomNo='" + receiverAddressRoomNo + '\'' +
                 ", receiverLongitude=" + receiverLongitude +
                 ", receiverLatitude=" + receiverLatitude +
                 '}';
