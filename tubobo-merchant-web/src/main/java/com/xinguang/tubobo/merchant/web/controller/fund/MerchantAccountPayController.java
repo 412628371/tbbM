@@ -62,7 +62,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_PAY);
         }
         PayWithOutPwdRequest payRequest = new PayWithOutPwdRequest();
-//        payRequest.setPwd(infoEntity.getPayPassword());
+        payRequest.setOrderId(orderEntity.getOrderNo());
         payRequest.setAccountId(infoEntity.getAccountId());
         payRequest.setAmount(ConvertUtil.convertYuanToFen(orderEntity.getPayAmount()));
         logger.info("支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payRequest.getAmount());

@@ -8,11 +8,12 @@ import java.io.Serializable;
  */
 public class MerchantInfoResponse implements Serializable{
     private String userId;
-    private String addressProvince;//详细地址
-    private String addressCity;//地址缩略
-    private String addressDistrict;//地址名称
-    private String addressDetail;//地址名称
-    private String addressStreet;//地址名称
+    private String addressProvince;//省
+    private String addressCity;//市
+    private String addressDistrict;//区
+    private String addressDetail;//详细地址
+    private String addressStreet;//街道
+    private String addressRoomNo;//门牌号
 
     private String idCardBackImageUrl;
     private String idCardFrontImageUrl;
@@ -159,14 +160,24 @@ public class MerchantInfoResponse implements Serializable{
         this.merchantName = merchantName;
     }
 
+    public String getAddressRoomNo() {
+        return addressRoomNo;
+    }
+
+    public void setAddressRoomNo(String addressRoomNo) {
+        this.addressRoomNo = addressRoomNo;
+    }
+
     @Override
     public String toString() {
         return "MerchantInfoResponse{" +
-                "addressProvince='" + addressProvince + '\'' +
+                "userId='" + userId + '\'' +
+                ", addressProvince='" + addressProvince + '\'' +
                 ", addressCity='" + addressCity + '\'' +
                 ", addressDistrict='" + addressDistrict + '\'' +
                 ", addressDetail='" + addressDetail + '\'' +
                 ", addressStreet='" + addressStreet + '\'' +
+                ", addressRoomNo='" + addressRoomNo + '\'' +
                 ", idCardBackImageUrl='" + idCardBackImageUrl + '\'' +
                 ", idCardFrontImageUrl='" + idCardFrontImageUrl + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +

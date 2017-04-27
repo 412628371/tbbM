@@ -16,7 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 @DisconfFile(filename = "common.properties")
 public class Config {
 
-    private Double dispatchRadiusMils;//派单半径米
+    private Double dispatchRadiusKiloMiles;//派单半径,km
     private Integer taskGrabExpiredMilSeconds;//过期毫秒数
     private Integer payExpiredMilSeconds;//过期毫秒数
     private Integer maxDeliveryMills;
@@ -28,18 +28,18 @@ public class Config {
     private String noticeGrabedTimeoutTitle;
     private String noticeFinishedTitle;
 
+    public void setDispatchRadiusKiloMiles(Double dispatchRadiusKiloMiles) {
+        this.dispatchRadiusKiloMiles = dispatchRadiusKiloMiles;
+    }
 
-    @DisconfFileItem(name = "dispatch.radius.mils", associateField = "dispatchRadiusMils")
-    public Double getDispatchRadiusMils() {
-        if (null == dispatchRadiusMils){
-            return MerchantConstants.DISPATCH_RADIUS_BY_MILLS;
+    @DisconfFileItem(name = "dispatch.radius.kiloMiles", associateField = "dispatchRadiusKiloMiles")
+    public Double getDispatchRadiusKiloMiles() {
+        if (null == dispatchRadiusKiloMiles){
+            return MerchantConstants.DISPATCH_RADIUS_BY_KiloMILLS;
         }
-        return dispatchRadiusMils;
+        return dispatchRadiusKiloMiles;
     }
 
-    public void setDispatchRadiusMils(Double dispatchRadiusMils) {
-        this.dispatchRadiusMils = dispatchRadiusMils;
-    }
 
     public void setTaskGrabExpiredMilSeconds(Integer taskGrabExpiredMilSeconds) {
         this.taskGrabExpiredMilSeconds = taskGrabExpiredMilSeconds;

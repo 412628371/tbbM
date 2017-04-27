@@ -61,7 +61,7 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         entity.setOrderTime(new Date());
         entity.setPayStatus(EnumPayStatus.UNPAY.getValue());
-        entity.setDispatchRadius(config.getDispatchRadiusMils());
+        entity.setDispatchRadius(config.getDispatchRadiusKiloMiles());
         entity.setOrderRemark(ConvertUtil.handleNullString(request.getOrderRemarks()));
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
         return entity;
