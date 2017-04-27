@@ -22,20 +22,21 @@ public class GenerateOrderNoDao {
     @Autowired
     private DataSource dataSource;
     public String generateOrderNo()  {
-        try {
-            CallableStatement statement =dataSource.getConnection().prepareCall( "{CALL generate_orderNo('03',8, ? )}" );
-            statement.registerOutParameter(1, Types.VARCHAR);//返回参数
-            statement.execute();
-            String orderNo = statement.getString(1);
-            if (StringUtils.isNotBlank(orderNo) && orderNo.length() == 15){
-                StringBuilder sb = new StringBuilder();
-                sb.append(orderNo.substring(0,2)).append(orderNo.substring(4,15));
-                return sb.toString();
-            }
-            return orderNo;
-        } catch (SQLException e) {
-            logger.error("生成规则订单号失败, 改为UUID生成：{}",e.getMessage());
-            return IdGen.uuid();
-        }
+//        try {
+//            CallableStatement statement =dataSource.getConnection().prepareCall( "{CALL generate_orderNo('03',8, ? )}" );
+//            statement.registerOutParameter(1, Types.VARCHAR);//返回参数
+//            statement.execute();
+//            String orderNo = statement.getString(1);
+//            if (StringUtils.isNotBlank(orderNo) && orderNo.length() == 15){
+//                StringBuilder sb = new StringBuilder();
+//                sb.append(orderNo.substring(0,2)).append(orderNo.substring(4,15));
+//                return sb.toString();
+//            }
+//            return orderNo;
+//        } catch (SQLException e) {
+//            logger.error("生成规则订单号失败, 改为UUID生成：{}",e.getMessage());
+//            return IdGen.uuid();
+//        }
+        return IdGen.uuid();
     }
 }
