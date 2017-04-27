@@ -50,7 +50,11 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
             respAccountRecharge.setPayInfo(response.getData().getPayInfo());
             return respAccountRecharge;
         } else {
-            logger.error("充值失败，userId: {},errorCode:{},errorMsg:{}",userId,response.getErrorCode(),response.getMessage());
+            if (response != null){
+                logger.error("充值失败，userId: {},errorCode:{},errorMsg:{}",userId,response.getErrorCode(),response.getMessage());
+            }else {
+                logger.error("充值失败，userId: {}",userId);
+            }
             throw  new MerchantClientException(EnumRespCode.ACCOUNT_RECHARGE_FAIL);
         }
     }

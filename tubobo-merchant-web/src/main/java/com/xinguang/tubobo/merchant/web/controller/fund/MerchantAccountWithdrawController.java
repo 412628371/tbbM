@@ -41,16 +41,16 @@ public class MerchantAccountWithdrawController extends MerchantBaseController<Re
 			TbbAccountResponse<WithdrawInfo> withdrawConfirmResponse = tbbAccountService.withdrawConfirm(withdrawConfirmRequest);
 			if (withdrawConfirmResponse != null && withdrawConfirmResponse.isSucceeded()){
 				logger.info("withdraw confirm SUCCESS. merchantName:{}, merchantPhone:{}, accountId:{}, withdrawId:{}, amount:{}",
-						merchant.getRealName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount());
+						merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount());
 				return null;
 			}else {
 				logger.error("withdraw confirm FAIL. riderName:{}, riderPhone:{}, accountId:{}, withdrawId:{}, amount:{}, errorCode:{}, errorMsg{}",
-						merchant.getRealName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount(),withdrawConfirmResponse.getErrorCode(),withdrawConfirmResponse.getMessage());
+						merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount(),withdrawConfirmResponse.getErrorCode(),withdrawConfirmResponse.getMessage());
 				throw new MerchantClientException(EnumRespCode.ACCOUNT_WITHDRAW_COMFIRM_FAIL);
 			}
 		} else {
 			logger.error("withdraw apply FAIL. merchantName:{}, merchantPhone:{}, accountId:{}, amount:{}, errorCode:{}, errorMsg{}",
-					merchant.getRealName(),merchant.getPhone(),merchant.getAccountId(),req.getAmount(),withdrawResponse.getErrorCode(),withdrawResponse.getMessage());
+					merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),req.getAmount(),withdrawResponse.getErrorCode(),withdrawResponse.getMessage());
 			throw new MerchantClientException(EnumRespCode.ACCOUNT_WITHDRAW_APPLY_FAIL);
 		}
 	}
