@@ -11,8 +11,8 @@ import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
+import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
-import com.xinguang.tubobo.impl.merchant.dao.GenerateOrderNoDao;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -40,7 +40,7 @@ public class MerchantOrderService extends BaseService {
 	@Autowired
 	private MerchantOrderDao merchantOrderDao;
 	@Autowired
-	private GenerateOrderNoDao generateOrderNoDao;
+	private CodeGenerator codeGenerator;
 
 	@Autowired
 	private MerchantInfoService merchantInfoService;
@@ -78,7 +78,7 @@ public class MerchantOrderService extends BaseService {
 	public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
 		MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
 		double distance = deliveryFeeService.sumDeliveryDistance(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude());
-		String orderNo = generateOrderNoDao.generateOrderNo();
+		String orderNo = codeGenerator.nextCustomerCode();
 		entity.setOrderNo(orderNo);
 		entity.setSenderName(ConvertUtil.handleNullString(infoEntity.getMerchantName()));
 		entity.setSenderPhone(ConvertUtil.handleNullString(infoEntity.getPhone()));

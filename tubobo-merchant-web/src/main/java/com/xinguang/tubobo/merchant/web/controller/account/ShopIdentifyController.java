@@ -57,7 +57,9 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
                 logger.info("店铺申请响应，userId:{},response:{}",resp.toString());
                 return resp;
             }else{
-                logger.error("create account info FAIL. errorCode:{}, errorMsg:{}, request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.toString());
+                if (null != null){
+                    logger.error("create account info FAIL. errorCode:{}, errorMsg:{}, request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.toString());
+                }
                 throw new MerchantClientException(EnumRespCode.ACCOUNT_CREATE_FAIL) ;
             }
         }else if ( EnumAuthentication.FROZEN.getValue().equals(infoEntity.getMerchantStatus())){
