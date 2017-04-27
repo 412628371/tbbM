@@ -217,7 +217,42 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		long days = (end.getTime()-begin.getTime())/(1000*3600*24) + 1;
         return (int) days;
 	}
-	
+	/**
+	 * 判断当前时分秒是否在endTime的时分秒之后
+	 * @param beginTime，格式如 21:00:00
+	 * @return
+	 */
+	public static boolean isAfterBeginTimeInOneDay(String beginTime){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		Date beginDate;
+		try {
+			beginDate = sdf.parse(formatDate(now, "yyyy-MM-dd ") + beginTime);
+			//TODO
+			return now.getTime() > beginDate.getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
+
+	/**
+	 * 判断当前时分秒是否在endTime的时分秒之前
+	 * @param endTime，格式如 08:00:00
+	 * @return
+     */
+	public static boolean isBeforeEndTimeInOneDay(String endTime){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		Date endDate;
+		try {
+			endDate = sdf.parse(formatDate(now, "yyyy-MM-dd ") + endTime);
+			return now.getTime() < endDate.getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
 	/**
 	 * @param args
 	 * @throws ParseException
@@ -227,6 +262,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 //		System.out.println(getDate("yyyy年MM月dd日 E"));
 //		long time = new Date().getTime()-parseDate("2012-11-19").getTime();
 //		System.out.println(time/(24*60*60*1000));
-		System.out.println(countSecondsFromNowToTodayEnd());
+//		System.out.println(countSecondsFromNowToTodayEnd());
+		System.out.println(isBeforeEndTimeInOneDay("20:00:00"));
+		System.out.println(isAfterBeginTimeInOneDay("08:00:00"));
+
 	}
 }

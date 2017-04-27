@@ -1,10 +1,9 @@
 package com.xinguang.tubobo.merchant.web.request;
 
-import com.hzmux.hzcms.common.utils.ValidUtils;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -15,15 +14,13 @@ import java.io.Serializable;
  */
 public class ShopIdentifyRequest implements Serializable {
 
-//    @Size(min = 1,max = 100,message = "省不能为空")
     private String addressProvince;//详细地址
-//    @Size(min = 1,max = 100,message = "市不能为空")
     private String addressCity;//地址缩略
-//    @Size(max = 100,message = "区长度过大")
     private String addressDistrict;//地址名称
-    @Size(min = 1,max = 100,message = "门牌号长度不符")
+    @Size(min = 1,max = 100,message = "长度为1-100")
     private String addressDetail;//地址名称
     private String addressStreet;//地址名称
+    @Size(min = 1,max = 100,message = "长度为1-100")
     private String addressRoomNo;//门牌号
 
     @NotBlank(message = "身份证正面图片不能为空")
@@ -36,13 +33,19 @@ public class ShopIdentifyRequest implements Serializable {
     @Range(min=0,max=180,message="经度必须在0度至180度之间")
     private double longitude;
 
-    @Size(min = 15, max = 18,message = "idCardNo 长度为15-18")
+    @NotBlank(message = "不能为空")
+    @Pattern(regexp = MerchantConstants.PATTERN_ID_CARD ,message = "格式错误")
     private String idCardNo;
+
     @NotBlank(message = "姓名不能为空")
+    @Size(min = 1, max = 20,message = "长度为1-20")
     private String realName;
-    @NotBlank(message = "电话格式错误")
+
+    @NotBlank(message = "不能为空")
+    @Pattern(regexp = MerchantConstants.PATTERN_PHONE,message = "手机号格式错误")
     private String phone;
     @NotBlank(message = "店铺名称不能为空")
+    @Size(min = 1, max = 50,message = "长度为1-50")
     private String merchantName;
 
     public String getAddressRoomNo() {

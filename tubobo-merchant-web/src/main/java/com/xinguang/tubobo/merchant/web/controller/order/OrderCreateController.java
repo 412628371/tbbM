@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
@@ -45,6 +46,12 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
         }
         if (!EnumAuthentication.SUCCESS.getValue().equals(infoEntity.getMerchantStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_ORDER);
+        }
+        if (!DateUtils.isAfterBeginTimeInOneDay(config.getBeginWorkTime())){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_EARLY);
+        }
+        if (!DateUtils.isBeforeEndTimeInOneDay(config.getEndWorkTime())){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_LATE);
         }
         MerchantOrderEntity entity = translateRequestToEntity(userId,req);
         String orderNo = merchantOrderService.order(userId,entity);

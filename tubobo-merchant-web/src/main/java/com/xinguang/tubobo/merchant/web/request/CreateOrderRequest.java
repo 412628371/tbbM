@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.request;
 
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
@@ -10,15 +11,15 @@ import java.io.Serializable;
  * Created by Administrator on 2017/4/13.
  */
 public class CreateOrderRequest implements Serializable {
-    @Size(min = 1,max = 200,message = "收货人地址详情不能为空")
+    @Size(min = 1,max = 200,message = "长度为1-200")
     private String receiverAddressDetail;
 //    @Size(min = 1,max = 100,message = "省长度不符")
     private String receiverAddressProvince;
 //    @Size(min = 1,max = 100,message = "市长度不符")
     private String receiverAddressCity;//地址缩略
-//    @Size(max = 100,message = "区长度过大")
     private String receiverAddressDistrict;//地址名称
     private String receiverAddressStreet;//地址名称
+    @Size(min = 1,max = 200,message = "长度为1-200")
     private String receiverAddressRoomNo;//地址名称
     private String receiverGdPoiId;
 //TODO
@@ -34,10 +35,9 @@ public class CreateOrderRequest implements Serializable {
     @Range(min=0,max=180,message="经度必须在0度至180度之间")
     private Double receiverLongitude;
 
-//    @Length(min = 1,max = 100,message = "收货人姓名长度错误")
-//    @NotBlank(message = "收货人姓名不能为空")
     private String receiverName;
-    @NotBlank(message = "电话格式错误")
+    @NotBlank(message = "不能为空")
+    @Pattern(regexp = MerchantConstants.PATTERN_PHONE,message = "手机号格式错误")
     private String receiverPhone;
 
     private String orderRemarks;
