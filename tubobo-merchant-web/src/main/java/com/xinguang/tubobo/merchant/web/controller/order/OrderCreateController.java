@@ -36,7 +36,7 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
     MerchantOrderService merchantOrderService;
     @Autowired
     MerchantInfoService merchantInfoService;
-    @Resource
+    @Autowired
     Config config;
     @Override
     protected CreateOrderResponse doService(String userId, CreateOrderRequest req) throws MerchantClientException {
