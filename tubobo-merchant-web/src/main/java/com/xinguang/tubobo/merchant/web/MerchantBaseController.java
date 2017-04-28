@@ -3,10 +3,8 @@ package com.xinguang.tubobo.merchant.web;
 import com.google.common.collect.Lists;
 import com.hzmux.hzcms.common.beanvalidator.BeanValidators;
 import com.hzmux.hzcms.common.utils.StringUtils;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
-import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.web.response.ClientResp;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -87,8 +85,8 @@ public abstract class MerchantBaseController <P, R>{
             R res = doService(userId,req);
             return new ClientResp(res);
         }catch (MerchantClientException e){
-            logger.error(e.getCode(),e.getErrorMsg());
-            return new ClientResp("MerchantClientException: "+e.getCode() , e.getErrorMsg());
+            logger.error("MerchantClientException: "+e.getCode(),e.getErrorMsg());
+            return new ClientResp(e.getCode() , e.getErrorMsg());
         }catch (Exception e){
             logger.error(e.getMessage(),e);
             return new ClientResp(EnumRespCode.BUSY.getValue() , EnumRespCode.BUSY.getDesc());
