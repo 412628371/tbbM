@@ -3,8 +3,11 @@ package com.xinguang.tubobo.impl.merchant.disconf;
 import com.baidu.disconf.client.common.annotations.DisconfFile;
 import com.baidu.disconf.client.common.annotations.DisconfFileItem;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 
@@ -16,6 +19,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 @DisconfFile(filename = "common.properties")
 public class Config {
 
+    private static  final Logger logger = LoggerFactory.getLogger(Config.class);
     private Double dispatchRadiusKiloMiles;//派单半径,km
     private Integer taskGrabExpiredMilSeconds;//过期毫秒数
     private Integer payExpiredMilSeconds;//过期毫秒数
@@ -33,6 +37,7 @@ public class Config {
 
     @DisconfFileItem(name = "beginWorkTime", associateField = "beginWorkTime")
     public String getBeginWorkTime() {
+        logger.info("beginWorkTime:{}",beginWorkTime);
         return beginWorkTime;
     }
 
@@ -41,6 +46,7 @@ public class Config {
     }
     @DisconfFileItem(name = "endWorkTime", associateField = "endWorkTime")
     public String getEndWorkTime() {
+        logger.info("endWorkTime:{}",endWorkTime);
         return endWorkTime;
     }
 
@@ -55,8 +61,10 @@ public class Config {
     @DisconfFileItem(name = "dispatch.radius.kiloMiles", associateField = "dispatchRadiusKiloMiles")
     public Double getDispatchRadiusKiloMiles() {
         if (null == dispatchRadiusKiloMiles){
+            logger.info("dispatchRadiusKiloMiles配置为空，使用默认值：{}",MerchantConstants.DISPATCH_RADIUS_BY_KiloMILLS);
             return MerchantConstants.DISPATCH_RADIUS_BY_KiloMILLS;
         }
+        logger.info("dispatchRadiusKiloMiles:{}",dispatchRadiusKiloMiles);
         return dispatchRadiusKiloMiles;
     }
 
@@ -68,8 +76,10 @@ public class Config {
     @DisconfFileItem(name = "task.grab.expires.milseconds", associateField = "taskGrabExpiredMilSeconds")
     public Integer getTaskGrabExpiredMilSeconds() {
         if (null == taskGrabExpiredMilSeconds){
+            logger.info("taskGrabExpiredMilSeconds，使用默认值：{}",MerchantConstants.GRAB_EXPIRED_TIME_BY_MilSECONDS);
             return MerchantConstants.GRAB_EXPIRED_TIME_BY_MilSECONDS;
         }
+        logger.info("taskGrabExpiredMilSeconds:{}",taskGrabExpiredMilSeconds);
         return taskGrabExpiredMilSeconds;
     }
 
@@ -112,8 +122,10 @@ public class Config {
     @DisconfFileItem(name = "merchant.pay.expired.milliseconds", associateField = "payExpiredMilSeconds")
     public Integer getPayExpiredMilSeconds() {
         if (null == payExpiredMilSeconds){
+            logger.info("payExpiredMilSeconds配置为空，使用默认值：{}",MerchantConstants.PAY_EXPIRED_TIME_BY_MilSECONDS);
             return MerchantConstants.PAY_EXPIRED_TIME_BY_MilSECONDS;
         }
+        logger.info("payExpiredMilSeconds:{}",payExpiredMilSeconds);
         return payExpiredMilSeconds;
     }
 
@@ -124,8 +136,10 @@ public class Config {
     @DisconfFileItem(name = "merchant.deliveryMills.max", associateField = "maxDeliveryMills")
     public Integer getMaxDeliveryMills() {
         if (maxDeliveryMills == null){
+            logger.info("maxDeliveryMills配置为空，使用默认值：{}",4000);
             return 4000;
         }
+        logger.info("maxDeliveryMills:{}",maxDeliveryMills);
         return maxDeliveryMills;
     }
 

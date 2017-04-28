@@ -33,6 +33,7 @@ public class MerchantPushService {
                 .setTargetType(Constance.TargetType.ACCOUNT)
                 .setDeviceType(Constance.DeviceType.ALL)
                 .setTitle(title)
+                .setiOSBadge(1)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         pushService.push(content,pushAppKey,list,options);
