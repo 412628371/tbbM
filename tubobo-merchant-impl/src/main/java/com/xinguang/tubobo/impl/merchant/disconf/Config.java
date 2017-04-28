@@ -7,16 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.util.StringUtils;
-
-import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * Created by shade on 2017/4/6.
  */
 @Configuration
 @Scope("singleton")
-@DisconfFile(filename = "common.properties")
+@DisconfFile(filename = "merchantBiz.properties")
 public class Config {
 
     private static  final Logger logger = LoggerFactory.getLogger(Config.class);
