@@ -21,4 +21,8 @@ public class MerchantConstants {
     public static final String  TITLE_PAY = "付款";
     public static final String  TITLE_FINE = "罚款";
     public static final String  TITLE_RECEIVE= "收款";
+
+
+    public static final String  PATTERN_PHONE= "^1\\d{10}?$";
+    public static final String  PATTERN_ID_CARD= "^([1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{4})|([1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3})$";
 }

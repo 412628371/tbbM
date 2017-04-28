@@ -1,7 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.xinguang.tubobo.account.api.TbbAccountService;
-import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
@@ -27,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import java.util.Date;
 
-import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_CANT_PAY;
-import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_REPEAT_PAY;
 
 /**
  * Created by Administrator on 2017/4/15.
@@ -107,7 +104,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         }
         merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
                 +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
-        merchantOrderDTO.setSenderAvatar(infoEntity.getAvatarUrl());
+        merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
         return merchantOrderDTO;
     }
 }

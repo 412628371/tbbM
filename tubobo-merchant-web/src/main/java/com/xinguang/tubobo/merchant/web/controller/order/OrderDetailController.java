@@ -31,20 +31,21 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
     @Override
     protected RespOrderDetail doService(String userId, ReqOrderDetail req) throws MerchantClientException {
         MerchantOrderEntity entity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
+        Date now = new Date();
         if(null == entity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
         if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
             Date orderTime = entity.getOrderTime();
             long expectedExpiredMilSeconds = orderTime.getTime() + config.getPayExpiredMilSeconds();
-            if (new Date().getTime() >= expectedExpiredMilSeconds){
+            if (now.getTime() >= expectedExpiredMilSeconds){
                 throw new MerchantClientException(EnumRespCode.MERCHANT_UNPAY_CNACELING);
             }
         }
         if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
             Date payTime = entity.getPayTime();
             long expectedExpiredMilSeconds = payTime.getTime() + config.getTaskGrabExpiredMilSeconds();
-            if (new Date().getTime() >= expectedExpiredMilSeconds){
+            if (now.getTime() >= expectedExpiredMilSeconds){
                 throw new MerchantClientException(EnumRespCode.MERCHANT_UNGRAB_CANCELING);
             }
         }
@@ -54,6 +55,20 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
         respOrderDetail.setGrabExpiredStartTime(entity.getPayTime());
         respOrderDetail.setGrabExpiredMilSeconds(config.getTaskGrabExpiredMilSeconds());
         respOrderDetail.setOrderRemarks(ConvertUtil.handleNullString(entity.getOrderRemark()));
+
+        Long payRemainMilSeconds = 0L;
+        if (entity.getOrderTime()!=null &&
+                entity.getOrderTime().getTime()+config.getPayExpiredMilSeconds() > now.getTime()){
+            payRemainMilSeconds = entity.getOrderTime().getTime()+config.getPayExpiredMilSeconds()-now.getTime();
+        }
+        respOrderDetail.setPayRemainMillSeconds(payRemainMilSeconds);
+
+        Long grabRemainMilSeconds = 0L;
+        if (entity.getPayTime()!=null &&
+                entity.getPayTime().getTime()+config.getTaskGrabExpiredMilSeconds() > now.getTime()){
+            grabRemainMilSeconds = entity.getPayTime().getTime()+config.getTaskGrabExpiredMilSeconds()-now.getTime();
+        }
+        respOrderDetail.setGrabRemainMillSeconds(grabRemainMilSeconds);
         return respOrderDetail;
     }
 }

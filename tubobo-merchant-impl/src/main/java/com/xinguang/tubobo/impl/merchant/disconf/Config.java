@@ -28,6 +28,26 @@ public class Config {
     private String noticeGrabedTimeoutTitle;
     private String noticeFinishedTitle;
 
+    private String beginWorkTime;
+    private String endWorkTime;
+
+    @DisconfFileItem(name = "beginWorkTime", associateField = "beginWorkTime")
+    public String getBeginWorkTime() {
+        return beginWorkTime;
+    }
+
+    public void setBeginWorkTime(String beginWorkTime) {
+        this.beginWorkTime = beginWorkTime;
+    }
+    @DisconfFileItem(name = "endWorkTime", associateField = "endWorkTime")
+    public String getEndWorkTime() {
+        return endWorkTime;
+    }
+
+    public void setEndWorkTime(String endWorkTime) {
+        this.endWorkTime = endWorkTime;
+    }
+
     public void setDispatchRadiusKiloMiles(Double dispatchRadiusKiloMiles) {
         this.dispatchRadiusKiloMiles = dispatchRadiusKiloMiles;
     }

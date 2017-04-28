@@ -20,6 +20,8 @@ public enum EnumRespCode {
 	MERCHANT_UNPAY_CNACELING("10206", "订单支付超时,取消中"),
 	MERCHANT_UNGRAB_CANCELING("10207", "订单无人接单超时,取消中"),
 	MERCHANT_CANT_PAY("10208", "订单状态不允许支付"),
+	MERCHANT_TOO_EARLY("10209", "骑手还没上班哦，请在8:00到21:00的工作时间发单"),
+	MERCHANT_TOO_LATE("10210", "骑手下班了哦，请在8:00到21:00的工作时间发单"),
 
 
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),

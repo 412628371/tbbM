@@ -56,6 +56,9 @@ public class RespOrderDetail implements Serializable{
     private Integer grabExpiredMilSeconds;//抢单过期间隔毫秒数
     private Date   grabExpiredStartTime	;//抢单过期开始时间
 
+    private Long grabRemainMillSeconds;
+    private Long payRemainMillSeconds;
+
     public Integer getPayExpiredMilSeconds() {
         return payExpiredMilSeconds;
     }
@@ -311,6 +314,22 @@ public class RespOrderDetail implements Serializable{
 
     public void setOrderRemarks(String orderRemarks) {
         this.orderRemarks = orderRemarks;
+    }
+
+    public Long getGrabRemainMillSeconds() {
+        return grabRemainMillSeconds;
+    }
+
+    public void setGrabRemainMillSeconds(Long grabRemainMillSeconds) {
+        this.grabRemainMillSeconds = grabRemainMillSeconds;
+    }
+
+    public Long getPayRemainMillSeconds() {
+        return payRemainMillSeconds;
+    }
+
+    public void setPayRemainMillSeconds(Long payRemainMillSeconds) {
+        this.payRemainMillSeconds = payRemainMillSeconds;
     }
 
     @Override
