@@ -13,7 +13,6 @@ import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.CreateOrderRequest;
 import com.xinguang.tubobo.merchant.web.response.CreateOrderResponse;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
 import org.springframework.beans.BeanUtils;
@@ -21,10 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.annotation.Resource;
 import java.util.Date;
 
-import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.MERCHANT_CANT_ORDER;
 
 /**
  * Created by Administrator on 2017/4/14.

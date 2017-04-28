@@ -17,9 +17,11 @@ public class ShopIdentifyRequest implements Serializable {
     private String addressProvince;//详细地址
     private String addressCity;//地址缩略
     private String addressDistrict;//地址名称
+    @NotBlank(message = "详细地址不能为空")
     @Size(min = 1,max = 100,message = "长度为1-100")
     private String addressDetail;//地址名称
     private String addressStreet;//地址名称
+    @NotBlank(message = "门牌号不能为空")
     @Size(min = 1,max = 100,message = "长度为1-100")
     private String addressRoomNo;//门牌号
 

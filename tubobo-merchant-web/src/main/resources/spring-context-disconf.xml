@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd"
 	   default-lazy-init="false">
 
 	<!-- disconf 核心配置 -->
@@ -16,7 +14,6 @@
 	<bean id="configproperties_no_reloadable" class="com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBean">
 		<property name="locations">
 			<list>
-				<value>common.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -47,5 +44,23 @@
 			</list>
 		</property>
 	</bean>
+
+	<!--<bean id="config" class="com.xinguang.tubobo.impl.merchant.disconf.Config">-->
+		<!--<property name="beginWorkTime" value="${beginWorkTime}" />-->
+		<!--<property name="endWorkTime" value="${endWorkTime}" />-->
+
+		<!--<property name="dispatchRadiusKiloMiles" value="${dispatch.radius.kiloMiles}" />-->
+		<!--<property name="taskGrabExpiredMilSeconds" value="${task.grab.expires.milseconds}" />-->
+		<!--<property name="payExpiredMilSeconds" value="${merchant.pay.expired.milliseconds}" />-->
+		<!--<property name="maxDeliveryMills" value="${merchant.deliveryMills.max}" />-->
+
+		<!--<property name="noticeFinishedTitle" value="${merchant.notice.finished.title}" />-->
+		<!--<property name="noticeGrabedTimeoutTitle" value="${merchant.notice.grabTimeout.title}" />-->
+		<!--<property name="noticeGrabedTitle" value="${merchant.notice.grabed.title}" />-->
+
+		<!--<property name="noticeFinishedTemplate" value="${merchant.notice.finished.template}" />-->
+		<!--<property name="noticeGrabedTimeoutTemplate" value="${merchant.notice.grabTimeout.template}" />-->
+		<!--<property name="noticeGrabedTemplate" value="${merchant.notice.grabed.template}" />-->
+	<!--</bean>-->
 
 </beans>
