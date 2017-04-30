@@ -59,7 +59,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         MerchantOrderEntity entity = merchantOrderService.findByOrderNoAndStatus(orderNo,
                 EnumMerchantOrderStatus.WAITING_PICK.getValue());
         if (null == entity){
-            logger.error("骑手取货，未找到订单或已取货完成。orderNo:{}",orderNo);
+            logger.info("骑手取货，未找到订单或已取货完成。orderNo:{}",orderNo);
             return false;
         }
         return merchantOrderService.riderGrabItem(entity.getUserId(), orderNo,grabItemTime) > 0;
@@ -74,7 +74,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     public boolean riderFinishOrder(String orderNo, Date finishOrderTime) {
         MerchantOrderEntity entity = merchantOrderService.findByOrderNo(orderNo);
         if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
-            logger.error("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
+            logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
             return false;
         }
         boolean result =  merchantOrderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime) > 0;
@@ -89,7 +89,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     public boolean orderExpire(String orderNo,Date expireTime) {
         MerchantOrderEntity entity = merchantOrderService.findByOrderNoAndStatus(orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
         if (null == entity ){
-            logger.error("超时无人接单,出错。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
+            logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
             return false;
         }
         PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),

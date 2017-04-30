@@ -71,4 +71,13 @@ public class MerchantTaskOperatorCallbackDTO implements Serializable {
     public void setOperateTime(Date operateTime) {
         this.operateTime = operateTime;
     }
+
+    @Override
+    public String toString() {
+        return "MerchantTaskOperatorCallbackDTO{" +
+                "taskOperatorType=" + taskOperatorType +
+                ", taskNo='" + taskNo + '\'' +
+                ", operateTime=" + operateTime +
+                '}';
+    }
 }
