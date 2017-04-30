@@ -74,7 +74,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
                     ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
             RespOrderPay respOrderPay = new RespOrderPay();
             respOrderPay.setGrabExpiredStartTime(new Date());
-            respOrderPay.setGrabExpiredMilSeconds(config.getPayExpiredMilSeconds());
+            respOrderPay.setGrabExpiredMilSeconds(config.getTaskGrabExpiredMilSeconds());
             return respOrderPay;
         }else {
             if (response == null){
@@ -105,6 +105,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
                 +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
+        merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;
     }
 }
