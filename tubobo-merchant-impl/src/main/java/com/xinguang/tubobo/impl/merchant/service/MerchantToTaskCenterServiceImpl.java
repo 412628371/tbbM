@@ -87,14 +87,18 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
                 MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
         TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
-        if (resp != null || resp.isSucceeded()){
+        if (resp != null && resp.isSucceeded()){
             logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
                     "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
             merchantOrderService.orderExpire(entity.getSenderId(),orderNo);
             return true;
         }else {
-            logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo+
-                    "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+            if (resp == null){
+                logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo);
+            }else {
+                logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo+
+                        "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+            }
         }
         return false;
     }
