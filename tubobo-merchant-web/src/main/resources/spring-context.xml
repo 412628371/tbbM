@@ -9,8 +9,11 @@
 
 	<description>Spring Configuration</description>
 
-	<import resource="spring-context-disconf.xml" />
-
+	<import resource="spring-disconf.xml" />
+	<import resource="rabbitmq-callback.xml"/>
+	<import resource="rabbitmq-delay.xml"/>
+	<import resource="spring-dubbo-consumer.xml"/>
+	<import resource="spring-dubbo-provider.xml"/>
     <!-- 加载配置属性文件 -->
 	<!--<context:property-placeholder ignore-unresolvable="true" location="classpath*:/hzcms.properties" />-->
 	
