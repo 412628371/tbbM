@@ -8,7 +8,7 @@
 
     <import resource="rabbitmq-base.xml"/>
     <!-- 消费者 队列声明-->
-    <rabbit:queue id="rmqMerchantTaskGrabQueue" durable="true" auto-delete="false" exclusive="false" name="${rabbitmq.queue.businessAcceptQueue}"/>
+    <rabbit:queue id="rmqMerchantTaskGrabQueue" durable="true" auto-delete="false" exclusive="false" name="rmqMerchantTaskGrabQueue"/>
     <!-- 用于接收消息的处理类 -->
     <bean id="rmqTaskGrabHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqTaskGrabHandler"></bean>
     <bean id="rmqTaskGrabListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
@@ -25,7 +25,8 @@
 
 
 
-    <rabbit:queue id="rmqMerchantTaskOperateQueue" durable="true" auto-delete="false" exclusive="false" name="${rabbitmq.queue.businessAcceptQueue}"/>
+    <rabbit:queue id="rmqMerchantTaskOperateQueue" durable="true" auto-delete="false" exclusive="false"
+                  name="rmqMerchantTaskOperateQueue" />
     <bean id="rmqTaskOperateHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqTaskOperateHandler"></bean>
     <bean id="rmqTaskOperateListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
         <constructor-arg ref="rmqTaskGrabHandler" />
@@ -37,4 +38,16 @@
         <property name="connectionFactory" ref="rabbitmqConnectionFactory"></property>
         <property name="messageListener" ref="rmqTaskOperateListenerAdapter"></property>
     </bean>
+
+    <rabbit:fanout-exchange id="merchant-grab-fanoutexchange" name="merchant-grab-fanoutexchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="rmqMerchantTaskGrabQueue"/>
+        </rabbit:bindings>
+    </rabbit:fanout-exchange>
+
+    <rabbit:fanout-exchange id="merchant-task-operate-fanoutexchange" name="merchant-task-operate-fanoutexchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="rmqMerchantTaskOperateQueue"/>
+        </rabbit:bindings>
+    </rabbit:fanout-exchange>
 </beans>
