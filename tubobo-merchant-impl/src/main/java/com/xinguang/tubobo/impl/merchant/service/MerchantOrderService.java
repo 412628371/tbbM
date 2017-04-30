@@ -64,7 +64,9 @@ public class MerchantOrderService extends BaseService {
 	public MerchantOrderEntity findByOrderNo(String orderNo){
 		return merchantOrderDao.findByOrderNo(orderNo);
 	}
-
+	public MerchantOrderEntity findByOrderNoAndStatus(String orderNo,String orderStatus){
+		return merchantOrderDao.findByOrderNoAndStatus(orderNo,orderStatus);
+	}
 	@Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_'+#orderNo")
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return merchantOrderDao.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -225,8 +227,8 @@ public class MerchantOrderService extends BaseService {
 	 */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
 	@Transactional(readOnly = false)
-	public int orderExpire(String merchantId,String orderNo){
-		int count =merchantOrderDao.orderExpire(orderNo);
+	public int orderExpire(String merchantId,String orderNo,Date expireTime){
+		int count =merchantOrderDao.orderExpire(orderNo,expireTime);
 		return count;
 	}
 

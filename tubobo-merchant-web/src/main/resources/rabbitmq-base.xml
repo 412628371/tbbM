@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/rabbit
+		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
+       default-lazy-init="true">
+
+    <bean id="rabbitmqConnectionFactory"  class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+        <constructor-arg value="localhost" />
+        <property name="username" value="${rabbitmq.username}" />
+        <property name="password" value="${rabbitmq.password}" />
+        <property name="addresses" value="${rabbitmq.address}" />
+        <property name="virtualHost" value="${rabbitmq.virtualHost}" />
+        <property name="channelCacheSize" value="${rabbitmq.channelCacheSize}" />
+    </bean>
+
+    <bean id="rabbitAdmin"  class="org.springframework.amqp.rabbit.core.RabbitAdmin">
+        <constructor-arg ref="rabbitmqConnectionFactory" />
+    </bean>
+</beans>

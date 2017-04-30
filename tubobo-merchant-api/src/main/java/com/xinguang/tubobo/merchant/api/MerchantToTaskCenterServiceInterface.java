@@ -35,6 +35,6 @@ public interface MerchantToTaskCenterServiceInterface {
      * 订单超时
      * @param orderNo
      */
-    public boolean orderExpire(String orderNo);
+    public boolean orderExpire(String orderNo,Date expireTime);
 
 }

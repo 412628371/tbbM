@@ -6,18 +6,7 @@
 		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
        default-lazy-init="true">
 
-    <bean id="rabbitmqConnectionFactory"  class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
-        <constructor-arg value="localhost" />
-        <property name="username" value="${rabbitmq.username}" />
-        <property name="password" value="${rabbitmq.password}" />
-        <property name="addresses" value="${rabbitmq.address}" />
-        <property name="virtualHost" value="${rabbitmq.virtualHost}" />
-        <property name="channelCacheSize" value="${rabbitmq.channelCacheSize}" />
-    </bean>
-
-    <bean id="rabbitAdmin"  class="org.springframework.amqp.rabbit.core.RabbitAdmin">
-        <constructor-arg ref="rabbitmqConnectionFactory" />
-    </bean>
+    <import resource="rabbitmq-base.xml"/>
     <!-- 创建rabbitTemplate 消息模板类 -->
     <rabbit:template id="delayMsgTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="merchant_payExpired_delay_exchange" />
 
@@ -34,7 +23,7 @@
     <!-- ################ 延迟队列生产者配置 ################ -->
     <rabbit:admin connection-factory="rabbitmqConnectionFactory" />
     <!--<bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />-->
-    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory" exchange="merchant_payExpired_delay_exchange" />
+    <!--<rabbit:template id="rabbitTemplate" connection-factory="connectionFactory" exchange="merchant_payExpired_delay_exchange" />-->
 
     <rabbit:queue id="queue_merchant_payExpired_delay" name="queue_merchant_payExpired_delay" durable="true" auto-delete="false" exclusive="false">
         <rabbit:queue-arguments>

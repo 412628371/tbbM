@@ -31,7 +31,15 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             return null;
         }
     }
-
+    public MerchantOrderEntity findByOrderNoAndStatus(String orderNo,String orderStatus){
+        String sqlString = "select * from tubobo_merchant_order where order_no = :p1 and order_status=:p2 and del_flag = '0' ";
+        List<MerchantOrderEntity> list = findBySql(sqlString, new Parameter(orderNo,orderStatus), MerchantOrderEntity.class);
+        if (list != null && list.size() > 0){
+            return list.get(0);
+        }else {
+            return null;
+        }
+    }
     public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
         String sqlString = "select * from tubobo_merchant_order where user_id = :p1 and order_no = :p2 and del_flag = '0' ";
         List<MerchantOrderEntity> list = findBySql(sqlString, new Parameter(merchantId,orderNo), MerchantOrderEntity.class);
@@ -47,12 +55,12 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param orderNo
      * @return
      */
-    public int orderExpire(String orderNo){
+    public int orderExpire(String orderNo,Date expireTime){
         String sqlString = "update tubobo_merchant_order set order_status = :p1," +
                 " update_date = :p2, cancel_time= :p3, cancel_reason= :p4  where order_no = :p5 and " +
                 "order_status = :p6 and del_flag = '0' ";
         int count =  updateBySql(sqlString,
-                new Parameter(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),new Date(),new Date(),
+                new Parameter(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),new Date(),expireTime,
                         EnumCancelReason.GRAB_OVERTIME.getValue(),orderNo,
                         EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
         getSession().clear();
