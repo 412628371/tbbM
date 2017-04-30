@@ -3,8 +3,10 @@ package com.xinguang.tubobo.merchant.web;
 import com.google.common.collect.Lists;
 import com.hzmux.hzcms.common.beanvalidator.BeanValidators;
 import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.web.response.ClientResp;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -62,24 +64,20 @@ public abstract class MerchantBaseController <P, R>{
 
         }
 
-//        if (needIdentify()){
-//            // 是否认证判断
-//            MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
-//            if (entity == null){
-//                return  new ClientResp(EnumRespCode.MERCHANT_NOT_EXISTS.getValue(),
-//                        EnumRespCode.MERCHANT_NOT_EXISTS.getDesc());
-//            }
-//            if (entity != null){
-//                if (EnumAuthentication.FROZEN.getValue().equals(entity.getMerchantStatus())){
-//                    return  new ClientResp(EnumRespCode.MERCHANT_FROZEN.getValue(),
-//                            EnumRespCode.MERCHANT_FROZEN.getDesc());
-//                }
-//            }
-//            if ( EnumAuthentication.APPLY.getValue().equals(entity.getMerchantStatus())){
-//                return  new ClientResp(EnumRespCode.MERCHANT_VERIFYING.getValue(),
-//                        EnumRespCode.MERCHANT_VERIFYING.getDesc());
-//            }
-//        }
+        if (needIdentify()){
+            // 是否认证判断
+            MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
+            if (entity == null){
+                return  new ClientResp(EnumRespCode.MERCHANT_NOT_EXISTS.getValue(),
+                        EnumRespCode.MERCHANT_NOT_EXISTS.getDesc());
+            }
+            if (entity != null){
+                if (!EnumAuthentication.SUCCESS.getValue().equals(entity.getMerchantStatus())){
+                    return  new ClientResp(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE.getValue(),
+                            EnumRespCode.MERCHANT_STATUS_CANT_OPERATE.getDesc());
+                }
+            }
+        }
         // 处理业务
         try {
             R res = doService(userId,req);
@@ -100,7 +98,7 @@ public abstract class MerchantBaseController <P, R>{
      * @return
      */
     protected boolean needIdentify() {
-        return true;
+        return false;
     }
     /**
      * 默认验证登录s，子类可以重写此方法以关闭登录验证

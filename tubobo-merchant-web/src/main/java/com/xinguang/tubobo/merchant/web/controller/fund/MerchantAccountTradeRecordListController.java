@@ -91,4 +91,9 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 		record.setCurrentFrozen(ConvertUtil.formatMoneyToString(operInfo.getCurrentFrozen()));
 		return record;
 	}
+
+	@Override
+	protected boolean needIdentify() {
+		return true;
+	}
 }

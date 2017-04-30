@@ -30,6 +30,12 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
     private TbbAccountService tbbAccountService;
     @Autowired
     private MerchantInfoService merchantInfoService;
+
+    @Override
+    protected boolean needIdentify() {
+        return true;
+    }
+
     @Override
     protected RespAccountRecharge doService(String userId, ReqAccountRecharge req) throws MerchantClientException {
 

@@ -55,4 +55,9 @@ public class MerchantAccountQueryController extends MerchantBaseController<Objec
 		res.setFrozen(ConvertUtil.formatMoneyToString(accountInfo.getFrozen()));
 		return res;
 	}
+
+	@Override
+	protected boolean needIdentify() {
+		return true;
+	}
 }

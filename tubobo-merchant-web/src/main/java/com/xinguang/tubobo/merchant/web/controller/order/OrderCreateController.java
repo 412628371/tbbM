@@ -42,7 +42,7 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
         if (!EnumAuthentication.SUCCESS.getValue().equals(infoEntity.getMerchantStatus())){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_ORDER);
+            throw new MerchantClientException(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE);
         }
         if (!DateUtils.isAfterBeginTimeInOneDay(config.getBeginWorkTime())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_EARLY);
