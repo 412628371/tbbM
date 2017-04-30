@@ -88,7 +88,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
                 MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
         TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
         if (resp != null || resp.isSucceeded()){
-            logger.error("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
+            logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
                     "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
             merchantOrderService.orderExpire(entity.getSenderId(),orderNo);
             return true;

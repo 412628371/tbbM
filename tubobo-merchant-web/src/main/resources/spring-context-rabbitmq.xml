@@ -38,7 +38,7 @@
 
     <rabbit:queue id="queue_merchant_payExpired_delay" name="queue_merchant_payExpired_delay" durable="true" auto-delete="false" exclusive="false">
         <rabbit:queue-arguments>
-            <entry key="x-message-ttl" value="${merchant.pay.expired.milliseconds}" value-type="java.lang.Long"/>
+            <!--<entry key="x-message-ttl" value="${merchant.pay.expired.milliseconds}" value-type="java.lang.Long"/>-->
             <entry key="x-dead-letter-exchange" value="merchant_payExpired_delay_exchange"/>
             <entry key="x-dead-letter-routing-key" value="merchant_payExpired_routeKey_normal"/>
         </rabbit:queue-arguments>
