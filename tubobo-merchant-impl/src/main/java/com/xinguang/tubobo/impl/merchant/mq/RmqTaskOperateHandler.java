@@ -2,7 +2,7 @@ package com.xinguang.tubobo.impl.merchant.mq;
 
 import com.rabbitmq.client.Channel;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
-import com.xinguang.tubobo.merchant.api.dto.TaskOperatorDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTaskOperatorCallbackDTO;
 import com.xinguang.tubobo.merchant.api.util.BeanBytesConvertionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,21 +23,21 @@ public class RmqTaskOperateHandler implements ChannelAwareMessageListener {
     public void onMessage(Message message, Channel channel) throws Exception {
 
         byte[] bytes = message.getBody();
-        TaskOperatorDTO taskOperatorDTO = (TaskOperatorDTO) BeanBytesConvertionUtil.ByteToObject(bytes);
-        if (null == taskOperatorDTO)
+        MerchantTaskOperatorCallbackDTO merchantTaskOperatorCallbackDTO = (MerchantTaskOperatorCallbackDTO) BeanBytesConvertionUtil.ByteToObject(bytes);
+        if (null == merchantTaskOperatorCallbackDTO)
             return;
-        logger.info("处理抢单回调。RiderGrabDTO：{}",taskOperatorDTO.toString());
-        if (TaskOperatorDTO.EnumTaskOperatorType.PICK.getValue().
-                equals(taskOperatorDTO.getTaskOperatorType().getValue())){
-            merchantToTaskCenterServiceInterface.riderGrabItem(taskOperatorDTO.getTaskNo(),taskOperatorDTO.getOperateTime());
+        logger.info("处理抢单回调。MerchantGrabCallbackDTO：{}", merchantTaskOperatorCallbackDTO.toString());
+        if (MerchantTaskOperatorCallbackDTO.EnumTaskOperatorType.PICK.getValue().
+                equals(merchantTaskOperatorCallbackDTO.getTaskOperatorType().getValue())){
+            merchantToTaskCenterServiceInterface.riderGrabItem(merchantTaskOperatorCallbackDTO.getTaskNo(), merchantTaskOperatorCallbackDTO.getOperateTime());
         }
-        if (TaskOperatorDTO.EnumTaskOperatorType.FINISH.getValue().
-                equals(taskOperatorDTO.getTaskOperatorType().getValue())){
-            merchantToTaskCenterServiceInterface.riderFinishOrder(taskOperatorDTO.getTaskNo(),taskOperatorDTO.getOperateTime());
+        if (MerchantTaskOperatorCallbackDTO.EnumTaskOperatorType.FINISH.getValue().
+                equals(merchantTaskOperatorCallbackDTO.getTaskOperatorType().getValue())){
+            merchantToTaskCenterServiceInterface.riderFinishOrder(merchantTaskOperatorCallbackDTO.getTaskNo(), merchantTaskOperatorCallbackDTO.getOperateTime());
         }
-        if (TaskOperatorDTO.EnumTaskOperatorType.EXPIRED.getValue().
-                equals(taskOperatorDTO.getTaskOperatorType().getValue())){
-            merchantToTaskCenterServiceInterface.orderExpire(taskOperatorDTO.getTaskNo(),taskOperatorDTO.getOperateTime());
+        if (MerchantTaskOperatorCallbackDTO.EnumTaskOperatorType.EXPIRED.getValue().
+                equals(merchantTaskOperatorCallbackDTO.getTaskOperatorType().getValue())){
+            merchantToTaskCenterServiceInterface.orderExpire(merchantTaskOperatorCallbackDTO.getTaskNo(), merchantTaskOperatorCallbackDTO.getOperateTime());
         }
     }
 }

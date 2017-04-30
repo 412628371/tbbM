@@ -7,12 +7,12 @@ import java.util.Date;
 /**
  * Created by Administrator on 2017/4/30.
  */
-public class TaskOperatorDTO implements Serializable {
+public class MerchantTaskOperatorCallbackDTO implements Serializable {
     private EnumTaskOperatorType taskOperatorType;
     private String taskNo;
     private Date operateTime;
 
-    public TaskOperatorDTO(EnumTaskOperatorType taskOperatorType,String taskNo,Date operateTime){
+    public MerchantTaskOperatorCallbackDTO(EnumTaskOperatorType taskOperatorType, String taskNo, Date operateTime){
         this.taskOperatorType = taskOperatorType;
         this.taskNo = taskNo;
         this.operateTime = operateTime;

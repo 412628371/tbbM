@@ -6,14 +6,14 @@ import java.util.Date;
 /**
  * Created by Administrator on 2017/4/30.
  */
-public class RiderGrabDTO implements Serializable {
+public class MerchantGrabCallbackDTO implements Serializable {
     private String riderId;
     private String riderName;
     private String riderPhone;
     private String taskNo;
     private Date grabTime;
 
-    public RiderGrabDTO(String riderId,String riderName,String riderPhone,String taskNo,Date grabTime){
+    public MerchantGrabCallbackDTO(String riderId, String riderName, String riderPhone, String taskNo, Date grabTime){
         this.riderId = riderId;
         this.riderName = riderName;
         this.riderPhone = riderPhone;
@@ -62,7 +62,7 @@ public class RiderGrabDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "RiderGrabDTO{" +
+        return "MerchantGrabCallbackDTO{" +
                 "riderId='" + riderId + '\'' +
                 ", riderName='" + riderName + '\'' +
                 ", riderPhone='" + riderPhone + '\'' +
