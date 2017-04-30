@@ -24,19 +24,22 @@ public class RmqTaskOperateHandler implements ChannelAwareMessageListener {
 
         byte[] bytes = message.getBody();
         MerchantTaskOperatorCallbackDTO merchantTaskOperatorCallbackDTO = (MerchantTaskOperatorCallbackDTO) BeanBytesConvertionUtil.ByteToObject(bytes);
-        if (null == merchantTaskOperatorCallbackDTO)
+        if (null == merchantTaskOperatorCallbackDTO) {
             return;
-        logger.info("处理抢单回调。MerchantGrabCallbackDTO：{}", merchantTaskOperatorCallbackDTO.toString());
+        }
         if (MerchantTaskOperatorCallbackDTO.EnumTaskOperatorType.PICK.getValue().
                 equals(merchantTaskOperatorCallbackDTO.getTaskOperatorType().getValue())){
+            logger.info("处理骑手取货回调：merchantTaskOperatorCallbackDTO：{}",merchantTaskOperatorCallbackDTO.toString());
             merchantToTaskCenterServiceInterface.riderGrabItem(merchantTaskOperatorCallbackDTO.getTaskNo(), merchantTaskOperatorCallbackDTO.getOperateTime());
         }
         if (MerchantTaskOperatorCallbackDTO.EnumTaskOperatorType.FINISH.getValue().
                 equals(merchantTaskOperatorCallbackDTO.getTaskOperatorType().getValue())){
+            logger.info("处理骑手送货完成回调：merchantTaskOperatorCallbackDTO：{}",merchantTaskOperatorCallbackDTO.toString());
             merchantToTaskCenterServiceInterface.riderFinishOrder(merchantTaskOperatorCallbackDTO.getTaskNo(), merchantTaskOperatorCallbackDTO.getOperateTime());
         }
         if (MerchantTaskOperatorCallbackDTO.EnumTaskOperatorType.EXPIRED.getValue().
                 equals(merchantTaskOperatorCallbackDTO.getTaskOperatorType().getValue())){
+            logger.info("处理无人接单超时回调：merchantTaskOperatorCallbackDTO：{}",merchantTaskOperatorCallbackDTO.toString());
             merchantToTaskCenterServiceInterface.orderExpire(merchantTaskOperatorCallbackDTO.getTaskNo(), merchantTaskOperatorCallbackDTO.getOperateTime());
         }
     }

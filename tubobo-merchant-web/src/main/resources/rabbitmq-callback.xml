@@ -29,7 +29,7 @@
                   name="rmqMerchantTaskOperateQueue" />
     <bean id="rmqTaskOperateHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqTaskOperateHandler"></bean>
     <bean id="rmqTaskOperateListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
-        <constructor-arg ref="rmqTaskGrabHandler" />
+        <constructor-arg ref="rmqTaskOperateHandler" />
         <property name="defaultListenerMethod" value="handleMessage"></property>
     </bean>
 

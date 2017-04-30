@@ -13,6 +13,8 @@ import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static org.apache.zookeeper.server.ServerCnxn.me;
+
 /**
  * Created by Administrator on 2017/4/30.
  */
@@ -25,12 +27,14 @@ public class RmqTaskGrabHandler implements ChannelAwareMessageListener {
     public void onMessage(Message message, Channel channel) throws Exception {
         byte[] bytes = message.getBody();
         MerchantGrabCallbackDTO merchantGrabCallbackDTO = (MerchantGrabCallbackDTO) BeanBytesConvertionUtil.ByteToObject(bytes);
-        if (null == merchantGrabCallbackDTO)
+        logger.info("收到抢单回调。MerchantGrabCallbackDTO：{}", merchantGrabCallbackDTO.toString());
+        if (null == merchantGrabCallbackDTO) {
             return;
-        logger.info("处理抢单回调。MerchantGrabCallbackDTO：{}", merchantGrabCallbackDTO.toString());
+        }
         MerchantOrderEntity order = merchantOrderService.findByOrderNo(merchantGrabCallbackDTO.getTaskNo());
         if (order == null ||
                 !EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(order.getOrderStatus())){
+            logger.info("处理抢单回调，orderNo：{}",merchantGrabCallbackDTO.getTaskNo());
             merchantOrderService.riderGrabOrder(order.getUserId(), merchantGrabCallbackDTO.getRiderId(), merchantGrabCallbackDTO.getRiderName(),
                     merchantGrabCallbackDTO.getRiderPhone(), merchantGrabCallbackDTO.getTaskNo(), merchantGrabCallbackDTO.getGrabTime());
         }
