@@ -4,6 +4,8 @@ import com.rabbitmq.client.Channel;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.TaskOperatorDTO;
 import com.xinguang.tubobo.merchant.api.util.BeanBytesConvertionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RmqTaskOperateHandler implements ChannelAwareMessageListener {
+    private static final Logger logger = LoggerFactory.getLogger(RmqTaskOperateHandler.class);
     @Autowired
     MerchantToTaskCenterServiceInterface merchantToTaskCenterServiceInterface;
     @Override
@@ -23,6 +26,7 @@ public class RmqTaskOperateHandler implements ChannelAwareMessageListener {
         TaskOperatorDTO taskOperatorDTO = (TaskOperatorDTO) BeanBytesConvertionUtil.ByteToObject(bytes);
         if (null == taskOperatorDTO)
             return;
+        logger.info("处理抢单回调。RiderGrabDTO：{}",taskOperatorDTO.toString());
         if (TaskOperatorDTO.EnumTaskOperatorType.PICK.getValue().
                 equals(taskOperatorDTO.getTaskOperatorType().getValue())){
             merchantToTaskCenterServiceInterface.riderGrabItem(taskOperatorDTO.getTaskNo(),taskOperatorDTO.getOperateTime());
