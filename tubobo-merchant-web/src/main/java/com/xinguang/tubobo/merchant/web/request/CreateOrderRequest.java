@@ -11,17 +11,17 @@ import java.io.Serializable;
  * Created by Administrator on 2017/4/13.
  */
 public class CreateOrderRequest implements Serializable {
-    @Size(min = 1,max = 200,message = "长度为1-200")
+    @Size(min = 1,max = 200,message = "receiverAddressDetail长度为1-200")
     private String receiverAddressDetail;
-    @Size(max = 100,message = "长度最大为100")
+    @Size(max = 100,message = "receiverAddressProvince长度最大为100")
     private String receiverAddressProvince;
-    @Size(max = 100,message = "长度最大为100")
+    @Size(max = 100,message = "receiverAddressCity长度最大为100")
     private String receiverAddressCity;//地址缩略
-    @Size(max = 100,message = "长度最大为100")
+    @Size(max = 100,message = "receiverAddressDistrict长度最大为100")
     private String receiverAddressDistrict;//地址名称
-    @Size(max = 200,message = "长度最大为200")
+    @Size(max = 200,message = "receiverAddressStreet长度最大为200")
     private String receiverAddressStreet;//地址名称
-    @Size(min = 1,max = 200,message = "长度为1-200")
+    @Size(min = 1,max = 200,message = "门牌号过长")
     @NotBlank(message = "门牌号不能为空")
     private String receiverAddressRoomNo;//地址名称
     private String receiverGdPoiId;
@@ -39,11 +39,11 @@ public class CreateOrderRequest implements Serializable {
     private Double receiverLongitude;
 
     private String receiverName;
-    @NotBlank(message = "不能为空")
+    @NotBlank(message = "手机号不能为空")
     @Pattern(regexp = MerchantConstants.PATTERN_PHONE,message = "手机号格式错误")
     private String receiverPhone;
 
-    @Size(max = 255,message = "长度过大")
+    @Size(max = 255,message = "备注长度过大")
     private String orderRemarks;
 
     public String getReceiverAddressDetail() {

@@ -14,26 +14,26 @@ import java.io.Serializable;
  */
 public class ShopIdentifyRequest implements Serializable {
 
-    @Size(max = 100,message = "长度为最大100")
+    @Size(max = 100,message = "addressProvince长度为最大100")
     private String addressProvince;//详细地址
-    @Size(max = 100,message = "长度为最大100")
+    @Size(max = 100,message = "addressCity长度为最大100")
     private String addressCity;//地址缩略
-    @Size(max = 100,message = "长度为最大100")
+    @Size(max = 100,message = "addressDistrict长度为最大100")
     private String addressDistrict;//地址名称
-    @NotBlank(message = "详细地址不能为空")
-    @Size(min = 1,max = 200,message = "长度为1-200")
+//    @NotBlank(message = "详细地址不能为空")
+    @Size(min = 1,max = 200,message = "addressDetail长度为1-200")
     private String addressDetail;//地址名称
-    @Size(max = 200,message = "长度为最大200")
+    @Size(max = 200,message = "addressStreet长度为最大200")
     private String addressStreet;//地址名称
     @NotBlank(message = "门牌号不能为空")
-    @Size(min = 1,max = 100,message = "长度为最大200")
+    @Size(min = 1,max = 100,message = "门牌号长度过长")
     private String addressRoomNo;//门牌号
 
     @NotBlank(message = "身份证正面图片不能为空")
-    @Size(max = 255,message = "长度过大")
+    @Size(max = 255,message = "idCardBackImageUrl长度过大")
     private String idCardBackImageUrl;
     @NotBlank(message = "身份证反面图片不能为空")
-    @Size(max = 255,message = "长度过大")
+    @Size(max = 255,message = "idCardFrontImageUrl长度过大")
     private String idCardFrontImageUrl;
 
     @Range(min=0,max=180,message="纬度必须在0度至180度之间")
@@ -41,15 +41,15 @@ public class ShopIdentifyRequest implements Serializable {
     @Range(min=0,max=180,message="经度必须在0度至180度之间")
     private double longitude;
 
-    @NotBlank(message = "不能为空")
-    @Pattern(regexp = MerchantConstants.PATTERN_ID_CARD ,message = "格式错误")
+    @NotBlank(message = "身份证号码不能为空")
+    @Pattern(regexp = MerchantConstants.PATTERN_ID_CARD ,message = "身份证号码有误")
     private String idCardNo;
 
     @NotBlank(message = "姓名不能为空")
     @Size(min = 1, max = 20,message = "长度为1-20")
     private String realName;
 
-    @NotBlank(message = "不能为空")
+    @NotBlank(message = "手机号不能为空")
     @Pattern(regexp = MerchantConstants.PATTERN_PHONE,message = "手机号格式错误")
     private String phone;
     @NotBlank(message = "店铺名称不能为空")
