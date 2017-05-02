@@ -217,4 +217,12 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         getSession().clear();
         return count;
     }
+
+
+    public List<String> getUnCanceledGrabOvertimeOrderNoList(Integer overTimeMilSeconds){
+        Date diff = new Date(overTimeMilSeconds);
+        String sqlString = "select orderNo FROM MerchantOrderEntity WHERE timediff(NOW(), payTime)> :p1 and orderStatus = 'WAITING_GRAB' ORDER BY payTime desc ";
+        List<String> orderList = createQuery(sqlString,new Parameter(diff)).list();
+        return orderList;
+    }
 }

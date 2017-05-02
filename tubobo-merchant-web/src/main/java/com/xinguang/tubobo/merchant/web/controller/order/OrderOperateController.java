@@ -23,11 +23,13 @@ public class OrderOperateController extends MerchantBaseController<ReqOrderOpera
     protected EnumRespCode doService(String userId, ReqOrderOperate req) throws MerchantClientException {
         MerchantOrderEntity entity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         if (null == entity){
+            logger.error("订单操作(删除，取消)，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
         if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())){
             boolean count = merchantOrderService.cancelOrder(userId,req.getOrderNo());
             if (!count){
+                logger.error("订单操作(删除，取消)，订单不允许取消。orderNo:{}",req.getOrderNo());
                 throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_CANCEL);
             }
         }

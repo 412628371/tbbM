@@ -83,7 +83,7 @@ public abstract class MerchantBaseController <P, R>{
             R res = doService(userId,req);
             return new ClientResp(res);
         }catch (MerchantClientException e){
-            logger.error("MerchantClientException: "+e.getCode(),e.getErrorMsg());
+            logger.error("MerchantClientException: errorCode:{},errorMsg:{}，userId:{}",e.getCode(),e.getErrorMsg(),userId);
             return new ClientResp(e.getCode() , e.getErrorMsg());
         }catch (Exception e){
             logger.error(e.getMessage(),e);

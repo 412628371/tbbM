@@ -14,20 +14,26 @@ import java.io.Serializable;
  */
 public class ShopIdentifyRequest implements Serializable {
 
+    @Size(max = 100,message = "长度为最大100")
     private String addressProvince;//详细地址
+    @Size(max = 100,message = "长度为最大100")
     private String addressCity;//地址缩略
+    @Size(max = 100,message = "长度为最大100")
     private String addressDistrict;//地址名称
     @NotBlank(message = "详细地址不能为空")
-    @Size(min = 1,max = 100,message = "长度为1-100")
+    @Size(min = 1,max = 200,message = "长度为1-200")
     private String addressDetail;//地址名称
+    @Size(max = 200,message = "长度为最大200")
     private String addressStreet;//地址名称
     @NotBlank(message = "门牌号不能为空")
-    @Size(min = 1,max = 100,message = "长度为1-100")
+    @Size(min = 1,max = 100,message = "长度为最大200")
     private String addressRoomNo;//门牌号
 
     @NotBlank(message = "身份证正面图片不能为空")
+    @Size(max = 255,message = "长度过大")
     private String idCardBackImageUrl;
     @NotBlank(message = "身份证反面图片不能为空")
+    @Size(max = 255,message = "长度过大")
     private String idCardFrontImageUrl;
 
     @Range(min=0,max=180,message="纬度必须在0度至180度之间")

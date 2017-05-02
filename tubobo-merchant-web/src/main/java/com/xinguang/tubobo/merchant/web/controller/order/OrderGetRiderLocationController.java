@@ -28,10 +28,12 @@ public class OrderGetRiderLocationController extends MerchantBaseController<ReqO
     protected RespRiderLocation doService(String userId, ReqOrderRiderLocation req) throws MerchantClientException {
         MerchantOrderEntity entity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         if (entity == null){
+            logger.error("获取骑手位置，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
         GeoLocation location =taskCenterToMerchantServiceInterface.getRiderLocation(entity.getRiderId());
         if (null == location){
+            logger.error("获取骑手位置，位置数据不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_RIDER_LOCATION_NOT_FOUND);
         }
         logger.info("查询骑手位置信息：userId:{},orderNo:{},geoLocation:{}",userId,req.getOrderNo(),location.toString());
