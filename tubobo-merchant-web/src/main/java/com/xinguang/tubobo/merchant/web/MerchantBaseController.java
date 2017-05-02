@@ -124,7 +124,8 @@ public abstract class MerchantBaseController <P, R>{
     private static List<String> extractMessage(Set<? extends ConstraintViolation> constraintViolations) {
         List<String> errorMessages = Lists.newArrayList();
         for (ConstraintViolation violation : constraintViolations) {
-            errorMessages.add(violation.getPropertyPath() +":"+ violation.getMessage());
+//            errorMessages.add(violation.getPropertyPath() +":"+ violation.getMessage());
+            errorMessages.add( violation.getMessage());
         }
         return errorMessages;
     }
