@@ -1,5 +1,8 @@
 package com.xinguang.tubobo.impl.merchant.common;
 
+
+import java.util.regex.Pattern;
+
 /**
  * Created by Administrator on 2017/4/13.
  */
@@ -24,5 +27,13 @@ public class MerchantConstants {
 
 
     public static final String  PATTERN_PHONE= "^1\\d{10}?$";
-    public static final String  PATTERN_ID_CARD= "^([1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{4})|([1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3})$";
+    public static final String  PATTERN_ID_CARD= "^(^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$)|(^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])((\\d{4})|\\d{3}[Xx])$)$";
+
+    public static void main(String[] args) {
+        System.out.println(Pattern.matches(PATTERN_ID_CARD,"412702199001145034"));
+        System.out.println(Pattern.matches(PATTERN_ID_CARD,"54242219861005262X"));
+        System.out.println(Pattern.matches(PATTERN_ID_CARD,"45032619840627183x"));
+        System.out.println(Pattern.matches(PATTERN_ID_CARD,"110105197109235829"));
+        System.out.println(Pattern.matches(PATTERN_ID_CARD,"666666199009235829"));
+    }
 }

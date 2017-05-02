@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-
+import java.util.List;
 
 
 @Service
@@ -56,6 +56,8 @@ public class MerchantOrderService extends BaseService {
 	@Autowired
 	private TbbAccountService tbbAccountService;
 
+	@Autowired
+	MerchantPushService pushService;
 
 	public MerchantOrderEntity get(String id) {
 		return merchantOrderDao.get(id);
@@ -245,5 +247,44 @@ public class MerchantOrderService extends BaseService {
 	 */
 	public Page<MerchantOrderEntity> adminQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
 		return merchantOrderDao.findMerchantOrderPage(pageNo,pageSize,entity);
+	}
+
+	/**
+	 * 获取
+	 * @param overTimeMilSeconds
+	 * @return
+     */
+	@Transactional(readOnly = true)
+	public List<String> getUnCanceledGrabOvertimeOrderNoList(Integer overTimeMilSeconds){
+		return merchantOrderDao.getUnCanceledGrabOvertimeOrderNoList(overTimeMilSeconds);
+	}
+	@Transactional(readOnly = false)
+	public boolean dealGrabOvertimeOrders(String orderNo,Date expireTime,boolean enablePushNotice){
+		MerchantOrderEntity entity = merchantOrderDao.findByOrderNoAndStatus(orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
+		if (null == entity ){
+			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
+			return false;
+		}
+		logger.info("处理超时无人接单：orderNo:{}",orderNo);
+		PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
+				MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
+		TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
+		if (resp != null && resp.isSucceeded()){
+			logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
+					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+			orderExpire(entity.getUserId(),orderNo,expireTime);
+			if (enablePushNotice){
+				pushService.noticeGrabTimeout(entity.getUserId());
+			}
+			return true;
+		}else {
+			if (resp == null){
+				logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo);
+			}else {
+				logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo+
+						"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+			}
+		}
+		return false;
 	}
 }

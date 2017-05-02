@@ -33,6 +33,7 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
         MerchantOrderEntity entity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         Date now = new Date();
         if(null == entity){
+            logger.error("获取订单详情，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
         if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){

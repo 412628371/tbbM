@@ -41,6 +41,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
             logger.error("骑手已接单通知，未找到订单或已处理接单。orderNo:{}",orderNo);
             return false;
         }
+        logger.info("处理骑手接单：orderNo:{}",orderNo);
         boolean result = merchantOrderService.riderGrabOrder(entity.getUserId(),riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
         if (result){
             pushService.noticeGrab(entity.getUserId());
@@ -62,6 +63,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
             logger.info("骑手取货，未找到订单或已取货完成。orderNo:{}",orderNo);
             return false;
         }
+        logger.info("处理骑手取货：orderNo:{}",orderNo);
         return merchantOrderService.riderGrabItem(entity.getUserId(), orderNo,grabItemTime) > 0;
     }
 
@@ -77,6 +79,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
             logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
             return false;
         }
+        logger.info("处理骑手送达完成：orderNo:{}",orderNo);
         boolean result =  merchantOrderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime) > 0;
         if (result){
             //发送骑手完成送货通知
@@ -87,29 +90,36 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
 
     @Override
     public boolean orderExpire(String orderNo,Date expireTime) {
-        MerchantOrderEntity entity = merchantOrderService.findByOrderNoAndStatus(orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
-        if (null == entity ){
-            logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
-            return false;
-        }
-        PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
-                MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
-        TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
-        if (resp != null && resp.isSucceeded()){
-            logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
-                    "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-            merchantOrderService.orderExpire(entity.getSenderId(),orderNo,expireTime);
-            pushService.noticeGrabTimeout(entity.getUserId());
-            return true;
-        }else {
-            if (resp == null){
-                logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo);
-            }else {
-                logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo+
-                        "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-            }
-        }
-        return false;
+       return merchantOrderService.dealGrabOvertimeOrders(orderNo,expireTime,true);
     }
+
+//    public boolean dealGrabOvertimeOrders(String orderNo,Date expireTime,boolean enablePushNotice){
+//        MerchantOrderEntity entity = merchantOrderService.findByOrderNoAndStatus(orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
+//        if (null == entity ){
+//            logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
+//            return false;
+//        }
+//        logger.info("处理超时无人接单：orderNo:{}",orderNo);
+//        PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
+//                MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
+//        TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
+//        if (resp != null && resp.isSucceeded()){
+//            logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
+//                    "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+//            merchantOrderService.orderExpire(entity.getSenderId(),orderNo,expireTime);
+//            if (enablePushNotice){
+//                pushService.noticeGrabTimeout(entity.getUserId());
+//            }
+//            return true;
+//        }else {
+//            if (resp == null){
+//                logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo);
+//            }else {
+//                logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo+
+//                        "errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+//            }
+//        }
+//        return false;
+//    }
 
 }
