@@ -36,7 +36,7 @@ public class FixErrorDataController extends MerchantBaseController<ReqFixUncance
         if (req == null || !"asdfzxc".equals(req.getPassword())){
             return new RespFixUncanceledGrabOvertime("forbidden");
         }
-        Integer grabOverMilSeconds = config.getTaskGrabExpiredMilSeconds();
+        Integer grabOverMilSeconds = config.getTaskGrabExpiredMilSeconds()/1000;
         List<String> orderNos = merchantOrderService.getUnCanceledGrabOvertimeOrderNoList(grabOverMilSeconds);
         if (orderNos == null || orderNos.size() == 0){
             return new RespFixUncanceledGrabOvertime("nothing to do, everything is ok");
