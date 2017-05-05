@@ -32,27 +32,35 @@ public class Config {
     private String beginWorkTime;
     private String endWorkTime;
 
+    private Double initPrice;
+    private Double initDistanceByMiles;
+    private Double pricePerKiloMiles;
+
+    @DisconfFileItem(name = "initPrice", associateField = "initPrice")
+    public Double getInitPrice() {
+        return initPrice;
+    }
+
+    @DisconfFileItem(name = "initDistanceByMiles", associateField = "initDistanceByMiles")
+    public Double getInitDistanceByMiles() {
+        return initDistanceByMiles;
+    }
+
+    @DisconfFileItem(name = "pricePerKiloMiles", associateField = "pricePerKiloMiles")
+    public Double getPricePerKiloMiles() {
+        return pricePerKiloMiles;
+    }
+
     @DisconfFileItem(name = "beginWorkTime", associateField = "beginWorkTime")
     public String getBeginWorkTime() {
         logger.info("beginWorkTime:{}",beginWorkTime);
         return beginWorkTime;
     }
 
-    public void setBeginWorkTime(String beginWorkTime) {
-        this.beginWorkTime = beginWorkTime;
-    }
     @DisconfFileItem(name = "endWorkTime", associateField = "endWorkTime")
     public String getEndWorkTime() {
         logger.info("endWorkTime:{}",endWorkTime);
         return endWorkTime;
-    }
-
-    public void setEndWorkTime(String endWorkTime) {
-        this.endWorkTime = endWorkTime;
-    }
-
-    public void setDispatchRadiusKiloMiles(Double dispatchRadiusKiloMiles) {
-        this.dispatchRadiusKiloMiles = dispatchRadiusKiloMiles;
     }
 
     @DisconfFileItem(name = "dispatch.radius.kiloMiles", associateField = "dispatchRadiusKiloMiles")
@@ -64,12 +72,6 @@ public class Config {
         logger.info("dispatchRadiusKiloMiles:{}",dispatchRadiusKiloMiles);
         return dispatchRadiusKiloMiles;
     }
-
-
-    public void setTaskGrabExpiredMilSeconds(Integer taskGrabExpiredMilSeconds) {
-        this.taskGrabExpiredMilSeconds = taskGrabExpiredMilSeconds;
-    }
-
     @DisconfFileItem(name = "task.grab.expires.milseconds", associateField = "taskGrabExpiredMilSeconds")
     public Integer getTaskGrabExpiredMilSeconds() {
         if (null == taskGrabExpiredMilSeconds){
@@ -80,7 +82,6 @@ public class Config {
         return taskGrabExpiredMilSeconds;
     }
 
-
     @DisconfFileItem(name = "merchant.notice.grabed.template", associateField = "noticeGrabedTemplate")
     public String getNoticeGrabedTemplate() {
         return noticeGrabedTemplate;
@@ -90,6 +91,7 @@ public class Config {
         this.noticeGrabedTemplate = noticeGrabedTemplate;
     }
 
+
     @DisconfFileItem(name = "merchant.notice.grabTimeout.template", associateField = "noticeGrabedTimeoutTemplate")
     public String getNoticeGrabedTimeoutTemplate() {
         return noticeGrabedTimeoutTemplate;
@@ -98,11 +100,36 @@ public class Config {
     public void setNoticeGrabedTimeoutTemplate(String noticeGrabedTimeoutTemplate) {
         this.noticeGrabedTimeoutTemplate = noticeGrabedTimeoutTemplate;
     }
+
+
+    public void setEndWorkTime(String endWorkTime) {
+        this.endWorkTime = endWorkTime;
+    }
+
+    public void setTaskGrabExpiredMilSeconds(Integer taskGrabExpiredMilSeconds) {
+        this.taskGrabExpiredMilSeconds = taskGrabExpiredMilSeconds;
+    }
+
+    public void setDispatchRadiusKiloMiles(Double dispatchRadiusKiloMiles) {
+        this.dispatchRadiusKiloMiles = dispatchRadiusKiloMiles;
+    }
+
+    public void setInitDistanceByMiles(Double initDistanceByMiles) {
+        this.initDistanceByMiles = initDistanceByMiles;
+    }
+
+    public void setInitPrice(Double initPrice) {
+        this.initPrice = initPrice;
+    }
+
+    public void setPricePerKiloMiles(Double pricePerKiloMiles) {
+        this.pricePerKiloMiles = pricePerKiloMiles;
+    }
+
     @DisconfFileItem(name = "merchant.notice.finished.template", associateField = "noticeFinishedTemplate")
     public String getNoticeFinishedTemplate() {
         return noticeFinishedTemplate;
     }
-
     public void setNoticeFinishedTemplate(String noticeFinishedTemplate) {
         this.noticeFinishedTemplate = noticeFinishedTemplate;
     }
@@ -110,10 +137,6 @@ public class Config {
     @DisconfFileItem(name = "alipush.appkey", associateField = "aliPushAppKey")
     public Long getAliPushAppKey() {
         return aliPushAppKey;
-    }
-
-    public void setAliPushAppKey(Long aliPushAppKey) {
-        this.aliPushAppKey = aliPushAppKey;
     }
 
     @DisconfFileItem(name = "merchant.pay.expired.milliseconds", associateField = "payExpiredMilSeconds")
@@ -126,10 +149,6 @@ public class Config {
         return payExpiredMilSeconds;
     }
 
-    public void setPayExpiredMilSeconds(Integer payExpiredMilSeconds) {
-        this.payExpiredMilSeconds = payExpiredMilSeconds;
-    }
-
     @DisconfFileItem(name = "merchant.deliveryMills.max", associateField = "maxDeliveryMills")
     public Integer getMaxDeliveryMills() {
         if (maxDeliveryMills == null){
@@ -140,17 +159,9 @@ public class Config {
         return maxDeliveryMills;
     }
 
-    public void setMaxDeliveryMills(Integer maxDeliveryMills) {
-        this.maxDeliveryMills = maxDeliveryMills;
-    }
-
     @DisconfFileItem(name = "merchant.notice.grabed.title", associateField = "noticeGrabedTitle")
     public String getNoticeGrabedTitle() {
         return noticeGrabedTitle;
-    }
-
-    public void setNoticeGrabedTitle(String noticeGrabedTitle) {
-        this.noticeGrabedTitle = noticeGrabedTitle;
     }
 
     @DisconfFileItem(name = "merchant.notice.grabTimeout.title", associateField = "noticeGrabedTimeoutTitle")
@@ -158,8 +169,8 @@ public class Config {
         return noticeGrabedTimeoutTitle;
     }
 
-    public void setNoticeGrabedTimeoutTitle(String noticeGrabedTimeoutTitle) {
-        this.noticeGrabedTimeoutTitle = noticeGrabedTimeoutTitle;
+    public void setPayExpiredMilSeconds(Integer payExpiredMilSeconds) {
+        this.payExpiredMilSeconds = payExpiredMilSeconds;
     }
 
     @DisconfFileItem(name = "merchant.notice.finished.title", associateField = "noticeFinishedTitle")
@@ -167,7 +178,27 @@ public class Config {
         return noticeFinishedTitle;
     }
 
+    public void setAliPushAppKey(Long aliPushAppKey) {
+        this.aliPushAppKey = aliPushAppKey;
+    }
+
+    public void setNoticeGrabedTimeoutTitle(String noticeGrabedTimeoutTitle) {
+        this.noticeGrabedTimeoutTitle = noticeGrabedTimeoutTitle;
+    }
+
+    public void setNoticeGrabedTitle(String noticeGrabedTitle) {
+        this.noticeGrabedTitle = noticeGrabedTitle;
+    }
+
+    public void setMaxDeliveryMills(Integer maxDeliveryMills) {
+        this.maxDeliveryMills = maxDeliveryMills;
+    }
+
     public void setNoticeFinishedTitle(String noticeFinishedTitle) {
         this.noticeFinishedTitle = noticeFinishedTitle;
+    }
+
+    public void setBeginWorkTime(String beginWorkTime) {
+        this.beginWorkTime = beginWorkTime;
     }
 }
