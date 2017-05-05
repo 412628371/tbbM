@@ -23,14 +23,16 @@ public class DeliveryFeeService  {
     Config config;
 
     public double sumDeliveryFeeByDistance(double distance) throws MerchantClientException {
-        double fee = 4;
+        double fee = config.getInitPrice();
+        double initDistanceByMiles = config.getInitDistanceByMiles();
+        double pricePerKiloMiles = config.getPricePerKiloMiles();
         //TODO 配置,
-        if (distance > 1000){
-            distance-=1000;
+        if (distance > initDistanceByMiles){
+            distance-=initDistanceByMiles;
         }else {
             return fee;
         }
-        double overDistanceFee = Math.ceil((distance/1000))*2;
+        double overDistanceFee = Math.ceil((distance/1000))*pricePerKiloMiles;
         fee += overDistanceFee;
         return fee;
     }
