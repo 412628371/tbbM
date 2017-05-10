@@ -15,7 +15,7 @@
 	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
 	<dubbo:reference id="tokenService" interface="com.xinguang.usercentergate.api.TokenServiceInterface" group="${dubbo.group}" check="false" version="0.0.1"/>
 
-	<dubbo:reference id="tbbAccountService" interface="com.xinguang.tubobo.account.api.TbbAccountService"  group="${dubbo.group}" version="0.0.1" check="false"/>
+	<dubbo:reference id="tbbAccountService" interface="com.xinguang.tubobo.account.api.TbbAccountService"  group="${dubbo.group}" version="0.0.2" check="false"/>
 
 
 	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->

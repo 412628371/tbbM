@@ -25,7 +25,7 @@
         <tubobo.merchant.impl.version>1.0-SNAPSHOT</tubobo.merchant.impl.version>
         <tubobo.merchant.api.version>0.0.10-SNAPSHOT</tubobo.merchant.api.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
-        <tubobo-account-api-version>1.0-SNAPSHOT</tubobo-account-api-version>
+        <tubobo-account-api-version>1.1-SNAPSHOT</tubobo-account-api-version>
         <tubobo-push-api-version>1.0-SNAPSHOT</tubobo-push-api-version>
 
         <spring.version>4.2.6.RELEASE</spring.version>

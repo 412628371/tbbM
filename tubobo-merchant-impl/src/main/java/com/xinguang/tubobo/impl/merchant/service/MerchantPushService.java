@@ -36,7 +36,11 @@ public class MerchantPushService {
                 .setiOSBadge(0)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
-        pushService.push(content,pushAppKey,list,options);
+        try{
+            pushService.push(content,pushAppKey,list,options);
+        }catch (Exception e){
+            logger.error("push to userId:{},content:{},title:{}.异常：",userId,content,title,e);
+        }
         logger.info("状态通知已发送给userId:{}",userId);
     }
 
