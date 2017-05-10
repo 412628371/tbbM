@@ -35,20 +35,6 @@ public class RechargeGiftPlanController extends MerchantBaseController<Object,Re
         if (StringUtils.isNotBlank(plan)){
             String[] items= plan.split(",");
             list = new ArrayList<>(items.length);
-        }else {
-            list = new ArrayList<>(0);
-        }
-        resp.setList(list);
-        return resp;
-    }
-
-    public static void main(String[] args) {
-//        String plan = "100:30,200:50";
-        String plan = "";
-        List<RechargeGiftPlanItem> list;
-        if (StringUtils.isNotBlank(plan)){
-            String[] items= plan.split(",");
-            list = new ArrayList<>(items.length);
             for (String item:items){
                 String[] parts = item.split(":");
                 RechargeGiftPlanItem giftPlanItem = new RechargeGiftPlanItem(parts[0],parts[1]);
@@ -57,8 +43,32 @@ public class RechargeGiftPlanController extends MerchantBaseController<Object,Re
         }else {
             list = new ArrayList<>(0);
         }
-        RechargeGiftPlanResp resp = new RechargeGiftPlanResp();
         resp.setList(list);
-        logger.info(resp.toString());
+        return resp;
+    }
+
+//    public static void main(String[] args) {
+////        String plan = "100:30,200:50";
+//        String plan = "";
+//        List<RechargeGiftPlanItem> list;
+//        if (StringUtils.isNotBlank(plan)){
+//            String[] items= plan.split(",");
+//            list = new ArrayList<>(items.length);
+//            for (String item:items){
+//                String[] parts = item.split(":");
+//                RechargeGiftPlanItem giftPlanItem = new RechargeGiftPlanItem(parts[0],parts[1]);
+//                list.add(giftPlanItem);
+//            }
+//        }else {
+//            list = new ArrayList<>(0);
+//        }
+//        RechargeGiftPlanResp resp = new RechargeGiftPlanResp();
+//        resp.setList(list);
+//        logger.info(resp.toString());
+//    }
+
+    @Override
+    protected boolean needLogin() {
+        return false;
     }
 }
