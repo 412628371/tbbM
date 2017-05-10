@@ -6,7 +6,6 @@ import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.response.marketing.RechargeGiftPlanItem;
 import com.xinguang.tubobo.merchant.web.response.marketing.RechargeGiftPlanResp;
-import org.omg.CORBA.Object;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
