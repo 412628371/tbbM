@@ -63,26 +63,18 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 			if (operInfo.getAmount() > 0){
 				amount = "-"+amount;
 			}
-			record.setType(MerchantConstants.TITLE_FINE);
-		}
-		if (TbbConstants.RecordType.RECHARGE == operInfo.getType()){
-			record.setType(MerchantConstants.TITLE_RECHARGE);
-		}
-		if (TbbConstants.RecordType.RECIEVE == operInfo.getType()){
-			record.setType(MerchantConstants.TITLE_RECEIVE);
 		}
 		if (TbbConstants.RecordType.PAY == operInfo.getType()){
 			if (operInfo.getAmount() > 0){
 				amount = "-"+amount;
 			}
-			record.setType(MerchantConstants.TITLE_PAY);
 		}
 		if (TbbConstants.RecordType.WITHDRAW == operInfo.getType()){
 			if (operInfo.getAmount() > 0){
 				amount = "-"+amount;
 			}
-			record.setType(MerchantConstants.TITLE_WITHDRAW);
 		}
+		record.setType(operInfo.getType().getLabel());
 		record.setAmount(amount);
 		record.setCreateTime(operInfo.getCreateTime());
 		record.setRecordId(operInfo.getId().toString());
