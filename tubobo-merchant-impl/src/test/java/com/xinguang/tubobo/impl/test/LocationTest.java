@@ -15,7 +15,7 @@ public class LocationTest {
     public static void main(String[] args) {
 //        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-context.xml");
 //        DeliveryFeeService feeService = (DeliveryFeeService) applicationContext.getBean("deliveryFeeService");
-       Double location =  LocationUtil.getDistance(30.232486,120.182444,30.243053,120.184289);
+       Double location =  LocationUtil.getDistance(30.251736,120.21557,30.2310148111979,120.195802951389);
         System.out.println(location);
     }
 }

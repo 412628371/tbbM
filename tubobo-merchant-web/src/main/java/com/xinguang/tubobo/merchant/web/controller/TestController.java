@@ -1,6 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller;
 
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +14,14 @@ import java.util.Date;
 public class TestController extends MerchantBaseController<Object,Object>{
 
 	@Autowired
-	private MerchantOrderService merchantOrderService;
+	private MerchantOrderManager merchantOrderManager;
 
 	@Override
 	protected Object doService(String userId, Object req) throws MerchantClientException {
 
-		merchantOrderService.findByMerchantIdAndOrderNo("16032532234","8f21cf699dbd4fdbaba004f33c54c7b4");
+		merchantOrderManager.findByMerchantIdAndOrderNo("16032532234","8f21cf699dbd4fdbaba004f33c54c7b4");
 
-		merchantOrderService.riderGrabItem("160","8f21cf699dbd4fdbaba004f33c54c7b4",new Date());
+		merchantOrderManager.riderGrabItem("160","8f21cf699dbd4fdbaba004f33c54c7b4",new Date());
 
 		return null;
 	}

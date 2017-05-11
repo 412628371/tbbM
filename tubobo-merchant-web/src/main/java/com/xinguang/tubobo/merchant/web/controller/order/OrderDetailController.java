@@ -9,7 +9,7 @@ import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqOrderDetail;
 import com.xinguang.tubobo.merchant.web.response.RespOrderDetail;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,12 +25,12 @@ import java.util.Date;
 @RequestMapping("/order/detail")
 public class OrderDetailController extends MerchantBaseController<ReqOrderDetail,RespOrderDetail> {
     @Autowired
-    MerchantOrderService merchantOrderService;
+    MerchantOrderManager merchantOrderManager;
     @Resource
     Config config;
     @Override
     protected RespOrderDetail doService(String userId, ReqOrderDetail req) throws MerchantClientException {
-        MerchantOrderEntity entity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
+        MerchantOrderEntity entity = merchantOrderManager.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         Date now = new Date();
         if(null == entity){
             logger.error("获取订单详情，订单不存在。orderNo:{}",req.getOrderNo());

@@ -159,8 +159,8 @@ public class RedisCache implements Cache{
 
 	@Override
 	public <T> T get(Object key, Class<T> type) {
-		// TODO Auto-generated method stub
-		return null;
+		ValueWrapper wrapper = this.get(key);
+		return wrapper == null?null: (T) wrapper.get();
 	}
 
 	@Override
@@ -168,5 +168,4 @@ public class RedisCache implements Cache{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

@@ -15,7 +15,7 @@ import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountPay;
 import com.xinguang.tubobo.merchant.web.response.RespOrderPay;
 import org.springframework.beans.BeanUtils;
@@ -38,7 +38,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
     @Autowired
     private TbbAccountService tbbAccountService;
     @Autowired
-    private MerchantOrderService merchantOrderService;
+    private MerchantOrderManager merchantOrderManager;
     @Resource
     Config config;
     @Override
@@ -48,7 +48,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if (null == infoEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
-        MerchantOrderEntity orderEntity = merchantOrderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
+        MerchantOrderEntity orderEntity = merchantOrderManager.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         if (null == orderEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
@@ -69,9 +69,9 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             orderEntity.setPayId(payId);
             MerchantOrderDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
             orderDTO.setPayId(payId);
-            merchantOrderService.merchantPay(orderDTO,infoEntity.getUserId(),req.getOrderNo(),payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
+            merchantOrderManager.merchantPay(orderDTO,infoEntity.getUserId(),req.getOrderNo(),payId);
             RespOrderPay respOrderPay = new RespOrderPay();
             respOrderPay.setGrabExpiredStartTime(new Date());
             respOrderPay.setGrabExpiredMilSeconds(config.getTaskGrabExpiredMilSeconds());

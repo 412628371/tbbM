@@ -1,14 +1,9 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.xinguang.tubobo.account.api.TbbAccountService;
-import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
-import com.xinguang.tubobo.account.api.response.PayInfo;
-import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.push.PushService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +16,9 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     @Autowired
     MerchantPushService pushService;
     @Autowired
-    private MerchantOrderService merchantOrderService;
+    private MerchantOrderManager merchantOrderManager;
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private TbbAccountService tbbAccountService;
@@ -35,14 +32,14 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
      */
     @Override
     public boolean riderGrabOrder(String riderId, String riderName, String riderPhone, String orderNo, Date grabOrderTime) {
-        MerchantOrderEntity entity = merchantOrderService.findByOrderNoAndStatus(orderNo,
+        MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
                 EnumMerchantOrderStatus.WAITING_GRAB.getValue());
         if (null == entity){
             logger.error("骑手已接单通知，未找到订单或已处理接单。orderNo:{}",orderNo);
             return false;
         }
         logger.info("处理骑手接单：orderNo:{}",orderNo);
-        boolean result = merchantOrderService.riderGrabOrder(entity.getUserId(),riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
+        boolean result = orderService.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
         if (result){
             pushService.noticeGrab(entity.getUserId());
         }
@@ -57,14 +54,14 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
      */
     @Override
     public boolean riderGrabItem(String orderNo, Date grabItemTime) {
-        MerchantOrderEntity entity = merchantOrderService.findByOrderNoAndStatus(orderNo,
+        MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
                 EnumMerchantOrderStatus.WAITING_PICK.getValue());
         if (null == entity){
             logger.info("骑手取货，未找到订单或已取货完成。orderNo:{}",orderNo);
             return false;
         }
         logger.info("处理骑手取货：orderNo:{}",orderNo);
-        return merchantOrderService.riderGrabItem(entity.getUserId(), orderNo,grabItemTime) > 0;
+        return merchantOrderManager.riderGrabItem(entity.getUserId(), orderNo,grabItemTime) > 0;
     }
 
     /**
@@ -74,13 +71,13 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
      */
     @Override
     public boolean riderFinishOrder(String orderNo, Date finishOrderTime) {
-        MerchantOrderEntity entity = merchantOrderService.findByOrderNo(orderNo);
+        MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
         if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
             logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
             return false;
         }
         logger.info("处理骑手送达完成：orderNo:{}",orderNo);
-        boolean result =  merchantOrderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime) > 0;
+        boolean result =  merchantOrderManager.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime) > 0;
         if (result){
             //发送骑手完成送货通知
             pushService.noticeFinished(entity.getUserId());
@@ -90,7 +87,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
 
     @Override
     public boolean orderExpire(String orderNo,Date expireTime) {
-       return merchantOrderService.dealGrabOvertimeOrders(orderNo,expireTime,true);
+       return merchantOrderManager.dealGrabOvertimeOrders(orderNo,expireTime,true);
     }
 
 //    public boolean dealGrabOvertimeOrders(String orderNo,Date expireTime,boolean enablePushNotice){

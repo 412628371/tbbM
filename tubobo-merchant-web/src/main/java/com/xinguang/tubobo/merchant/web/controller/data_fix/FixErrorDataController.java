@@ -1,7 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.data_fix;
 
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
@@ -27,7 +27,7 @@ public class FixErrorDataController extends MerchantBaseController<ReqFixUncance
     @Autowired
     MerchantToTaskCenterServiceInterface merchantToTaskCenterServiceInterface;
     @Autowired
-    MerchantOrderService merchantOrderService;
+    MerchantOrderManager merchantOrderManager;
     @Autowired
     Config config;
 
@@ -37,13 +37,13 @@ public class FixErrorDataController extends MerchantBaseController<ReqFixUncance
             return new RespFixUncanceledGrabOvertime("forbidden");
         }
         Integer grabOverMilSeconds = config.getTaskGrabExpiredMilSeconds()/1000;
-        List<String> orderNos = merchantOrderService.getUnCanceledGrabOvertimeOrderNoList(grabOverMilSeconds);
+        List<String> orderNos = merchantOrderManager.getUnCanceledGrabOvertimeOrderNoList(grabOverMilSeconds);
         if (orderNos == null || orderNos.size() == 0){
             return new RespFixUncanceledGrabOvertime("nothing to do, everything is ok");
         }
         logger.info("处理抢单超时，未取消的订单。发现异常订单数：{}", orderNos.size());
         for (String orderNo: orderNos){
-            merchantOrderService.dealGrabOvertimeOrders(orderNo,new Date(),false);
+            merchantOrderManager.dealGrabOvertimeOrders(orderNo,new Date(),false);
             logger.info("处理抢单超时，未取消的异常订单。orderNo：{}", orderNo);
         }
         return new RespFixUncanceledGrabOvertime("deal "+orderNos.size()+" 条异常单");

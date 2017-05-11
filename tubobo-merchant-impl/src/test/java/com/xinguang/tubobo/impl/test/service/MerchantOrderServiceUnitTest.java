@@ -1,15 +1,15 @@
 package com.xinguang.tubobo.impl.test.service;
 
+import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
-import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
 import com.xinguang.tubobo.impl.test.base.BaseJunit4Test;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +19,10 @@ import java.util.Date;
 /**
  * Created by Administrator on 2017/4/14.
  */
-public class MerchantOrderServiceUnitTest extends BaseJunit4Test {
-       @Resource
-       MerchantOrderService merchantOrderService;
+class orderServiceUnitTest extends BaseJunit4Test {
+    @Autowired
+    public OrderService orderService;
+
     @Test
     @Transactional
     @Rollback()
@@ -36,25 +37,25 @@ public class MerchantOrderServiceUnitTest extends BaseJunit4Test {
         orderRO.setReceiverAddressDetail("浙江省杭州市近江时代大厦");
         orderRO.setReceiverAddressProvince("近江时代大厦");
         orderRO.setReceiverPhone("18668123035");
-        String orderNo =  merchantOrderService.order(userId,orderRO);
+        String orderNo =  orderService.order(userId,orderRO);
 
-        MerchantOrderEntity entity0 = merchantOrderService.findByOrderNo("qqq");
+        MerchantOrderEntity entity0 = orderService.findByOrderNo("qqq");
         MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
         BeanUtils.copyProperties(entity0,merchantOrderDTO);
-        merchantOrderService.merchantPay(merchantOrderDTO,userId,"qqq",19000);
-        MerchantOrderEntity entity = merchantOrderService.findByOrderNo("qqq");
+//        orderService.merchantPay(merchantOrderDTO,userId,"qqq",19000);
+        MerchantOrderEntity entity = orderService.findByOrderNo("qqq");
         Assert.assertEquals(EnumMerchantOrderStatus.WAITING_GRAB.getValue(),entity.getOrderStatus());
 
-//        int expireResult = merchantOrderService.orderExpire("qqq");
-//        MerchantOrderEntity entity2 = merchantOrderService.findByOrderNo("qqq");
+//        int expireResult = orderService.orderExpire("qqq");
+//        MerchantOrderEntity entity2 = orderService.findByOrderNo("qqq");
 //        Assert.assertEquals(EnumMerchantOrderStatus.OVERTIME.getValue(),entity2.getOrderStatus());
-        boolean cancelCount = merchantOrderService.cancelOrder("1234","qqq");
+        boolean cancelCount = orderService.merchantCancel("1234","qqq","MERCHANT_CANCEL");
         Assert.assertEquals(true,cancelCount);
-        int grabCount = merchantOrderService.riderGrabOrder("","111","hhh","18911111111","qqq",new Date());
+        int grabCount = orderService.riderGrabOrder("111","hhh","18911111111","qqq",new Date());
         Assert.assertEquals(1,grabCount);
-        int pickCount = merchantOrderService.riderGrabItem("","qqq",new Date());
+        int pickCount = orderService.riderGrabItem("qqq",new Date());
         Assert.assertEquals(1,pickCount);
-        int finishCount = merchantOrderService.riderFinishOrder("","qqq",new Date());
+        int finishCount = orderService.riderFinishOrder("qqq",new Date());
         Assert.assertEquals(1,finishCount);
     }
 }
