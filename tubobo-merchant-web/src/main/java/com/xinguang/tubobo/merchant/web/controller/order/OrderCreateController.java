@@ -14,7 +14,7 @@ import com.xinguang.tubobo.merchant.web.request.CreateOrderRequest;
 import com.xinguang.tubobo.merchant.web.response.CreateOrderResponse;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,7 +30,7 @@ import java.util.Date;
 @RequestMapping("/order/create")
 public class OrderCreateController extends MerchantBaseController<CreateOrderRequest,CreateOrderResponse> {
     @Autowired
-    MerchantOrderService merchantOrderService;
+    MerchantOrderManager merchantOrderManager;
     @Autowired
     MerchantInfoService merchantInfoService;
     @Autowired
@@ -51,7 +51,7 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
             throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_LATE);
         }
         MerchantOrderEntity entity = translateRequestToEntity(userId,req);
-        String orderNo = merchantOrderService.order(userId,entity);
+        String orderNo = merchantOrderManager.order(userId,entity);
         CreateOrderResponse response = new CreateOrderResponse();
         response.setOrderNo(orderNo);
         return response;

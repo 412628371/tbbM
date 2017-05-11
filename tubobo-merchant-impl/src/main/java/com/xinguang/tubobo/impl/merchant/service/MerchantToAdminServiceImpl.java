@@ -19,10 +19,12 @@ import java.util.List;
 public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterface {
 
     @Autowired
-    private MerchantOrderService merchantOrderService;
+    private MerchantOrderManager merchantOrderManager;
     @Autowired
     private MerchantInfoService merchantInfoService;
 
+    @Autowired
+    private OrderService orderService;
     /**
      * 查询商家详细信息
      * @param userId
@@ -90,7 +92,7 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if (dto != null){
             BeanUtils.copyProperties(dto,entity);
         }
-        Page<MerchantOrderEntity> page = merchantOrderService.adminQueryOrderPage(pageNo,pageSize,entity);
+        Page<MerchantOrderEntity> page = merchantOrderManager.adminQueryOrderPage(pageNo,pageSize,entity);
         List<MerchantOrderDTO> dtoList = new ArrayList<>();
         if (page!= null && page.getList() != null && page.getList().size() > 0){
             for (MerchantOrderEntity order : page.getList()){
@@ -113,7 +115,7 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
     @Override
     public MerchantOrderDTO findMerchantOrderDetail(String orderNo) {
         if (StringUtils.isBlank(orderNo)) return null;
-        MerchantOrderEntity order = merchantOrderService.findByOrderNo(orderNo);
+        MerchantOrderEntity order = orderService.findByOrderNo(orderNo);
         if (order != null){
             MerchantOrderDTO dto = new MerchantOrderDTO();
             BeanUtils.copyProperties(order,dto);

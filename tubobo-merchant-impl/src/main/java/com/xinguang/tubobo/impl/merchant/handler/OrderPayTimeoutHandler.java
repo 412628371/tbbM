@@ -2,9 +2,8 @@ package com.xinguang.tubobo.impl.merchant.handler;
 
 import com.rabbitmq.client.Channel;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
-import com.xinguang.tubobo.push.PushService;
+import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class OrderPayTimeoutHandler  implements ChannelAwareMessageListener{
     @Autowired
-    MerchantOrderService merchantOrderService;
+    OrderService orderService;
     @Autowired
     MerchantPushService pushService;
 
@@ -25,12 +24,12 @@ public class OrderPayTimeoutHandler  implements ChannelAwareMessageListener{
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
         String orderNo = new String(message.getBody());
-        MerchantOrderEntity entity = merchantOrderService.findByOrderNo(orderNo);
+        MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
         if (null == entity){
             logger.error("订单超时未支付，未找到订单。orderNo:{}",orderNo);
             return;
         }
-        merchantOrderService.payExpired(entity.getSenderId(),orderNo);
+        orderService.payExpired(entity.getSenderId(),orderNo);
         logger.info("订单超时未支付，orderNo: {}",orderNo);
     }
 }
