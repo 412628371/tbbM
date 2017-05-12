@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
@@ -35,6 +36,7 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if (StringUtils.isBlank(userId)) return null;
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
         if (merchant != null){
+            AliOss.generateMerchantSignedUrl(merchant);
             MerchantInfoDTO dto = new MerchantInfoDTO();
             BeanUtils.copyProperties(merchant,dto);
             return dto;
