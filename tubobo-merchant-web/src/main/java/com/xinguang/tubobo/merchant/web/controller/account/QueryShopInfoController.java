@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
+import com.hzmux.hzcms.common.utils.AliOss;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.response.MerchantInfoResponse;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -32,6 +33,7 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
     }
 
     private MerchantInfoResponse translateEntityToResponse(MerchantInfoEntity merchantInfoEntity){
+        AliOss.generateMerchantSignedUrl(merchantInfoEntity);
         MerchantInfoResponse response= new MerchantInfoResponse();
         BeanUtils.copyProperties(merchantInfoEntity,response);
         return response;
