@@ -21,7 +21,6 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -62,6 +61,7 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
 		String orderNo = orderService.order(userId,entity);
+		logger.info("创建订单, userId:{},orderNo:{}",userId,orderNo);
 		//将订单加入支付超时队列
 		timeoutTaskProducer.sendMessage(orderNo);
 		return orderNo;
