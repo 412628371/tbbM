@@ -72,7 +72,10 @@ public abstract class MerchantBaseController <P, R>{
                         EnumRespCode.MERCHANT_NOT_EXISTS.getDesc());
             }
             if (entity != null){
-                if (!EnumAuthentication.SUCCESS.getValue().equals(entity.getMerchantStatus())){
+                if (EnumAuthentication.FROZEN.getValue().equals(entity.getMerchantStatus())){
+                    return  new ClientResp(EnumRespCode.MERCHANT_FROZEN.getValue(),
+                            EnumRespCode.MERCHANT_FROZEN.getDesc());
+                }else if (!EnumAuthentication.SUCCESS.getValue().equals(entity.getMerchantStatus())){
                     return  new ClientResp(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE.getValue(),
                             EnumRespCode.MERCHANT_STATUS_CANT_OPERATE.getDesc());
                 }
