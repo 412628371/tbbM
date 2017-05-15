@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
+import com.hzmux.hzcms.common.utils.AliOss;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.AccountInfoRequest;
 import com.xinguang.tubobo.account.api.response.AccountInfo;
@@ -33,6 +34,10 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
     @Override
     protected RespShopIdentify doService(String userId, ShopIdentifyRequest req) throws MerchantClientException {
         logger.info("收到店铺申请请求 ：{}，",req.toString() );
+
+        req.setIdCardFrontImageUrl(AliOss.subAliossUrl(req.getIdCardFrontImageUrl()));
+        req.setIdCardBackImageUrl(AliOss.subAliossUrl(req.getIdCardBackImageUrl()));
+
         MerchantInfoEntity infoEntity  = merchantInfoService.findByUserId(userId);
         if (null == infoEntity){
             // 生成账户信息

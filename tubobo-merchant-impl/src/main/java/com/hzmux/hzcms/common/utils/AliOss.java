@@ -41,6 +41,10 @@ public class AliOss {
      * @return
      */
     public static String generateSignedUrl(String key, String bucketName) {
+        if (key.startsWith("http://")) {
+            key = key.split("\\?")[0];
+            key = key.split("com/")[1];
+        }
         // 设置URL过期时间为1小时
         Date expiration = new Date(new Date().getTime() + 3600 * 1000);
         // 生成URL
@@ -56,7 +60,15 @@ public class AliOss {
      * @return
      */
     public static String generateUrl(String key, String bucketName) {
+        if (key.startsWith("http://")) return key;
         return "http://" + bucketName + "." + endpoint + "/" + key;
+    }
+
+    public static String subAliossUrl(String url) {
+        if(StringUtils.isNotBlank(url)){
+            return url.split("\\?")[0];
+        }
+        return "";
     }
 
 

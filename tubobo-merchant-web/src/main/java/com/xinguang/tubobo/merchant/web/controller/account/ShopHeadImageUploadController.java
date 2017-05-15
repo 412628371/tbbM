@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
+import com.hzmux.hzcms.common.utils.AliOss;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -26,7 +27,8 @@ public class ShopHeadImageUploadController extends MerchantBaseController<ShopHe
         if (null == entity){
             return EnumRespCode.MERCHANT_NOT_EXISTS;
         }
-        merchantInfoService.updateHeadImage(userId,req.getAvatarUrl());
+        String url = AliOss.subAliossUrl(req.getAvatarUrl());
+        merchantInfoService.updateHeadImage(userId,url);
         return EnumRespCode.SUCCESS;
     }
 }
