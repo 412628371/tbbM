@@ -14,6 +14,8 @@ import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import java.util.List;
 
 @Repository
 public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
+    Logger logger = LoggerFactory.getLogger(MerchantOrderDao.class);
     public MerchantOrderEntity findByOrderNo(String orderNo){
         String sqlString = "select * from tubobo_merchant_order where order_no = :p1 and del_flag = '0' ";
         List<MerchantOrderEntity> list = findBySql(sqlString, new Parameter(orderNo), MerchantOrderEntity.class);
@@ -93,6 +96,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_GRAB.getValue(),
                 EnumPayStatus.PAID.getValue(),payDate,payId,
                 merchantId,orderNo, EnumMerchantOrderStatus.INIT.getValue()));
+        logger.info("支付操作数据库：count:{},merchantId:{},orderNo:{},payId:{},payDate:{}",count,merchantId,orderNo,payId,payDate);
         getSession().clear();
         return count;
     }
