@@ -27,8 +27,7 @@ public class ShopHeadImageUploadController extends MerchantBaseController<ShopHe
         if (null == entity){
             return EnumRespCode.MERCHANT_NOT_EXISTS;
         }
-        String url = AliOss.subAliossUrl(req.getAvatarUrl());
-        merchantInfoService.updateHeadImage(userId,url);
+        merchantInfoService.updateHeadImage(userId,req.getAvatarUrl());
         return EnumRespCode.SUCCESS;
     }
 }
