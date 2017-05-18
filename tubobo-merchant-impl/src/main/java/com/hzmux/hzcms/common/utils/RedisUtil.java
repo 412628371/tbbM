@@ -13,7 +13,7 @@
 //import redis.clients.jedis.JedisPool;
 //import redis.clients.jedis.JedisPoolConfig;
 //
-//public final class RedisUtil {
+//public final class RedisOp {
 //
 //	private static JedisPool jedisPool;
 //

@@ -16,6 +16,8 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.web.request.ShopIdentifyRequest;
 import com.xinguang.tubobo.merchant.web.response.RespShopIdentify;
+import com.xinguang.tubobo.rider.api.RiderToAdminServiceInterface;
+import com.xinguang.tubobo.rider.api.dto.RiderInfoDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyRequest,RespShopIdentify> {
     @Autowired
     MerchantInfoService merchantInfoService;
+    @Autowired
+    RiderToAdminServiceInterface riderToAdminServiceInterface;
 
     @Autowired
     TbbAccountService tbbAccountService;
@@ -36,6 +40,11 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
     protected RespShopIdentify doService(String userId, ShopIdentifyRequest req) throws MerchantClientException {
         logger.info("收到店铺申请请求 ：{}，",req.toString() );
 
+        RiderInfoDTO riderInfoDTO = riderToAdminServiceInterface.findByUserId(userId);
+        if (riderInfoDTO!= null){
+            logger.error("店铺申请失败，该用户已经申请成为骑手。userId:{}",userId);
+            throw new MerchantClientException(EnumRespCode.MERCHANT_ALREADY_APPLY_RIDER);
+        }
         req.setIdCardFrontImageUrl(AliOss.subAliossUrl(req.getIdCardFrontImageUrl()));
         req.setIdCardBackImageUrl(AliOss.subAliossUrl(req.getIdCardBackImageUrl()));
         req.setShopImageUrl(AliOss.subAliossUrl(req.getShopImageUrl()));

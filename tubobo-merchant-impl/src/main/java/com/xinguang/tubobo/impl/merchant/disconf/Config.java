@@ -42,6 +42,26 @@ public class Config {
     private Double firstLevelPricePerKM;
     private Double secondLevelDistance;
     private Double secondLevelPricePerKM;
+    private Long payPwdMaxErrorTimes;
+    private String distributionLimitationExpression;
+
+    @DisconfFileItem(name = "distributionLimitationExpression", associateField = "distributionLimitationExpression")
+    public String getDistributionLimitationExpression() {
+        return distributionLimitationExpression;
+    }
+
+    public void setDistributionLimitationExpression(String distributionLimitationExpression) {
+        this.distributionLimitationExpression = distributionLimitationExpression;
+    }
+
+    @DisconfFileItem(name = "payPwdMaxErrorTimes", associateField = "payPwdMaxErrorTimes")
+    public Long getPayPwdMaxErrorTimes() {
+        return payPwdMaxErrorTimes;
+    }
+
+    public void setPayPwdMaxErrorTimes(Long payPwdMaxErrorTimes) {
+        this.payPwdMaxErrorTimes = payPwdMaxErrorTimes;
+    }
 
     @DisconfFileItem(name = "firstLevelInitPrice", associateField = "firstLevelInitPrice")
     public Double getFirstLevelInitPrice() {

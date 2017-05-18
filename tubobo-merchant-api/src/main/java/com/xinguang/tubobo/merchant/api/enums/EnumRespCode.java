@@ -11,6 +11,7 @@ public enum EnumRespCode {
 	MERCHANT_VERIFYING("10101", "商家信息正在审核中，请耐心等待"),
 	MERCHANT_NOT_EXISTS("10102", "商家不存在"),
 	MERCHANT_FROZEN("10103", "商家被冻结,请联系客服"),
+	MERCHANT_ALREADY_APPLY_RIDER("10104", "您已申请骑手，不能申请成为商家"),
 
 	MERCHANT_CANT_CANCEL("10200", "订单状态不允许取消"),
 	MERCHANT_CANT_DELETE("10201", "订单状态不允许删除"),
@@ -42,6 +43,8 @@ public enum EnumRespCode {
 	ACCOUNT_PAY_FAIL("30052", "支付失败"),
 	ACCOUNT_PWD_CANT_EQUAL("30053", "新旧密码不能相同"),
 	ACCOUNT_PWD_RESET_CREDENTIAL_INVALID("30054", "重置密码，令牌已无效"),
+
+	ACCOUNT_PWD_ERROR_TOO_MUCH("30055", "支付密码输入错误次数过多"),
 	ACCOUNT_RECHARGE_FAIL("30060", "充值操作失败");
 
 

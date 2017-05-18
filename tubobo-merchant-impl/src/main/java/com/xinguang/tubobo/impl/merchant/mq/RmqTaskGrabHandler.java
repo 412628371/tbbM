@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.mq;
 
 import com.rabbitmq.client.Channel;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.impl.merchant.service.MerchantToTaskCenterServiceImpl;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -19,8 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class RmqTaskGrabHandler implements ChannelAwareMessageListener {
     private static final Logger logger = LoggerFactory.getLogger(RmqTaskGrabHandler.class);
-//    @Autowired
-//    private MerchantOrderService merchantOrderService;
+    @Autowired
+    private MerchantToTaskCenterServiceImpl merchantOrderService;
     @Autowired
     private OrderService orderService;
     @Override
@@ -31,12 +32,7 @@ public class RmqTaskGrabHandler implements ChannelAwareMessageListener {
         if (null == merchantGrabCallbackDTO) {
             return;
         }
-        MerchantOrderEntity order = orderService.findByOrderNo(merchantGrabCallbackDTO.getTaskNo());
-        if (order == null ||
-                !EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(order.getOrderStatus())){
-            logger.info("处理抢单回调，orderNo：{}",merchantGrabCallbackDTO.getTaskNo());
-            orderService.riderGrabOrder(merchantGrabCallbackDTO.getRiderId(), merchantGrabCallbackDTO.getRiderName(),
-                    merchantGrabCallbackDTO.getRiderPhone(), merchantGrabCallbackDTO.getTaskNo(), merchantGrabCallbackDTO.getGrabTime());
-        }
+        merchantOrderService.riderGrabOrder(merchantGrabCallbackDTO.getRiderId(), merchantGrabCallbackDTO.getRiderName(),
+                merchantGrabCallbackDTO.getRiderPhone(), merchantGrabCallbackDTO.getTaskNo(), merchantGrabCallbackDTO.getGrabTime());
     }
 }

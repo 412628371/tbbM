@@ -6,7 +6,9 @@ import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.cache.RedisOp;
 import com.xinguang.tubobo.impl.merchant.common.AESUtils;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -29,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import java.util.Date;
 
+import static com.sun.tools.doclint.Entity.times;
+
 
 /**
  * Created by Administrator on 2017/4/15.
@@ -44,6 +48,8 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
     private MerchantOrderManager merchantOrderManager;
     @Resource
     Config config;
+    @Autowired
+    RedisOp redisOp;
     @Override
     protected RespOrderPay doService(String userId, ReqAccountPay req) throws MerchantClientException {
         logger.info("支付请求：userId:{}, request:{} , ",userId,req.toString());
@@ -73,6 +79,8 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payWithOutPwdRequest.getAmount());
             response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
         }else {
+            //计算支付密码错误次数
+            redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY);
             String plainPwd = AESUtils.decrypt(req.getPayPassword());
             if (StringUtils.isBlank(req.getPayPassword()) ||
                     StringUtils.isBlank(plainPwd)){
@@ -86,6 +94,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             response = tbbAccountService.pay(payRequest);
         }
         if (response != null && response.isSucceeded()){
+            redisOp.resetPwdErrorTimes();
             long payId = response.getData().getId();
             orderEntity.setPayId(payId);
             MerchantOrderDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
@@ -109,6 +118,8 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
                 }
                 if (TbbAccountResponse.ErrorCode.ERROR_ACCOUNT_PAY_PWD_WRONG.getCode().
                         equals(response.getErrorCode())){
+                    //支付密码错误。错误计数+1
+                    redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY,1);
                     logger.error("pay  FAIL.,支付密码错误。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
                             req.getOrderNo(),infoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
                     throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR);

@@ -23,11 +23,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tubobo.merchant.web.version>1.0-SNAPSHOT</tubobo.merchant.web.version>
         <tubobo.merchant.impl.version>1.0-SNAPSHOT</tubobo.merchant.impl.version>
-        <tubobo.merchant.api.version>0.0.10-SNAPSHOT</tubobo.merchant.api.version>
+        <tubobo.merchant.api.version>0.0.1-SNAPSHOT</tubobo.merchant.api.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
         <tubobo-account-api-version>1.1-SNAPSHOT</tubobo-account-api-version>
         <tubobo-push-api-version>1.0-SNAPSHOT</tubobo-push-api-version>
         <tubobo-rate-version>1.0-SNAPSHOT</tubobo-rate-version>
+        <tubobo-riddr-api-version>0.0.1-SNAPSHOT</tubobo-riddr-api-version>
 
         <spring.version>4.2.6.RELEASE</spring.version>
         <spring.core.version>4.2.6.RELEASE</spring.core.version>
@@ -177,6 +178,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <artifactId>tubobo-rider-api</artifactId>
+                <groupId>com.xinguang</groupId>
+                <version>${tubobo-riddr-api-version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.xinguang</groupId>
                 <artifactId>tubobo-merchant-api</artifactId>

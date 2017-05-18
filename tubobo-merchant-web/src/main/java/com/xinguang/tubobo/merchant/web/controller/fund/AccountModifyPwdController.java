@@ -2,7 +2,9 @@ package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.cache.RedisOp;
 import com.xinguang.tubobo.impl.merchant.common.AESUtils;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -21,6 +23,8 @@ public class AccountModifyPwdController extends MerchantBaseController<ReqAccoun
 	private MerchantInfoService merchantInfoService;
 	@Autowired
 	private TbbAccountService tbbAccountService;
+	@Autowired
+	RedisOp redisOp;
 
 	@Override
 	protected EnumRespCode doService(String userId, ReqAccountModifyPwd req) throws MerchantClientException {
@@ -29,6 +33,7 @@ public class AccountModifyPwdController extends MerchantBaseController<ReqAccoun
 		if (entity == null){
 			throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
 		}
+		redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY);
 		String plainNewPwd = AESUtils.decrypt(req.getNewPwd());
 		String plainOldPwd = AESUtils.decrypt(req.getOldPwd());
 		if (plainNewPwd.equals(plainOldPwd)){
@@ -40,10 +45,12 @@ public class AccountModifyPwdController extends MerchantBaseController<ReqAccoun
 			throw new MerchantClientException(EnumRespCode.FAIL);
 		}
 		if (response.isSucceeded() && response.getData()){
+			redisOp.resetPwdErrorTimes();
 			return EnumRespCode.SUCCESS;
 		} else {
 			if (TbbAccountResponse.ErrorCode.ERROR_ACCOUNT_PAY_PWD_WRONG.getCode().
 					equals(response.getErrorCode())){
+				redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,1);
 				throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR);
 			}
 			throw  new MerchantClientException(EnumRespCode.FAIL);

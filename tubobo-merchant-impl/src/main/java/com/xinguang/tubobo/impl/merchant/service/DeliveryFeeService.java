@@ -1,14 +1,21 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.utils.LocationUtil;
+import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+
+import static org.apache.catalina.ha.session.DeltaRequest.log;
 
 
 /**
@@ -17,6 +24,7 @@ import javax.annotation.Resource;
 @Service
 public class DeliveryFeeService  {
 
+    private static final Logger logger = LoggerFactory.getLogger(DeliveryFeeService.class);
     @Autowired
     MerchantInfoService merchantInfoService;
     @Resource
@@ -65,5 +73,43 @@ public class DeliveryFeeService  {
             throw new MerchantClientException(EnumRespCode.MERCHANT_DELIVERY_DISTANCE_TOO_FAR);
         }
         return distance;
+    }
+
+    /**
+     * 计算配送时效
+     * @param distance
+     * @return
+     */
+    public Double sumDistributionLimitation(Double distance){
+        try{
+            String expression = config.getDistributionLimitationExpression();
+            if (StringUtils.isBlank(expression)){
+                //TODO
+            }
+            String[] es = expression.split(MerchantConstants.DEFAULT_SEPARATOR);
+            ArrayList<Double> distanceList = new ArrayList(es.length);
+            ArrayList<Double> minutesList = new ArrayList(es.length);
+            for(String unitEp :es){
+                String[] kvs = unitEp.split(":");
+                distanceList.add(Double.valueOf(kvs[0]));
+                minutesList.add(Double.valueOf(kvs[1]));
+            }
+            int index = -1;
+            for (int i = 0;i< distanceList.size()-1;i++){
+                if (distance<= distanceList.get(i)){
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1){
+                index = distanceList.size()-1;
+            }
+            Double minute = minutesList.get(index);
+            return minute;
+        }catch (Exception e){
+            logger.error("计算配送时效错误，使用默认时间，60分钟");
+            return 60.0;
+        }
+
     }
 }

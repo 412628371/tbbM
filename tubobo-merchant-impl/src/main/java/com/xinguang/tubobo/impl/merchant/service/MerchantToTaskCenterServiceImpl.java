@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
+import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
@@ -19,7 +20,8 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     private MerchantOrderManager merchantOrderManager;
     @Autowired
     private OrderService orderService;
-
+    @Autowired
+    private DeliveryFeeService deliveryFeeService;
     @Autowired
     private TbbAccountService tbbAccountService;
     /**
@@ -39,7 +41,9 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
             return false;
         }
         logger.info("处理骑手接单：orderNo:{}",orderNo);
-        boolean result = orderService.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime) > 0;
+        Double minutes = deliveryFeeService.sumDistributionLimitation(entity.getDeliveryDistance());
+        Date expectFinishTime = DateUtils.addMinutes(grabOrderTime,minutes.intValue());
+        boolean result = orderService.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime,expectFinishTime) > 0;
         if (result){
             pushService.noticeGrab(entity.getUserId());
         }

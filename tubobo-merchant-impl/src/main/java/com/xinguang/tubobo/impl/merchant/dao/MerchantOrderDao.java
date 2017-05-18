@@ -113,10 +113,11 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param grabOrderTime
      * @return
      */
-    public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime){
+    public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime,Date expectFinishTime){
         String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_order_time = :p2, rider_id = :p3, rider_name = :p4, rider_phone = :p5 " +
-                "where order_no = :p6 and order_status = :p7 and del_flag = '0' ";
-        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_PICK.getValue(),grabOrderTime,riderId,riderName,riderPhone,orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
+                " , expect_finish_time=:p6 where order_no = :p7 and order_status = :p8 and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_PICK.getValue(),grabOrderTime,riderId,riderName,
+                riderPhone,expectFinishTime,orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
         getSession().clear();
         return count;
     }

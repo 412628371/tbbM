@@ -7,7 +7,14 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2017/4/13.
  */
 public class MerchantConstants {
+    public static final String DEFAULT_SEPARATOR = ",";
+
+    public static final String KEY_PWD_WRONG_TIMES_PAY = "KEY_PAY_PWD_WRONG_TIMES";
+    public static final String KEY_PWD_WRONG_TIMES_MODIFY = "KEY_PWD_WRONG_TIMES_MODIFY";
+    public static final String KEY_PWD_WRONG_TIMES_FREE = "KEY_PWD_WRONG_TIMES_FREE";
+
     public static final String PLATFORM_ID = "MERCHANT";
+
     public static final String TARGET_TYPE_RIDER = "RIDER";
     public static final String KEY_RATE_DELIVERY_SCORE = "RATE_DELIVERY_SCORE";
     public static final String KEY_RATE_SERVICE_SCORE = "RATE_SERVICE_SCORE";

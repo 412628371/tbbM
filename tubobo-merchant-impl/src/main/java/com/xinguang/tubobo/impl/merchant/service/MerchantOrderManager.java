@@ -32,8 +32,8 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	private OrderService orderService;
 
-	@Autowired
-	private MerchantInfoService merchantInfoService;
+//	@Autowired
+//	private MerchantInfoService merchantInfoService;
 
 	@Autowired
 	private TimeoutTaskProducer timeoutTaskProducer;
