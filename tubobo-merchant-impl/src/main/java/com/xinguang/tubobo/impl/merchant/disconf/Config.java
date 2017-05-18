@@ -32,12 +32,51 @@ public class Config {
     private String beginWorkTime;
     private String endWorkTime;
 
-    private Double initPrice;
-    private Double initDistanceByMiles;
-    private Double pricePerKiloMiles;
-
+//    private Double initPrice;
+//    private Double initDistanceByMiles;
+//    private Double pricePerKiloMiles;
 
     private Double nonConfidentialPaymentLimit;
+
+    private Double firstLevelInitPrice;
+    private Double firstLevelPricePerKM;
+    private Double secondLevelDistance;
+    private Double secondLevelPricePerKM;
+
+    @DisconfFileItem(name = "firstLevelInitPrice", associateField = "firstLevelInitPrice")
+    public Double getFirstLevelInitPrice() {
+        return firstLevelInitPrice;
+    }
+
+    public void setFirstLevelInitPrice(Double firstLevelInitPrice) {
+        this.firstLevelInitPrice = firstLevelInitPrice;
+    }
+
+    @DisconfFileItem(name = "firstLevelPricePerKM", associateField = "firstLevelPricePerKM")
+    public Double getFirstLevelPricePerKM() {
+        return firstLevelPricePerKM;
+    }
+
+    public void setFirstLevelPricePerKM(Double firstLevelPricePerKM) {
+        this.firstLevelPricePerKM = firstLevelPricePerKM;
+    }
+
+    @DisconfFileItem(name = "secondLevelDistance", associateField = "secondLevelDistance")
+    public Double getSecondLevelDistance() {
+        return secondLevelDistance;
+    }
+
+    public void setSecondLevelDistance(Double secondLevelDistance) {
+        this.secondLevelDistance = secondLevelDistance;
+    }
+    @DisconfFileItem(name = "secondLevelPricePerKM", associateField = "secondLevelPricePerKM")
+    public Double getSecondLevelPricePerKM() {
+        return secondLevelPricePerKM;
+    }
+
+    public void setSecondLevelPricePerKM(Double secondLevelPricePerKM) {
+        this.secondLevelPricePerKM = secondLevelPricePerKM;
+    }
 
     @DisconfFileItem(name = "nonConfidentialPaymentLimit", associateField = "nonConfidentialPaymentLimit")
     public Double getNonConfidentialPaymentLimit() {
@@ -48,20 +87,20 @@ public class Config {
         this.nonConfidentialPaymentLimit = nonConfidentialPaymentLimit;
     }
 
-    @DisconfFileItem(name = "initPrice", associateField = "initPrice")
-    public Double getInitPrice() {
-        return initPrice;
-    }
-
-    @DisconfFileItem(name = "initDistanceByMiles", associateField = "initDistanceByMiles")
-    public Double getInitDistanceByMiles() {
-        return initDistanceByMiles;
-    }
-
-    @DisconfFileItem(name = "pricePerKiloMiles", associateField = "pricePerKiloMiles")
-    public Double getPricePerKiloMiles() {
-        return pricePerKiloMiles;
-    }
+//    @DisconfFileItem(name = "initPrice", associateField = "initPrice")
+//    public Double getInitPrice() {
+//        return initPrice;
+//    }
+//
+//    @DisconfFileItem(name = "initDistanceByMiles", associateField = "initDistanceByMiles")
+//    public Double getInitDistanceByMiles() {
+//        return initDistanceByMiles;
+//    }
+//
+//    @DisconfFileItem(name = "pricePerKiloMiles", associateField = "pricePerKiloMiles")
+//    public Double getPricePerKiloMiles() {
+//        return pricePerKiloMiles;
+//    }
 
     @DisconfFileItem(name = "beginWorkTime", associateField = "beginWorkTime")
     public String getBeginWorkTime() {
@@ -126,17 +165,17 @@ public class Config {
         this.dispatchRadiusKiloMiles = dispatchRadiusKiloMiles;
     }
 
-    public void setInitDistanceByMiles(Double initDistanceByMiles) {
-        this.initDistanceByMiles = initDistanceByMiles;
-    }
-
-    public void setInitPrice(Double initPrice) {
-        this.initPrice = initPrice;
-    }
-
-    public void setPricePerKiloMiles(Double pricePerKiloMiles) {
-        this.pricePerKiloMiles = pricePerKiloMiles;
-    }
+//    public void setInitDistanceByMiles(Double initDistanceByMiles) {
+//        this.initDistanceByMiles = initDistanceByMiles;
+//    }
+//
+//    public void setInitPrice(Double initPrice) {
+//        this.initPrice = initPrice;
+//    }
+//
+//    public void setPricePerKiloMiles(Double pricePerKiloMiles) {
+//        this.pricePerKiloMiles = pricePerKiloMiles;
+//    }
 
     @DisconfFileItem(name = "merchant.notice.finished.template", associateField = "noticeFinishedTemplate")
     public String getNoticeFinishedTemplate() {

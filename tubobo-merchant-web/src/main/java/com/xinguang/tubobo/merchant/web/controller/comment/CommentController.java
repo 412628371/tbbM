@@ -45,7 +45,7 @@ public class CommentController extends MerchantBaseController<ReqComment,Object>
         map.put(MerchantConstants.KEY_RATE_DELIVERY_SCORE,req.getDeliveryScore());
         map.put(MerchantConstants.KEY_RATE_SERVICE_SCORE,req.getServiceScore());
         TbbRateResponse<RateContent> response = tbbRateService.rate(MerchantConstants.PLATFORM_ID,req.getOrderNo(),orderEntity.getRiderId(),
-                userId,MerchantConstants.TARGET_TYPE_RIDER,false,req.getContent(),map);
+                MerchantConstants.TARGET_TYPE_RIDER,userId,false,req.getContent(),map);
         if (response.isSucceeded()||
                 TbbRateResponse.ErrorCode.ERROR_DUPLICATE_RATE.getCode().equals(response.getErrorCode())){
             if (response.isSucceeded()){
