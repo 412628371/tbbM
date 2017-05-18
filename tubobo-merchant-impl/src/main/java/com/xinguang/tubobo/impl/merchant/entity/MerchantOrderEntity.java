@@ -45,6 +45,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private Date grabOrderTime;//接单时间
 	private Date grabItemTime;//取货时间
 	private Date finishOrderTime;//送达时间
+	private Date expectFinishTime;//预计送达时间
 
 	private String senderId;//发货人id
 	private String senderName;//发货人名称
@@ -78,6 +79,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String riderName;
 	private String riderPhone;
 
+	private Boolean ratedFlag;
 	public String getReceiverAddressRoomNo() {
 		return receiverAddressRoomNo;
 	}
@@ -458,5 +460,21 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	public void setCancelReason(String cancelReason) {
 		this.cancelReason = cancelReason;
+	}
+
+	public Date getExpectFinishTime() {
+		return expectFinishTime;
+	}
+
+	public void setExpectFinishTime(Date expectFinishTime) {
+		this.expectFinishTime = expectFinishTime;
+	}
+
+	public Boolean getRatedFlag() {
+		return ratedFlag;
+	}
+
+	public void setRatedFlag(Boolean ratedFlag) {
+		this.ratedFlag = ratedFlag;
 	}
 }

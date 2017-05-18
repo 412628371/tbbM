@@ -32,6 +32,10 @@
             <groupId>com.xinguang.tubobo</groupId>
             <artifactId>push-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>tubobo-rate-api</artifactId>
+        </dependency>
 
         <!--spring 相关jar -->
         <dependency>

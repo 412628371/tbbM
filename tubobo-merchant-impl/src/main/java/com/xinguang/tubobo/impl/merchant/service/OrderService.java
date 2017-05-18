@@ -1,6 +1,8 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.persistence.Parameter;
+import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
@@ -9,6 +11,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -175,5 +178,23 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = true)
     public List<String> getUnCanceledGrabOvertimeOrderNoList(Integer overTimeMilSeconds){
         return merchantOrderDao.getUnCanceledGrabOvertimeOrderNoList(overTimeMilSeconds);
+    }
+
+    /**
+     * 计算当天已完成的订单
+     * @param userId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Long getTodayFinishOrderNum(String userId){
+        return merchantOrderDao.getTodayFinishOrderNum(userId);
+    }
+
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public boolean rateOrder(String orderNo) {
+        int count = merchantOrderDao.rateOrder(orderNo);
+        logger.info("更新订单：{}的状态为已评价，result:{}",orderNo,count);
+        return count == 1;
     }
 }

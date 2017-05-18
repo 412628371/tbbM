@@ -46,6 +46,17 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Date verifyDate;
 	private String addressRoomNo;//门牌号
 	private String payPassword;
+	private String shopImageUrl;
+	private Boolean enablePwdFree;
+	private String identifyType;
+
+	public String getShopImageUrl() {
+		return shopImageUrl;
+	}
+
+	public void setShopImageUrl(String shopImageUrl) {
+		this.shopImageUrl = shopImageUrl;
+	}
 
 	public String getAddressRoomNo() {
 		return addressRoomNo;
@@ -207,6 +218,14 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 		return latitude;
 	}
 
+	public Boolean getEnablePwdFree() {
+		return enablePwdFree;
+	}
+
+	public void setEnablePwdFree(Boolean enablePwdFree) {
+		this.enablePwdFree = enablePwdFree;
+	}
+
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
@@ -225,5 +244,13 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	public void setVerifyDate(Date verifyDate) {
 		this.verifyDate = verifyDate;
+	}
+
+	public String getIdentifyType() {
+		return identifyType;
+	}
+
+	public void setIdentifyType(String identifyType) {
+		this.identifyType = identifyType;
 	}
 }

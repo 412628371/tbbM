@@ -14,6 +14,9 @@ import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -228,5 +231,23 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         String sqlString = "select orderNo FROM MerchantOrderEntity WHERE timediff(NOW(), payTime)> :p1 and orderStatus = 'WAITING_GRAB' ORDER BY payTime desc ";
         List<String> orderList = createQuery(sqlString,new Parameter(diff)).list();
         return orderList;
+    }
+    public Long getTodayFinishOrderNum(String userId){
+//        Criteria criteria = getSession().createCriteria(MerchantOrderEntity.class);
+//        criteria.add(Restrictions.or(Restrictions.eq("orderStatus",EnumMerchantOrderStatus.FINISH.getValue())));
+//        criteria.add(Restrictions.or(Restrictions.eq("orderStatus",EnumMerchantOrderStatus.RATED.getValue())));
+//        criteria.add(Restrictions.and(Restrictions.eq("userId",userId)));
+//        criteria.add(Restrictions.and(Restrictions.eq("delFlag",MerchantOrderEntity.DEL_FLAG_NORMAL)));
+//        criteria.add(Restrictions.and(Restrictions.gt("finishOrderTime",DateUtils.getDateStart(new Date()))));
+
+        String sqlString = "select count(orderNo) FROM MerchantOrderEntity WHERE  userId=:p1 and finishOrderTime > :p2 and delFlag=:p3";
+         Query query = createQuery(sqlString,new Parameter(userId,DateUtils.getDateStart(new Date()),MerchantOrderEntity.DEL_FLAG_NORMAL));
+        Long count = (Long) query.uniqueResult();
+        return count;
+    }
+
+    public int rateOrder(String orderNo) {
+        String sqlString = "update MerchantOrderEntity set ratedFlag=:p1 where orderNo = :p2 and  delFlag = '0' ";
+        return update(sqlString,new Parameter(true,orderNo));
     }
 }

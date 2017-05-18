@@ -30,6 +30,27 @@ public class MerchantInfoResponse implements Serializable{
     private String realName;
     private String merchantName;
 
+    private String shopImageUrl;
+    private String identifyType;
+    private Boolean enablePwdFree;
+    private Double nonConfidentialPaymentLimit;
+
+    public Double getNonConfidentialPaymentLimit() {
+        return nonConfidentialPaymentLimit;
+    }
+
+    public void setNonConfidentialPaymentLimit(Double nonConfidentialPaymentLimit) {
+        this.nonConfidentialPaymentLimit = nonConfidentialPaymentLimit;
+    }
+
+    public Boolean getEnablePwdFree() {
+        return enablePwdFree;
+    }
+
+    public void setEnablePwdFree(Boolean enablePwdFree) {
+        this.enablePwdFree = enablePwdFree;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -168,6 +189,22 @@ public class MerchantInfoResponse implements Serializable{
         this.addressRoomNo = addressRoomNo;
     }
 
+    public String getShopImageUrl() {
+        return shopImageUrl;
+    }
+
+    public void setShopImageUrl(String shopImageUrl) {
+        this.shopImageUrl = shopImageUrl;
+    }
+
+    public String getIdentifyType() {
+        return identifyType;
+    }
+
+    public void setIdentifyType(String identifyType) {
+        this.identifyType = identifyType;
+    }
+
     @Override
     public String toString() {
         return "MerchantInfoResponse{" +
@@ -188,6 +225,8 @@ public class MerchantInfoResponse implements Serializable{
                 ", idCardNo='" + idCardNo + '\'' +
                 ", realName='" + realName + '\'' +
                 ", merchantName='" + merchantName + '\'' +
+                ", shopImageUrl='" + shopImageUrl + '\'' +
+                ", identifyType='" + identifyType + '\'' +
                 '}';
     }
 }

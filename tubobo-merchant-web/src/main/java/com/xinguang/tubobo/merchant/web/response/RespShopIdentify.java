@@ -27,6 +27,10 @@ public class RespShopIdentify  {
     private String realName;
     private String merchantName;
 
+    private String shopImageUrl;
+    private String identifyType;
+    private Boolean enablePwdFree;
+
     public String getAddressRoomNo() {
         return addressRoomNo;
     }
@@ -153,6 +157,30 @@ public class RespShopIdentify  {
 
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
+    }
+
+    public String getShopImageUrl() {
+        return shopImageUrl;
+    }
+
+    public void setShopImageUrl(String shopImageUrl) {
+        this.shopImageUrl = shopImageUrl;
+    }
+
+    public String getIdentifyType() {
+        return identifyType;
+    }
+
+    public void setIdentifyType(String identifyType) {
+        this.identifyType = identifyType;
+    }
+
+    public Boolean getEnablePwdFree() {
+        return enablePwdFree;
+    }
+
+    public void setEnablePwdFree(Boolean enablePwdFree) {
+        this.enablePwdFree = enablePwdFree;
     }
 
     @Override

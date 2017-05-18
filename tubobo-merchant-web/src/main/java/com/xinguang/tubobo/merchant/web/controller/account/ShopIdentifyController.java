@@ -1,12 +1,13 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
 import com.hzmux.hzcms.common.utils.AliOss;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.AccountInfoRequest;
 import com.xinguang.tubobo.account.api.response.AccountInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
-import com.xinguang.tubobo.impl.merchant.common.RandomUtil;
+import com.xinguang.tubobo.impl.merchant.common.AESUtils;
+import com.xinguang.tubobo.merchant.api.enums.EnumInentifyType;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -37,7 +38,7 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
 
         req.setIdCardFrontImageUrl(AliOss.subAliossUrl(req.getIdCardFrontImageUrl()));
         req.setIdCardBackImageUrl(AliOss.subAliossUrl(req.getIdCardBackImageUrl()));
-
+        req.setShopImageUrl(AliOss.subAliossUrl(req.getShopImageUrl()));
         MerchantInfoEntity infoEntity  = merchantInfoService.findByUserId(userId);
         if (null == infoEntity){
             // 生成账户信息
@@ -45,13 +46,16 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
             request.setName(req.getRealName());
             request.setPhone(req.getPhone());
             MerchantInfoEntity entity = translateRequestToEntity(userId,req);
-            String password = MerchantConstants.DEFAULT_PAY_PASSWORD;
+
+            String password = AESUtils.decrypt(req.getPayPassword());
+            if (StringUtils.isBlank(password)){
+                throw new MerchantClientException(EnumRespCode.PASSWORD_DECRYPT_FAIL);
+            }
             TbbAccountResponse<AccountInfo> response = tbbAccountService.createAccount(userId,password,request);
             if (response != null && response.isSucceeded() && null != response.getData()){
                 logger.info("create account info SUCCESS. request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.getData().toString());
                 Long accountId = response.getData().getId();
                 entity.setAccountId(accountId);
-                entity.setPayPassword(password);
                 merchantInfoService.merchantApply(userId,entity);
 
                 MerchantInfoEntity entity1 = merchantInfoService.findByUserId(userId);
@@ -83,8 +87,6 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
             }
             return resp;
         }
-
-
     }
 
     /**
@@ -97,6 +99,7 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
         MerchantInfoEntity merchant = new MerchantInfoEntity();
         BeanUtils.copyProperties(shopIdentifyRequest,merchant);
         merchant.setUserId(userId);
+        merchant.setIdentifyType(EnumInentifyType.MERCHANT.getValue());
         return merchant;
     }
 

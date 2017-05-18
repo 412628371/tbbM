@@ -56,6 +56,12 @@ public class ShopIdentifyRequest implements Serializable {
     @Size(min = 1, max = 50,message = "长度为1-50")
     private String merchantName;
 
+    @NotBlank(message = "请输入支付密码")
+    private String payPassword;
+    @Size(min = 1, max = 255,message = "店铺照片地址过长")
+    @NotBlank(message = "请上传店铺照片")
+    private String shopImageUrl;
+
     public String getAddressRoomNo() {
         return addressRoomNo;
     }
@@ -171,6 +177,22 @@ public class ShopIdentifyRequest implements Serializable {
         this.merchantName = merchantName;
     }
 
+    public String getPayPassword() {
+        return payPassword;
+    }
+
+    public void setPayPassword(String payPassword) {
+        this.payPassword = payPassword;
+    }
+
+    public String getShopImageUrl() {
+        return shopImageUrl;
+    }
+
+    public void setShopImageUrl(String shopImageUrl) {
+        this.shopImageUrl = shopImageUrl;
+    }
+
     @Override
     public String toString() {
         return "ShopIdentifyRequest{" +
@@ -179,6 +201,7 @@ public class ShopIdentifyRequest implements Serializable {
                 ", addressDistrict='" + addressDistrict + '\'' +
                 ", addressDetail='" + addressDetail + '\'' +
                 ", addressStreet='" + addressStreet + '\'' +
+                ", addressRoomNo='" + addressRoomNo + '\'' +
                 ", idCardBackImageUrl='" + idCardBackImageUrl + '\'' +
                 ", idCardFrontImageUrl='" + idCardFrontImageUrl + '\'' +
                 ", latitude=" + latitude +
@@ -187,6 +210,8 @@ public class ShopIdentifyRequest implements Serializable {
                 ", realName='" + realName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", merchantName='" + merchantName + '\'' +
+                ", payPassword='" + payPassword + '\'' +
+                ", shopImageUrl='" + shopImageUrl + '\'' +
                 '}';
     }
 }

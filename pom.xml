@@ -27,6 +27,7 @@
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
         <tubobo-account-api-version>1.1-SNAPSHOT</tubobo-account-api-version>
         <tubobo-push-api-version>1.0-SNAPSHOT</tubobo-push-api-version>
+        <tubobo-rate-version>1.0-SNAPSHOT</tubobo-rate-version>
 
         <spring.version>4.2.6.RELEASE</spring.version>
         <spring.core.version>4.2.6.RELEASE</spring.core.version>
@@ -208,7 +209,11 @@
                 <artifactId>push-api</artifactId>
                 <version>${tubobo-push-api-version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.xinguang.tubobo</groupId>
+                <artifactId>tubobo-rate-api</artifactId>
+                <version>${tubobo-rate-version}</version>
+            </dependency>
 
             <!--spring 相关jar -->
             <dependency>

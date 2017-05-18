@@ -3,6 +3,8 @@ package com.xinguang.tubobo.merchant.web.response;
 import java.io.Serializable;
 import java.util.Date;
 
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
+
 /**
  * Created by Administrator on 2017/4/14.
  */
@@ -35,6 +37,7 @@ public class RespOrderDetail implements Serializable{
     private Date grabOrderTime;//接单时间
     private Date grabItemTime;//取货时间
     private Date finishOrderTime;//送达时间
+    private Date expectFinishTime;//预计送达时间
 
 
     private String receiverName;//收货人姓名
@@ -51,13 +54,18 @@ public class RespOrderDetail implements Serializable{
     private String riderName;
     private String riderPhone;
 
+    private String commentContent;
+    private Integer commentDeliveryScore;
+    private Integer commentServiceScore;
+
     private Integer payExpiredMilSeconds;//过期间隔毫秒数
 
     private Integer grabExpiredMilSeconds;//抢单过期间隔毫秒数
     private Date   grabExpiredStartTime	;//抢单过期开始时间
-
     private Long grabRemainMillSeconds;
     private Long payRemainMillSeconds;
+
+    private Boolean ratedFlag;
 
     public Integer getPayExpiredMilSeconds() {
         return payExpiredMilSeconds;
@@ -332,10 +340,52 @@ public class RespOrderDetail implements Serializable{
         this.payRemainMillSeconds = payRemainMillSeconds;
     }
 
+
+    public Date getExpectFinishTime() {
+        return expectFinishTime;
+    }
+
+    public void setExpectFinishTime(Date expectFinishTime) {
+        this.expectFinishTime = expectFinishTime;
+    }
+
+    public String getCommentContent() {
+        return commentContent;
+    }
+
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent;
+    }
+
+    public Integer getCommentDeliveryScore() {
+        return commentDeliveryScore;
+    }
+
+    public void setCommentDeliveryScore(Integer commentDeliveryScore) {
+        this.commentDeliveryScore = commentDeliveryScore;
+    }
+
+    public Integer getCommentServiceScore() {
+        return commentServiceScore;
+    }
+
+    public void setCommentServiceScore(Integer commentServiceScore) {
+        this.commentServiceScore = commentServiceScore;
+    }
+
+    public Boolean getRatedFlag() {
+        return ratedFlag;
+    }
+
+    public void setRatedFlag(Boolean ratedFlag) {
+        this.ratedFlag = ratedFlag;
+    }
+
     @Override
     public String toString() {
         return "RespOrderDetail{" +
-                "orderNo='" + orderNo + '\'' +
+                "cancelReason='" + cancelReason + '\'' +
+                ", orderNo='" + orderNo + '\'' +
                 ", orderStatus='" + orderStatus + '\'' +
                 ", orderRemarks='" + orderRemarks + '\'' +
                 ", payAmount=" + payAmount +
@@ -351,6 +401,7 @@ public class RespOrderDetail implements Serializable{
                 ", grabOrderTime=" + grabOrderTime +
                 ", grabItemTime=" + grabItemTime +
                 ", finishOrderTime=" + finishOrderTime +
+                ", expectFinishTime=" + expectFinishTime +
                 ", receiverName='" + receiverName + '\'' +
                 ", receiverPhone='" + receiverPhone + '\'' +
                 ", receiverAddressProvince='" + receiverAddressProvince + '\'' +
@@ -358,13 +409,20 @@ public class RespOrderDetail implements Serializable{
                 ", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
                 ", receiverAddressStreet='" + receiverAddressStreet + '\'' +
                 ", receiverAddressDetail='" + receiverAddressDetail + '\'' +
+                ", receiverAddressRoomNo='" + receiverAddressRoomNo + '\'' +
                 ", receiverLongitude=" + receiverLongitude +
                 ", receiverLatitude=" + receiverLatitude +
                 ", riderName='" + riderName + '\'' +
                 ", riderPhone='" + riderPhone + '\'' +
+                ", commentContent='" + commentContent + '\'' +
+                ", commentDeliveryScore=" + commentDeliveryScore +
+                ", commentServiceScore=" + commentServiceScore +
                 ", payExpiredMilSeconds=" + payExpiredMilSeconds +
                 ", grabExpiredMilSeconds=" + grabExpiredMilSeconds +
                 ", grabExpiredStartTime=" + grabExpiredStartTime +
+                ", grabRemainMillSeconds=" + grabRemainMillSeconds +
+                ", payRemainMillSeconds=" + payRemainMillSeconds +
+                ", ratedFlag=" + ratedFlag +
                 '}';
     }
 }

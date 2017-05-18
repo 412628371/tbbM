@@ -2,36 +2,35 @@ package com.xinguang.tubobo.merchant.web.request;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.Size;
-
+/**
+ * Created by Administrator on 2017/5/17.
+ */
 public class ReqAccountResetPwd {
+    @NotBlank(message = "操作凭据不能为空")
+    private String credential;
+    @NotBlank(message = "请输入支付密码")
+    private String payPassword;
 
-    @NotBlank( message = "oldPwd 不能为空")
-    private String oldPwd;
-    @NotBlank(message = "newPwd 不能为空")
-    private String newPwd;
-
-    public String getOldPwd() {
-        return oldPwd;
+    public String getCredential() {
+        return credential;
     }
 
-    public void setOldPwd(String oldPwd) {
-        this.oldPwd = oldPwd;
+    public void setCredential(String credential) {
+        this.credential = credential;
     }
 
-    public String getNewPwd() {
-        return newPwd;
+    public String getPayPassword() {
+        return payPassword;
     }
 
-    public void setNewPwd(String newPwd) {
-        this.newPwd = newPwd;
+    public void setPayPassword(String payPassword) {
+        this.payPassword = payPassword;
     }
 
     @Override
     public String toString() {
         return "ReqAccountResetPwd{" +
-                "oldPwd='" + oldPwd + '\'' +
-                ", newPwd='" + newPwd + '\'' +
+                "credential='" + credential + '\'' +
                 '}';
     }
 }

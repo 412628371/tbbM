@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -10,6 +11,9 @@ import com.xinguang.tubobo.merchant.web.request.ReqOrderDetail;
 import com.xinguang.tubobo.merchant.web.response.RespOrderDetail;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
+import com.xinguang.tubobo.rate.api.TbbRateResponse;
+import com.xinguang.tubobo.rate.api.TbbRateService;
+import com.xinguang.tubobo.rate.api.resp.RateContent;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Map;
+
+import static java.nio.file.Paths.get;
 
 /**
  * Created by Administrator on 2017/4/14.
@@ -26,30 +33,20 @@ import java.util.Date;
 public class OrderDetailController extends MerchantBaseController<ReqOrderDetail,RespOrderDetail> {
     @Autowired
     MerchantOrderManager merchantOrderManager;
+    @Autowired
+    TbbRateService tbbRateService;
     @Resource
     Config config;
     @Override
     protected RespOrderDetail doService(String userId, ReqOrderDetail req) throws MerchantClientException {
         MerchantOrderEntity entity = merchantOrderManager.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
-        Date now = new Date();
         if(null == entity){
             logger.error("获取订单详情，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
-        if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
-            Date orderTime = entity.getOrderTime();
-            long expectedExpiredMilSeconds = orderTime.getTime() + config.getPayExpiredMilSeconds();
-            if (now.getTime() >= expectedExpiredMilSeconds){
-                throw new MerchantClientException(EnumRespCode.MERCHANT_UNPAY_CNACELING);
-            }
-        }
-        if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
-            Date payTime = entity.getPayTime();
-            long expectedExpiredMilSeconds = payTime.getTime() + config.getTaskGrabExpiredMilSeconds();
-            if (now.getTime() >= expectedExpiredMilSeconds){
-                throw new MerchantClientException(EnumRespCode.MERCHANT_UNGRAB_CANCELING);
-            }
-        }
+        Date now = new Date();
+        handleTimeoutDelay(entity,now);
+
         RespOrderDetail respOrderDetail = new RespOrderDetail();
         BeanUtils.copyProperties(entity,respOrderDetail);
         respOrderDetail.setPayExpiredMilSeconds(config.getPayExpiredMilSeconds());
@@ -70,6 +67,37 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
             grabRemainMilSeconds = entity.getPayTime().getTime()+config.getTaskGrabExpiredMilSeconds()-now.getTime();
         }
         respOrderDetail.setGrabRemainMillSeconds(grabRemainMilSeconds);
+
+        //已评价的订单，获取评价内容
+        if (entity.getRatedFlag()){
+            TbbRateResponse<RateContent> response = tbbRateService.get(MerchantConstants.PLATFORM_ID,entity.getOrderNo(),entity.getRiderId());
+            if (response.isSucceeded()){
+                RateContent rateContent = response.getData();
+                Map<String,Integer> scores = rateContent.getScores();
+                respOrderDetail.setCommentContent(rateContent.getFullTxt());
+                if (null != scores){
+                    respOrderDetail.setCommentDeliveryScore(scores.get(MerchantConstants.KEY_RATE_DELIVERY_SCORE));
+                    respOrderDetail.setCommentServiceScore(scores.get(MerchantConstants.KEY_RATE_SERVICE_SCORE));
+                }
+            }
+        }
+
         return respOrderDetail;
+    }
+    private void handleTimeoutDelay(MerchantOrderEntity entity,Date now) throws MerchantClientException {
+        if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
+            Date orderTime = entity.getOrderTime();
+            long expectedExpiredMilSeconds = orderTime.getTime() + config.getPayExpiredMilSeconds();
+            if (now.getTime() >= expectedExpiredMilSeconds){
+                throw new MerchantClientException(EnumRespCode.MERCHANT_UNPAY_CNACELING);
+            }
+        }
+        if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
+            Date payTime = entity.getPayTime();
+            long expectedExpiredMilSeconds = payTime.getTime() + config.getTaskGrabExpiredMilSeconds();
+            if (now.getTime() >= expectedExpiredMilSeconds){
+                throw new MerchantClientException(EnumRespCode.MERCHANT_UNGRAB_CANCELING);
+            }
+        }
     }
 }

@@ -1,9 +1,12 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
+import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -58,19 +61,37 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if (EnumMerchantOrderStatus.CANCEL.getValue().equals(orderEntity.getPayStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_PAY);
         }
-        PayWithOutPwdRequest payRequest = new PayWithOutPwdRequest();
-        payRequest.setOrderId(orderEntity.getOrderNo());
-        payRequest.setAccountId(infoEntity.getAccountId());
-        payRequest.setAmount(ConvertUtil.convertYuanToFen(orderEntity.getPayAmount()));
-        logger.info("支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payRequest.getAmount());
-        TbbAccountResponse<PayInfo> response = tbbAccountService.payWithOutPwd(payRequest);
+        TbbAccountResponse<PayInfo> response;
+        long amount = ConvertUtil.convertYuanToFen(orderEntity.getPayAmount());
+        //设置了免密支付，并且支付金额不大于免密支付额度，可以免密支付
+        if (infoEntity.getEnablePwdFree()&&
+                orderEntity.getPayAmount() <= config.getNonConfidentialPaymentLimit()){
+            PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
+            payWithOutPwdRequest.setOrderId(orderEntity.getOrderNo());
+            payWithOutPwdRequest.setAccountId(infoEntity.getAccountId());
+            payWithOutPwdRequest.setAmount(amount);
+            logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payWithOutPwdRequest.getAmount());
+            response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+        }else {
+            String plainPwd = AESUtils.decrypt(req.getPayPassword());
+            if (StringUtils.isBlank(req.getPayPassword()) ||
+                    StringUtils.isBlank(plainPwd)){
+                throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR);
+            }
+            PayRequest payRequest = new PayRequest();
+            payRequest.setOrderId(orderEntity.getOrderNo());
+            payRequest.setAccountId(infoEntity.getAccountId());
+            payRequest.setAmount(amount);
+            payRequest.setPwd(plainPwd);
+            response = tbbAccountService.pay(payRequest);
+        }
         if (response != null && response.isSucceeded()){
             long payId = response.getData().getId();
             orderEntity.setPayId(payId);
             MerchantOrderDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
-                    ,infoEntity.getAccountId(),response.getData().getId(),payRequest.getAmount());
+                    ,infoEntity.getAccountId(),response.getData().getId(),amount);
             merchantOrderManager.merchantPay(orderDTO,infoEntity.getUserId(),req.getOrderNo(),payId);
             RespOrderPay respOrderPay = new RespOrderPay();
             respOrderPay.setGrabExpiredStartTime(new Date());
@@ -81,15 +102,24 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
                 logger.error("pay  FAIL.orderNo:{}, accountId:{}}",
                         req.getOrderNo(),infoEntity.getAccountId());
             }else {
-                if (response.getErrorCode().equals(TbbAccountResponse.ErrorCode.ERROR_AMOUNT_NOT_ENOUGH)){
+                if (response.getErrorCode().equals(TbbAccountResponse.ErrorCode.ERROR_AMOUNT_NOT_ENOUGH.getCode())){
+                    logger.error("pay  FAIL.,余额不足。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
+                            req.getOrderNo(),infoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
                     throw  new MerchantClientException(EnumRespCode.ACCOUNT_NOT_ENOUGH);
                 }
-                logger.error("pay  FAIL.,余额不足。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
-                        req.getOrderNo(),infoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
+                if (TbbAccountResponse.ErrorCode.ERROR_ACCOUNT_PAY_PWD_WRONG.getCode().
+                        equals(response.getErrorCode())){
+                    logger.error("pay  FAIL.,支付密码错误。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
+                            req.getOrderNo(),infoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
+                    throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR);
+                }
             }
             throw  new MerchantClientException(EnumRespCode.ACCOUNT_PAY_FAIL);
         }
     }
+
+
+
     private MerchantOrderDTO buildMerchantOrderDTO(MerchantOrderEntity entity,MerchantInfoEntity infoEntity){
         MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
         BeanUtils.copyProperties(entity,merchantOrderDTO);

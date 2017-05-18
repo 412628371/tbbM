@@ -36,6 +36,18 @@ public class Config {
     private Double initDistanceByMiles;
     private Double pricePerKiloMiles;
 
+
+    private Double nonConfidentialPaymentLimit;
+
+    @DisconfFileItem(name = "nonConfidentialPaymentLimit", associateField = "nonConfidentialPaymentLimit")
+    public Double getNonConfidentialPaymentLimit() {
+        return nonConfidentialPaymentLimit;
+    }
+
+    public void setNonConfidentialPaymentLimit(Double nonConfidentialPaymentLimit) {
+        this.nonConfidentialPaymentLimit = nonConfidentialPaymentLimit;
+    }
+
     @DisconfFileItem(name = "initPrice", associateField = "initPrice")
     public Double getInitPrice() {
         return initPrice;

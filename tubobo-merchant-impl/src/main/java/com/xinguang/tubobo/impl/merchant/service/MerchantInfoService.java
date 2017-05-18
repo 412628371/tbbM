@@ -143,4 +143,14 @@ public class MerchantInfoService extends BaseService {
 		sb.append(" order by create_date desc ");
 		return merchantInfoDao.findPage(sb.toString(), parameter, MerchantInfoEntity.class,pageNo,pageSize);
 	}
+
+	/**
+	 * 更新头像
+	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+	@Transactional(readOnly = false)
+	public int freePayPwdSet(String userId,boolean enable) {
+		return merchantInfoDao.freePayPwdSet(userId,enable);
+	}
+
 }

@@ -36,6 +36,7 @@ public class RespOrderItem {
     private String receiverAddressRoomNo;//收货人地址名称
     private double receiverLongitude;
     private double receiverLatitude;
+    private Boolean ratedFlag;
 
     public String getOrderNo() {
         return orderNo;
@@ -229,6 +230,14 @@ public class RespOrderItem {
         this.receiverAddressRoomNo = receiverAddressRoomNo;
     }
 
+    public Boolean getRatedFlag() {
+        return ratedFlag;
+    }
+
+    public void setRatedFlag(Boolean ratedFlag) {
+        this.ratedFlag = ratedFlag;
+    }
+
     @Override
     public String toString() {
         return "RespOrderItem{" +
@@ -256,6 +265,7 @@ public class RespOrderItem {
                 ", receiverAddressRoomNo='" + receiverAddressRoomNo + '\'' +
                 ", receiverLongitude=" + receiverLongitude +
                 ", receiverLatitude=" + receiverLatitude +
+                ", ratedFlag=" + ratedFlag +
                 '}';
     }
 }
