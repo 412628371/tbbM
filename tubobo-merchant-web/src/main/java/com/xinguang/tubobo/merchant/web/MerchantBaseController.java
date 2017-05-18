@@ -51,19 +51,19 @@ public abstract class MerchantBaseController <P, R>{
             List<String> cons = extractMessage(e.getConstraintViolations());
             return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , StringUtils.join(cons, ","));
         }
-//        String userId = "";
-        String userId = "30126";
+        String userId = "";
+//        String userId = "30126";
 
         // 验证登录
-//        if (needLogin()) {
-//            // 验证token
-//            XgUserResCheckToken check = tokenServiceInterface.checkToken(token);
-//            if (!check.isSuc()) {
-//                return new ClientResp(check.getCode(),check.getErrorMsg());
-//            }
-//            userId = check.getData().getUserId();
-//
-//        }
+        if (needLogin()) {
+            // 验证token
+            XgUserResCheckToken check = tokenServiceInterface.checkToken(token);
+            if (!check.isSuc()) {
+                return new ClientResp(check.getCode(),check.getErrorMsg());
+            }
+            userId = check.getData().getUserId();
+
+        }
 
         if (needIdentify()){
             // 是否认证判断
