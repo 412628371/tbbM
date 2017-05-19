@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 
-import static org.apache.catalina.ha.session.DeltaRequest.log;
 
 
 /**
