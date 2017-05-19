@@ -33,7 +33,7 @@ public class AccountModifyPwdController extends MerchantBaseController<ReqAccoun
 		if (entity == null){
 			throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
 		}
-		redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY);
+		redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,userId);
 		String plainNewPwd = AESUtils.decrypt(req.getNewPwd());
 		String plainOldPwd = AESUtils.decrypt(req.getOldPwd());
 		if (plainNewPwd.equals(plainOldPwd)){
@@ -45,13 +45,14 @@ public class AccountModifyPwdController extends MerchantBaseController<ReqAccoun
 			throw new MerchantClientException(EnumRespCode.FAIL);
 		}
 		if (response.isSucceeded() && response.getData()){
-			redisOp.resetPwdErrorTimes();
+			redisOp.resetPwdErrorTimes(userId);
 			return EnumRespCode.SUCCESS;
 		} else {
 			if (TbbAccountResponse.ErrorCode.ERROR_ACCOUNT_PAY_PWD_WRONG.getCode().
 					equals(response.getErrorCode())){
-				redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,1);
-				throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR);
+				redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,userId,1);
+				throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR,
+						String.valueOf(redisOp.getAvailableWrongTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,userId)));
 			}
 			throw  new MerchantClientException(EnumRespCode.FAIL);
 		}

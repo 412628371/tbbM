@@ -11,6 +11,10 @@ public class MerchantClientException extends Exception {
         this.errorMsg = resp.getDesc();
     }
 
+    public MerchantClientException(EnumRespCode resp,String placeHolder) {
+        this.code = resp.getValue();
+        this.errorMsg = String.format(resp.getDesc(),placeHolder);
+    }
     public String getCode() {
         return code;
     }

@@ -78,12 +78,8 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
         }else {
             //计算支付密码错误次数
-            redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY);
+            redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY,userId);
             String plainPwd = AESUtils.decrypt(req.getPayPassword());
-            if (StringUtils.isBlank(req.getPayPassword()) ||
-                    StringUtils.isBlank(plainPwd)){
-                throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR);
-            }
             PayRequest payRequest = new PayRequest();
             payRequest.setOrderId(orderEntity.getOrderNo());
             payRequest.setAccountId(infoEntity.getAccountId());
@@ -92,7 +88,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             response = tbbAccountService.pay(payRequest);
         }
         if (response != null && response.isSucceeded()){
-            redisOp.resetPwdErrorTimes();
+            redisOp.resetPwdErrorTimes(userId);
             long payId = response.getData().getId();
             orderEntity.setPayId(payId);
             MerchantOrderDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
@@ -117,10 +113,12 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
                 if (TbbAccountResponse.ErrorCode.ERROR_ACCOUNT_PAY_PWD_WRONG.getCode().
                         equals(response.getErrorCode())){
                     //支付密码错误。错误计数+1
-                    redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY,1);
+                    redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY,userId,1);
                     logger.error("pay  FAIL.,支付密码错误。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
                             req.getOrderNo(),infoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
-                    throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR);
+                    throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR,
+                            String.valueOf(redisOp.getAvailableWrongTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY,userId)));
+
                 }
             }
             throw  new MerchantClientException(EnumRespCode.ACCOUNT_PAY_FAIL);

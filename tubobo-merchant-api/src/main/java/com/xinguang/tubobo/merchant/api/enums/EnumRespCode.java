@@ -39,7 +39,7 @@ public enum EnumRespCode {
 	ACCOUNT_WITHDRAW_APPLY_FAIL("30030", "提现申请操作失败"),
 	ACCOUNT_WITHDRAW_COMFIRM_FAIL("30040", "提现申请确认操作失败"),
 	ACCOUNT_NOT_ENOUGH("30050", "余额不足，支付失败"),
-	ACCOUNT_PWD_ERROR("30051", "支付密码错误"),
+	ACCOUNT_PWD_ERROR("30051", "支付密码不正确，您还有%s次机会"),
 	ACCOUNT_PAY_FAIL("30052", "支付失败"),
 	ACCOUNT_PWD_CANT_EQUAL("30053", "新旧密码不能相同"),
 	ACCOUNT_PWD_RESET_CREDENTIAL_INVALID("30054", "重置密码，令牌已无效"),

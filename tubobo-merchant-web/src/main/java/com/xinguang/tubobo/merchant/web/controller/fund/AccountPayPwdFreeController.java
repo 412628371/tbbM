@@ -31,7 +31,7 @@ public class AccountPayPwdFreeController extends MerchantBaseController<ReqPayPw
     protected Object doService(String userId, ReqPayPwdFree req) throws MerchantClientException {
         MerchantInfoEntity infoEntity = infoService.findByUserId(userId);
         if (req.getEnablePwdFree()){
-            redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE);
+            redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE,userId);
             //TODO 验证支付密码，错误计数？
             TbbAccountResponse<Boolean> response = tbbAccountService.checkPayPassword(infoEntity.getAccountId(),
                     AESUtils.decrypt(req.getPayPassword()));
@@ -39,11 +39,12 @@ public class AccountPayPwdFreeController extends MerchantBaseController<ReqPayPw
                 throw new MerchantClientException(EnumRespCode.FAIL);
             }else {
                 if (!response.getData()){
-                    redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE,1);
-                    throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR);
+                    redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE,userId,1);
+                    throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR,
+                            String.valueOf(redisOp.getAvailableWrongTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE,userId)));
                 }
             }
-            redisOp.resetPwdErrorTimes();
+            redisOp.resetPwdErrorTimes(userId);
         }
         infoService.freePayPwdSet(userId,req.getEnablePwdFree());
         return null;

@@ -19,20 +19,20 @@ public class RedisOp {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private Config config;
-    public void increment(String key,long step){
-        stringRedisTemplate.opsForValue().increment(key,step);
+    public void increment(String opType,String userId,long step){
+        stringRedisTemplate.opsForValue().increment(generateKey(opType,userId),step);
     }
-    public void initZero(String key){
+    private void initZero(String key){
         stringRedisTemplate.opsForValue().set(key,"0");
     }
 
     /**
      * 检查支付密码错误次数是否达到限制值
-     * @param key
+     * @param opType
      * @throws MerchantClientException
      */
-    public void checkPwdErrorTimes(String key) throws MerchantClientException {
-        String timeStr = stringRedisTemplate.opsForValue().get(key);
+    public void checkPwdErrorTimes(String opType,String userId) throws MerchantClientException {
+        String timeStr = stringRedisTemplate.opsForValue().get(generateKey(opType,userId));
         Long currentTimes = 0L;
         if (StringUtils.isNotBlank(timeStr)){
             currentTimes = Long.valueOf(timeStr);
@@ -43,15 +43,29 @@ public class RedisOp {
     }
 
     /**
+     * 获取剩余错误次数
+     * @param opType
+     * @param userId
+     * @return
+     */
+    public long getAvailableWrongTimes(String opType,String userId){
+        String timeStr = stringRedisTemplate.opsForValue().get(generateKey(opType,userId));
+        Long currentTimes = 0L;
+        if (StringUtils.isNotBlank(timeStr)){
+            currentTimes = Long.valueOf(timeStr);
+        }
+        return config.getPayPwdMaxErrorTimes()-currentTimes;
+    }
+    /**
      * 重置所有的支付密码错误计数
      */
-    public void resetPwdErrorTimes(){
-        initZero(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE);
-        initZero(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY);
-        initZero(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY);
+    public void resetPwdErrorTimes(String userId){
+        initZero(generateKey(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE , userId));
+        initZero(generateKey(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY ,userId));
+        initZero(generateKey(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY , userId));
     }
 
-    public Long getLongValue(String key){
-        return Long.valueOf(stringRedisTemplate.opsForValue().get(key));
+    private String generateKey(String opType,String userId){
+        return opType+"_"+userId;
     }
 }
