@@ -32,7 +32,6 @@ public class RmqTaskGrabHandler implements ChannelAwareMessageListener {
         if (null == merchantGrabCallbackDTO) {
             return;
         }
-        merchantOrderService.riderGrabOrder(merchantGrabCallbackDTO.getRiderId(), merchantGrabCallbackDTO.getRiderName(),
-                merchantGrabCallbackDTO.getRiderPhone(), merchantGrabCallbackDTO.getTaskNo(), merchantGrabCallbackDTO.getGrabTime());
+        merchantOrderService.riderGrabOrder(merchantGrabCallbackDTO);
     }
 }

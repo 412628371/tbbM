@@ -12,13 +12,23 @@ public class MerchantGrabCallbackDTO implements Serializable {
     private String riderPhone;
     private String taskNo;
     private Date grabTime;
+    private Double pickupDistance;
+    private Date expectFinishTime;
 
-    public MerchantGrabCallbackDTO(String riderId, String riderName, String riderPhone, String taskNo, Date grabTime){
+    public MerchantGrabCallbackDTO(String riderId, String riderName, String riderPhone,
+                                   String taskNo, Date grabTime,Double pickupDistance,
+                                   Date expectFinishTime){
         this.riderId = riderId;
         this.riderName = riderName;
         this.riderPhone = riderPhone;
         this.taskNo = taskNo;
         this.grabTime = grabTime;
+        this.pickupDistance = pickupDistance;
+        this.expectFinishTime = expectFinishTime;
+    }
+
+    public MerchantGrabCallbackDTO(){
+
     }
     public String getRiderId() {
         return riderId;
@@ -60,6 +70,22 @@ public class MerchantGrabCallbackDTO implements Serializable {
         this.grabTime = grabTime;
     }
 
+    public Double getPickupDistance() {
+        return pickupDistance;
+    }
+
+    public void setPickupDistance(Double pickupDistance) {
+        this.pickupDistance = pickupDistance;
+    }
+
+    public Date getExpectFinishTime() {
+        return expectFinishTime;
+    }
+
+    public void setExpectFinishTime(Date expectFinishTime) {
+        this.expectFinishTime = expectFinishTime;
+    }
+
     @Override
     public String toString() {
         return "MerchantGrabCallbackDTO{" +
@@ -68,6 +94,8 @@ public class MerchantGrabCallbackDTO implements Serializable {
                 ", riderPhone='" + riderPhone + '\'' +
                 ", taskNo='" + taskNo + '\'' +
                 ", grabTime=" + grabTime +
+                ", pickupDistance=" + pickupDistance +
+                ", expectFinishTime=" + expectFinishTime +
                 '}';
     }
 }

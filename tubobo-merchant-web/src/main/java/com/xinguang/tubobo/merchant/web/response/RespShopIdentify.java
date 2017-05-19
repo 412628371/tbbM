@@ -5,6 +5,8 @@ package com.xinguang.tubobo.merchant.web.response;
  * Created by Administrator on 2017/4/14.
  */
 public class RespShopIdentify  {
+
+    private String userId;
     private String addressProvince;//详细地址
     private String addressCity;//地址缩略
     private String addressDistrict;//地址名称
@@ -192,10 +194,19 @@ public class RespShopIdentify  {
         this.hasSetPayPwd = hasSetPayPwd;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "RespShopIdentify{" +
-                "addressProvince='" + addressProvince + '\'' +
+                "userId='" + userId + '\'' +
+                ", addressProvince='" + addressProvince + '\'' +
                 ", addressCity='" + addressCity + '\'' +
                 ", addressDistrict='" + addressDistrict + '\'' +
                 ", addressDetail='" + addressDetail + '\'' +
