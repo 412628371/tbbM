@@ -1,5 +1,10 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.xinguang.tubobo.impl.merchant.alipush.NoticeParamVo;
+import com.xinguang.tubobo.impl.merchant.alipush.NoticePushVo;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
 import com.xinguang.tubobo.push.Constance;
@@ -12,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sun.tools.doclint.Entity.ge;
 
 /**
  * Created by Administrator on 2017/4/19.
@@ -26,7 +33,7 @@ public class MerchantPushService {
     @Autowired
     MerchantSettingsService settingsService;
 
-    public void pushToUser(String userId,String content,String title){
+    public void pushToUser(String userId,String content,String title,String extraJson){
         List<String> list = new ArrayList<>(1);
         list.add(userId);
         Options options = Options.builder()
@@ -34,6 +41,7 @@ public class MerchantPushService {
                 .setDeviceType(Constance.DeviceType.ALL)
                 .setTitle(title)
                 .setiOSBadge(0)
+                .setExtParameters(extraJson)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
@@ -44,39 +52,64 @@ public class MerchantPushService {
         logger.info("状态通知已发送给userId:{}",userId);
     }
 
+
     /**
      * 通知商家
      * @param userId
      */
-    public void noticeGrab(String userId){
+    public void noticeGrab(String userId,String orderNo,String type){
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderGrabed())
             return;
-        pushToUser(userId,config.getNoticeGrabedTemplate(),config.getNoticeGrabedTitle());
+
+        pushToUser(userId,config.getNoticeGrabedTemplate(),config.getNoticeGrabedTitle(),generateExtraParam(orderNo,type));
         logger.info("订单被接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTemplate());
+    }
+    public void noticeGrab(String userId,String orderNo){
+        noticeGrab(userId,orderNo, MerchantConstants.PUSH_ORDER_TYPE_SMALL);
     }
 
     /**
      * 通知商家订单配送完成
      * @param userId
      */
-    public void noticeFinished(String userId){
+    public void noticeFinished(String userId,String orderNo,String type){
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderFinished())
             return;
-        pushToUser(userId,config.getNoticeFinishedTemplate(),config.getNoticeFinishedTitle());
+        pushToUser(userId,config.getNoticeFinishedTemplate(),config.getNoticeFinishedTitle(),generateExtraParam(orderNo,type));
         logger.info("订单配送完成，通知商家。userId: {}, content: {}",userId,config.getNoticeFinishedTemplate());
+    }
+    public void noticeFinished(String userId,String orderNo){
+        noticeFinished(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);
     }
 
     /**
      * 通知商家超时无人抢单
      * @param userId
      */
-    public void noticeGrabTimeout(String userId){
+    public void noticeGrabTimeout(String userId,String orderNo,String type){
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderExpired())
             return;
-        pushToUser(userId,config.getNoticeGrabedTimeoutTemplate(),config.getNoticeGrabedTimeoutTitle());
+        pushToUser(userId,config.getNoticeGrabedTimeoutTemplate(),config.getNoticeGrabedTimeoutTitle(),generateExtraParam(orderNo,type));
         logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTimeoutTemplate());
+    }
+    public void noticeGrabTimeout(String userId,String orderNo){
+        noticeGrabTimeout(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);
+    }
+
+    private static String  generateExtraParam(String orderNo,String type){
+        NoticeParamVo paramVo = new NoticeParamVo();
+        paramVo.setOrderNo(orderNo);
+        NoticePushVo noticePushVo = new NoticePushVo();
+        noticePushVo.setType(type);
+        noticePushVo.setParams(paramVo);
+        String s = JSON.toJSONString(noticePushVo);
+        return s;
+    }
+    public static void main(String[] args) {
+        String s = generateExtraParam("aaa","orderDetail-big");
+        System.out.println(s);
     }
 }

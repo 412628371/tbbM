@@ -7,6 +7,10 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2017/4/13.
  */
 public class MerchantConstants {
+    public static final String PUSH_ORDER_TYPE_BIG= "orderDetail-big";
+    public static final String PUSH_ORDER_TYPE_SMALL= "orderDetail-small";
+
+
     public static final String DEFAULT_SEPARATOR = ",";
 
     public static final String KEY_PWD_WRONG_TIMES_PAY = "KEY_PAY_PWD_WRONG_TIMES";

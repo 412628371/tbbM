@@ -46,7 +46,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         boolean result = orderService.riderGrabOrder(dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
                 orderNo,dto.getGrabTime(),dto.getExpectFinishTime()) > 0;
         if (result){
-            pushService.noticeGrab(entity.getUserId());
+            pushService.noticeGrab(entity.getUserId(),orderNo);
         }
         return result;
     }
@@ -84,7 +84,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         boolean result =  merchantOrderManager.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime) > 0;
         if (result){
             //发送骑手完成送货通知
-            pushService.noticeFinished(entity.getUserId());
+            pushService.noticeFinished(entity.getUserId(),orderNo);
         }
         return result;
     }

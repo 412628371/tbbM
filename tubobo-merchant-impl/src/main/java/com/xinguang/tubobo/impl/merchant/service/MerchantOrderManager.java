@@ -210,7 +210,7 @@ public class MerchantOrderManager extends BaseService {
 					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			orderExpire(entity.getUserId(),orderNo,expireTime);
 			if (enablePushNotice){
-				pushService.noticeGrabTimeout(entity.getUserId());
+				pushService.noticeGrabTimeout(entity.getUserId(),orderNo);
 			}
 			return true;
 		}else {
