@@ -34,7 +34,7 @@ public class MerchantInfoResponse implements Serializable{
     private String identifyType;
     private Boolean enablePwdFree;
     private Double nonConfidentialPaymentLimit;
-
+    private Boolean hasSetPayPwd;
     public Double getNonConfidentialPaymentLimit() {
         return nonConfidentialPaymentLimit;
     }
@@ -205,6 +205,14 @@ public class MerchantInfoResponse implements Serializable{
         this.identifyType = identifyType;
     }
 
+    public Boolean getHasSetPayPwd() {
+        return hasSetPayPwd;
+    }
+
+    public void setHasSetPayPwd(Boolean hasSetPayPwd) {
+        this.hasSetPayPwd = hasSetPayPwd;
+    }
+
     @Override
     public String toString() {
         return "MerchantInfoResponse{" +
@@ -227,6 +235,9 @@ public class MerchantInfoResponse implements Serializable{
                 ", merchantName='" + merchantName + '\'' +
                 ", shopImageUrl='" + shopImageUrl + '\'' +
                 ", identifyType='" + identifyType + '\'' +
+                ", enablePwdFree=" + enablePwdFree +
+                ", nonConfidentialPaymentLimit=" + nonConfidentialPaymentLimit +
+                ", hasSetPayPwd=" + hasSetPayPwd +
                 '}';
     }
 }

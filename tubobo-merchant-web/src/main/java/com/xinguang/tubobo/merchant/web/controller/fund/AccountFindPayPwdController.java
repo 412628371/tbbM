@@ -41,6 +41,9 @@ public class AccountFindPayPwdController extends MerchantBaseController<ReqAccou
         TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),plainPwd);
         if(response != null && response.isSucceeded() && response.getData()){
             logger.info("重置支付密码成功：userID：{}",userId);
+            if (!entity.getHasSetPayPwd()){
+                merchantInfoService.modifyPwdSetFlag(userId);
+            }
             return EnumRespCode.SUCCESS;
         }
         logger.info("重置支付密码失败：userID：{}，errorCode:{},errorMsg:{}",

@@ -27,31 +27,32 @@ public class MerchantAccountWithdrawController extends MerchantBaseController<Re
 
 	@Override
 	protected Object doService(String userId, ReqAccountWithdraw req) throws MerchantClientException {
-		MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
-		if (merchant == null){
-			throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
-		}
-		// 提现申请
-		WithdrawRequest withdrawRequest = new WithdrawRequest(req.getAmount(), merchant.getAccountId(),
-				TbbConstants.OperationTarget.BALANCE,merchant.getPayPassword());
-		TbbAccountResponse<WithdrawInfo> withdrawResponse = tbbAccountService.withdraw(withdrawRequest);
-		if (withdrawResponse != null && withdrawResponse.isSucceeded()){
-			// 提现申请确认
-			WithdrawConfirmRequest withdrawConfirmRequest = WithdrawConfirmRequest.getInstanceOfConfirm(withdrawResponse.getData().getId(), "","");
-			TbbAccountResponse<WithdrawInfo> withdrawConfirmResponse = tbbAccountService.withdrawConfirm(withdrawConfirmRequest);
-			if (withdrawConfirmResponse != null && withdrawConfirmResponse.isSucceeded()){
-				logger.info("withdraw confirm SUCCESS. merchantName:{}, merchantPhone:{}, accountId:{}, withdrawId:{}, amount:{}",
-						merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount());
-				return null;
-			}else {
-				logger.error("withdraw confirm FAIL. riderName:{}, riderPhone:{}, accountId:{}, withdrawId:{}, amount:{}, errorCode:{}, errorMsg{}",
-						merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount(),withdrawConfirmResponse.getErrorCode(),withdrawConfirmResponse.getMessage());
-				throw new MerchantClientException(EnumRespCode.ACCOUNT_WITHDRAW_COMFIRM_FAIL);
-			}
-		} else {
-			logger.error("withdraw apply FAIL. merchantName:{}, merchantPhone:{}, accountId:{}, amount:{}, errorCode:{}, errorMsg{}",
-					merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),req.getAmount(),withdrawResponse.getErrorCode(),withdrawResponse.getMessage());
-			throw new MerchantClientException(EnumRespCode.ACCOUNT_WITHDRAW_APPLY_FAIL);
-		}
+		return null;
+//		MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
+//		if (merchant == null){
+//			throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+//		}
+//		// 提现申请
+//		WithdrawRequest withdrawRequest = new WithdrawRequest(req.getAmount(), merchant.getAccountId(),
+//				TbbConstants.OperationTarget.BALANCE,merchant.getPayPassword());
+//		TbbAccountResponse<WithdrawInfo> withdrawResponse = tbbAccountService.withdraw(withdrawRequest);
+//		if (withdrawResponse != null && withdrawResponse.isSucceeded()){
+//			// 提现申请确认
+//			WithdrawConfirmRequest withdrawConfirmRequest = WithdrawConfirmRequest.getInstanceOfConfirm(withdrawResponse.getData().getId(), "","");
+//			TbbAccountResponse<WithdrawInfo> withdrawConfirmResponse = tbbAccountService.withdrawConfirm(withdrawConfirmRequest);
+//			if (withdrawConfirmResponse != null && withdrawConfirmResponse.isSucceeded()){
+//				logger.info("withdraw confirm SUCCESS. merchantName:{}, merchantPhone:{}, accountId:{}, withdrawId:{}, amount:{}",
+//						merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount());
+//				return null;
+//			}else {
+//				logger.error("withdraw confirm FAIL. riderName:{}, riderPhone:{}, accountId:{}, withdrawId:{}, amount:{}, errorCode:{}, errorMsg{}",
+//						merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),withdrawResponse.getData().getId(),req.getAmount(),withdrawConfirmResponse.getErrorCode(),withdrawConfirmResponse.getMessage());
+//				throw new MerchantClientException(EnumRespCode.ACCOUNT_WITHDRAW_COMFIRM_FAIL);
+//			}
+//		} else {
+//			logger.error("withdraw apply FAIL. merchantName:{}, merchantPhone:{}, accountId:{}, amount:{}, errorCode:{}, errorMsg{}",
+//					merchant.getMerchantName(),merchant.getPhone(),merchant.getAccountId(),req.getAmount(),withdrawResponse.getErrorCode(),withdrawResponse.getMessage());
+//			throw new MerchantClientException(EnumRespCode.ACCOUNT_WITHDRAW_APPLY_FAIL);
+//		}
 	}
 }

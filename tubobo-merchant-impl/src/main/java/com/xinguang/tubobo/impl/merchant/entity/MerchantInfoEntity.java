@@ -45,8 +45,8 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Date applyDate;
 	private Date verifyDate;
 	private String addressRoomNo;//门牌号
-	private String payPassword;
 	private String shopImageUrl;
+	private Boolean hasSetPayPwd;
 	private Boolean enablePwdFree;
 	private String identifyType;
 
@@ -66,12 +66,13 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 		this.addressRoomNo = addressRoomNo;
 	}
 
-	public String getPayPassword() {
-		return payPassword;
+
+	public Boolean getHasSetPayPwd() {
+		return hasSetPayPwd;
 	}
 
-	public void setPayPassword(String payPassword) {
-		this.payPassword = payPassword;
+	public void setHasSetPayPwd(Boolean hasSetPayPwd) {
+		this.hasSetPayPwd = hasSetPayPwd;
 	}
 
 	public String getUserId() {
@@ -252,5 +253,35 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	public void setIdentifyType(String identifyType) {
 		this.identifyType = identifyType;
+	}
+
+	@Override
+	public String toString() {
+		return "MerchantInfoEntity{" +
+				"userId='" + userId + '\'' +
+				", accountId=" + accountId +
+				", merchantStatus='" + merchantStatus + '\'' +
+				", merchantName='" + merchantName + '\'' +
+				", realName='" + realName + '\'' +
+				", phone='" + phone + '\'' +
+				", idCardNo='" + idCardNo + '\'' +
+				", addressProvince='" + addressProvince + '\'' +
+				", addressCity='" + addressCity + '\'' +
+				", addressDistrict='" + addressDistrict + '\'' +
+				", addressDetail='" + addressDetail + '\'' +
+				", addressStreet='" + addressStreet + '\'' +
+				", avatarUrl='" + avatarUrl + '\'' +
+				", idCardFrontImageUrl='" + idCardFrontImageUrl + '\'' +
+				", idCardBackImageUrl='" + idCardBackImageUrl + '\'' +
+				", longitude=" + longitude +
+				", latitude=" + latitude +
+				", applyDate=" + applyDate +
+				", verifyDate=" + verifyDate +
+				", addressRoomNo='" + addressRoomNo + '\'' +
+				", hasSetPayPwd=" + hasSetPayPwd +
+				", shopImageUrl='" + shopImageUrl + '\'' +
+				", enablePwdFree=" + enablePwdFree +
+				", identifyType='" + identifyType + '\'' +
+				'}';
 	}
 }

@@ -30,6 +30,7 @@ public class RespShopIdentify  {
     private String shopImageUrl;
     private String identifyType;
     private Boolean enablePwdFree;
+    private Boolean hasSetPayPwd;
 
     public String getAddressRoomNo() {
         return addressRoomNo;
@@ -183,6 +184,14 @@ public class RespShopIdentify  {
         this.enablePwdFree = enablePwdFree;
     }
 
+    public Boolean getHasSetPayPwd() {
+        return hasSetPayPwd;
+    }
+
+    public void setHasSetPayPwd(Boolean hasSetPayPwd) {
+        this.hasSetPayPwd = hasSetPayPwd;
+    }
+
     @Override
     public String toString() {
         return "RespShopIdentify{" +
@@ -191,6 +200,7 @@ public class RespShopIdentify  {
                 ", addressDistrict='" + addressDistrict + '\'' +
                 ", addressDetail='" + addressDetail + '\'' +
                 ", addressStreet='" + addressStreet + '\'' +
+                ", addressRoomNo='" + addressRoomNo + '\'' +
                 ", idCardBackImageUrl='" + idCardBackImageUrl + '\'' +
                 ", idCardFrontImageUrl='" + idCardFrontImageUrl + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
@@ -201,6 +211,10 @@ public class RespShopIdentify  {
                 ", idCardNo='" + idCardNo + '\'' +
                 ", realName='" + realName + '\'' +
                 ", merchantName='" + merchantName + '\'' +
+                ", shopImageUrl='" + shopImageUrl + '\'' +
+                ", identifyType='" + identifyType + '\'' +
+                ", enablePwdFree=" + enablePwdFree +
+                ", hasSetPayPwd=" + hasSetPayPwd +
                 '}';
     }
 }

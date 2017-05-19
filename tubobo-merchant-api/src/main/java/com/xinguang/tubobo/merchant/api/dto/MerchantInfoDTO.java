@@ -31,6 +31,9 @@ public class MerchantInfoDTO implements Serializable{
 	private Date applyDate;
 	private Date verifyDate;
 
+	private String shopImageUrl;
+	private Boolean enablePwdFree;
+
 	public String getUserId() {
 		return userId;
 	}
@@ -183,6 +186,22 @@ public class MerchantInfoDTO implements Serializable{
 		this.verifyDate = verifyDate;
 	}
 
+	public String getShopImageUrl() {
+		return shopImageUrl;
+	}
+
+	public void setShopImageUrl(String shopImageUrl) {
+		this.shopImageUrl = shopImageUrl;
+	}
+
+	public Boolean getEnablePwdFree() {
+		return enablePwdFree;
+	}
+
+	public void setEnablePwdFree(Boolean enablePwdFree) {
+		this.enablePwdFree = enablePwdFree;
+	}
+
 	@Override
 	public String toString() {
 		return "MerchantInfoDTO{" +
@@ -205,6 +224,8 @@ public class MerchantInfoDTO implements Serializable{
 				", latitude=" + latitude +
 				", applyDate=" + applyDate +
 				", verifyDate=" + verifyDate +
+				", shopImageUrl='" + shopImageUrl + '\'' +
+				", enablePwdFree=" + enablePwdFree +
 				'}';
 	}
 }

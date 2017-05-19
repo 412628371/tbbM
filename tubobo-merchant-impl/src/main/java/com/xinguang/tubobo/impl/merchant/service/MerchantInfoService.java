@@ -153,4 +153,12 @@ public class MerchantInfoService extends BaseService {
 		return merchantInfoDao.freePayPwdSet(userId,enable);
 	}
 
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+	@Transactional(readOnly = false)
+	public int modifyPwdSetFlag(String userId) {
+		int count = merchantInfoDao.modifyPwdSetFlag(userId);
+		logger.info("修改是否支付密码标志位，userId:{}",userId);
+		return count;
+	}
+
 }
