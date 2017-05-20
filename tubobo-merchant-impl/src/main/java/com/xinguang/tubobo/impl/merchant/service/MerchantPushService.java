@@ -1,7 +1,6 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.xinguang.tubobo.impl.merchant.alipush.NoticeParamVo;
 import com.xinguang.tubobo.impl.merchant.alipush.NoticePushVo;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sun.tools.doclint.Entity.ge;
 
 /**
  * Created by Administrator on 2017/4/19.
