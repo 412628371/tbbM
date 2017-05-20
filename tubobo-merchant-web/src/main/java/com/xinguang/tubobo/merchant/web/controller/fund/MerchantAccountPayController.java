@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
-import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
@@ -144,5 +143,9 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;
+    }
+    @Override
+    protected boolean needIdentify() {
+        return true;
     }
 }

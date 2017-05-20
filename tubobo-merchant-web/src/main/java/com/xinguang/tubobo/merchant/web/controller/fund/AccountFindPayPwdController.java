@@ -2,6 +2,7 @@ package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.cache.RedisOp;
 import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
@@ -26,6 +27,8 @@ public class AccountFindPayPwdController extends MerchantBaseController<ReqAccou
     private TbbAccountService tbbAccountService;
     @Autowired
     private TokenServiceInterface tokenServiceInterface;
+    @Autowired
+    private RedisOp redisOp;
     @Override
     protected EnumRespCode doService(String userId, ReqAccountResetPwd req) throws MerchantClientException {
        logger.info("重置支付密码请求：userID：{}，req:{}",userId,req.toString());
@@ -44,6 +47,7 @@ public class AccountFindPayPwdController extends MerchantBaseController<ReqAccou
             if (!entity.getHasSetPayPwd()){
                 merchantInfoService.modifyPwdSetFlag(userId);
             }
+            redisOp.resetPwdErrorTimes(userId);
             return EnumRespCode.SUCCESS;
         }
         logger.info("重置支付密码失败：userID：{}，errorCode:{},errorMsg:{}",

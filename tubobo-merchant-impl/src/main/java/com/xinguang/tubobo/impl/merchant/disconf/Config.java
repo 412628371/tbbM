@@ -45,6 +45,17 @@ public class Config {
     private Long payPwdMaxErrorTimes;
     private String distributionLimitationExpression;
 
+    private String gdKey;
+
+    @DisconfFileItem(name = "gdKey", associateField = "gdKey")
+    public String getGdKey() {
+        return gdKey;
+    }
+
+    public void setGdKey(String gdKey) {
+        this.gdKey = gdKey;
+    }
+
     @DisconfFileItem(name = "distributionLimitationExpression", associateField = "distributionLimitationExpression")
     public String getDistributionLimitationExpression() {
         return distributionLimitationExpression;

@@ -53,7 +53,7 @@ public class CommentController extends MerchantBaseController<ReqComment,Object>
             }else {
                 logger.info("评价系统重复评价，只更新本地数据,userId:{},req:{}",userId,req.toString());
             }
-            boolean result = orderService.rateOrder(req.getOrderNo());
+            boolean result = orderService.rateOrder(userId,req.getOrderNo());
             if (result){
                 return "";
             }

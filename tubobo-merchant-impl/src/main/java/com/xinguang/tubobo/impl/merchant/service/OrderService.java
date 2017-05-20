@@ -114,7 +114,7 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime,Date expectFinishTime){
+    public int riderGrabOrder(String merchantId,String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime,Date expectFinishTime){
         return merchantOrderDao.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime,expectFinishTime);
     }
 
@@ -123,7 +123,7 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int riderGrabItem(String orderNo, Date grabItemTime){
+    public int riderGrabItem(String merchantId,String orderNo, Date grabItemTime){
         return merchantOrderDao.riderGrabItem(orderNo,grabItemTime);
     }
 
@@ -132,7 +132,7 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int riderFinishOrder(String orderNo, Date finishOrderTime){
+    public int riderFinishOrder(String merchantId,String orderNo, Date finishOrderTime){
         return merchantOrderDao.riderFinishOrder(orderNo,finishOrderTime);
     }
 
@@ -192,7 +192,7 @@ public class OrderService extends BaseService {
 
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public boolean rateOrder(String orderNo) {
+    public boolean rateOrder(String merchantId,String orderNo) {
         int count = merchantOrderDao.rateOrder(orderNo);
         logger.info("更新订单：{}的状态为已评价，result:{}",orderNo,count);
         return count == 1;

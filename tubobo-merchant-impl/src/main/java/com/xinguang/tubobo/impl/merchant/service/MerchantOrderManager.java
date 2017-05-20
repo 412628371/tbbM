@@ -148,14 +148,14 @@ public class MerchantOrderManager extends BaseService {
 	 * 骑手取货
 	 */
 	public int riderGrabItem(String merchantId,String orderNo, Date grabItemTime){
-		return orderService.riderGrabItem(orderNo,grabItemTime);
+		return orderService.riderGrabItem(merchantId,orderNo,grabItemTime);
 	}
 
 	/**
 	 * 骑手完成订单
 	 */
 	public int riderFinishOrder(String merchantId,String orderNo, Date finishOrderTime){
-		return orderService.riderFinishOrder(orderNo,finishOrderTime);
+		return orderService.riderFinishOrder(merchantId,orderNo,finishOrderTime);
 	}
 
 	/**

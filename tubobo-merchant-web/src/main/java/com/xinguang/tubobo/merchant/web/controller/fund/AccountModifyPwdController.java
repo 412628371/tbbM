@@ -57,4 +57,9 @@ public class AccountModifyPwdController extends MerchantBaseController<ReqAccoun
 			throw  new MerchantClientException(EnumRespCode.FAIL);
 		}
 	}
+
+	@Override
+	protected boolean needIdentify() {
+		return true;
+	}
 }
