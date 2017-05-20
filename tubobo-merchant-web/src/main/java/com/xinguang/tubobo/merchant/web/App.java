@@ -1,9 +1,5 @@
 package com.xinguang.tubobo.merchant.web;
 
-import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
-import com.xinguang.tubobo.impl.merchant.cache.RedisOp;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
-import com.xinguang.tubobo.impl.merchant.service.DeliveryFeeService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -27,9 +23,9 @@ public class App {
 //        Double minute = feeService.sumDistributionLimitation(20.0);
 ////        Double money = feeService.sumDeliveryFeeByDistance(5000.0);
 //        System.out.println(minute);
-        RoutePlanning routePlanning = (RoutePlanning) context.getBean("routePlanning");
-        Double distance = routePlanning.getDistanceWithCar(116.481028,39.989643,114.465302,40.004717);
-        System.out.println("distance: "+distance);
+//        RoutePlanning routePlanning = (RoutePlanning) context.getBean("routePlanning");
+//        Double distance = routePlanning.getDistanceWithCar(116.481028,39.989643,114.465302,40.004717);
+//        System.out.println("distance: "+distance);
 //        RedisOp redisOp = (RedisOp)context.getBean("redisOp");
 //        redisOp.initZero(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE);
 //        redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,1);
