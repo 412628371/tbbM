@@ -38,7 +38,8 @@ public class RedisOp {
             currentTimes = Long.valueOf(timeStr);
         }
         if (currentTimes >= config.getPayPwdMaxErrorTimes()){
-            throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR_TOO_MUCH);
+            throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR_TOO_MUCH,
+                    String.valueOf(config.getPayPwdMaxErrorTimes()));
         }
     }
 

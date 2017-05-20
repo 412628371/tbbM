@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.utils.LocationUtil;
 import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -29,6 +30,8 @@ public class DeliveryFeeService  {
     @Resource
     Config config;
 
+    @Autowired
+    RoutePlanning routePlanning;
     public double sumDeliveryFeeByDistance(double distance) throws MerchantClientException {
         double distanceInKm = Math.ceil((distance/1000));
         double fee = config.getFirstLevelInitPrice();
@@ -67,7 +70,9 @@ public class DeliveryFeeService  {
         if (lat==null || lng == null){
             throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
         }
-        double distance = LocationUtil.getDistance(lat,lng,entity.getLatitude(),entity.getLongitude());
+        //TODO
+        double distance = routePlanning.getDistanceWithCar(lng,lat,entity.getLongitude(),entity.getLatitude());
+//        double distance = LocationUtil.getDistance(lat,lng,entity.getLatitude(),entity.getLongitude());
         if (distance > config.getMaxDeliveryMills()){
             throw new MerchantClientException(EnumRespCode.MERCHANT_DELIVERY_DISTANCE_TOO_FAR);
         }

@@ -44,7 +44,7 @@ public enum EnumRespCode {
 	ACCOUNT_PWD_CANT_EQUAL("30053", "新旧密码不能相同"),
 	ACCOUNT_PWD_RESET_CREDENTIAL_INVALID("30054", "重置密码，令牌已无效"),
 
-	ACCOUNT_PWD_ERROR_TOO_MUCH("30055", "支付密码输入错误次数过多"),
+	ACCOUNT_PWD_ERROR_TOO_MUCH("30055", "支付密码输错%s次，请找回密码"),
 	ACCOUNT_RECHARGE_FAIL("30060", "充值操作失败");
 
 
