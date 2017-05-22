@@ -251,4 +251,11 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         String sqlString = "update MerchantOrderEntity set ratedFlag=:p1 where orderNo = :p2 and  delFlag = '0' ";
         return update(sqlString,new Parameter(true,orderNo));
     }
+
+    public List<String> getUnRatedOrderNos(){
+        String sqlString = "select orderNo from MerchantOrderEntity where orderStatus=:p1 and ratedFlag = :p2 and  delFlag = '0' ";
+        List<String> orderList = createQuery(sqlString,
+                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),false)).list();
+        return orderList;
+    }
 }

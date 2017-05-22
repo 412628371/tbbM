@@ -35,7 +35,7 @@ public class PushSettingsController extends MerchantBaseController<ReqPushSettin
 //            entity.setDeviceToken(req.getDeviceToken());
 //        }
 
-        Boolean result = settingsService.updateSettings(entity);
+        Boolean result = settingsService.updateSettings(userId,entity);
         if (!result){
             throw new MerchantClientException(EnumRespCode.MERCHANT_PUSH_SETTINGS_FAILURE);
         }

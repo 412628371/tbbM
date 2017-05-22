@@ -197,4 +197,8 @@ public class OrderService extends BaseService {
         logger.info("更新订单：{}的状态为已评价，result:{}",orderNo,count);
         return count == 1;
     }
+    @Transactional(readOnly = true)
+    public List<String> getUnRatedOrderNos(){
+        return merchantOrderDao.getUnRatedOrderNos();
+    }
 }

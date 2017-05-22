@@ -25,9 +25,6 @@ public class MerchantPushSettingsDao extends BaseDao<MerchantSettingsEntity> {
         MerchantSettingsEntity existEntity = findByUserId(entity.getUserId());
         if (existEntity == null){
             existEntity = new MerchantSettingsEntity();
-//            if (entity.getDeviceToken()!= null){
-//                existEntity.setDeviceToken(entity.getDeviceToken());
-//            }
             existEntity.setPushMsgOrderExpired(true);
             existEntity.setPushMsgOrderFinished(true);
             existEntity.setPushMsgOrderGrabed(true);

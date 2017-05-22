@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
+       xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.dangdang.com/schema/ddframe/reg
+                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd
+                        http://www.dangdang.com/schema/ddframe/job
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd">
+    <!-- 配置作业注册中心  -->
+    <reg:zookeeper id="regCenter" server-lists="172.16.1.26:2181,172.16.1.27:2181,172.16.1.28:2181" namespace="jobCenter/appname" digest="appname:123456" />
+    <!-- 配置数据源 -->
+    <bean id="jobLogDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://172.16.1.55:3306/joblog?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false" />
+        <property name="username" value="joblog" />
+        <property name="password" value="joblogtest" />
+        <property name="defaultAutoCommit" value="true" />
+        <property name="initialSize" value="10" />
+        <property name="maxTotal" value="100" />
+        <property name="maxIdle" value="50" />
+        <property name="minIdle" value="10" />
+        <property name="maxWaitMillis" value="6000" />
+    </bean>
+    <!-- 配置作业 -->
+    <job:simple id="autoRateJob" class="com.xinguang.tubobo.impl.merchant.job.AutoRateJob" registry-center-ref="regCenter" cron="0/20 * * * * ?" sharding-total-count="1" event-trace-rdb-data-source="jobLogDataSource" />
+</beans>
