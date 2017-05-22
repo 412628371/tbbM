@@ -4,16 +4,13 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
+import com.xinguang.tubobo.impl.merchant.service.RateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static com.sun.tools.doclint.Entity.cong;
-import static com.sun.tools.doclint.Entity.nu;
-import static com.sun.tools.doclint.Entity.or;
 
 /**
  * Created by Administrator on 2017/5/22.
@@ -23,6 +20,8 @@ public class AutoRateJob implements SimpleJob {
 
     @Autowired
     OrderService orderService;
+    @Autowired
+    RateService rateService;
     @Override
     public void execute(ShardingContext shardingContext) {
         Integer shardingItem = shardingContext.getShardingItem();
@@ -39,7 +38,7 @@ public class AutoRateJob implements SimpleJob {
                     if (entity == null) {
                         continue;
                     }
-                    orderService.rateOrder(entity.getUserId(),orderNo);
+                    rateService.rate(entity.getUserId(),orderNo,5,5,"",entity.getRiderId());
                 case 1:
 //                    System.out.println("1");
                 default:
