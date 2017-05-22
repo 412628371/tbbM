@@ -253,9 +253,12 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     }
 
     public List<String> getUnRatedOrderNos(){
-        String sqlString = "select orderNo from MerchantOrderEntity where orderStatus=:p1 and ratedFlag = :p2 and  delFlag = '0' ";
+        String sqlString = "select orderNo from MerchantOrderEntity where orderStatus=:p1 and ratedFlag = :p2 and finishOrderTime>:p3 and finishOrderTime <:p4 and delFlag = '0' ";
+        Date daysBefore = DateUtils.getDaysBefore(new Date(),3);
+        Date begin = DateUtils.getDateStart(daysBefore);
+        Date end = DateUtils.getDateEnd(daysBefore);
         List<String> orderList = createQuery(sqlString,
-                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),false)).list();
+                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),false,begin,end)).list();
         return orderList;
     }
 }

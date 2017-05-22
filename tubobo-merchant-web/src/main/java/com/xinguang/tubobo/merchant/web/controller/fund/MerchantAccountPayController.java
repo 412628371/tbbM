@@ -119,6 +119,8 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
                             String.valueOf(redisOp.getAvailableWrongTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY,userId)));
 
                 }
+                logger.error("pay  FAIL.,orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
+                        req.getOrderNo(),infoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
             }
             throw  new MerchantClientException(EnumRespCode.ACCOUNT_PAY_FAIL);
         }
