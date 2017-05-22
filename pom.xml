@@ -88,13 +88,11 @@
         <ehcache-web.version>2.0.4</ehcache-web.version>
         <shiro.version>1.2.2</shiro.version>
         <dozer.version>5.4.0</dozer.version>
-        <commons-io.version>2.4</commons-io.version>
         <poi-ooxml.version>3.9</poi-ooxml.version>
         <ckfinder.version>2.3</ckfinder.version>
         <jsp-api.version>2.2</jsp-api.version>
         <opensymphony.sitemesh.version>2.4.2</opensymphony.sitemesh.version>
         <com.thoughtworks.xstream.version>1.4.3</com.thoughtworks.xstream.version>
-        <commons.fileupload.version>1.3</commons.fileupload.version>
         <xerces.xercesImpl.version>2.8.1</xerces.xercesImpl.version>
         <thumbnailator.version>0.4.2</thumbnailator.version>
         <quartz.scheduler.version>2.2.3</quartz.scheduler.version>
@@ -104,6 +102,12 @@
         <org.springframework.amqp.version>1.7.1.RELEASE</org.springframework.amqp.version>
         <com.rabbitmq.version>4.1.0</com.rabbitmq.version>
 
+        <commons-io.version>2.4</commons-io.version>
+        <commons-dbcp2.version>2.1.1</commons-dbcp2.version>
+        <commons.fileupload.version>1.3</commons.fileupload.version>
+        <elastic-job.version>2.0.4</elastic-job.version>
+        <zookeeper.version>3.4.6</zookeeper.version>
+        <gson.version>2.8.0</gson.version>
     </properties>
 
     <!--远程仓库的配�? -->
@@ -510,8 +514,24 @@
                 <groupId>com.github.sgroschupf</groupId>
                 <artifactId>zkclient</artifactId>
                 <version>${zkclient.version}</version>
+                <!-- disconf中已有zookeeper-->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
             <!-- httpclient -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -641,6 +661,12 @@
                 <groupId>com.baidu.disconf</groupId>
                 <artifactId>disconf-client</artifactId>
                 <version>${disconf-client.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
 
@@ -660,7 +686,28 @@
                 <artifactId>spring-rabbit</artifactId>
                 <version>${org.springframework.amqp.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.dangdang</groupId>
+                <artifactId>elastic-job-lite-core</artifactId>
+                <version>${elastic-job.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dangdang</groupId>
+                <artifactId>elastic-job-lite-spring</artifactId>
+                <version>${elastic-job.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${commons-dbcp2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>

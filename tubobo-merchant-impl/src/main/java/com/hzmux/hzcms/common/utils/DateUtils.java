@@ -253,6 +253,12 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 			return true;
 		}
 	}
+
+	public static Date getDaysBefore(Date originalDay,int days){
+		long pastMilSeconds = originalDay.getTime() - days*24*60*60*1000;
+		Date d = new Date(pastMilSeconds);
+		return d;
+	}
 	/**
 	 * @param args
 	 * @throws ParseException
@@ -266,5 +272,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		System.out.println(isBeforeEndTimeInOneDay("20:00:00"));
 		System.out.println(isAfterBeginTimeInOneDay("08:00:00"));
 
+		System.out.println(getDaysBefore(new Date(),3));
 	}
 }
