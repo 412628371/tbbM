@@ -19,13 +19,17 @@ public class RedisOp {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private Config config;
-    public void increment(String opType,String userId,long step){
+    private void increment(String opType,String userId,long step){
         stringRedisTemplate.opsForValue().increment(generateKey(opType,userId),step);
     }
     private void initZero(String key){
         stringRedisTemplate.opsForValue().set(key,"0");
     }
 
+    public void pwdWrong(String type,String userId) throws MerchantClientException {
+        increment(type,userId,1);
+        mindAvailablePwdWrongTimes(type,userId);
+    }
     /**
      * 检查支付密码错误次数是否达到限制值
      * @param opType
@@ -66,6 +70,20 @@ public class RedisOp {
         initZero(generateKey(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY , userId));
     }
 
+    /**
+     * 提醒剩余错误次数
+     * @throws MerchantClientException
+     */
+    private void mindAvailablePwdWrongTimes(String type,String userId) throws MerchantClientException {
+        //获取剩余可用次数
+        long availableWrongTimes = getAvailableWrongTimes(type,userId);
+        if (availableWrongTimes <= 0){
+            throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR_TOO_MUCH,
+                    String.valueOf(config.getPayPwdMaxErrorTimes()));
+        }
+        throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR,
+                String.valueOf(availableWrongTimes));
+    }
     private String generateKey(String opType,String userId){
         return opType+"_"+userId;
     }

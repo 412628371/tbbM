@@ -39,9 +39,7 @@ public class AccountPayPwdFreeController extends MerchantBaseController<ReqPayPw
                 throw new MerchantClientException(EnumRespCode.FAIL);
             }else {
                 if (!response.getData()){
-                    redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE,userId,1);
-                    throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR,
-                            String.valueOf(redisOp.getAvailableWrongTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE,userId)));
+                    redisOp.pwdWrong(MerchantConstants.KEY_PWD_WRONG_TIMES_FREE,userId);
                 }
             }
             redisOp.resetPwdErrorTimes(userId);
