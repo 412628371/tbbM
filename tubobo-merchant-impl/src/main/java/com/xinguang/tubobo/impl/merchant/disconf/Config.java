@@ -46,6 +46,16 @@ public class Config {
     private String distributionLimitationExpression;
 
     private String gdKey;
+    private Integer autoRateDays;
+
+    @DisconfFileItem(name = "autoRateDays", associateField = "autoRateDays")
+    public Integer getAutoRateDays() {
+        return autoRateDays;
+    }
+
+    public void setAutoRateDays(Integer autoRateDays) {
+        this.autoRateDays = autoRateDays;
+    }
 
     @DisconfFileItem(name = "gdKey", associateField = "gdKey")
     public String getGdKey() {
