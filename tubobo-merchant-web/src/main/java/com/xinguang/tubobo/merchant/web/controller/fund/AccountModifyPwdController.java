@@ -50,9 +50,14 @@ public class AccountModifyPwdController extends MerchantBaseController<ReqAccoun
 		} else {
 			if (TbbAccountResponse.ErrorCode.ERROR_ACCOUNT_PAY_PWD_WRONG.getCode().
 					equals(response.getErrorCode())){
-				redisOp.increment(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,userId,1);
-				throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR,
-						String.valueOf(redisOp.getAvailableWrongTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,userId)));
+				redisOp.pwdWrong(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,userId);
+//				long availableWrongTimes = redisOp.getAvailableWrongTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_MODIFY,userId);
+//				if (availableWrongTimes <= 0){
+//					throw new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR_TOO_MUCH,
+//							String.valueOf(config.getPayPwdMaxErrorTimes()));
+//				}
+//				throw  new MerchantClientException(EnumRespCode.ACCOUNT_PWD_ERROR,
+//						String.valueOf(availableWrongTimes));
 			}
 			throw  new MerchantClientException(EnumRespCode.FAIL);
 		}
