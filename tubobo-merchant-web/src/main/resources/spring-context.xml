@@ -64,6 +64,9 @@
 		<constructor-arg index="2" value="${ali.push.access.key.secret}"/>
 		<constructor-arg index="3" value="${iosApnsEnv}"/>
 	</bean>
+	<bean id="gdDistanceService" class="com.xinguang.tubobo.lbs.impl.GdDistanceServiceImpl">
+		<constructor-arg index="0" value="${gdKey}"/>
+	</bean>
 
 	<!-- 数据源配置, 使用 BoneCP 数据库连接池 -->
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">

@@ -1,14 +1,13 @@
 package com.xinguang.tubobo.impl.merchant.amap;
 
 import com.hzmux.hzcms.common.utils.LocationUtil;
-import com.xinguang.tubobo.impl.merchant.common.PoolHttpsClientService;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.lbs.api.GdDistanceService;
+import com.xinguang.tubobo.lbs.api.LbsConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/5/20.
@@ -20,6 +19,8 @@ public class RoutePlanning {
     @Autowired
     Config config;
 
+    @Autowired
+    GdDistanceService gdDistanceService;
     /**
      * 根据经纬度，获取驾车距离
      * @param lng1
@@ -29,34 +30,23 @@ public class RoutePlanning {
      * @return
      */
     public Double getDistanceWithCar(Double lng1,Double lat1,Double lng2,Double lat2){
-        String origins = jointLocation(lng1,lat1);
-        String destination = jointLocation(lng2,lat2);
-        String url = jointRequestString(origins,destination);
-        logger.info("路径规划，获取距离。origins:{},destination:{},url:{}",origins,destination,url);
-        RoutePlanningDistanceResult result = PoolHttpsClientService.getInstance().get(RoutePlanningDistanceResult.class,url);
-        if (result.getStatus() == 1){
-            List<RoutePlaningDistanceItem> itemsList = result.getResults();
-            if (itemsList != null && itemsList.size() > 0){
-                Double distance = itemsList.get(0).getDistance();
-                logger.info("路径规划，获取距离distance:{}。origins:{},destination:{},url:{}",distance,origins,destination,url);
-                return distance;
+        Double distance;
+        if (LbsConstants.TRANSPORT.WALK.getCode().equals(config.getTransportType())){
+            distance = gdDistanceService.getDistance(LbsConstants.TRANSPORT.WALK.getCode(),lng1,lat1,lng2,lat2);
+            logger.info("路径规划。使用高德步行距离:{}。",distance);
+            if (distance == null){
+                distance = gdDistanceService.getDistance(LbsConstants.TRANSPORT.CAR.getCode(),lng1,lat1,lng2,lat2);
+                logger.info("路径规划，使用步行距离失败，使用高德驾车距离:{}。",distance);
             }
+        }else {
+            distance = gdDistanceService.getDistance(LbsConstants.TRANSPORT.CAR.getCode(),lng1,lat1,lng2,lat2);
+            logger.info("路径规划。使用高德驾车距离:{}。",distance);
         }
-        Double distance = LocationUtil.getDistance(lat1,lng1,lat2,lng2);
-        logger.info("路径规划，获取距离失败。使用直线距离:{}。status:{},info:{}",distance,result.getStatus(),result.getInfo());
+        if (distance == null){
+            distance = LocationUtil.getDistance(lat1,lng1,lat2,lng2);
+            logger.info("路径规划，获取距离失败。使用直线距离:{}。",distance);
+        }
         return distance;
-    }
-    private String jointLocation(Double lng,Double lat){
-        StringBuilder sb = new StringBuilder(String.valueOf(lng));
-        sb.append(",").append(String.valueOf(lat));
-        return sb.toString();
-    }
-    private String jointRequestString(String origins,String destination){
-        StringBuilder sb = new StringBuilder("http://restapi.amap.com/v3/distance?");
-        sb.append("key=").append(config.getGdKey()).append("&")
-                .append("origins=").append(origins).append("&")
-                .append("destination=").append(destination).append("&");
-        return sb.toString();
     }
 
 }

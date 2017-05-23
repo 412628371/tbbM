@@ -14,6 +14,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>lbs-api</artifactId>
+        </dependency>
+        <dependency>
             <artifactId>tubobo-rider-api</artifactId>
             <groupId>com.xinguang</groupId>
         </dependency>

@@ -88,7 +88,15 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
             throw new MerchantClientException(EnumRespCode.MERCHANT_VERIFYING);
         }else {
             BeanUtils.copyProperties(req,infoEntity);
-            merchantInfoService.merchantUpdate(infoEntity);
+            boolean result = false;
+            TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(infoEntity.getAccountId(),AESUtils.decrypt(req.getPayPassword()));
+            if(response != null && response.isSucceeded() && response.getData()){
+                logger.info("重新认证，重置支付密码成功：userID：{}",userId);
+                result = merchantInfoService.merchantUpdate(infoEntity);
+            }
+            if (!result){
+                throw new MerchantClientException(EnumRespCode.FAIL);
+            }
             MerchantInfoEntity entity1 = merchantInfoService.findByUserId(userId);
             RespShopIdentify resp = new RespShopIdentify();
             if (null != entity1){

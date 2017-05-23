@@ -45,7 +45,7 @@ public class DeliveryFeeService  {
             return fee;
         }else {
 //            distanceInKm-=1;
-            if (distanceInKm-1 <= secondLevelDistance){
+            if (distanceInKm <= secondLevelDistance){
                 fee += (distanceInKm-1) * firstLevelPricePerKM;
             }else {
                 fee+= (secondLevelDistance-1)*firstLevelPricePerKM;

@@ -45,8 +45,18 @@ public class Config {
     private Long payPwdMaxErrorTimes;
     private String distributionLimitationExpression;
 
-    private String gdKey;
+//    private String gdKey;
     private Integer autoRateDays;
+    private String transportType;
+
+    @DisconfFileItem(name = "transportType", associateField = "transportType")
+    public String getTransportType() {
+        return transportType;
+    }
+
+    public void setTransportType(String transportType) {
+        this.transportType = transportType;
+    }
 
     @DisconfFileItem(name = "autoRateDays", associateField = "autoRateDays")
     public Integer getAutoRateDays() {
@@ -57,14 +67,14 @@ public class Config {
         this.autoRateDays = autoRateDays;
     }
 
-    @DisconfFileItem(name = "gdKey", associateField = "gdKey")
-    public String getGdKey() {
-        return gdKey;
-    }
-
-    public void setGdKey(String gdKey) {
-        this.gdKey = gdKey;
-    }
+//    @DisconfFileItem(name = "gdKey", associateField = "gdKey")
+//    public String getGdKey() {
+//        return gdKey;
+//    }
+//
+//    public void setGdKey(String gdKey) {
+//        this.gdKey = gdKey;
+//    }
 
     @DisconfFileItem(name = "distributionLimitationExpression", associateField = "distributionLimitationExpression")
     public String getDistributionLimitationExpression() {
