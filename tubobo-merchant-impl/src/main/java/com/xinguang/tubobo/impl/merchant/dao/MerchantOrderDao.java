@@ -252,9 +252,9 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         return update(sqlString,new Parameter(true,orderNo));
     }
 
-    public List<String> getUnRatedOrderNos(){
+    public List<String> getUnRatedOrderNos(int days){
         String sqlString = "select orderNo from MerchantOrderEntity where orderStatus=:p1 and ratedFlag = :p2 and finishOrderTime>:p3 and finishOrderTime <:p4 and delFlag = '0' ";
-        Date daysBefore = DateUtils.getDaysBefore(new Date(),3);
+        Date daysBefore = DateUtils.getDaysBefore(new Date(),days);
         Date begin = DateUtils.getDateStart(daysBefore);
         Date end = DateUtils.getDateEnd(daysBefore);
         List<String> orderList = createQuery(sqlString,

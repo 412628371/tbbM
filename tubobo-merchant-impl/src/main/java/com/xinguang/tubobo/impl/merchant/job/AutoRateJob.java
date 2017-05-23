@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.impl.merchant.service.RateService;
@@ -22,11 +23,13 @@ public class AutoRateJob implements SimpleJob {
     OrderService orderService;
     @Autowired
     RateService rateService;
+    @Autowired
+    Config config;
     @Override
     public void execute(ShardingContext shardingContext) {
         Integer shardingItem = shardingContext.getShardingItem();
 
-        List<String> orderNos = orderService.getUnRatedOrderNos();
+        List<String> orderNos = orderService.getUnRatedOrderNos(config.getAutoRateDays());
         logger.info("当前任务分片：{},处理为评价的订单：list:{}",shardingItem,orderNos);
         for (String orderNo:orderNos){
 //            char last = orderNo.charAt(orderNo.length()-1);

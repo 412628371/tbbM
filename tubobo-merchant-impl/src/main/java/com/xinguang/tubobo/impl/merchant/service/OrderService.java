@@ -195,7 +195,7 @@ public class OrderService extends BaseService {
         return count == 1;
     }
     @Transactional(readOnly = true)
-    public List<String> getUnRatedOrderNos(){
-        return merchantOrderDao.getUnRatedOrderNos();
+    public List<String> getUnRatedOrderNos(int days){
+        return merchantOrderDao.getUnRatedOrderNos(days);
     }
 }
