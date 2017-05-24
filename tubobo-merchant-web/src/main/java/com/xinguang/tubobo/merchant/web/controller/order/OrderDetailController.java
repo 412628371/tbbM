@@ -44,6 +44,7 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
             logger.error("获取订单详情，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
+        logger.info("订单详情查询：userId:{},orderNo:{},status:{}",userId,req.getOrderNo(),entity.getOrderStatus());
         Date now = new Date();
         handleTimeoutDelay(entity,now);
 
