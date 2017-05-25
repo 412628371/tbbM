@@ -30,7 +30,7 @@ public class CommentController extends MerchantBaseController<ReqComment,Object>
         if (null == orderEntity ){
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
-        if (EnumMerchantOrderStatus.RATED.getValue().equals(orderEntity.getOrderStatus())){
+        if (orderEntity.getRatedFlag()){
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_RATED);
         }
         if (!EnumMerchantOrderStatus.FINISH.getValue().equals(orderEntity.getOrderStatus())){
