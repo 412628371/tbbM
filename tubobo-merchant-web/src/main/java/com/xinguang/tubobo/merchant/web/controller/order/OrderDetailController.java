@@ -3,6 +3,7 @@ package com.xinguang.tubobo.merchant.web.controller.order;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -32,14 +33,14 @@ import static java.nio.file.Paths.get;
 @RequestMapping("/order/detail")
 public class OrderDetailController extends MerchantBaseController<ReqOrderDetail,RespOrderDetail> {
     @Autowired
-    MerchantOrderManager merchantOrderManager;
+    OrderService orderService;
     @Autowired
     TbbRateService tbbRateService;
     @Resource
     Config config;
     @Override
     protected RespOrderDetail doService(String userId, ReqOrderDetail req) throws MerchantClientException {
-        MerchantOrderEntity entity = merchantOrderManager.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
+        MerchantOrderEntity entity = orderService.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
         if(null == entity){
             logger.error("获取订单详情，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
@@ -90,6 +91,7 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
             Date orderTime = entity.getOrderTime();
             long expectedExpiredMilSeconds = orderTime.getTime() + config.getPayExpiredMilSeconds();
             if (now.getTime() >= expectedExpiredMilSeconds){
+                orderService.clearRedisCache(entity.getUserId());
                 throw new MerchantClientException(EnumRespCode.MERCHANT_UNPAY_CNACELING);
             }
         }
@@ -97,6 +99,7 @@ public class OrderDetailController extends MerchantBaseController<ReqOrderDetail
             Date payTime = entity.getPayTime();
             long expectedExpiredMilSeconds = payTime.getTime() + config.getTaskGrabExpiredMilSeconds();
             if (now.getTime() >= expectedExpiredMilSeconds){
+                orderService.clearRedisCache(entity.getUserId());
                 throw new MerchantClientException(EnumRespCode.MERCHANT_UNGRAB_CANCELING);
             }
         }

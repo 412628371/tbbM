@@ -33,13 +33,15 @@ public class OrderService extends BaseService {
     @Autowired
     private MerchantInfoService merchantInfoService;
 
-    public MerchantOrderEntity get(String id) {
-        return merchantOrderDao.get(id);
-    }
+//    public MerchantOrderEntity get(String id) {
+//        return merchantOrderDao.get(id);
+//    }
 
+//    @Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#orderNo+'_'+#orderStatus")
     public MerchantOrderEntity findByOrderNo(String orderNo){
         return merchantOrderDao.findByOrderNo(orderNo);
     }
+//    @Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#orderNo+'_'+#orderStatus")
     public MerchantOrderEntity findByOrderNoAndStatus(String orderNo,String orderStatus){
         return merchantOrderDao.findByOrderNoAndStatus(orderNo,orderStatus);
     }
@@ -198,4 +200,14 @@ public class OrderService extends BaseService {
     public List<String> getUnRatedOrderNos(int days){
         return merchantOrderDao.getUnRatedOrderNos(days);
     }
+
+    /**
+     * 清除redis缓存，防止有的没有清除掉，造成订单状态展示不及时
+     * @param userId
+     */
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#userId+'_*'")
+    public void clearRedisCache(String userId){
+
+    }
+
 }
