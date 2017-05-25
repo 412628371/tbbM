@@ -121,6 +121,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if (order != null){
             MerchantOrderDTO dto = new MerchantOrderDTO();
             BeanUtils.copyProperties(order,dto);
+            dto.setPayAmount(order.getPayAmount()==null?0:(int)(order.getPayAmount()*100));
+            dto.setDeliveryFee(order.getDeliveryFee()==null?0:(int)(order.getDeliveryFee()*100));
+            dto.setTipFee(order.getTipFee()==null?0:(int)(order.getTipFee()*100));
             return dto;
         }
         return null;
