@@ -1,6 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller;
 
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import org.springframework.beans.factory.annotation.Autowired;

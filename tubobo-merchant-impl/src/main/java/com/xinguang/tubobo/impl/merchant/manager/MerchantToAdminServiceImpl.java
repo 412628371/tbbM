@@ -1,8 +1,11 @@
-package com.xinguang.tubobo.impl.merchant.service;
+package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
+import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
@@ -121,6 +124,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if (order != null){
             MerchantOrderDTO dto = new MerchantOrderDTO();
             BeanUtils.copyProperties(order,dto);
+            dto.setPayAmount(order.getPayAmount()==null?0:(int)(order.getPayAmount()*100));
+            dto.setDeliveryFee(order.getDeliveryFee()==null?0:(int)(order.getDeliveryFee()*100));
+            dto.setTipFee(order.getTipFee()==null?0:(int)(order.getTipFee()*100));
             return dto;
         }
         return null;

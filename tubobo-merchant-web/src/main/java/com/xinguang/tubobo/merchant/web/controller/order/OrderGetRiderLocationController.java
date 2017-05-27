@@ -6,7 +6,7 @@ import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.api.TaskCenterToMerchantServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.GeoLocation;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.web.request.ReqOrderRiderLocation;
 import com.xinguang.tubobo.merchant.web.response.RespRiderLocation;
 import org.springframework.beans.factory.annotation.Autowired;
