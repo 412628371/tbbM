@@ -11,7 +11,6 @@ import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqOrderDetail;
 import com.xinguang.tubobo.merchant.web.response.RespOrderDetail;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
 import com.xinguang.tubobo.rate.api.TbbRateResponse;
 import com.xinguang.tubobo.rate.api.TbbRateService;
 import com.xinguang.tubobo.rate.api.resp.RateContent;

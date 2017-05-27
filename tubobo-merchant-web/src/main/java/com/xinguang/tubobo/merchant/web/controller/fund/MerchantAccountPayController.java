@@ -19,7 +19,7 @@ import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountPay;
 import com.xinguang.tubobo.merchant.web.response.RespOrderPay;
 import org.springframework.beans.BeanUtils;
@@ -61,7 +61,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if(EnumPayStatus.PAID.getValue().equals(orderEntity.getPayStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_REPEAT_PAY);
         }
-        if (EnumMerchantOrderStatus.CANCEL.getValue().equals(orderEntity.getPayStatus())){
+        if (EnumMerchantOrderStatus.CANCEL.getValue().equals(orderEntity.getOrderStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_PAY);
         }
         TbbAccountResponse<PayInfo> response;

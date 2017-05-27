@@ -14,7 +14,7 @@ import com.xinguang.tubobo.merchant.web.request.CreateOrderRequest;
 import com.xinguang.tubobo.merchant.web.response.CreateOrderResponse;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

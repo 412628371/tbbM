@@ -25,7 +25,7 @@
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToAdminService" timeout="3000"/>
 
 	<!-- 和本地bean一样实现服务 -->
-	<bean id="merchantToTaskCenterService" class="com.xinguang.tubobo.impl.merchant.service.MerchantToTaskCenterServiceImpl" />
-	<bean id="merchantToAdminService" class="com.xinguang.tubobo.impl.merchant.service.MerchantToAdminServiceImpl" />
+	<bean id="merchantToTaskCenterService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToTaskCenterServiceImpl" />
+	<bean id="merchantToAdminService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToAdminServiceImpl" />
 
 </beans>

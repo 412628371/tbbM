@@ -1,11 +1,9 @@
 package com.xinguang.tubobo.impl.merchant.mq;
 
 import com.rabbitmq.client.Channel;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantToTaskCenterServiceImpl;
+import com.xinguang.tubobo.impl.merchant.manager.MerchantToTaskCenterServiceImpl;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
-import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.util.BeanBytesConvertionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
