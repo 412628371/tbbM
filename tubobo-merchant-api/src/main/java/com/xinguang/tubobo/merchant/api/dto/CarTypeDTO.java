@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class CarTypeDTO implements Serializable {
     private String iconUrl;
-    private String carType;//小型面包：small-minibus;中型面包
+    private String carType;//小型面包：small-minibus;中型面包: medium-minibus;小型厢货：small-van;中型厢货：medium-van
     private String name;
     private Double startPrice;
     private Double startDistance;

@@ -3,14 +3,14 @@ package com.xinguang.tubobo.merchant.api.enums;
 /**
  * Created by Administrator on 2017/5/16.
  */
-public enum  EnumInentifyType {
-    PERSON("个人", "PERSON"),
+public enum EnumIdentifyType {
+    CONSIGNOR("货主", "CONSIGNOR"),
     MERCHANT("商家", "MERCHANT");
 
     private String name;
     private String value;
 
-    EnumInentifyType(String name, String value){
+    EnumIdentifyType(String name, String value){
         this.name = name;
         this.value = value;
     }
