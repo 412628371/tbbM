@@ -1,11 +1,11 @@
-package com.xinguang.tubobo.merchant.web.request;
+package com.xinguang.tubobo.merchant.web.request.order;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Created by Administrator on 2017/4/14.
+ * Created by Administrator on 2017/4/17.
  */
-public class ReqOrderDetail {
+public class ReqOrderRiderLocation {
     @NotBlank(message = "订单编号不能为空")
     private String orderNo;
 
@@ -19,7 +19,7 @@ public class ReqOrderDetail {
 
     @Override
     public String toString() {
-        return "ReqOrderDetail{" +
+        return "ReqOrderRiderLocation{" +
                 "orderNo='" + orderNo + '\'' +
                 '}';
     }

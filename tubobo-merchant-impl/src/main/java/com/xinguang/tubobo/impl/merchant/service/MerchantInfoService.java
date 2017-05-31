@@ -5,16 +5,12 @@
  */
 package com.xinguang.tubobo.impl.merchant.service;
 
-import com.hzmux.hzcms.common.persistence.Page;
-import com.hzmux.hzcms.common.persistence.Parameter;
-import com.hzmux.hzcms.common.service.BaseService;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
-import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantInfoDao;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
@@ -22,11 +18,11 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,14 +36,7 @@ public class MerchantInfoService extends BaseService {
 
 	@Cacheable(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	public MerchantInfoEntity findByUserId(String userId){
-		if (StringUtils.isBlank(userId)) return null;
-		String sqlString = "select * from tubobo_merchant_info where del_flag = '0' and user_id = :p1 ";
-		List<MerchantInfoEntity> list = merchantInfoDao.findBySql(sqlString, new Parameter(userId), MerchantInfoEntity.class);
-		if (list != null && list.size() > 0){
-			return list.get(0);
-		}else {
-			return null;
-		}
+		return merchantInfoDao.findByUserId(userId);
 	}
 
 	/**
@@ -84,15 +73,24 @@ public class MerchantInfoService extends BaseService {
 	 */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
-	public int merchantStatusVerify(String userId,String merchantStatus,String updateBy) {
+	public int merchantStatusVerify(String userId,String status,String updateBy) {
+		MerchantInfoEntity entity = merchantInfoDao.findByUserId(userId);
+		if (entity == null)
+			return 0;
 		int result;
-		if (EnumAuthentication.SUCCESS.getValue().equals(merchantStatus)){
-			String sqlString = "update tubobo_merchant_info set merchant_status = :p1, verify_date = :p2, update_by = :p3 where user_id = :p4 and del_flag = '0' ";
-			result = merchantInfoDao.updateBySql(sqlString, new Parameter(merchantStatus,new Date(),updateBy,userId));
-		} else {
-			String sqlString = "update tubobo_merchant_info set merchant_status = :p1, update_date = :p2, update_by = :p3 where user_id = :p4 and del_flag = '0' ";
-			 result = merchantInfoDao.updateBySql(sqlString, new Parameter(merchantStatus,new Date(),updateBy,userId));
+		String merchantStatus = entity.getMerchantStatus();
+		String consignorStatus = entity.getConsignorStatus();
+		if (EnumIdentifyType.CONSIGNOR.getValue().equals(entity.getIdentifyType())){
+			consignorStatus = status;
+		}else {
+			merchantStatus = status;
+			//认证商家时，失败情况下，货主状态不变。成功、冻结时，货主状态也变为成功、冻结。
+			if (!EnumAuthentication.FAIL.getValue().equals(status)){
+				consignorStatus = status;
+			}
 		}
+//		String sqlString = "update tubobo_merchant_info set merchant_status = :p1, update_date = :p2, update_by = :p3 where user_id = :p4 and del_flag = '0' ";
+		result = merchantInfoDao.updateVerifyStatus(merchantStatus,consignorStatus,updateBy,userId);
 		merchantInfoDao.getSession().clear();
 		return result;
 	}

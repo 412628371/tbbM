@@ -10,7 +10,7 @@ import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
-import com.xinguang.tubobo.merchant.web.request.CreateOrderRequest;
+import com.xinguang.tubobo.merchant.web.request.order.CreateOrderRequest;
 import com.xinguang.tubobo.merchant.web.response.CreateOrderResponse;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;

@@ -7,7 +7,7 @@ import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
-import com.xinguang.tubobo.merchant.web.request.ReqOrderList;
+import com.xinguang.tubobo.merchant.web.request.order.ReqOrderList;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

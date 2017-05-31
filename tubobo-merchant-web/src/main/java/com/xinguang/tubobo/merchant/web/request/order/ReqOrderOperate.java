@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web.request;
+package com.xinguang.tubobo.merchant.web.request.order;
 
 import org.hibernate.validator.constraints.NotBlank;
 

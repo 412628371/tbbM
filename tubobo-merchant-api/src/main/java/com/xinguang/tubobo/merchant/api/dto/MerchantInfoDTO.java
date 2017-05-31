@@ -34,6 +34,9 @@ public class MerchantInfoDTO implements Serializable{
 	private String shopImageUrl;
 	private Boolean enablePwdFree;
 
+	private String identifyType;
+	private String consignorStatus;
+
 	public String getUserId() {
 		return userId;
 	}
@@ -202,6 +205,22 @@ public class MerchantInfoDTO implements Serializable{
 		this.enablePwdFree = enablePwdFree;
 	}
 
+	public String getIdentifyType() {
+		return identifyType;
+	}
+
+	public void setIdentifyType(String identifyType) {
+		this.identifyType = identifyType;
+	}
+
+	public String getConsignorStatus() {
+		return consignorStatus;
+	}
+
+	public void setConsignorStatus(String consignorStatus) {
+		this.consignorStatus = consignorStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "MerchantInfoDTO{" +
@@ -226,6 +245,8 @@ public class MerchantInfoDTO implements Serializable{
 				", verifyDate=" + verifyDate +
 				", shopImageUrl='" + shopImageUrl + '\'' +
 				", enablePwdFree=" + enablePwdFree +
+				", identifyType='" + identifyType + '\'' +
+				", consignorStatus='" + consignorStatus + '\'' +
 				'}';
 	}
 }

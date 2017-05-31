@@ -180,6 +180,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     public Page<MerchantOrderEntity> findMerchantOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
         Parameter parameter = new Parameter();
         StringBuffer sb = new StringBuffer();
+        //TODO 优化 select *
         sb.append("select * from tubobo_merchant_order where del_flag = '0' ");
         if (StringUtils.isNotBlank(entity.getUserId())){
             sb.append("and user_id = :user_id  ");
