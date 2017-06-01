@@ -1,7 +1,5 @@
 /**
- * Copyright &copy; 2012-2013 <a href="http://www.hzmux.com">hzmux</a> All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * 订单实体类;
  */
 package com.xinguang.tubobo.impl.merchant.entity;
 
@@ -28,7 +26,6 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String userId;//商家ID
 	private String orderNo;//订单No
 	private String orderStatus;//订单状态
-	private String orderType;
 	private String orderRemark;
 
 	private Double payAmount;//支付总金额
@@ -78,6 +75,8 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String riderId;
 	private String riderName;
 	private String riderPhone;
+
+	private String orderType;//订单类型，大件或小件
 
 	private Boolean ratedFlag;
 	public String getReceiverAddressRoomNo() {
@@ -477,4 +476,6 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	public void setRatedFlag(Boolean ratedFlag) {
 		this.ratedFlag = ratedFlag;
 	}
+
+
 }

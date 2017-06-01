@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
- * Created by shade on 2017/4/6.
+ * disconf配置.
  */
 @Configuration
 @Scope("singleton")
@@ -20,6 +20,8 @@ public class Config {
     private Double dispatchRadiusKiloMiles;//派单半径,km
     private Integer taskGrabExpiredMilSeconds;//过期毫秒数
     private Integer payExpiredMilSeconds;//过期毫秒数
+    private Integer consignorPayExpiredMilliSeconds;//货主支付超时过期毫秒数
+    private Integer consignorTaskExpiredMilliSeconds;//货主接单超时过期毫秒数
     private Integer maxDeliveryMills;
     private Long aliPushAppKey;
     private String noticeGrabedTemplate;
@@ -31,10 +33,9 @@ public class Config {
 
     private String beginWorkTime;
     private String endWorkTime;
+    private String consignorBeginWorkTime;
+    private String consignorEndWorkTime;
 
-//    private Double initPrice;
-//    private Double initDistanceByMiles;
-//    private Double pricePerKiloMiles;
 
     private Double nonConfidentialPaymentLimit;
 
@@ -48,6 +49,41 @@ public class Config {
 //    private String gdKey;
     private Integer autoRateDays;
     private String transportType;
+
+    @DisconfFileItem(name = "consignorTaskExpiredMilliSeconds", associateField = "consignorTaskExpiredMilliSeconds")
+    public Integer getConsignorTaskExpiredMilliSeconds() {
+        return consignorTaskExpiredMilliSeconds;
+    }
+
+    public void setConsignorTaskExpiredMilliSeconds(Integer consignorTaskExpiredMilliSeconds) {
+        this.consignorTaskExpiredMilliSeconds = consignorTaskExpiredMilliSeconds;
+    }
+
+    @DisconfFileItem(name = "consignorPayExpiredMilliSeconds", associateField = "consignorPayExpiredMilliSeconds")
+    public Integer getConsignorPayExpiredMilliSeconds() {
+        return consignorPayExpiredMilliSeconds;
+    }
+
+    public void setConsignorPayExpiredMilliSeconds(Integer consignorPayExpiredMilliSeconds) {
+        this.consignorPayExpiredMilliSeconds = consignorPayExpiredMilliSeconds;
+    }
+
+    @DisconfFileItem(name = "consignorBeginWorkTime", associateField = "consignorBeginWorkTime")
+    public String getConsignorBeginWorkTime() {
+        return consignorBeginWorkTime;
+    }
+
+    public void setConsignorBeginWorkTime(String consignorBeginWorkTime) {
+        this.consignorBeginWorkTime = consignorBeginWorkTime;
+    }
+    @DisconfFileItem(name = "consignorEndWorkTime", associateField = "consignorEndWorkTime")
+    public String getConsignorEndWorkTime() {
+        return consignorEndWorkTime;
+    }
+
+    public void setConsignorEndWorkTime(String consignorEndWorkTime) {
+        this.consignorEndWorkTime = consignorEndWorkTime;
+    }
 
     @DisconfFileItem(name = "transportType", associateField = "transportType")
     public String getTransportType() {
@@ -67,14 +103,6 @@ public class Config {
         this.autoRateDays = autoRateDays;
     }
 
-//    @DisconfFileItem(name = "gdKey", associateField = "gdKey")
-//    public String getGdKey() {
-//        return gdKey;
-//    }
-//
-//    public void setGdKey(String gdKey) {
-//        this.gdKey = gdKey;
-//    }
 
     @DisconfFileItem(name = "distributionLimitationExpression", associateField = "distributionLimitationExpression")
     public String getDistributionLimitationExpression() {
@@ -138,20 +166,6 @@ public class Config {
         this.nonConfidentialPaymentLimit = nonConfidentialPaymentLimit;
     }
 
-//    @DisconfFileItem(name = "initPrice", associateField = "initPrice")
-//    public Double getInitPrice() {
-//        return initPrice;
-//    }
-//
-//    @DisconfFileItem(name = "initDistanceByMiles", associateField = "initDistanceByMiles")
-//    public Double getInitDistanceByMiles() {
-//        return initDistanceByMiles;
-//    }
-//
-//    @DisconfFileItem(name = "pricePerKiloMiles", associateField = "pricePerKiloMiles")
-//    public Double getPricePerKiloMiles() {
-//        return pricePerKiloMiles;
-//    }
 
     @DisconfFileItem(name = "beginWorkTime", associateField = "beginWorkTime")
     public String getBeginWorkTime() {

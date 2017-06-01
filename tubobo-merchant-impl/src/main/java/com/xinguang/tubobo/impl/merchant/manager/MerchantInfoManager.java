@@ -153,7 +153,7 @@ public class MerchantInfoManager {
         }
         TbbAccountResponse<AccountInfo> response = tbbAccountService.createAccount(userId,password,request);
         if (response != null && response.isSucceeded() && null != response.getData()){
-            logger.info("create account info SUCCESS. request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.getData().toString());
+            logger.info("create shop info SUCCESS. request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.getData().toString());
             Long accountId = response.getData().getId();
             entity.setAccountId(accountId);
             entity.setIdentifyType(identifyType);
@@ -166,7 +166,7 @@ public class MerchantInfoManager {
 
         }else{
             if (null != null){
-                logger.error("create account info FAIL. errorCode:{}, errorMsg:{}, request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.toString());
+                logger.error("create shop info FAIL. errorCode:{}, errorMsg:{}, request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.toString());
             }
             throw new MerchantClientException(EnumRespCode.ACCOUNT_CREATE_FAIL) ;
         }

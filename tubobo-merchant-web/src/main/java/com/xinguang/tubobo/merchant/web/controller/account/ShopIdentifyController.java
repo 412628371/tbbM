@@ -1,25 +1,12 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
-import com.hzmux.hzcms.common.utils.AliOss;
-import com.hzmux.hzcms.common.utils.StringUtils;
-import com.xinguang.tubobo.account.api.TbbAccountService;
-import com.xinguang.tubobo.account.api.request.AccountInfoRequest;
-import com.xinguang.tubobo.account.api.response.AccountInfo;
-import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
-import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantInfoManager;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
-import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
-import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
-import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
-import com.xinguang.tubobo.merchant.web.request.ShopIdentifyRequest;
+import com.xinguang.tubobo.merchant.web.request.shop.ShopIdentifyRequest;
 import com.xinguang.tubobo.merchant.web.response.MerchantInfoResponse;
-import com.xinguang.tubobo.merchant.web.response.RespShopIdentify;
-import com.xinguang.tubobo.rider.api.RiderToAdminServiceInterface;
-import com.xinguang.tubobo.rider.api.dto.RiderInfoDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,7 +54,7 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
 //            }
 //            TbbAccountResponse<AccountInfo> response = tbbAccountService.createAccount(userId,password,request);
 //            if (response != null && response.isSucceeded() && null != response.getData()){
-//                logger.info("create account info SUCCESS. request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.getData().toString());
+//                logger.info("create shop info SUCCESS. request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.getData().toString());
 //                Long accountId = response.getData().getId();
 //                entity.setAccountId(accountId);
 //                merchantInfoService.merchantApply(userId,entity);
@@ -81,7 +68,7 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
 //                return resp;
 //            }else{
 //                if (null != null){
-//                    logger.error("create account info FAIL. errorCode:{}, errorMsg:{}, request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.toString());
+//                    logger.error("create shop info FAIL. errorCode:{}, errorMsg:{}, request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.toString());
 //                }
 //                throw new MerchantClientException(EnumRespCode.ACCOUNT_CREATE_FAIL) ;
 //            }

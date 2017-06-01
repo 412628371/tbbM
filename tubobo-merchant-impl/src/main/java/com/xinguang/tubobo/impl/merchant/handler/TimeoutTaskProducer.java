@@ -23,11 +23,9 @@ public class TimeoutTaskProducer {
     @Qualifier(value = "delayMsgTemplate")
     private RabbitTemplate delayMsgTemplate;
 
-    @Resource
-    Config config;
-    public void sendMessage(String msg) {
+    public void sendMessage(String msg,int expiredMillSeconds) {
         MessageProperties properties = new MessageProperties();
-        properties.setExpiration(String.valueOf(config.getPayExpiredMilSeconds()));
+        properties.setExpiration(String.valueOf(expiredMillSeconds));
         Message message = new Message(msg.getBytes(),properties);
         logger.info("订单加入支付超时mq, orderNo:{}",msg);
         delayMsgTemplate.convertAndSend("merchant_payExpired_delay_exchange","merchant_payExpired_routeKey_delay",message);

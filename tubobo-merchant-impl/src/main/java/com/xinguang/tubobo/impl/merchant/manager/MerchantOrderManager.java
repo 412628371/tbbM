@@ -11,6 +11,7 @@ import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -22,10 +23,12 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -34,9 +37,6 @@ import java.util.List;
 public class MerchantOrderManager extends BaseService {
 	@Autowired
 	private OrderService orderService;
-
-//	@Autowired
-//	private MerchantInfoService merchantInfoService;
 
 	@Autowired
 	private TimeoutTaskProducer timeoutTaskProducer;
@@ -49,13 +49,9 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	MerchantPushService pushService;
 
+	@Resource
+	Config config;
 
-	public MerchantOrderEntity findByOrderNo(String orderNo){
-		return orderService.findByOrderNo(orderNo);
-	}
-	public MerchantOrderEntity findByOrderNoAndStatus(String orderNo,String orderStatus){
-		return orderService.findByOrderNoAndStatus(orderNo,orderStatus);
-	}
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
 	}
@@ -64,9 +60,13 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
 		String orderNo = orderService.order(userId,entity);
-		logger.info("创建订单, userId:{},orderNo:{}",userId,orderNo);
-		//将订单加入支付超时队列
-		timeoutTaskProducer.sendMessage(orderNo);
+		logger.info("创建订单, userId:{},orderNo:{}，orderType:{}",userId,orderNo,entity.getOrderType());
+		//将订单加入支付超时队列 TODO 订单类型的超时时间
+		int expiredMillSeconds = config.getPayExpiredMilSeconds();
+		if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
+			expiredMillSeconds = config.getConsignorPayExpiredMilliSeconds();
+		}
+		timeoutTaskProducer.sendMessage(orderNo,expiredMillSeconds);
 		return orderNo;
 	}
 
@@ -74,6 +74,11 @@ public class MerchantOrderManager extends BaseService {
 	 * 商家付款
 	 */
 	public void merchantPay(MerchantOrderDTO merchantOrderDTO,String merchantId,String orderNo,long payId) throws MerchantClientException {
+		int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
+		if (EnumOrderType.BIGORDER.getValue().equals(merchantOrderDTO.getOrderType())){
+			grabExpiredMilliSeconds = config.getConsignorTaskExpiredMilliSeconds();
+		}
+		merchantOrderDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
 		Date payDate = new Date();
 		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate);
 		if (count != 1){

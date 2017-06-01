@@ -6,13 +6,11 @@ import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
-import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
-import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
-import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import com.xinguang.tubobo.merchant.api.enums.*;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
+import com.xinguang.tubobo.merchant.web.common.AddressInfoToOrderBeanHelper;
 import com.xinguang.tubobo.merchant.web.request.order.CreateOrderRequest;
 import com.xinguang.tubobo.merchant.web.response.CreateOrderResponse;
-import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import org.springframework.beans.BeanUtils;
@@ -50,14 +48,14 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
         if (!DateUtils.isBeforeEndTimeInOneDay(config.getEndWorkTime())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_LATE);
         }
-        MerchantOrderEntity entity = translateRequestToEntity(userId,req);
+        MerchantOrderEntity entity = translateRequestToEntity(userId,req,infoEntity);
         String orderNo = merchantOrderManager.order(userId,entity);
         CreateOrderResponse response = new CreateOrderResponse();
         response.setOrderNo(orderNo);
         return response;
     }
 
-    private MerchantOrderEntity translateRequestToEntity(String userId,CreateOrderRequest request){
+    private MerchantOrderEntity translateRequestToEntity(String userId,CreateOrderRequest request,MerchantInfoEntity infoEntity){
         MerchantOrderEntity entity = new MerchantOrderEntity();
         BeanUtils.copyProperties(request,entity);
         entity.setUserId(userId);
@@ -68,6 +66,8 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
         entity.setDispatchRadius(config.getDispatchRadiusKiloMiles());
         entity.setOrderRemark(ConvertUtil.handleNullString(request.getOrderRemarks()));
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
+        entity.setOrderType(EnumOrderType.SMALLORDER.getValue());
+        AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
         return entity;
     }
 }

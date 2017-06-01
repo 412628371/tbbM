@@ -55,24 +55,11 @@ public class OrderService extends BaseService {
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#userId+'_*'")
     @Transactional(readOnly = false)
     public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
-        MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
         double distance = deliveryFeeService.sumDeliveryDistance(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude());
+        entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode();
         entity.setOrderNo(orderNo);
-        entity.setSenderName(ConvertUtil.handleNullString(infoEntity.getMerchantName()));
-        entity.setSenderPhone(ConvertUtil.handleNullString(infoEntity.getPhone()));
-        if (null != infoEntity.getLongitude()){
-            entity.setSenderLongitude(infoEntity.getLongitude());
-        }
-        if (null != infoEntity.getLatitude()){
-            entity.setSenderLatitude(infoEntity.getLatitude());
-        }
-        entity.setDeliveryDistance(distance);
-        entity.setSenderAddressProvince(ConvertUtil.handleNullString(infoEntity.getAddressProvince()));
-        entity.setSenderAddressCity(ConvertUtil.handleNullString(infoEntity.getAddressCity()));
-        entity.setSenderAddressDistrict(ConvertUtil.handleNullString(infoEntity.getAddressDistrict()));
-        entity.setSenderAddressStreet(ConvertUtil.handleNullString(infoEntity.getAddressStreet()));
-        entity.setSenderAddressDetail(ConvertUtil.handleNullString(infoEntity.getAddressDetail()));
+
         if (entity.getDeliveryFee() != null){
             if (entity.getTipFee() == null){
                 entity.setPayAmount(entity.getDeliveryFee());

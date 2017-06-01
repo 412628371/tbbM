@@ -5,6 +5,8 @@
  */
 package com.xinguang.tubobo.impl.merchant.service;
 
+import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
@@ -18,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,8 +70,15 @@ public class MerchantInfoService extends BaseService {
 	}
 
 	/**
-	 * 审核商家状态
-	 */
+	 * /**
+	 * 审核状态,包括商家状态和货主状态
+	 * 如果认证类型是货主，则只更新货主状态为status；
+	 * 如果认证类型是商家，status为审核成功或冻结，则商家状态和货主状态均为成功或冻结，如果status为审核失败，则只更新商家状态为失败
+	 * @param userId
+	 * @param status
+	 * @param updateBy
+     * @return
+     */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int merchantStatusVerify(String userId,String status,String updateBy) {
@@ -144,7 +152,7 @@ public class MerchantInfoService extends BaseService {
 	}
 
 	/**
-	 * 更新头像
+	 * 设置免密支付
 	 */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
@@ -152,6 +160,11 @@ public class MerchantInfoService extends BaseService {
 		return merchantInfoDao.freePayPwdSet(userId,enable);
 	}
 
+	/**
+	 *修改支付密码是否设置标记位
+	 * @param userId
+	 * @return
+     */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int modifyPwdSetFlag(String userId) {
