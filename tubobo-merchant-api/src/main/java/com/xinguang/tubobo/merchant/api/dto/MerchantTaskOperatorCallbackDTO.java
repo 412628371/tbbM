@@ -19,10 +19,9 @@ public class MerchantTaskOperatorCallbackDTO implements Serializable {
     }
     public enum EnumTaskOperatorType {
 
-        PICK("已取货", "INIT"),
-        EXPIRED("过期未抢单", "APPLY"),
-        FINISH("送达", "FROZEN")
-        ;
+        PICK("已取货", "PICK"),
+        EXPIRED("过期未接单", "EXPIRED"),
+        FINISH("送达", "FINISH");
 
         EnumTaskOperatorType(String name, String value){
             this.name = name;

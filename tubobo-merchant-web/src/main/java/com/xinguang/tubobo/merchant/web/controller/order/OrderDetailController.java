@@ -9,8 +9,8 @@ import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.order.ReqOrderDetail;
-import com.xinguang.tubobo.merchant.web.response.RespOrderDetail;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.merchant.web.response.order.RespOrderDetail;
 import com.xinguang.tubobo.rate.api.TbbRateResponse;
 import com.xinguang.tubobo.rate.api.TbbRateService;
 import com.xinguang.tubobo.rate.api.resp.RateContent;
@@ -23,7 +23,6 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Map;
 
-import static java.nio.file.Paths.get;
 
 /**
  * Created by Administrator on 2017/4/14.

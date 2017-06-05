@@ -12,8 +12,8 @@ import com.xinguang.tubobo.merchant.api.enums.*;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.common.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.AddressInfoToOrderBeanHelper;
-import com.xinguang.tubobo.merchant.web.request.order.v2.ReqOrderCreate;
-import com.xinguang.tubobo.merchant.web.response.CreateOrderResponse;
+import com.xinguang.tubobo.merchant.web.request.order.v2.ReqOrderCreateV2;
+import com.xinguang.tubobo.merchant.web.response.order.CreateOrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +25,7 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping("/2.0/order/create")
-public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCreate,CreateOrderResponse> {
+public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCreateV2,CreateOrderResponse> {
     @Autowired
     MerchantOrderManager merchantOrderManager;
     @Autowired
@@ -33,7 +33,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
     @Autowired
     Config config;
     @Override
-    protected CreateOrderResponse doService(String userId, ReqOrderCreate req) throws MerchantClientException {
+    protected CreateOrderResponse doService(String userId, ReqOrderCreateV2 req) throws MerchantClientException {
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
         if (null == infoEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);

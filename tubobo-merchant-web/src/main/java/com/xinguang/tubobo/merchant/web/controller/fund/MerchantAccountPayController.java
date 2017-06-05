@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
+import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
@@ -21,7 +22,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountPay;
-import com.xinguang.tubobo.merchant.web.response.RespOrderPay;
+import com.xinguang.tubobo.merchant.web.response.order.RespOrderPay;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,7 +91,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             redisOp.resetPwdErrorTimes(userId);
             long payId = response.getData().getId();
             orderEntity.setPayId(payId);
-            MerchantOrderDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
+            TaskCreateDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),amount);
@@ -125,8 +126,8 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
 
 
 
-    private MerchantOrderDTO buildMerchantOrderDTO(MerchantOrderEntity entity,MerchantInfoEntity infoEntity){
-        MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
+    private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
+        TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
         BeanUtils.copyProperties(entity,merchantOrderDTO);
         if (entity.getPayAmount() != null){
             merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());

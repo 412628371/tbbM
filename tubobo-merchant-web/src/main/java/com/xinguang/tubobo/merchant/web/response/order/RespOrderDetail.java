@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web.response;
+package com.xinguang.tubobo.merchant.web.response.order;
 
 import java.io.Serializable;
 import java.util.Date;

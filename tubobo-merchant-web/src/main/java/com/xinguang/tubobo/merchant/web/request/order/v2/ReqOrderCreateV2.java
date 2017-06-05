@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2017/5/31.
  */
-public class ReqOrderCreate implements Serializable {
+public class ReqOrderCreateV2 implements Serializable {
     private AddressInfo consignor;
     private AddressInfo receiver;
     @Size(max = 255,message = "备注长度过大")
@@ -89,7 +89,7 @@ public class ReqOrderCreate implements Serializable {
 
     @Override
     public String toString() {
-        return "ReqOrderCreate{" +
+        return "ReqOrderCreateV2{" +
                 "consignor=" + consignor.toString() +
                 ", receiver=" + receiver.toString() +
                 ", orderRemarks='" + orderRemarks + '\'' +
