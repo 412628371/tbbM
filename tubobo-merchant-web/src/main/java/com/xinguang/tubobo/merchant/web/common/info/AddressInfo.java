@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web.common;
+package com.xinguang.tubobo.merchant.web.common.info;
 
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import org.hibernate.validator.constraints.Range;

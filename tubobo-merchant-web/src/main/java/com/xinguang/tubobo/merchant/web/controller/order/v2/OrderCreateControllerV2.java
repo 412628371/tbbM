@@ -10,7 +10,7 @@ import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.*;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
-import com.xinguang.tubobo.merchant.web.common.AddressInfo;
+import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.AddressInfoToOrderBeanHelper;
 import com.xinguang.tubobo.merchant.web.request.order.v2.ReqOrderCreateV2;
 import com.xinguang.tubobo.merchant.web.response.order.CreateOrderResponse;
@@ -56,6 +56,8 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         AddressInfo receiverAddressInfo = req.getReceiver();
         //把收货人地址信息设置到实体
         AddressInfoToOrderBeanHelper.putReceiverAddressInfo(entity,receiverAddressInfo);
+        entity.setDeliveryFee(req.getDeliveryFee());
+        entity.setTipFee(req.getTipFee());
         entity.setUserId(userId);
         entity.setSenderId(userId);
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
@@ -88,5 +90,10 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         if (!DateUtils.isBeforeEndTimeInOneDay(endWorkTime)){
             throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_LATE);
         }
+    }
+
+    @Override
+    protected boolean needIdentify() {
+        return true;
     }
 }

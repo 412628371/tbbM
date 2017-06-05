@@ -75,7 +75,8 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String riderId;
 	private String riderName;
 	private String riderPhone;
-
+	private String riderCarNo;
+	private String riderCarType;
 	private String orderType;//订单类型，大件或小件
 
 	private Boolean ratedFlag;
@@ -477,5 +478,19 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 		this.ratedFlag = ratedFlag;
 	}
 
+	public String getRiderCarNo() {
+		return riderCarNo;
+	}
 
+	public void setRiderCarNo(String riderCarNo) {
+		this.riderCarNo = riderCarNo;
+	}
+
+	public String getRiderCarType() {
+		return riderCarType;
+	}
+
+	public void setRiderCarType(String riderCarType) {
+		this.riderCarType = riderCarType;
+	}
 }

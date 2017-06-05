@@ -1,9 +1,11 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.xinguang.taskcenter.api.TaskDispatchService;
+import com.xinguang.taskcenter.api.TbbTaskResponse;
+import com.xinguang.taskcenter.api.request.GeoLocation;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
-import com.xinguang.tubobo.merchant.api.dto.GeoLocation;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.web.request.order.ReqOrderRiderLocation;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Created by Administrator on 2017/4/17.
+ * 获取骑手位置controller.
  */
 @Controller
 @RequestMapping("/order/riderLocation")
@@ -21,7 +23,7 @@ public class OrderGetRiderLocationController extends MerchantBaseController<ReqO
     @Autowired
     private MerchantOrderManager merchantOrderManager;
     @Autowired
-    private TaskCenterToMerchantServiceInterface taskCenterToMerchantServiceInterface;
+    private TaskDispatchService taskDispatchService;
     @Override
     protected RespRiderLocation doService(String userId, ReqOrderRiderLocation req) throws MerchantClientException {
         MerchantOrderEntity entity = merchantOrderManager.findByMerchantIdAndOrderNo(userId,req.getOrderNo());
@@ -29,11 +31,13 @@ public class OrderGetRiderLocationController extends MerchantBaseController<ReqO
             logger.error("获取骑手位置，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
-        GeoLocation location =taskCenterToMerchantServiceInterface.getRiderLocation(entity.getRiderId());
-        if (null == location){
+
+        TbbTaskResponse<GeoLocation> response =taskDispatchService.getRiderLocation(entity.getRiderId());
+        if (!response.isSucceeded() || response.getData()==null){
             logger.error("获取骑手位置，位置数据不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_RIDER_LOCATION_NOT_FOUND);
         }
+        GeoLocation location = response.getData();
         logger.info("查询骑手位置信息：userId:{},orderNo:{},geoLocation:{}",userId,req.getOrderNo(),location.toString());
         RespRiderLocation respRiderLocation = new RespRiderLocation();
         respRiderLocation.setLatitude(location.getLatitude());

@@ -1,6 +1,6 @@
 package com.xinguang.tubobo.merchant.web.request.order.v2;
 
-import com.xinguang.tubobo.merchant.web.common.AddressInfo;
+import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
- * Created by Administrator on 2017/5/31.
+ * 创建订单请求v2.0.
  */
 public class ReqOrderCreateV2 implements Serializable {
     private AddressInfo consignor;

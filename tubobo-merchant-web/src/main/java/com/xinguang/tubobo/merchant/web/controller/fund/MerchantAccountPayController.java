@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
+import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayRequest;
@@ -12,6 +13,7 @@ import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -129,6 +131,11 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
     private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
         TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
         BeanUtils.copyProperties(entity,merchantOrderDTO);
+        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
+            merchantOrderDTO.setTaskType(TaskTypeEnum.M_BIG_ORDER);
+        }else if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
+            merchantOrderDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
+        }
         if (entity.getPayAmount() != null){
             merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
         }

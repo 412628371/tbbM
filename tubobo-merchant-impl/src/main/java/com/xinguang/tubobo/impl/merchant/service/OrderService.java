@@ -55,9 +55,10 @@ public class OrderService extends BaseService {
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#userId+'_*'")
     @Transactional(readOnly = false)
     public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
+        //TODO 根据type计算距离和运费
         double distance = deliveryFeeService.sumDeliveryDistance(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude());
         entity.setDeliveryDistance(distance);
-        String orderNo = codeGenerator.nextCustomerCode();
+        String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         entity.setOrderNo(orderNo);
 
         if (entity.getDeliveryFee() != null){

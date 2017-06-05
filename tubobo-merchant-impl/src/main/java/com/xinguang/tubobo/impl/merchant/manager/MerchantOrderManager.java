@@ -64,7 +64,7 @@ public class MerchantOrderManager extends BaseService {
 	public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
 		String orderNo = orderService.order(userId,entity);
 		logger.info("创建订单, userId:{},orderNo:{}，orderType:{}",userId,orderNo,entity.getOrderType());
-		//将订单加入支付超时队列 TODO 订单类型的超时时间
+		//将订单加入支付超时队列 商家订单和车配订单超时时间不同
 		int expiredMillSeconds = config.getPayExpiredMilSeconds();
 		if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
 			expiredMillSeconds = config.getConsignorPayExpiredMilliSeconds();
@@ -78,10 +78,12 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public void merchantPay(TaskCreateDTO taskCreateDTO, String merchantId, String orderNo, long payId) throws MerchantClientException {
 		int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
-		taskCreateDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
-		if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
-			grabExpiredMilliSeconds = config.getConsignorTaskExpiredMilliSeconds();
+
+		if (TaskTypeEnum.M_SMALL_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
+			taskCreateDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
+		}else {
 			taskCreateDTO.setTaskType(TaskTypeEnum.M_BIG_ORDER);
+			grabExpiredMilliSeconds = config.getConsignorTaskExpiredMilliSeconds();
 		}
 		taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
 		Date payDate = new Date();
