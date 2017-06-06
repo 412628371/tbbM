@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
@@ -9,6 +10,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,7 +33,7 @@ public class OrderService extends BaseService {
     @Autowired
     private DeliveryFeeService deliveryFeeService;
     @Autowired
-    private MerchantInfoService merchantInfoService;
+    RoutePlanning routePlanning;
 
 //    public MerchantOrderEntity get(String id) {
 //        return merchantOrderDao.get(id);
@@ -55,8 +57,13 @@ public class OrderService extends BaseService {
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#userId+'_*'")
     @Transactional(readOnly = false)
     public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
-        //TODO 根据type计算距离和运费
-        double distance = deliveryFeeService.sumDeliveryDistance(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude());
+        double distance ;
+        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
+            distance = deliveryFeeService.sumDeliveryDistanceChePei(entity.getSenderLongitude(),entity.getSenderLatitude(),
+                    entity.getReceiverLongitude(),entity.getReceiverLatitude());
+        }else {
+            distance = deliveryFeeService.sumDeliveryDistanceMerchant(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude());
+        }
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         entity.setOrderNo(orderNo);

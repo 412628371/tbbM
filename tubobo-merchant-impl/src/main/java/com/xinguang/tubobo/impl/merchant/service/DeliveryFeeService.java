@@ -67,7 +67,7 @@ public class DeliveryFeeService  {
     }
 
     public double sumDeliveryFeeByLocation(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
-        double distance = sumDeliveryDistance(userId,lat,lng);
+        double distance = sumDeliveryDistanceMerchant(userId,lat,lng);
         return sumDeliveryFeeByDistance(distance);
     }
     public double sumChepeiFee(String carType,double lng1,double lat1,double lng2,double lat2) throws MerchantClientException {
@@ -91,21 +91,23 @@ public class DeliveryFeeService  {
         fee+=overDistanceFee;
         return fee;
     }
-    public double sumDeliveryDistance(String userId,Double lat,Double lng) throws MerchantClientException {
+    public double sumDeliveryDistanceMerchant(String userId,Double lat,Double lng) throws MerchantClientException {
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (null == entity)
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         if (lat==null || lng == null){
             throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
         }
-        //TODO
         double distance = routePlanning.getDistanceWithWalkFirst(lng,lat,entity.getLongitude(),entity.getLatitude());
         if (distance > config.getMaxDeliveryMills()){
             throw new MerchantClientException(EnumRespCode.MERCHANT_DELIVERY_DISTANCE_TOO_FAR);
         }
         return distance;
     }
-
+    public double sumDeliveryDistanceChePei(Double lng1,Double lat1,Double lng2,Double lat2) throws MerchantClientException {
+        double distance = routePlanning.getDistanceWithWalkFirst(lng1,lat1,lng2,lat2);
+        return distance;
+    }
     /**
      * 计算配送时效
      * @param distance
