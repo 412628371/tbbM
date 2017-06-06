@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Range;
  */
 public class OrderDeliveryFeeRequest {
     private String orderType;
-    private String goodsType;
+    private String carType;
 
     @Range(min=0,max=180,message="经纬度必须在0度至180度之间")
     private Double receiverLatitude;
@@ -20,12 +20,12 @@ public class OrderDeliveryFeeRequest {
     @Range(min=0,max=180,message="经纬度必须在0度至180度之间")
     private Double senderLatitude;
 
-    public String getGoodsType() {
-        return goodsType;
+    public String getCarType() {
+        return carType;
     }
 
-    public void setGoodsType(String goodsType) {
-        this.goodsType = goodsType;
+    public void setCarType(String carType) {
+        this.carType = carType;
     }
 
     public Double getReceiverLatitude() {
@@ -72,7 +72,7 @@ public class OrderDeliveryFeeRequest {
     public String toString() {
         return "OrderDeliveryFeeRequest{" +
                 "orderType='" + orderType + '\'' +
-                ", goodsType='" + goodsType + '\'' +
+                ", carType='" + carType + '\'' +
                 ", receiverLatitude=" + receiverLatitude +
                 ", receiverLongitude=" + receiverLongitude +
                 ", senderLongitude=" + senderLongitude +
@@ -80,9 +80,4 @@ public class OrderDeliveryFeeRequest {
                 '}';
     }
 
-    public static void main(String[] args) {
-        OrderDeliveryFeeRequest request= new OrderDeliveryFeeRequest();
-        request.setReceiverLatitude(12345.0);
-        System.out.print(request.toString());
-    }
 }

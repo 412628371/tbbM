@@ -23,12 +23,13 @@ public class OrderDeliveryFeeController extends MerchantBaseController<OrderDeli
     protected OrderDeliveryFeeResponse doService(String userId, OrderDeliveryFeeRequest req) throws MerchantClientException {
         logger.info("计算配送费请求, userId:{}, OrderDeliveryFeeRequest:{}",userId,req.toString());
 
-        Double fee= 0.0;
+        Double fee;
         if (EnumOrderType.BIGORDER.getValue().equals(req.getOrderType())){
-            //TODO 计算大单的配送费
+            fee = deliveryFeeService.sumChepeiFee(req.getCarType(),req.getSenderLongitude(),
+                    req.getSenderLatitude(),req.getReceiverLongitude(),req.getReceiverLatitude());
         }else {
             fee = deliveryFeeService.sumDeliveryFeeByLocation(userId,req.getReceiverLatitude(),
-                    req.getReceiverLongitude(),req.getGoodsType());
+                    req.getReceiverLongitude(),null);
         }
         OrderDeliveryFeeResponse response = new OrderDeliveryFeeResponse();
         response.setDeliveryFee(fee);

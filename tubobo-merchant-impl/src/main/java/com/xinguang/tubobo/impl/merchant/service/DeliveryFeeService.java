@@ -1,7 +1,11 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
+import com.google.common.math.DoubleMath;
 import com.hzmux.hzcms.common.utils.LocationUtil;
 import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.api.AdminToMerchantService;
+import com.xinguang.tubobo.api.dto.CarTypeDTO;
+import com.xinguang.tubobo.api.enums.EnumCarType;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
@@ -32,6 +36,10 @@ public class DeliveryFeeService  {
 
     @Autowired
     RoutePlanning routePlanning;
+
+    @Autowired
+    AdminToMerchantService adminToMerchantService;
+
     public double sumDeliveryFeeByDistance(double distance) throws MerchantClientException {
         double distanceInKm = Math.ceil((distance/1000));
         double fee = config.getFirstLevelInitPrice();
@@ -61,7 +69,27 @@ public class DeliveryFeeService  {
     public double sumDeliveryFeeByLocation(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
         double distance = sumDeliveryDistance(userId,lat,lng);
         return sumDeliveryFeeByDistance(distance);
-
+    }
+    public double sumChepeiFee(String carType,double lng1,double lat1,double lng2,double lat2) throws MerchantClientException {
+        double distance = routePlanning.getDistanceWithCar(lng1,lat1,lng2,lat2);
+        Double distanceByKm = Math.ceil(distance/1000);
+        CarTypeDTO carTypeDTO ;
+        carTypeDTO =  adminToMerchantService.queryCarTypeInfo(carType);
+        if (carTypeDTO == null){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_CAR_TYPE_NOT_SUPPORT);
+        }
+        double startPrice = carTypeDTO.getStartPrice();
+        double beyondPrice = carTypeDTO.getBeyondPrice();
+        double startDistance = carTypeDTO.getStartDistance();
+        double fee = startPrice;
+        if (distanceByKm>startDistance){
+            distanceByKm-=startDistance;
+        }else {
+            return fee;
+        }
+        double overDistanceFee = distanceByKm*beyondPrice;
+        fee+=overDistanceFee;
+        return fee;
     }
     public double sumDeliveryDistance(String userId,Double lat,Double lng) throws MerchantClientException {
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
@@ -71,8 +99,7 @@ public class DeliveryFeeService  {
             throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
         }
         //TODO
-        double distance = routePlanning.getDistanceWithCar(lng,lat,entity.getLongitude(),entity.getLatitude());
-//        double distance = LocationUtil.getDistance(lat,lng,entity.getLatitude(),entity.getLongitude());
+        double distance = routePlanning.getDistanceWithWalkFirst(lng,lat,entity.getLongitude(),entity.getLatitude());
         if (distance > config.getMaxDeliveryMills()){
             throw new MerchantClientException(EnumRespCode.MERCHANT_DELIVERY_DISTANCE_TOO_FAR);
         }
