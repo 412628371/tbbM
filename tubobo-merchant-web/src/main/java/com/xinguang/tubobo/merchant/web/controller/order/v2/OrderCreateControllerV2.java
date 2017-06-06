@@ -42,7 +42,11 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         String orderType = req.getType();
         MerchantOrderEntity entity = new MerchantOrderEntity();
         if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
-            judgeOrderCondition(infoEntity.getConsignorStatus(),config.getConsignorBeginWorkTime(),config.getConsignorEndWorkTime());
+            String status = infoEntity.getMerchantStatus();
+            if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
+                status = infoEntity.getConsignorStatus();
+            }
+            judgeOrderCondition(status,config.getConsignorBeginWorkTime(),config.getConsignorEndWorkTime());
             AddressInfo senderAddressInfo = req.getConsignor();
             //大件订单，把发货人地址信息设置到实体
             AddressInfoToOrderBeanHelper.putSenderFromAddressInfo(entity,senderAddressInfo);
