@@ -1,6 +1,8 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.xinguang.tubobo.api.AdminToMerchantService;
+import com.xinguang.tubobo.api.dto.CarTypeDTO;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
@@ -32,6 +34,8 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
     MerchantInfoService merchantInfoService;
     @Autowired
     Config config;
+    @Autowired
+    AdminToMerchantService adminToMerchantService;
     @Override
     protected CreateOrderResponse doService(String userId, ReqOrderCreateV2 req) throws MerchantClientException {
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
@@ -50,6 +54,12 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             AddressInfo senderAddressInfo = req.getConsignor();
             //大件订单，把发货人地址信息设置到实体
             AddressInfoToOrderBeanHelper.putSenderFromAddressInfo(entity,senderAddressInfo);
+            CarTypeDTO carTypeDTO =  adminToMerchantService.queryCarTypeInfo(req.getCarType());
+            if (null == carTypeDTO){
+                throw new MerchantClientException(EnumRespCode.MERCHANT_CAR_TYPE_NOT_SUPPORT);
+            }
+            entity.setCarType(req.getCarType());
+            entity.setCarTypeName(carTypeDTO.getName());
         }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime());

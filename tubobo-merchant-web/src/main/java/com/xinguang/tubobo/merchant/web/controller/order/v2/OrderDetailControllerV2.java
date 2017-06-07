@@ -41,11 +41,11 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         CommentsInfo commentsInfo = new CommentsInfo(respOrderDetail.getRatedFlag());
         BeanUtils.copyProperties(respOrderDetail,commentsInfo);
 
-        Double latitude = null;
-        Double longitude = null;
         DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
-                entity.getRiderCarType(),latitude,longitude);
+                entity.getRiderCarType());
+        CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
         RespOrderDetailV2 resp = new RespOrderDetailV2();
+        resp.setCarInfo(carInfo);
         resp.setCommentsInfo(commentsInfo);
         resp.setConsignor(consignor);
         resp.setReceiver(receiver);

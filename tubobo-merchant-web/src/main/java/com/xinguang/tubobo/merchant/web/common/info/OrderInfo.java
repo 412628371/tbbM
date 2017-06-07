@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class OrderInfo implements Serializable {
     private String orderNo;//订单No
+    private String orderType;//订单类型
     private String orderStatus;//订单状态
     private String orderRemarks;
     private Date orderTime;//下单时间
@@ -21,6 +22,14 @@ public class OrderInfo implements Serializable {
 
     private Long grabRemainMillSeconds;
 
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
 
     public String getOrderNo() {
         return orderNo;

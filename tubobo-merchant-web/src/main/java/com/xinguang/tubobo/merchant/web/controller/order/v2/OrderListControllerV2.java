@@ -47,10 +47,10 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                 CommentsInfo commentsInfo = new CommentsInfo(entity.getRatedFlag());
                 BeanUtils.copyProperties(entity,commentsInfo);
 
-                Double latitude = null;
-                Double longitude = null;
                 DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
-                        entity.getRiderCarType(),latitude,longitude);
+                        entity.getRiderCarType());
+                CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
+                detailVo.setCarInfo(carInfo);
                 detailVo.setOrderInfo(orderInfo);
                 detailVo.setPayInfo(payInfo);
                 detailVo.setDriverInfo(driverInfo);

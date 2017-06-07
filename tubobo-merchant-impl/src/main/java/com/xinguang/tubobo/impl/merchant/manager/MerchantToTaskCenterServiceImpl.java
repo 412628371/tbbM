@@ -46,7 +46,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         }
         logger.info("处理骑手接单：orderNo:{}",orderNo);
         boolean result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
-                orderNo,dto.getGrabTime(),dto.getExpectFinishTime()) > 0;
+                orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType()) > 0;
         if (result){
             pushService.noticeGrab(entity.getUserId(),orderNo);
         }

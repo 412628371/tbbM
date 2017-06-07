@@ -78,6 +78,8 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String riderCarNo;
 	private String riderCarType;
 	private String orderType;//订单类型，大件或小件
+	private String carType;//车辆类型
+	private String carTypeName;//车辆类型名称
 
 	private Boolean ratedFlag;
 	public String getReceiverAddressRoomNo() {
@@ -492,5 +494,21 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	public void setRiderCarType(String riderCarType) {
 		this.riderCarType = riderCarType;
+	}
+
+	public String getCarType() {
+		return carType;
+	}
+
+	public void setCarType(String carType) {
+		this.carType = carType;
+	}
+
+	public String getCarTypeName() {
+		return carTypeName;
+	}
+
+	public void setCarTypeName(String carTypeName) {
+		this.carTypeName = carTypeName;
 	}
 }

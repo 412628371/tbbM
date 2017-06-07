@@ -16,6 +16,16 @@ public class RespOrderDetailV2  implements Serializable{
     private AddressInfo consignor;
     private AddressInfo receiver;
 
+    private CarInfo carInfo;
+
+    public CarInfo getCarInfo() {
+        return carInfo;
+    }
+
+    public void setCarInfo(CarInfo carInfo) {
+        this.carInfo = carInfo;
+    }
+
     public OrderInfo getOrderInfo() {
         return orderInfo;
     }

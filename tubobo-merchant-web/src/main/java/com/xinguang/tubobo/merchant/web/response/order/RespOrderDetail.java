@@ -11,16 +11,10 @@ import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 public class RespOrderDetail implements Serializable{
     private String cancelReason;//
 
-    public String getCancelReason() {
-        return cancelReason;
-    }
-
-    public void setCancelReason(String cancelReason) {
-        this.cancelReason = cancelReason;
-    }
 
     private String orderNo;//订单No
     private String orderStatus;//订单状态
+    private String orderType;//订单类型
     private String orderRemarks;
 
     private Double payAmount;//支付总金额
@@ -67,6 +61,21 @@ public class RespOrderDetail implements Serializable{
 
     private Boolean ratedFlag;
 
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
     public Integer getPayExpiredMilSeconds() {
         return payExpiredMilSeconds;
     }
