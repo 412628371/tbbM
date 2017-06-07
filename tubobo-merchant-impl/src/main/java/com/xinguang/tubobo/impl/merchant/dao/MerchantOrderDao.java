@@ -122,7 +122,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         parameter.put("riderName",riderName);
         parameter.put("riderCarNo",riderCarNo);
         parameter.put("riderCarType",riderCarType);
-        parameter.put("acceptTime",grabOrderTime);
+        parameter.put("grabOrderTime",grabOrderTime);
         parameter.put("expectFinishTime",expectFinishTime);
         parameter.put("orderNo",orderNo);
         int count =  update(updateQuery,parameter);
