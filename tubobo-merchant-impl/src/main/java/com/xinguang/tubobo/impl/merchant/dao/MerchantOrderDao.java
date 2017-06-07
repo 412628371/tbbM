@@ -187,6 +187,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", entity.getOrderStatus());
         }
+        if (StringUtils.isNotBlank(entity.getOrderType())){
+            sb.append("and order_type = :order_type ");
+            parameter.put("order_type", entity.getOrderType());
+        }
         if (StringUtils.isNotBlank(entity.getOrderNo())){
             sb.append("and order_no like :order_no ");
             parameter.put("order_no", "%"+entity.getOrderNo()+"%");
