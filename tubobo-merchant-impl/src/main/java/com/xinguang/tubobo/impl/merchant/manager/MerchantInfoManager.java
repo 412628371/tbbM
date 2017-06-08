@@ -58,13 +58,17 @@ public class MerchantInfoManager {
         entity.setHasSetPayPwd(true);
         entity.setEnablePwdFree(false);
         MerchantInfoEntity existEntity  = merchantInfoService.findByUserId(userId);
+        String status = existEntity.getMerchantStatus();
+        if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
+            status = existEntity.getConsignorStatus();
+        }
         if (null == existEntity){
             createFundAccount(userId,entity,payPassword,identifyType);
-        }else if ( EnumAuthentication.FROZEN.getValue().equals(existEntity.getMerchantStatus())){
+        }else if ( EnumAuthentication.FROZEN.getValue().equals(status)){
             throw new MerchantClientException(EnumRespCode.MERCHANT_FROZEN);
-        }else if (null != existEntity && EnumAuthentication.SUCCESS.getValue().equals(existEntity.getMerchantStatus())){
+        }else if (null != existEntity && EnumAuthentication.SUCCESS.getValue().equals(status)){
             throw new MerchantClientException(EnumRespCode.MERCHANT_APPLY_REPEAT);
-        }else if (null != existEntity && EnumAuthentication.APPLY.getValue().equals(existEntity.getMerchantStatus())){
+        }else if (null != existEntity && EnumAuthentication.APPLY.getValue().equals(status)){
             throw new MerchantClientException(EnumRespCode.MERCHANT_VERIFYING);
         }else {
             entity.setAccountId(existEntity.getAccountId());
@@ -77,8 +81,10 @@ public class MerchantInfoManager {
                 //重新认证，
                 if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
                     entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
+                    entity.setMerchantStatus(EnumAuthentication.INIT.getValue());
                 }else {
                     entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
+                    entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
                 }
                 result = merchantInfoService.merchantUpdate(entity);
             }
@@ -159,8 +165,10 @@ public class MerchantInfoManager {
             entity.setIdentifyType(identifyType);
             if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
                 entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
+                entity.setMerchantStatus(EnumAuthentication.INIT.getValue());
             }else {
                 entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
+                entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
             }
             merchantInfoService.merchantApply(userId,entity);
 

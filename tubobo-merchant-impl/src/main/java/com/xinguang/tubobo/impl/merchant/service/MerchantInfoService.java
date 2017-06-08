@@ -8,6 +8,7 @@ package com.xinguang.tubobo.impl.merchant.service;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
@@ -16,7 +17,6 @@ import com.xinguang.tubobo.impl.merchant.dao.MerchantInfoDao;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -81,23 +81,38 @@ public class MerchantInfoService extends BaseService {
      */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
-	public int merchantStatusVerify(String userId,String status,String updateBy) {
+	public int merchantStatusVerify(String userId,String status,String updateBy,String identifyType) {
 		MerchantInfoEntity entity = merchantInfoDao.findByUserId(userId);
 		if (entity == null)
 			return 0;
 		int result;
 		String merchantStatus = entity.getMerchantStatus();
 		String consignorStatus = entity.getConsignorStatus();
-		if (EnumIdentifyType.CONSIGNOR.getValue().equals(entity.getIdentifyType())){
-			consignorStatus = status;
-		}else {
-			merchantStatus = status;
-			//认证商家时，失败情况下，货主状态不变。成功、冻结时，货主状态也变为成功、冻结。
-			if (!EnumAuthentication.FAIL.getValue().equals(status)){
-				consignorStatus = status;
+		if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
+			if (StringUtils.isBlank(consignorStatus)||EnumAuthentication.INIT.getValue().equals(consignorStatus)){
+				return 0;
 			}
+			consignorStatus = status;
+		}else if (EnumIdentifyType.MERCHANT.getValue().equals(identifyType)){
+			if (StringUtils.isBlank(merchantStatus)||
+					EnumAuthentication.INIT.getValue().equals(merchantStatus) ){
+				return 0;
+			}
+			merchantStatus = status;
+//			merchantStatus = status;
+			//认证商家时，失败情况下，货主状态不变。成功、冻结时，货主状态也变为成功、冻结。
+//			if (EnumAuthentication.FROZEN.getValue().equals(status)){
+//				if (EnumAuthentication.SUCCESS.getValue().equals(merchantStatus)){
+//					merchantStatus = status;
+//				}else {
+//					if (EnumAuthentication.SUCCESS.getValue().equals(consignorStatus)){
+//						consignorStatus = status;
+//					}
+//				}
+//			}else {
+//
+//			}
 		}
-//		String sqlString = "update tubobo_merchant_info set merchant_status = :p1, update_date = :p2, update_by = :p3 where user_id = :p4 and del_flag = '0' ";
 		result = merchantInfoDao.updateVerifyStatus(merchantStatus,consignorStatus,updateBy,userId);
 		merchantInfoDao.getSession().clear();
 		return result;

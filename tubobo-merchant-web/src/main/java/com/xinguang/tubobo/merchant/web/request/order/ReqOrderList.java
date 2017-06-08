@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.merchant.web.request.order;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
@@ -11,6 +10,7 @@ import javax.validation.constraints.Min;
 public class ReqOrderList {
 //    @NotBlank(message = "订单状态不能为空")
     private String orderStatus;
+    private String orderType;
     @Range(min = 1,max = 20 ,message = "pageSize 取值为1至20")
     private Integer pageSize;
     @Min(value = 1 ,message = "pageNo 最小为1")
@@ -24,19 +24,27 @@ public class ReqOrderList {
         this.orderStatus = orderStatus;
     }
 
-    public int getPageSize() {
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public Integer getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+    public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
 
-    public int getPageNo() {
+    public Integer getPageNo() {
         return pageNo;
     }
 
-    public void setPageNo(int pageNo) {
+    public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
 
@@ -44,6 +52,7 @@ public class ReqOrderList {
     public String toString() {
         return "ReqOrderList{" +
                 "orderStatus='" + orderStatus + '\'' +
+                ", orderType='" + orderType + '\'' +
                 ", pageSize=" + pageSize +
                 ", pageNo=" + pageNo +
                 '}';

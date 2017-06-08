@@ -80,8 +80,8 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
      * @return
      */
     @Override
-    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy) {
-        return merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy) > 0;
+    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType) {
+        return merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy,identifyType) > 0;
     }
 
     /**
