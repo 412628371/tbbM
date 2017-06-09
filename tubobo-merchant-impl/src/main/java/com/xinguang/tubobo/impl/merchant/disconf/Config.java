@@ -30,6 +30,7 @@ public class Config {
     private String noticeGrabedTitle;
     private String noticeGrabedTimeoutTitle;
     private String noticeFinishedTitle;
+    private String consignorNoticeGrabTimeoutTemplate;//大件订单超时提醒
 
     private String beginWorkTime;
     private String endWorkTime;
@@ -49,6 +50,15 @@ public class Config {
 //    private String gdKey;
     private Integer autoRateDays;
     private String transportType;
+
+    @DisconfFileItem(name = "consignorNoticeGrabTimeoutTemplate", associateField = "consignorNoticeGrabTimeoutTemplate")
+    public String getConsignorNoticeGrabTimeoutTemplate() {
+        return consignorNoticeGrabTimeoutTemplate;
+    }
+
+    public void setConsignorNoticeGrabTimeoutTemplate(String consignorNoticeGrabTimeoutTemplate) {
+        this.consignorNoticeGrabTimeoutTemplate = consignorNoticeGrabTimeoutTemplate;
+    }
 
     @DisconfFileItem(name = "consignorTaskExpiredMilliSeconds", associateField = "consignorTaskExpiredMilliSeconds")
     public Integer getConsignorTaskExpiredMilliSeconds() {
