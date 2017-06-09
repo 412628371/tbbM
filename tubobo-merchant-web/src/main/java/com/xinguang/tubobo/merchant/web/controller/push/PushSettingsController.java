@@ -2,7 +2,7 @@ package com.xinguang.tubobo.merchant.web.controller.push;
 
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
-import com.xinguang.tubobo.merchant.web.request.ReqPushSettings;
+import com.xinguang.tubobo.merchant.web.request.shop.ReqPushSettings;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantSettingsService;

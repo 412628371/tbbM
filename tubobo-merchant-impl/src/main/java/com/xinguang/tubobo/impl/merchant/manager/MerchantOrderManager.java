@@ -6,26 +6,31 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.xinguang.taskcenter.api.TaskDispatchService;
+import com.xinguang.taskcenter.api.TbbTaskResponse;
+import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
+import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
-import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
+import com.xinguang.tubobo.api.AdminToMerchantService;
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.merchant.api.TaskCenterToMerchantServiceInterface;
-import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -35,13 +40,12 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	private OrderService orderService;
 
-//	@Autowired
-//	private MerchantInfoService merchantInfoService;
-
 	@Autowired
 	private TimeoutTaskProducer timeoutTaskProducer;
+//	@Autowired
+//	TaskCenterToMerchantServiceInterface taskCenterToMerchantServiceInterface;
 	@Autowired
-	TaskCenterToMerchantServiceInterface taskCenterToMerchantServiceInterface;
+	TaskDispatchService taskDispatchService;
 
 	@Autowired
 	private TbbAccountService tbbAccountService;
@@ -49,13 +53,11 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	MerchantPushService pushService;
 
+	@Autowired
+	AdminToMerchantService adminToMerchantService;
+	@Resource
+	Config config;
 
-	public MerchantOrderEntity findByOrderNo(String orderNo){
-		return orderService.findByOrderNo(orderNo);
-	}
-	public MerchantOrderEntity findByOrderNoAndStatus(String orderNo,String orderStatus){
-		return orderService.findByOrderNoAndStatus(orderNo,orderStatus);
-	}
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
 	}
@@ -64,26 +66,42 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
 		String orderNo = orderService.order(userId,entity);
-		logger.info("创建订单, userId:{},orderNo:{}",userId,orderNo);
-		//将订单加入支付超时队列
-		timeoutTaskProducer.sendMessage(orderNo);
+		logger.info("创建订单, userId:{},orderNo:{}，orderType:{}",userId,orderNo,entity.getOrderType());
+		//将订单加入支付超时队列 商家订单和车配订单超时时间不同
+		int expiredMillSeconds = config.getPayExpiredMilSeconds();
+		if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
+			expiredMillSeconds = config.getConsignorPayExpiredMilliSeconds();
+		}
+		timeoutTaskProducer.sendMessage(orderNo,expiredMillSeconds);
 		return orderNo;
 	}
 
 	/**
 	 * 商家付款
 	 */
-	public void merchantPay(MerchantOrderDTO merchantOrderDTO,String merchantId,String orderNo,long payId) throws MerchantClientException {
+	public void merchantPay(TaskCreateDTO taskCreateDTO, String merchantId, String orderNo, long payId) throws MerchantClientException {
+		int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
+
+		if (TaskTypeEnum.M_SMALL_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
+			taskCreateDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
+		}else {
+			taskCreateDTO.setTaskType(TaskTypeEnum.M_BIG_ORDER);
+			grabExpiredMilliSeconds = config.getConsignorTaskExpiredMilliSeconds();
+		}
+		taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
 		Date payDate = new Date();
 		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate);
 		if (count != 1){
 			logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",merchantId,orderNo);
 			throw new MerchantClientException(EnumRespCode.FAIL);
 		}
-		try {
-			taskCenterToMerchantServiceInterface.merchantOrder(merchantOrderDTO);
-		}catch (Exception e){
-			logger.error("调用任务中心发单出错，orderNo:{}",orderNo,e);
+		TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(taskCreateDTO);
+		if (taskResponse.isSucceeded() && taskResponse.getData()){
+			if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
+				adminToMerchantService.sendDistributeTaskSmsAlert();
+			}
+		}else {
+			logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
 		}
 
 	}
@@ -105,29 +123,34 @@ public class MerchantOrderManager extends BaseService {
 		}
 
 		if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
-			boolean result = taskCenterToMerchantServiceInterface.meachantCancelOrder(orderNo);
-			if (result){
-				if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
-					PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
-							MerchantConstants.PAY_REJECT_REMARKS_CANCEL);
-					TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
-					if (resp != null || resp.isSucceeded()){
-						logger.error("订单取消，资金平台退款成功，userId: "+merchantId+" orderNo: "+orderNo+
-								"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-						boolean cancelResult = orderService.merchantCancel(merchantId,orderNo,
-								EnumCancelReason.GRAB_MERCHANT.getValue());
-						if (!cancelResult){
-							logger.error("商家取消订单，更改订单状态出错，userId: "+merchantId+" orderNo: "+orderNo);
+			TbbTaskResponse<Boolean> taskResp = taskDispatchService.cancelTask(orderNo);
+			if (taskResp.isSucceeded()){
+				if (taskResp.getData()){
+					if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
+						PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
+								MerchantConstants.PAY_REJECT_REMARKS_CANCEL);
+						TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
+						if (resp != null || resp.isSucceeded()){
+							logger.error("订单取消，资金平台退款成功，userId: "+merchantId+" orderNo: "+orderNo+
+									"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+							boolean cancelResult = orderService.merchantCancel(merchantId,orderNo,
+									EnumCancelReason.GRAB_MERCHANT.getValue());
+							if (!cancelResult){
+								logger.error("商家取消订单，更改订单状态出错，userId: "+merchantId+" orderNo: "+orderNo);
+							}
+							return cancelResult;
+						}else {
+							logger.error("商家取消订单，资金平台退款出错，userId: "+merchantId+" orderNo: "+orderNo+
+									"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+							return false;
 						}
-						return cancelResult;
-					}else {
-						logger.error("商家取消订单，资金平台退款出错，userId: "+merchantId+" orderNo: "+orderNo+
-								"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-						return false;
 					}
 				}else {
-
+					logger.error("商家取消订单，任务平台取消失败。userId:{},orderNo:{}",merchantId,orderNo);
 				}
+			}else {
+				logger.error("商家取消订单，任务平台出错。userId:{},orderNo:{},errorCode:{},errorMsg:{}",
+						merchantId,orderNo,taskResp.getErrorCode(),taskResp.getMessage());
 			}
 		}
 		return false;
@@ -213,7 +236,11 @@ public class MerchantOrderManager extends BaseService {
 					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			orderExpire(entity.getUserId(),orderNo,expireTime);
 			if (enablePushNotice){
-				pushService.noticeGrabTimeout(entity.getUserId(),orderNo);
+				String type = MerchantConstants.PUSH_ORDER_TYPE_SMALL;
+				if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
+					type = MerchantConstants.PUSH_ORDER_TYPE_BIG;
+				}
+				pushService.noticeGrabTimeout(entity.getUserId(),orderNo,type);
 			}
 			return true;
 		}else {

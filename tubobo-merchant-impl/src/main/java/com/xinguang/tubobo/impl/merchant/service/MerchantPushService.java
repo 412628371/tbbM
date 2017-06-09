@@ -44,10 +44,10 @@ public class MerchantPushService {
         Long pushAppKey = config.getAliPushAppKey();
         try{
             pushService.push(content,pushAppKey,list,options);
+            logger.info("状态通知已发送给userId:{}",userId);
         }catch (Exception e){
             logger.error("push to userId:{},content:{},title:{}.异常：",userId,content,title,e);
         }
-        logger.info("状态通知已发送给userId:{}",userId);
     }
 
 
@@ -90,12 +90,16 @@ public class MerchantPushService {
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderExpired())
             return;
-        pushToUser(userId,config.getNoticeGrabedTimeoutTemplate(),config.getNoticeGrabedTimeoutTitle(),generateExtraParam(orderNo,type));
+        String grabTimeoutTemplete = config.getNoticeGrabedTimeoutTitle();
+        if (MerchantConstants.PUSH_ORDER_TYPE_SMALL.equals(type)){
+            grabTimeoutTemplete = config.getConsignorNoticeGrabTimeoutTemplate();
+        }
+        pushToUser(userId,config.getNoticeGrabedTimeoutTemplate(),grabTimeoutTemplete,generateExtraParam(orderNo,type));
         logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTimeoutTemplate());
     }
-    public void noticeGrabTimeout(String userId,String orderNo){
-        noticeGrabTimeout(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);
-    }
+//    public void noticeGrabTimeout(String userId,String orderNo){
+//        noticeGrabTimeout(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);
+//    }
 
     private static String  generateExtraParam(String orderNo,String type){
         NoticeParamVo paramVo = new NoticeParamVo();

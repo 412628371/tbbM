@@ -3,7 +3,7 @@ package com.xinguang.tubobo.merchant.web.controller.order;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
-import com.xinguang.tubobo.merchant.web.request.ReqOrderOperate;
+import com.xinguang.tubobo.merchant.web.request.order.ReqOrderOperate;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;

@@ -14,6 +14,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.xinguang</groupId>
+            <artifactId>tubobo-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xinguang.taskcenter</groupId>
+            <artifactId>taskdispatcher-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.xinguang.tubobo</groupId>
             <artifactId>lbs-api</artifactId>
         </dependency>

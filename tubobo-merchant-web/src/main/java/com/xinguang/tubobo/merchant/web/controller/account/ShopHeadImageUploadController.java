@@ -1,12 +1,11 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
-import com.hzmux.hzcms.common.utils.AliOss;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
-import com.xinguang.tubobo.merchant.web.request.ShopHeadImageUploadRequest;
+import com.xinguang.tubobo.merchant.web.request.shop.ShopHeadImageUploadRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

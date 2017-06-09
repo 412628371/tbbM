@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hzmux.hzcms.common.config.Global;
 import com.hzmux.hzcms.common.utils.CookieUtils;
 
 /**
@@ -25,35 +24,35 @@ import com.hzmux.hzcms.common.utils.CookieUtils;
  * @param <T>
  */
 public class Page<T> implements Serializable{
-	
+
 	private int pageNo = 1; // 当前页码
 	private int pageSize = 10; // 页面大小，设置为“-1”表示不进行分页（分页无效）
 
 	private long count;// 总记录数，设置为“-1”表示不查询总数
-	
+
 	private int first;// 首页索引
 	private int last;// 尾页索引
 	private int prev;// 上一页索引
 	private int next;// 下一页索引
-	
+
 	private boolean firstPage;//是否是第一页
 	private boolean lastPage;//是否是最后一页
 
 	private int length = 8;// 显示页面长度
 	private int slider = 1;// 前后显示页面长度
-	
+
 	private List<T> list = new ArrayList<T>();
-	
+
 	private String orderBy = ""; // 标准查询有效， 实例： updatedate desc, name asc
-	
+
 	private String funcName = "page"; // 设置点击页码调用的js函数名称，默认为page，在一页有多个分页对象时使用。
-	
+
 	private String message = ""; // 设置提示消息，显示在“共n条”之后
 
 	public Page() {
 		this.pageSize = -1;
 	}
-	
+
 	/**
 	 * 构造方法
 	 * @param request 传递 repage 参数，来记住页码
@@ -84,7 +83,7 @@ public class Page<T> implements Serializable{
 		// 设置页面大小参数（传递repage参数，来记住页码大小）
 		String size = request.getParameter("pageSize");
 		if(defaultPageSize ==-1){
-		    this.pageSize = defaultPageSize;
+			this.pageSize = defaultPageSize;
 		}else if (StringUtils.isNumeric(size)){
 			CookieUtils.setCookie(response, "pageSize", size);
 			this.setPageSize(Integer.parseInt(size));
@@ -102,7 +101,7 @@ public class Page<T> implements Serializable{
 			this.setOrderBy(orderBy);
 		}
 	}
-	
+
 	/**
 	 * 构造方法
 	 * @param pageNo 当前页码
@@ -111,7 +110,7 @@ public class Page<T> implements Serializable{
 	public Page(int pageNo, int pageSize) {
 		this(pageNo, pageSize, 0);
 	}
-	
+
 	/**
 	 * 构造方法
 	 * @param pageNo 当前页码
@@ -121,7 +120,7 @@ public class Page<T> implements Serializable{
 	public Page(int pageNo, int pageSize, long count) {
 		this(pageNo, pageSize, count, new ArrayList<T>());
 	}
-	
+
 	/**
 	 * 构造方法
 	 * @param pageNo 当前页码
@@ -135,17 +134,17 @@ public class Page<T> implements Serializable{
 		this.pageSize = pageSize;
 		this.setList(list);
 	}
-	
+
 	/**
 	 * 初始化参数
 	 */
 	public void initialize(){
-				
+
 		//1
 		this.first = 1;
-		
+
 		this.last = (int)(count / (this.pageSize < 1 ? 20 : this.pageSize) + first - 1);
-		
+
 		if (this.count % this.pageSize != 0 || this.last == 0) {
 			this.last++;
 		}
@@ -153,7 +152,7 @@ public class Page<T> implements Serializable{
 		if (this.last < this.first) {
 			this.last = this.first;
 		}
-		
+
 		if (this.pageNo <= 1) {
 			this.pageNo = this.first;
 			this.firstPage=true;
@@ -175,7 +174,7 @@ public class Page<T> implements Serializable{
 		} else {
 			this.prev = this.first;
 		}
-		
+
 		//2
 		if (this.pageNo < this.first) {// 如果当前页小于首页
 			this.pageNo = this.first;
@@ -184,20 +183,20 @@ public class Page<T> implements Serializable{
 		if (this.pageNo > this.last) {// 如果当前页大于尾页
 			this.pageNo = this.last;
 		}
-		
+
 	}
-	
+
 	/**
-	 * 默认输出当前分页标签 
+	 * 默认输出当前分页标签
 	 * <div class="page">${page}</div>
 	 */
 	@Override
 	public String toString() {
 
 		initialize();
-		
+
 		StringBuilder sb = new StringBuilder();
-		
+
 		if (pageNo == first) {// 如果是首页
 			sb.append("<li class=\"disabled\"><a href=\"javascript:\">&#171; 上一页</a></li>\n");
 		} else {
@@ -269,14 +268,14 @@ public class Page<T> implements Serializable{
 		sb.append("共 " + count + " 条"+(message!=null?message:"")+"</a><li>\n");
 
 		sb.insert(0,"<ul>\n").append("</ul>\n");
-		
+
 		sb.append("<div style=\"clear:both;\"></div>");
 
 //		sb.insert(0,"<div class=\"page\">\n").append("</div>\n");
-		
+
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 获取分页HTML代码
 	 * @return
@@ -284,7 +283,7 @@ public class Page<T> implements Serializable{
 	public String getHtml(){
 		return toString();
 	}
-	
+
 	public static void main(String[] args) {
 		Page<String> p = new Page<String>(3, 3);
 		System.out.println(p);
@@ -312,7 +311,7 @@ public class Page<T> implements Serializable{
 			pageNo = 1;
 		}
 	}
-	
+
 	/**
 	 * 获取当前页码
 	 * @return
@@ -320,7 +319,7 @@ public class Page<T> implements Serializable{
 	public int getPageNo() {
 		return pageNo;
 	}
-	
+
 	/**
 	 * 设置当前页码
 	 * @param pageNo
@@ -328,7 +327,7 @@ public class Page<T> implements Serializable{
 	public void setPageNo(int pageNo) {
 		this.pageNo = pageNo;
 	}
-	
+
 	/**
 	 * 获取页面大小
 	 * @return
@@ -362,7 +361,7 @@ public class Page<T> implements Serializable{
 	public int getLast() {
 		return last;
 	}
-	
+
 	/**
 	 * 获取页面总数
 	 * @return getLast();
@@ -389,7 +388,7 @@ public class Page<T> implements Serializable{
 	public boolean isLastPage() {
 		return lastPage;
 	}
-	
+
 	/**
 	 * 上一页索引值
 	 * @return
@@ -415,7 +414,7 @@ public class Page<T> implements Serializable{
 			return pageNo + 1;
 		}
 	}
-	
+
 	/**
 	 * 获取本页数据对象列表
 	 * @return List<T>
@@ -474,7 +473,7 @@ public class Page<T> implements Serializable{
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+
 	/**
 	 * 分页是否有效
 	 * @return this.pageSize==-1
@@ -483,7 +482,7 @@ public class Page<T> implements Serializable{
 	public boolean isDisabled() {
 		return this.pageSize==-1;
 	}
-	
+
 	/**
 	 * 是否进行总数统计
 	 * @return this.count==-1
@@ -492,7 +491,7 @@ public class Page<T> implements Serializable{
 	public boolean isNotCount() {
 		return this.count==-1;
 	}
-	
+
 	/**
 	 * 获取 Hibernate FirstResult
 	 */
@@ -503,7 +502,7 @@ public class Page<T> implements Serializable{
 		}
 		return firstResult;
 	}
-	
+
 	public int getLastResult(){
 		int lastResult = getFirstResult()+getMaxResults();
 		if(lastResult>getCount()) {

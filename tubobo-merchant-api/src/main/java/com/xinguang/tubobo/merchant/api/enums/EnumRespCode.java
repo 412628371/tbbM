@@ -11,7 +11,8 @@ public enum EnumRespCode {
 	MERCHANT_VERIFYING("10101", "商家信息正在审核中，请耐心等待"),
 	MERCHANT_NOT_EXISTS("10102", "商家不存在"),
 	MERCHANT_FROZEN("10103", "商家被冻结,请联系客服"),
-	MERCHANT_ALREADY_APPLY_RIDER("10104", "您已申请骑手，不能申请成为商家"),
+	MERCHANT_ALREADY_APPLY_RIDER("10104", "您已申请骑手，不能申请成为商家或货主"),
+	MERCHANT_NEED_TOBE_CONSIGNOR_FIRST("10105", "成功认证成为货主后，才能完善店铺信息"),
 
 	MERCHANT_CANT_CANCEL("10200", "订单状态不允许取消"),
 	MERCHANT_CANT_DELETE("10201", "订单状态不允许删除"),
@@ -27,6 +28,8 @@ public enum EnumRespCode {
 
 	MERCHANT_ORDER_RATED("10211", "订单已经评价"),
 	MERCHANT_ORDER_NOT_FINISH("10212", "订单还未完成"),
+	MERCHANT_ORDER_TYPE_NOT_SUPPORT("10213", "不支持的订单类型"),
+	MERCHANT_CAR_TYPE_NOT_SUPPORT("10214", "不支持的车辆类型"),
 
 
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
