@@ -14,6 +14,7 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
@@ -52,6 +53,8 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	MerchantPushService pushService;
 
+	@Autowired
+	AdminToMerchantService adminToMerchantService;
 	@Resource
 	Config config;
 
@@ -94,9 +97,13 @@ public class MerchantOrderManager extends BaseService {
 		}
 		TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(taskCreateDTO);
 		if (taskResponse.isSucceeded() && taskResponse.getData()){
+			if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
+				adminToMerchantService.sendDistributeTaskSmsAlert();
+			}
 		}else {
 			logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
 		}
+
 	}
 
 	/**
