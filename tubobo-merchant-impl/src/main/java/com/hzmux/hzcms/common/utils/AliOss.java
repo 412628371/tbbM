@@ -82,8 +82,14 @@ public class AliOss {
 
 
     public static void generateMerchantSignedUrl(MerchantInfoEntity info){
-        info.setIdCardFrontImageUrl(generateSignedUrl(info.getIdCardFrontImageUrl(),AliOss.BUCKETNAME_PRIVATE));
-        info.setIdCardBackImageUrl(generateSignedUrl(info.getIdCardBackImageUrl(),AliOss.BUCKETNAME_PRIVATE));
-        info.setShopImageUrl(generateSignedUrl(info.getShopImageUrl(),AliOss.BUCKETNAME_PRIVATE));
+        if (StringUtils.isNotBlank(info.getIdCardFrontImageUrl())){
+            info.setIdCardFrontImageUrl(generateSignedUrl(info.getIdCardFrontImageUrl(),AliOss.BUCKETNAME_PRIVATE));
+        }
+        if (StringUtils.isNotBlank(info.getIdCardBackImageUrl())){
+            info.setIdCardBackImageUrl(generateSignedUrl(info.getIdCardBackImageUrl(),AliOss.BUCKETNAME_PRIVATE));
+        }
+        if (StringUtils.isNotBlank(info.getShopImageUrl())){
+            info.setShopImageUrl(generateSignedUrl(info.getShopImageUrl(),AliOss.BUCKETNAME_PRIVATE));
+        }
     }
 }
