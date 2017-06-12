@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
+import com.hzmux.hzcms.common.utils.AliOss;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantInfoManager;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -24,6 +25,7 @@ public class ShopCompleteController extends MerchantBaseController<ReqShopComple
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         BeanUtils.copyProperties(req,infoEntity);
         MerchantInfoEntity respEntity = infoManager.shopComplete(userId,infoEntity);
+        AliOss.generateMerchantSignedUrl(respEntity);
         MerchantInfoResponse infoResponse = new MerchantInfoResponse();
         BeanUtils.copyProperties(respEntity,infoResponse);
         return infoResponse;

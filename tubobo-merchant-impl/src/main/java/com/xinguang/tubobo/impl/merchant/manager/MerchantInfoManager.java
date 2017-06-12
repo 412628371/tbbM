@@ -58,40 +58,44 @@ public class MerchantInfoManager {
         entity.setHasSetPayPwd(true);
         entity.setEnablePwdFree(false);
         MerchantInfoEntity existEntity  = merchantInfoService.findByUserId(userId);
-        String status = existEntity.getMerchantStatus();
-        if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
-            status = existEntity.getConsignorStatus();
-        }
+
         if (null == existEntity){
             createFundAccount(userId,entity,payPassword,identifyType);
-        }else if ( EnumAuthentication.FROZEN.getValue().equals(status)){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_FROZEN);
-        }else if (null != existEntity && EnumAuthentication.SUCCESS.getValue().equals(status)){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_APPLY_REPEAT);
-        }else if (null != existEntity && EnumAuthentication.APPLY.getValue().equals(status)){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_VERIFYING);
         }else {
-            entity.setAccountId(existEntity.getAccountId());
-            entity.setId(existEntity.getId());
-            entity.setCreateDate(existEntity.getCreateDate());
-            boolean result = false;
-            TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),AESUtils.decrypt(payPassword));
-            if(response != null && response.isSucceeded() && response.getData()){
-                logger.info("重新认证，重置支付密码成功：userID：{}",userId);
-                //重新认证，
-                if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
-                    entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
-                    entity.setMerchantStatus(EnumAuthentication.INIT.getValue());
-                }else {
-                    entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
-                    entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
-                }
-                result = merchantInfoService.merchantUpdate(entity);
+            String status = existEntity.getMerchantStatus();
+            if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
+                status = existEntity.getConsignorStatus();
             }
-            if (!result){
-                throw new MerchantClientException(EnumRespCode.FAIL);
+            if ( EnumAuthentication.FROZEN.getValue().equals(status)){
+                throw new MerchantClientException(EnumRespCode.MERCHANT_FROZEN);
+            }else if (null != existEntity && EnumAuthentication.SUCCESS.getValue().equals(status)){
+                throw new MerchantClientException(EnumRespCode.MERCHANT_APPLY_REPEAT);
+            }else if (null != existEntity && EnumAuthentication.APPLY.getValue().equals(status)){
+                throw new MerchantClientException(EnumRespCode.MERCHANT_VERIFYING);
+            }else {
+                entity.setAccountId(existEntity.getAccountId());
+                entity.setId(existEntity.getId());
+                entity.setCreateDate(existEntity.getCreateDate());
+                boolean result = false;
+                TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),AESUtils.decrypt(payPassword));
+                if(response != null && response.isSucceeded() && response.getData()){
+                    logger.info("重新认证，重置支付密码成功：userID：{}",userId);
+                    //重新认证，
+                    if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
+                        entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
+                        entity.setMerchantStatus(EnumAuthentication.INIT.getValue());
+                    }else {
+                        entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
+                        entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
+                    }
+                    result = merchantInfoService.merchantUpdate(entity);
+                }
+                if (!result){
+                    throw new MerchantClientException(EnumRespCode.FAIL);
+                }
             }
         }
+
         MerchantInfoEntity entityResp = merchantInfoService.findByUserId(userId);
         return entityResp;
     }
