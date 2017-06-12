@@ -66,11 +66,32 @@ public class MerchantOrderDTO implements Serializable{
 	private String riderId;
 	private String riderName;
 	private String riderPhone;
+	private String riderCarNo;
+	private String carType;//车辆类型
+	private String carTypeName;//车辆类型名称
+
+
 
 	protected Date createDate;
 	protected String createBy;
 	protected Date updateDate;
 	protected String updateBy;
+
+	public String getCarType() {
+		return carType;
+	}
+
+	public void setCarType(String carType) {
+		this.carType = carType;
+	}
+
+	public String getCarTypeName() {
+		return carTypeName;
+	}
+
+	public void setCarTypeName(String carTypeName) {
+		this.carTypeName = carTypeName;
+	}
 
 	public String getPayStatus() {
 		return payStatus;
@@ -496,6 +517,14 @@ public class MerchantOrderDTO implements Serializable{
 
 	public void setReceiverAddressRoomNo(String receiverAddressRoomNo) {
 		this.receiverAddressRoomNo = receiverAddressRoomNo;
+	}
+
+	public String getRiderCarNo() {
+		return riderCarNo;
+	}
+
+	public void setRiderCarNo(String riderCarNo) {
+		this.riderCarNo = riderCarNo;
 	}
 
 	@Override
