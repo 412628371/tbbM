@@ -142,6 +142,7 @@ public class MerchantInfoManager {
             }
         }
         MerchantInfoEntity entityResp = merchantInfoService.findByUserId(userId);
+        AliOss.generateMerchantSignedUrl(entityResp);
         return entityResp;
     }
     /**

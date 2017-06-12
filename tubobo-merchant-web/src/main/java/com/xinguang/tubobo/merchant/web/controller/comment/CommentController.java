@@ -8,7 +8,9 @@ import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.rate.ReqComment;
+import com.xinguang.tubobo.rate.api.hystrix.TbbRateServiceHystrixProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
