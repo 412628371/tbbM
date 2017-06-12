@@ -11,6 +11,7 @@ public class OrderInfo implements Serializable {
     private String orderType;//订单类型
     private String orderStatus;//订单状态
     private String orderRemarks;
+    private String cancelReason;
     private Date orderTime;//下单时间
     private Date cancelTime;//取消时间
     private Date closeTime;//关闭时间
@@ -125,5 +126,13 @@ public class OrderInfo implements Serializable {
 
     public void setGrabRemainMillSeconds(Long grabRemainMillSeconds) {
         this.grabRemainMillSeconds = grabRemainMillSeconds;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
     }
 }
