@@ -32,6 +32,7 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
         MerchantOrderEntity queryEntity = new MerchantOrderEntity();
         queryEntity.setUserId(userId);
         queryEntity.setOrderStatus(req.getOrderStatus());
+        queryEntity.setOrderType(req.getOrderType());
         Page<MerchantOrderEntity> page = merchantOrderManager.merchantQueryOrderPage(req.getPageNo(),req.getPageSize(),queryEntity);
         List<RespOrderDetailV2> list = new ArrayList<>(page.getPageNo());
         if (page!= null && page.getList() != null && page.getList().size() > 0) {
