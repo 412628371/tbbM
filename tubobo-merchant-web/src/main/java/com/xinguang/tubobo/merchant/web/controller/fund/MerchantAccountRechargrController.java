@@ -44,9 +44,7 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
         RechargeRequest rechargeRequest = new RechargeRequest();
-//        rechargeRequest.setAmount(ConvertUtil.convertYuanToFen(req.getAmount()));
-        //TODO 下面是测试充值返现.一定要删除
-        rechargeRequest.setAmount(ConvertUtil.convertYuanToFen(req.getAmount())*100);
+        rechargeRequest.setAmount(ConvertUtil.convertYuanToFen(req.getAmount()));
         rechargeRequest.setAccountId(entity.getAccountId());
         rechargeRequest.setTarget(TbbConstants.OperationTarget.BALANCE);
         rechargeRequest.setClientIp(ConvertUtil.handleNullString(req.getClientIp()));
