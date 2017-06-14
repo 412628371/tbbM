@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.api;
 
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import com.xinguang.tubobo.merchant.api.util.ErrorMsgHelper;
 
 public class MerchantClientException extends Exception {
     private String code;
@@ -8,7 +9,7 @@ public class MerchantClientException extends Exception {
 
     public MerchantClientException(EnumRespCode resp) {
         this.code = resp.getValue();
-        this.errorMsg = resp.getDesc();
+        this.errorMsg = ErrorMsgHelper.findByCode(code);
     }
 
     public MerchantClientException(EnumRespCode resp,String placeHolder) {
