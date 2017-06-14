@@ -20,5 +20,9 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>com.baidu.disconf</groupId>
+            <artifactId>disconf-client</artifactId>
+        </dependency>
     </dependencies>
 </project>
