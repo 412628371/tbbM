@@ -7,6 +7,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.response.order.RespOrderDetail;
 import com.xinguang.tubobo.merchant.web.response.order.v2.RespOrderDetailV2;
@@ -54,17 +55,25 @@ public class OrderDetailRespManager {
         BeanUtils.copyProperties(entity,respOrderDetail);
         respOrderDetail.setOrderRemarks(ConvertUtil.handleNullString(entity.getOrderRemark()));
 
+        int grabMilSeconds = config.getTaskGrabExpiredMilSeconds();
+        int payMilSeconds = config.getPayExpiredMilSeconds();
+
+        if (EnumOrderType.BIGORDER.equals(entity.getOrderType())){
+            grabMilSeconds = config.getConsignorTaskExpiredMilliSeconds();
+            payMilSeconds = config.getConsignorPayExpiredMilliSeconds();
+        }
         Long payRemainMilSeconds = 0L;
+        Long grabRemainMilSeconds = 0L;
         if (entity.getOrderTime()!=null &&
-                entity.getOrderTime().getTime()+config.getPayExpiredMilSeconds() > now.getTime()){
-            payRemainMilSeconds = entity.getOrderTime().getTime()+config.getPayExpiredMilSeconds()-now.getTime();
+                entity.getOrderTime().getTime()+payMilSeconds > now.getTime()){
+            payRemainMilSeconds = entity.getOrderTime().getTime()+payMilSeconds-now.getTime();
         }
         respOrderDetail.setPayRemainMillSeconds(payRemainMilSeconds);
 
-        Long grabRemainMilSeconds = 0L;
+
         if (entity.getPayTime()!=null &&
-                entity.getPayTime().getTime()+config.getTaskGrabExpiredMilSeconds() > now.getTime()){
-            grabRemainMilSeconds = entity.getPayTime().getTime()+config.getTaskGrabExpiredMilSeconds()-now.getTime();
+                entity.getPayTime().getTime()+grabMilSeconds > now.getTime()){
+            grabRemainMilSeconds = entity.getPayTime().getTime()+grabMilSeconds-now.getTime();
         }
         respOrderDetail.setGrabRemainMillSeconds(grabRemainMilSeconds);
 

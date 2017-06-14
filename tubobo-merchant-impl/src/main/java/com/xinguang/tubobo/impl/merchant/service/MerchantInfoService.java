@@ -105,19 +105,11 @@ public class MerchantInfoService extends BaseService {
 				consignorStatus = status;
 			}
 			merchantStatus = status;
-//			merchantStatus = status;
-			//认证商家时，失败情况下，货主状态不变。成功、冻结时，货主状态也变为成功、冻结。
-//			if (EnumAuthentication.FROZEN.getValue().equals(status)){
-//				if (EnumAuthentication.SUCCESS.getValue().equals(merchantStatus)){
-//					merchantStatus = status;
-//				}else {
-//					if (EnumAuthentication.SUCCESS.getValue().equals(consignorStatus)){
-//						consignorStatus = status;
-//					}
-//				}
-//			}else {
-//
-//			}
+		}
+		//统一冻结
+		if (EnumAuthentication.FROZEN.getValue().equals(status)){
+			merchantStatus = status;
+			consignorStatus = status;
 		}
 		result = merchantInfoDao.updateVerifyStatus(merchantStatus,consignorStatus,updateBy,userId);
 		merchantInfoDao.getSession().clear();
