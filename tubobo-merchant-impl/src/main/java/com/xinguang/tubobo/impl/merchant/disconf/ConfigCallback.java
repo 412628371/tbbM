@@ -15,13 +15,15 @@ import javax.annotation.Resource;
  */
 @Configuration
 @Scope("singleton")
-@DisconfUpdateService(classes = { Config.class })
+@DisconfUpdateService(classes = { Config.class, ErrorMsgConfig.class})
 public class ConfigCallback implements IDisconfUpdate {
 
     private static Logger logger = LoggerFactory.getLogger(ConfigCallback.class);
 
     @Resource
     private Config config;
+    @Resource
+    private ErrorMsgConfig errorMsgConfig;
 
     @Override
     public void reload() throws Exception {
