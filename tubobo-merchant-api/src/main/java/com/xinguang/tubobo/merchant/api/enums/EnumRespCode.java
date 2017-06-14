@@ -11,7 +11,7 @@ public enum EnumRespCode {
 	MERCHANT_VERIFYING("10101", "商家信息正在审核中，请耐心等待"),
 	MERCHANT_NOT_EXISTS("10102", "商家不存在"),
 	MERCHANT_FROZEN("10103", "商家被冻结,请联系客服"),
-	MERCHANT_ALREADY_APPLY_RIDER("10104", "您已申请骑手，不能申请成为商家或货主"),
+	MERCHANT_ALREADY_APPLY_RIDER("10104", "您已申请骑手/司机，不能申请成为商家或货主"),
 	MERCHANT_NEED_TOBE_CONSIGNOR_FIRST("10105", "成功认证成为货主后，才能完善店铺信息"),
 
 	MERCHANT_CANT_CANCEL("10200", "订单状态不允许取消"),
@@ -25,6 +25,7 @@ public enum EnumRespCode {
 	MERCHANT_CANT_PAY("10208", "订单状态不允许支付"),
 	MERCHANT_TOO_EARLY("10209", "骑手还没上班哦，请在8:00到21:00的工作时间发单"),
 	MERCHANT_TOO_LATE("10210", "骑手下班了哦，请在8:00到21:00的工作时间发单"),
+	CONSIGNOR_NOT_WORK("10211", "兔司机已经下班了，您的订单可能无法受理哦"),
 
 	MERCHANT_ORDER_RATED("10211", "订单已经评价"),
 	MERCHANT_ORDER_NOT_FINISH("10212", "订单还未完成"),

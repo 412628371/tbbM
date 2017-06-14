@@ -236,11 +236,7 @@ public class MerchantOrderManager extends BaseService {
 					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			orderExpire(entity.getUserId(),orderNo,expireTime);
 			if (enablePushNotice){
-				String type = MerchantConstants.PUSH_ORDER_TYPE_SMALL;
-				if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
-					type = MerchantConstants.PUSH_ORDER_TYPE_BIG;
-				}
-				pushService.noticeGrabTimeout(entity.getUserId(),orderNo,type);
+				pushService.noticeGrabTimeout(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
 			}
 			return true;
 		}else {

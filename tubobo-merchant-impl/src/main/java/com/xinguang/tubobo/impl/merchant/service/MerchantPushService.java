@@ -63,9 +63,9 @@ public class MerchantPushService {
         pushToUser(userId,config.getNoticeGrabedTemplate(),config.getNoticeGrabedTitle(),generateExtraParam(orderNo,type));
         logger.info("订单被接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTemplate());
     }
-    public void noticeGrab(String userId,String orderNo){
-        noticeGrab(userId,orderNo, MerchantConstants.PUSH_ORDER_TYPE_SMALL);
-    }
+//    public void noticeGrab(String userId,String orderNo){
+//        noticeGrab(userId,orderNo, MerchantConstants.PUSH_ORDER_TYPE_SMALL);
+//    }
 
     /**
      * 通知商家订单配送完成
@@ -78,9 +78,9 @@ public class MerchantPushService {
         pushToUser(userId,config.getNoticeFinishedTemplate(),config.getNoticeFinishedTitle(),generateExtraParam(orderNo,type));
         logger.info("订单配送完成，通知商家。userId: {}, content: {}",userId,config.getNoticeFinishedTemplate());
     }
-    public void noticeFinished(String userId,String orderNo){
-        noticeFinished(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);
-    }
+//    public void noticeFinished(String userId,String orderNo){
+//        noticeFinished(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);
+//    }
 
     /**
      * 通知商家超时无人抢单
