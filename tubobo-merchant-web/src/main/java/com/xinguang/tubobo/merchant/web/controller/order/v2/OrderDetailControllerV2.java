@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
+import com.xinguang.tubobo.api.enums.EnumCarType;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
@@ -42,7 +43,7 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         BeanUtils.copyProperties(respOrderDetail,commentsInfo);
 
         DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
-                entity.getRiderCarType());
+                EnumCarType.getNameByType(entity.getRiderCarType()));
         CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
         RespOrderDetailV2 resp = new RespOrderDetailV2();
         resp.setCarInfo(carInfo);
