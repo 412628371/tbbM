@@ -98,11 +98,9 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
             throw new MerchantClientException(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE);
         }
-        if (!DateUtils.isAfterBeginTimeInOneDay(beginWorkTime)){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_EARLY);
-        }
-        if (!DateUtils.isBeforeEndTimeInOneDay(endWorkTime)){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_LATE);
+        if (!DateUtils.isAfterBeginTimeInOneDay(beginWorkTime)||
+                !DateUtils.isBeforeEndTimeInOneDay(endWorkTime)){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_WORK);
         }
     }
 

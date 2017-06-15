@@ -23,11 +23,11 @@ public class ConfigCallback implements IDisconfUpdate {
     @Resource
     private Config config;
     @Resource
-    private ErrorMsgConfig errorMsgConfig;
+    private ErrorMsgConfigHelper errorMsgConfigHelper;
 
     @Override
     public void reload() throws Exception {
-        ErrorMsgHelper.loadAll();
+        errorMsgConfigHelper.loadErrorMsg();
         logger.info("Config update:");
     }
 }

@@ -19,10 +19,9 @@
     </properties>
 
     <dependencies>
-
         <dependency>
-            <groupId>com.baidu.disconf</groupId>
-            <artifactId>disconf-client</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 </project>
