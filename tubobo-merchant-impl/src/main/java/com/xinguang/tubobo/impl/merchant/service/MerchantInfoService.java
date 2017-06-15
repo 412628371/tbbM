@@ -92,10 +92,8 @@ public class MerchantInfoService extends BaseService {
 			if (StringUtils.isBlank(consignorStatus)||EnumAuthentication.INIT.getValue().equals(consignorStatus)){
 				return 0;
 			}
-			if (EnumAuthentication.FAIL.getValue().equals(status)){
-				merchantStatus = status;
-			}
-			if (EnumAuthentication.FROZEN.getValue().equals(status)){
+			if (EnumAuthentication.FROZEN.getValue().equals(status)||
+					EnumAuthentication.FAIL.getValue().equals(status)){
 				if (!EnumAuthentication.INIT.getValue().equals(merchantStatus)){
 					merchantStatus = status;
 				}

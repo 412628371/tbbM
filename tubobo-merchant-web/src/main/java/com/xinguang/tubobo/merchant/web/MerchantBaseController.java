@@ -63,7 +63,6 @@ public abstract class MerchantBaseController <P, R>{
             return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , "参数包含非法字符");
         }
         String userId = "";
-//        String userId = "30126";
 
         // 验证登录
         if (needLogin()) {
