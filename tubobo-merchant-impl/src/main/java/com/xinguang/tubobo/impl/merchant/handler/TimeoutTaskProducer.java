@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.impl.merchant.handler;
 
-import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by Administrator on 2017/4/8.
