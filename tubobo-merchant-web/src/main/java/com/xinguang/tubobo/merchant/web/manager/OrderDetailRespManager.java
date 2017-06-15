@@ -58,7 +58,7 @@ public class OrderDetailRespManager {
         int grabMilSeconds = config.getTaskGrabExpiredMilSeconds();
         int payMilSeconds = config.getPayExpiredMilSeconds();
 
-        if (EnumOrderType.BIGORDER.equals(entity.getOrderType())){
+        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
             grabMilSeconds = config.getConsignorTaskExpiredMilliSeconds();
             payMilSeconds = config.getConsignorPayExpiredMilliSeconds();
         }
