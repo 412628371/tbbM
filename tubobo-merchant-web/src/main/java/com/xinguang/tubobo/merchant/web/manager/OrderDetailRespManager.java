@@ -49,12 +49,6 @@ public class OrderDetailRespManager {
     public RespOrderDetail getDetail(String userId,String orderNo,MerchantOrderEntity entity) throws MerchantClientException {
         logger.info("订单详情查询：userId:{},orderNo:{},status:{}",userId,orderNo,entity.getOrderStatus());
         Date now = new Date();
-        handleTimeoutDelay(entity,now);
-
-        RespOrderDetail respOrderDetail = new RespOrderDetail();
-        BeanUtils.copyProperties(entity,respOrderDetail);
-        respOrderDetail.setOrderRemarks(ConvertUtil.handleNullString(entity.getOrderRemark()));
-
         int grabMilSeconds = config.getTaskGrabExpiredMilSeconds();
         int payMilSeconds = config.getPayExpiredMilSeconds();
 
@@ -68,13 +62,20 @@ public class OrderDetailRespManager {
                 entity.getOrderTime().getTime()+payMilSeconds > now.getTime()){
             payRemainMilSeconds = entity.getOrderTime().getTime()+payMilSeconds-now.getTime();
         }
-        respOrderDetail.setPayRemainMillSeconds(payRemainMilSeconds);
-
 
         if (entity.getPayTime()!=null &&
                 entity.getPayTime().getTime()+grabMilSeconds > now.getTime()){
             grabRemainMilSeconds = entity.getPayTime().getTime()+grabMilSeconds-now.getTime();
         }
+
+        handleTimeoutDelay(entity,payRemainMilSeconds,grabRemainMilSeconds);
+
+        RespOrderDetail respOrderDetail = new RespOrderDetail();
+        BeanUtils.copyProperties(entity,respOrderDetail);
+        respOrderDetail.setOrderRemarks(ConvertUtil.handleNullString(entity.getOrderRemark()));
+        respOrderDetail.setPayRemainMillSeconds(payRemainMilSeconds);
+
+
         respOrderDetail.setGrabRemainMillSeconds(grabRemainMilSeconds);
 
         //已评价的订单，获取评价内容
@@ -96,19 +97,23 @@ public class OrderDetailRespManager {
         return respOrderDetail;
     }
 
-    private void handleTimeoutDelay(MerchantOrderEntity entity,Date now) throws MerchantClientException {
+    /**
+     * 处理是否超时取消中
+     * @param entity
+     * @param payRemainMilSeconds
+     * @param grabRemainMilSeconds
+     * @throws MerchantClientException
+     */
+    private void handleTimeoutDelay(MerchantOrderEntity entity,long payRemainMilSeconds,
+                                    long grabRemainMilSeconds) throws MerchantClientException {
         if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
-            Date orderTime = entity.getOrderTime();
-            long expectedExpiredMilSeconds = orderTime.getTime() + config.getPayExpiredMilSeconds();
-            if (now.getTime() >= expectedExpiredMilSeconds){
+            if (payRemainMilSeconds<=0){
                 orderService.clearRedisCache(entity.getUserId());
                 throw new MerchantClientException(EnumRespCode.MERCHANT_UNPAY_CNACELING);
             }
         }
         if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
-            Date payTime = entity.getPayTime();
-            long expectedExpiredMilSeconds = payTime.getTime() + config.getTaskGrabExpiredMilSeconds();
-            if (now.getTime() >= expectedExpiredMilSeconds){
+            if (grabRemainMilSeconds<=0){
                 orderService.clearRedisCache(entity.getUserId());
                 throw new MerchantClientException(EnumRespCode.MERCHANT_UNGRAB_CANCELING);
             }
