@@ -18,7 +18,11 @@ public class MerchantClientException extends Exception {
 
     public MerchantClientException(EnumRespCode resp,String placeHolder) {
         this.code = resp.getValue();
-        this.errorMsg = String.format(resp.getDesc(),placeHolder);
+        this.errorMsg = ErrorMsgHelper.findByCode(code);
+        if (StringUtils.isBlank(errorMsg)){
+            this.errorMsg = resp.getDesc();
+        }
+        this.errorMsg = String.format(this.errorMsg,placeHolder);
     }
     public String getCode() {
         return code;

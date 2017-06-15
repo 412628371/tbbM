@@ -50,7 +50,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
                 status = infoEntity.getConsignorStatus();
             }
-            judgeOrderCondition(status,config.getConsignorBeginWorkTime(),config.getConsignorEndWorkTime());
+            judgeOrderCondition(status,config.getConsignorBeginWorkTime(),config.getConsignorEndWorkTime(),true);
             AddressInfo senderAddressInfo = req.getConsignor();
             //大件订单，把发货人地址信息设置到实体
             AddressInfoToOrderBeanHelper.putSenderFromAddressInfo(entity,senderAddressInfo);
@@ -62,7 +62,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             entity.setCarTypeName(carTypeDTO.getName());
         }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
-            judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime());
+            judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
         }else {
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_TYPE_NOT_SUPPORT);
         }
@@ -94,14 +94,22 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
      * @param endWorkTime 结束工作时间
      * @throws MerchantClientException
      */
-    private void judgeOrderCondition(String status,String beginWorkTime,String endWorkTime) throws MerchantClientException {
+    private void judgeOrderCondition(String status,String beginWorkTime,String endWorkTime,boolean isBigOrder) throws MerchantClientException {
         if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
             throw new MerchantClientException(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE);
         }
-        if (!DateUtils.isAfterBeginTimeInOneDay(beginWorkTime)||
-                !DateUtils.isBeforeEndTimeInOneDay(endWorkTime)){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_WORK);
+        if (isBigOrder){
+            if (!DateUtils.isAfterBeginTimeInOneDay(beginWorkTime)||
+                    !DateUtils.isBeforeEndTimeInOneDay(endWorkTime)){
+                throw new MerchantClientException(EnumRespCode.CONSIGNOR_NOT_WORK);
+            }
+        }else {
+            if (!DateUtils.isAfterBeginTimeInOneDay(beginWorkTime)||
+                    !DateUtils.isBeforeEndTimeInOneDay(endWorkTime)){
+                throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_WORK);
+            }
         }
+
     }
 
     @Override
