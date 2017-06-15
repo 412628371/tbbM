@@ -1,5 +1,8 @@
 package com.xinguang.tubobo.merchant.web;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.hzmux.hzcms.common.beanvalidator.BeanValidators;
 import com.hzmux.hzcms.common.utils.StringUtils;
@@ -22,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
@@ -51,6 +56,11 @@ public abstract class MerchantBaseController <P, R>{
         }catch (ConstraintViolationException e){
             List<String> cons = extractMessage(e.getConstraintViolations());
             return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , StringUtils.join(cons, ","));
+        }
+        String json = JSONObject.toJSONString(req);
+       String dealedJson = StringUtils.replaceHtml(json);
+        if (!json.equals(dealedJson)){
+            return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , "参数包含非法字符");
         }
         String userId = "";
 //        String userId = "30126";
