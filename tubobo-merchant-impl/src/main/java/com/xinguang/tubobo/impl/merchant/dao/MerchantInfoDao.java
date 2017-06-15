@@ -39,13 +39,14 @@ public class MerchantInfoDao extends BaseDao<MerchantInfoEntity> {
     }
     public int updateVerifyStatus(String merchantStatus,String consignorStatus,String updateBy,String userId){
 
-        String sqlString = "update MerchantInfoEntity set merchantStatus=:merchantStatus,consignorStatus=:consignorStatus,updateDate=:updateDate,updateBy=:updateBy where userId = :userId and delFlag = '0' ";
+        String sqlString = "update MerchantInfoEntity set merchantStatus=:merchantStatus,consignorStatus=:consignorStatus,updateDate=:updateDate,updateBy=:updateBy,verifyDate=:verifyDate where userId = :userId and delFlag = '0' ";
         Parameter parameter = new Parameter();
         parameter.put("merchantStatus",merchantStatus);
         parameter.put("consignorStatus",consignorStatus);
         parameter.put("updateBy",updateBy);
         parameter.put("userId",userId);
         parameter.put("updateDate",new Date());
+        parameter.put("verifyDate",new Date());
         int count = createQuery(sqlString, parameter).executeUpdate();
         return count;
     }
