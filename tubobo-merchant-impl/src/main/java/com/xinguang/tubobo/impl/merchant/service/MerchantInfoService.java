@@ -95,6 +95,11 @@ public class MerchantInfoService extends BaseService {
 			if (EnumAuthentication.FAIL.getValue().equals(status)){
 				merchantStatus = status;
 			}
+			if (EnumAuthentication.FROZEN.getValue().equals(status)){
+				if (!EnumAuthentication.INIT.getValue().equals(merchantStatus)){
+					merchantStatus = status;
+				}
+			}
 			consignorStatus = status;
 		}else if (EnumIdentifyType.MERCHANT.getValue().equals(identifyType)){
 			if (StringUtils.isBlank(merchantStatus)||
@@ -104,13 +109,12 @@ public class MerchantInfoService extends BaseService {
 			if (EnumAuthentication.SUCCESS.getValue().equals(status)){
 				consignorStatus = status;
 			}
+			if (EnumAuthentication.FROZEN.getValue().equals(status)){
+				consignorStatus = status;
+			}
 			merchantStatus = status;
 		}
-		//统一冻结
-		if (EnumAuthentication.FROZEN.getValue().equals(status)){
-			merchantStatus = status;
-			consignorStatus = status;
-		}
+
 		result = merchantInfoDao.updateVerifyStatus(merchantStatus,consignorStatus,updateBy,userId);
 		merchantInfoDao.getSession().clear();
 		return result;
