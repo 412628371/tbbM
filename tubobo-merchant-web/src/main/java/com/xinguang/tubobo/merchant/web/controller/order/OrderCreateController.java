@@ -42,11 +42,9 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
         if (!EnumAuthentication.SUCCESS.getValue().equals(infoEntity.getMerchantStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE);
         }
-        if (!DateUtils.isAfterBeginTimeInOneDay(config.getBeginWorkTime())){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_EARLY);
-        }
-        if (!DateUtils.isBeforeEndTimeInOneDay(config.getEndWorkTime())){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_TOO_LATE);
+        if (!DateUtils.isAfterBeginTimeInOneDay(config.getBeginWorkTime()) ||
+                !DateUtils.isBeforeEndTimeInOneDay(config.getEndWorkTime())){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_WORK);
         }
         MerchantOrderEntity entity = translateRequestToEntity(userId,req,infoEntity);
         String orderNo = merchantOrderManager.order(userId,entity);

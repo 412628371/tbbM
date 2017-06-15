@@ -1,11 +1,8 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
-import com.google.common.math.DoubleMath;
-import com.hzmux.hzcms.common.utils.LocationUtil;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.CarTypeDTO;
-import com.xinguang.tubobo.api.enums.EnumCarType;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
