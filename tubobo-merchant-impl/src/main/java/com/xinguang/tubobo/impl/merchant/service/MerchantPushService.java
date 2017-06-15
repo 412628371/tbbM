@@ -94,7 +94,7 @@ public class MerchantPushService {
         if (MerchantConstants.PUSH_ORDER_TYPE_BIG.equals(type)){
             grabTimeoutTemplete = config.getConsignorNoticeGrabTimeoutTemplate();
         }
-        pushToUser(userId,config.getNoticeGrabedTimeoutTemplate(),grabTimeoutTemplete,generateExtraParam(orderNo,type));
+        pushToUser(userId,grabTimeoutTemplete,config.getNoticeGrabedTimeoutTitle(),generateExtraParam(orderNo,type));
         logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTimeoutTemplate());
     }
 //    public void noticeGrabTimeout(String userId,String orderNo){
