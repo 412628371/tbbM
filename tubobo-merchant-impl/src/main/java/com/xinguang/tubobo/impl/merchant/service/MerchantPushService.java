@@ -90,12 +90,12 @@ public class MerchantPushService {
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderExpired())
             return;
-        String grabTimeoutTemplete = config.getNoticeGrabedTimeoutTitle();
+        String grabTimeoutTemplete = config.getNoticeGrabedTimeoutTemplate();
         if (MerchantConstants.PUSH_ORDER_TYPE_BIG.equals(type)){
             grabTimeoutTemplete = config.getConsignorNoticeGrabTimeoutTemplate();
         }
         pushToUser(userId,grabTimeoutTemplete,config.getNoticeGrabedTimeoutTitle(),generateExtraParam(orderNo,type));
-        logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTimeoutTemplate());
+        logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,grabTimeoutTemplete);
     }
 //    public void noticeGrabTimeout(String userId,String orderNo){
 //        noticeGrabTimeout(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);

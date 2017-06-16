@@ -67,6 +67,8 @@ public class OrderDetailRespManager {
                 entity.getPayTime().getTime()+grabMilSeconds > now.getTime()){
             grabRemainMilSeconds = entity.getPayTime().getTime()+grabMilSeconds-now.getTime();
         }
+        payRemainMilSeconds += 2000;
+        grabRemainMilSeconds += 2000;
 
         handleTimeoutDelay(entity,payRemainMilSeconds,grabRemainMilSeconds);
 
