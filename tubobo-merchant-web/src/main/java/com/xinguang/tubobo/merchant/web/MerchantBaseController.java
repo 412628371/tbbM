@@ -1,8 +1,6 @@
 package com.xinguang.tubobo.merchant.web;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.hzmux.hzcms.common.beanvalidator.BeanValidators;
 import com.hzmux.hzcms.common.utils.StringUtils;
@@ -25,8 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
@@ -58,8 +54,11 @@ public abstract class MerchantBaseController <P, R>{
             return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , StringUtils.join(cons, ","));
         }
         String json = JSON.toJSONString(req);
-        String dealedJson = StringUtils.stripXSS(json);
-        req = (P) JSON.parseObject(dealedJson,req.getClass());
+        if (StringUtils.isContainIllegalChars(json)){
+            return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , "输入包含非法字符，请检查输入");
+        }
+//        String dealedJson = StringUtils.stripXSS(json);
+//        req = (P) JSON.parseObject(dealedJson,req.getClass());
         String userId = "";
 
         // 验证登录
