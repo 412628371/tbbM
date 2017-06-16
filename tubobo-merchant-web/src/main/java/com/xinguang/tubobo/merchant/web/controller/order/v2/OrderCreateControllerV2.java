@@ -265,11 +265,15 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         }
     }
 
-
+/**
+ * 检查版本是否过低不支持溢价费
+ */
     public void checkOverFeeForOldVersion(String AreaCode) throws MerchantClientException {
         OverFeeDTO overFee = overFeeService.findOverFee(AreaCode);
-        if (overFee.getPeekIsOpen()||overFee.getWeatherIsOpen()){
-            throw new MerchantClientException(EnumRespCode.OVERFEE_VERSION_LOW);
+        if (overFee!=null){
+            if (overFee.getPeekIsOpen()||null!=overFee.getWeatherOverFee()){
+                throw new MerchantClientException(EnumRespCode.OVERFEE_VERSION_LOW);
+            }
         }
     }
 
