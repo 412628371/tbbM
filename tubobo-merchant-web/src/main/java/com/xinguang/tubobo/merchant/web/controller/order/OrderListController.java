@@ -1,6 +1,8 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.order.ReqOrderList;
 import com.xinguang.tubobo.merchant.web.response.order.RespOrderItem;
@@ -30,6 +32,9 @@ public class OrderListController extends MerchantBaseController<ReqOrderList,Pag
         MerchantOrderEntity entity = new MerchantOrderEntity();
         entity.setUserId(userId);
         entity.setOrderStatus(req.getOrderStatus());
+        if (StringUtils.isBlank(req.getOrderStatus())){
+            entity.setOrderStatus(MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL);
+        }
         Page<MerchantOrderEntity> page = merchantOrderManager.merchantQueryOrderPage(req.getPageNo(),req.getPageSize(),entity);
         List<RespOrderItem> list = new ArrayList<>(page.getPageNo());
         if (page!= null && page.getList() != null && page.getList().size() > 0) {

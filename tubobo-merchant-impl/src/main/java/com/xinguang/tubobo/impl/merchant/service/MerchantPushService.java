@@ -60,7 +60,8 @@ public class MerchantPushService {
         if (entity == null || !entity.getPushMsgOrderGrabed())
             return;
 
-        pushToUser(userId,config.getNoticeGrabedTemplate(),config.getNoticeGrabedTitle(),generateExtraParam(orderNo,type));
+        pushToUser(userId,config.getNoticeGrabedTemplate(),config.getNoticeGrabedTitle(),
+                generateExtraParam(userId,orderNo,type));
         logger.info("订单被接单，通知商家。userId: {}, content: {}",userId,config.getNoticeGrabedTemplate());
     }
 //    public void noticeGrab(String userId,String orderNo){
@@ -75,7 +76,8 @@ public class MerchantPushService {
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderFinished())
             return;
-        pushToUser(userId,config.getNoticeFinishedTemplate(),config.getNoticeFinishedTitle(),generateExtraParam(orderNo,type));
+        pushToUser(userId,config.getNoticeFinishedTemplate(),config.getNoticeFinishedTitle(),
+                generateExtraParam(userId,orderNo,type));
         logger.info("订单配送完成，通知商家。userId: {}, content: {}",userId,config.getNoticeFinishedTemplate());
     }
 //    public void noticeFinished(String userId,String orderNo){
@@ -94,24 +96,26 @@ public class MerchantPushService {
         if (MerchantConstants.PUSH_ORDER_TYPE_BIG.equals(type)){
             grabTimeoutTemplete = config.getConsignorNoticeGrabTimeoutTemplate();
         }
-        pushToUser(userId,grabTimeoutTemplete,config.getNoticeGrabedTimeoutTitle(),generateExtraParam(orderNo,type));
+        pushToUser(userId,grabTimeoutTemplete,config.getNoticeGrabedTimeoutTitle(),
+                generateExtraParam(userId,orderNo,type));
         logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,grabTimeoutTemplete);
     }
 //    public void noticeGrabTimeout(String userId,String orderNo){
 //        noticeGrabTimeout(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);
 //    }
 
-    private static String  generateExtraParam(String orderNo,String type){
+    private static String  generateExtraParam(String userId,String orderNo,String type){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setOrderNo(orderNo);
         NoticePushVo noticePushVo = new NoticePushVo();
         noticePushVo.setType(type);
         noticePushVo.setParams(paramVo);
+        noticePushVo.setUserId(userId);
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
     public static void main(String[] args) {
-        String s = generateExtraParam("aaa","orderDetail-big");
+        String s = generateExtraParam("30126","aaa","orderDetail-big");
         System.out.println(s);
     }
 }

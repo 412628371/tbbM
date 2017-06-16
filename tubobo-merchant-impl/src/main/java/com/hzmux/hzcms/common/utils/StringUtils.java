@@ -185,12 +185,26 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 			scriptPattern = Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
 			value = scriptPattern.matcher(value).replaceAll("");
 		}
+		return cleanXSS(value);
+	}
+	/**
+	 * 过滤特殊字符
+	 */
+	private  static  String cleanXSS(String value) {
+		value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+		value = value.replaceAll("%3C", "&lt;").replaceAll("%3E", "&gt;");
+//		value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
+		value = value.replaceAll("%28", "&#40;").replaceAll("%29", "&#41;");
+		value = value.replaceAll("'", "&#39;");
+		value = value.replaceAll("eval\\((.*)\\)", "");
+		value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
+		value = value.replaceAll("script", "");
 		return value;
 	}
 
 	public static void main(String[] args) {
-		String input = "<a>aaaaaaaaaaa</a>";
-		input =stripXSS(input);
-		System.out.println("input = [" + input + "]");
+		String input = "<script alert('123')</script";
+		input =cleanXSS(input);
+		System.out.println(input);
 	}
 }
