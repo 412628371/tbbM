@@ -1,8 +1,6 @@
 package com.xinguang.tubobo.merchant.web;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.hzmux.hzcms.common.beanvalidator.BeanValidators;
 import com.hzmux.hzcms.common.utils.StringUtils;
@@ -25,8 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 

@@ -142,10 +142,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
 	public static boolean isContainIllegalChars(String value){
 		if (StringUtils.isBlank(value))
-			return true;
-		if (value.contains("<") || value.contains(">"))
 			return false;
-		return true;
+		if (value.contains("<") || value.contains(">"))
+			return true;
+		return false;
 	}
 	public static String stripXSS(String value) {
 		if (value != null) {
