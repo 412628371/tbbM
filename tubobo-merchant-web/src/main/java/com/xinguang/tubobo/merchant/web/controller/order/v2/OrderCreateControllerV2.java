@@ -111,7 +111,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         //封装溢价信息并校验
 
         OverFeeInfo overFeeInfo = req.getOverFeeInfo();
-        if (overFeeInfo==null){
+        if (overFeeInfo==null&&EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             //处理老版本,此时判断
             checkOverFeeForOldVersion(infoEntity.getAddressAdCode());
         }
