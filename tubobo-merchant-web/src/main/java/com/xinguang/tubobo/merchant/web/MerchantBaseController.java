@@ -57,11 +57,9 @@ public abstract class MerchantBaseController <P, R>{
             List<String> cons = extractMessage(e.getConstraintViolations());
             return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , StringUtils.join(cons, ","));
         }
-        String json = JSONObject.toJSONString(req);
-       String dealedJson = StringUtils.replaceHtml(json);
-        if (!json.equals(dealedJson)){
-            return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , "参数包含非法字符");
-        }
+        String json = JSON.toJSONString(req);
+        String dealedJson = StringUtils.stripXSS(json);
+        req = (P) JSON.parseObject(dealedJson,req.getClass());
         String userId = "";
 
         // 验证登录
