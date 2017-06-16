@@ -9,6 +9,7 @@ import com.hzmux.hzcms.common.persistence.BaseDao;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
@@ -198,7 +199,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append("and user_id = :user_id  ");
             parameter.put("user_id", entity.getUserId());
          }
-        if (StringUtils.isNotBlank(entity.getOrderStatus())){
+        if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+                !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", entity.getOrderStatus());
         }

@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class NoticePushVo implements Serializable{
     private String type;
+    private String userId;
     private NoticeParamVo params;
 
     public String getType() {
@@ -23,5 +24,13 @@ public class NoticePushVo implements Serializable{
 
     public void setParams(NoticeParamVo params) {
         this.params = params;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
