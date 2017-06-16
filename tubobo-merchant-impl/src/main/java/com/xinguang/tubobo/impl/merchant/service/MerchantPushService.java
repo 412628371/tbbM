@@ -90,7 +90,7 @@ public class MerchantPushService {
         MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
         if (entity == null || !entity.getPushMsgOrderExpired())
             return;
-        String grabTimeoutTemplete = config.getNoticeGrabedTimeoutTitle();
+        String grabTimeoutTemplete = config.getNoticeGrabedTimeoutTemplate();
         if (MerchantConstants.PUSH_ORDER_TYPE_BIG.equals(type)){
             grabTimeoutTemplete = config.getConsignorNoticeGrabTimeoutTemplate();
         }

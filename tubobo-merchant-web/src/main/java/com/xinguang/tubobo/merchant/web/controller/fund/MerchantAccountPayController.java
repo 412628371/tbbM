@@ -147,7 +147,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         }
         merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
                 +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
-        merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
+        merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;
     }
