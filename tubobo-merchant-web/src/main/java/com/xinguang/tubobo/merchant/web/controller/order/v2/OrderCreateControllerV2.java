@@ -111,6 +111,10 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         //封装溢价信息并校验
 
         OverFeeInfo overFeeInfo = req.getOverFeeInfo();
+        if (overFeeInfo==null){
+            //处理老版本,此时判断
+            checkOverFeeForOldVersion(infoEntity.getAddressAdCode());
+        }
 
         Double weatherOverFee = 0.0;
         Double peekOverFee = 0.0;
@@ -176,7 +180,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
     }
 
-    public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
+   /* public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
         OverFeeDTO overFee = overFeeService.findOverFee(AreaCode);
         if(null!=overFee){
             Double peekOverFeeOld = overFeeInfo.getPeekOverFee();
@@ -212,7 +216,69 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
                 throw new MerchantClientException(EnumRespCode.PEEK_OVER_FEE_CHANGE);
             }
         }
+    }*/
+
+
+    public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
+        OverFeeDTO overFee = overFeeService.findOverFee(AreaCode);
+        if(null!=overFee){
+            Double peekOverFeeOld = overFeeInfo.getPeekOverFee();
+            Double weatherOverFeeOld = overFeeInfo.getWeatherOverFee();
+            Double weatherOverFeeNew = overFee.getWeatherOverFee();
+            Double peekOverFeeNew = overFee.getPeekOverFee();
+            if (!overFee.getPeekIsOpen()){
+                peekOverFeeNew=0.0;
+            }
+            if (weatherOverFeeNew!=null){
+                if(weatherOverFeeNew==weatherOverFeeOld&&peekOverFeeOld==peekOverFeeNew){
+                    logger.info("price is right");
+                }else{
+                    //该地区实时开启了天气溢价
+                    if (!peekOverFeeNew.equals(peekOverFeeOld)&&!weatherOverFeeNew.equals(weatherOverFeeOld)){
+                        //天气溢价高峰溢价均发生改变抛出如下信息
+                        throw new MerchantClientException(EnumRespCode.ALL_OVER_FEE_CHANGE);
+                    }
+                    if (!weatherOverFeeNew.equals(weatherOverFeeOld)){
+                        //天气溢价发生改变抛出如下信息
+                        throw new MerchantClientException(EnumRespCode.WEATHER_OVER_FEE_CHANGE);
+                    }
+                }
+            }else{
+                if(weatherOverFeeOld==0.0&&peekOverFeeOld==peekOverFeeNew){
+                    logger.info("price is right");
+                }else{
+                    //该地区实时关闭了天气溢价
+                    if (!(weatherOverFeeOld==0.0)&&(peekOverFeeNew!=peekOverFeeOld)&&!overFee.getPeekIsOpen()){
+                        //实际后台已经关闭该区域天气溢价和高峰溢价, 但是订单天气溢价不为零
+                        throw new MerchantClientException(EnumRespCode.OVER_FEE_CLOSE);
+                    }
+                    if (!(weatherOverFeeOld==0.0)){
+                        //原有天气溢价不为零 实时后台天气溢价已经关闭 发生改变抛出如下信息
+                        throw new MerchantClientException(EnumRespCode.WEATHER_OVER_FEE_CHANGE);
+                    }
+                }
+            }
+            if (!peekOverFeeNew.equals(peekOverFeeOld)){
+                //高峰溢价均发生改变抛出如下信息
+                throw new MerchantClientException(EnumRespCode.PEEK_OVER_FEE_CHANGE);
+            }
+        }
     }
+
+/**
+ * 检查版本是否过低不支持溢价费
+ */
+    public void checkOverFeeForOldVersion(String AreaCode) throws MerchantClientException {
+        OverFeeDTO overFee = overFeeService.findOverFee(AreaCode);
+        if (overFee!=null){
+            if (overFee.getPeekIsOpen()||null!=overFee.getWeatherOverFee()){
+                throw new MerchantClientException(EnumRespCode.OVERFEE_VERSION_LOW);
+            }
+        }
+    }
+
+
+
 
     @Override
     protected boolean needIdentify() {
