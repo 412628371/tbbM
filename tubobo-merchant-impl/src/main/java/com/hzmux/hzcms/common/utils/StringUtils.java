@@ -140,6 +140,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		return SpringContextHolder.getApplicationContext().getMessage(code, args, localLocale);
 	}
 
+	public static boolean isContainIllegalChars(String value){
+		if (StringUtils.isBlank(value))
+			return true;
+		if (value.contains("<") || value.contains(">"))
+			return false;
+		return true;
+	}
 	public static String stripXSS(String value) {
 		if (value != null) {
 

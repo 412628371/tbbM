@@ -58,8 +58,11 @@ public abstract class MerchantBaseController <P, R>{
             return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , StringUtils.join(cons, ","));
         }
         String json = JSON.toJSONString(req);
-        String dealedJson = StringUtils.stripXSS(json);
-        req = (P) JSON.parseObject(dealedJson,req.getClass());
+        if (StringUtils.isContainIllegalChars(json)){
+            return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , "输入包含非法字符，请检查输入");
+        }
+//        String dealedJson = StringUtils.stripXSS(json);
+//        req = (P) JSON.parseObject(dealedJson,req.getClass());
         String userId = "";
 
         // 验证登录
