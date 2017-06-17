@@ -9,18 +9,16 @@ import com.hzmux.hzcms.common.persistence.BaseDao;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -113,11 +111,26 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param grabOrderTime
      * @return
      */
-    public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime,Date expectFinishTime){
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_order_time = :p2, rider_id = :p3, rider_name = :p4, rider_phone = :p5 " +
-                " , expect_finish_time=:p6 where order_no = :p7 and order_status = :p8 and del_flag = '0' ";
-        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_PICK.getValue(),grabOrderTime,riderId,riderName,
-                riderPhone,expectFinishTime,orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
+    public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime,
+                              Date expectFinishTime,String riderCarNo,String riderCarType){
+        String updateQuery = "update "+MerchantOrderEntity.class.getSimpleName()+" set orderStatus = :orderStatus , riderId = :riderId ,riderPhone = :riderPhone,riderName=:riderName ,grabOrderTime = :grabOrderTime ," +
+                " expectFinishTime=:expectFinishTime, riderCarNo=:riderCarNo, riderCarType=:riderCarType" +
+                " where orderNo = :orderNo and delFlag='0'";
+        Parameter parameter = new Parameter();
+        parameter.put("orderStatus",EnumMerchantOrderStatus.WAITING_PICK.getValue());
+        parameter.put("riderId",riderId);
+        parameter.put("riderPhone",riderPhone);
+        parameter.put("riderName",riderName);
+        parameter.put("riderCarNo",riderCarNo);
+        parameter.put("riderCarType",riderCarType);
+        parameter.put("grabOrderTime",grabOrderTime);
+        parameter.put("expectFinishTime",expectFinishTime);
+        parameter.put("orderNo",orderNo);
+        int count =  update(updateQuery,parameter);
+//        String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_order_time = :p2, rider_id = :p3, rider_name = :p4, rider_phone = :p5 " +
+//                " , expect_finish_time=:p6 where order_no = :p7 and order_status = :p8 and del_flag = '0' ";
+//        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_PICK.getValue(),grabOrderTime,riderId,riderName,
+//                riderPhone,expectFinishTime,orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
         getSession().clear();
         return count;
     }
@@ -180,14 +193,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     public Page<MerchantOrderEntity> findMerchantOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
         Parameter parameter = new Parameter();
         StringBuffer sb = new StringBuffer();
+        //TODO 优化 select *
         sb.append("select * from tubobo_merchant_order where del_flag = '0' ");
         if (StringUtils.isNotBlank(entity.getUserId())){
             sb.append("and user_id = :user_id  ");
             parameter.put("user_id", entity.getUserId());
          }
-        if (StringUtils.isNotBlank(entity.getOrderStatus())){
+        if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+                !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", entity.getOrderStatus());
+        }
+        if (StringUtils.isNotBlank(entity.getOrderType())){
+            sb.append("and order_type = :order_type ");
+            parameter.put("order_type", entity.getOrderType());
         }
         if (StringUtils.isNotBlank(entity.getOrderNo())){
             sb.append("and order_no like :order_no ");

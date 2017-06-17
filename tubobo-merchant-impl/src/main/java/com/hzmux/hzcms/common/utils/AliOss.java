@@ -3,6 +3,8 @@ package com.hzmux.hzcms.common.utils;
 import com.aliyun.oss.OSSClient;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.Date;
  */
 public class AliOss {
 
+    private static Logger logger = LoggerFactory.getLogger(AliOss.class);
     private static String endpoint;
     private static String accessKeyId;
     private static String accessKeySecret;
@@ -41,15 +44,21 @@ public class AliOss {
      * @return
      */
     public static String generateSignedUrl(String key, String bucketName) {
-        if (key.startsWith("http://")) {
-            key = key.split("\\?")[0];
-            key = key.split("com/")[1];
+        try{
+            if (key.startsWith("http://")) {
+                key = key.split("\\?")[0];
+                key = key.split("com/")[1];
+            }
+            // 设置URL过期时间为1小时
+            Date expiration = new Date(new Date().getTime() + 3600 * 1000);
+            // 生成URL
+            URL url = ossClient.generatePresignedUrl(bucketName, key, expiration);
+            return url.toString();
+        }catch (Exception e){
+            logger.error("generateSignedUrl error: ",e);
+            return "";
         }
-        // 设置URL过期时间为1小时
-        Date expiration = new Date(new Date().getTime() + 3600 * 1000);
-        // 生成URL
-        URL url = ossClient.generatePresignedUrl(bucketName, key, expiration);
-        return url.toString();
+
     }
 
     /**
@@ -73,8 +82,14 @@ public class AliOss {
 
 
     public static void generateMerchantSignedUrl(MerchantInfoEntity info){
-        info.setIdCardFrontImageUrl(generateSignedUrl(info.getIdCardFrontImageUrl(),AliOss.BUCKETNAME_PRIVATE));
-        info.setIdCardBackImageUrl(generateSignedUrl(info.getIdCardBackImageUrl(),AliOss.BUCKETNAME_PRIVATE));
-        info.setShopImageUrl(generateSignedUrl(info.getShopImageUrl(),AliOss.BUCKETNAME_PRIVATE));
+        if (StringUtils.isNotBlank(info.getIdCardFrontImageUrl())){
+            info.setIdCardFrontImageUrl(generateSignedUrl(info.getIdCardFrontImageUrl(),AliOss.BUCKETNAME_PRIVATE));
+        }
+        if (StringUtils.isNotBlank(info.getIdCardBackImageUrl())){
+            info.setIdCardBackImageUrl(generateSignedUrl(info.getIdCardBackImageUrl(),AliOss.BUCKETNAME_PRIVATE));
+        }
+        if (StringUtils.isNotBlank(info.getShopImageUrl())){
+            info.setShopImageUrl(generateSignedUrl(info.getShopImageUrl(),AliOss.BUCKETNAME_PRIVATE));
+        }
     }
 }

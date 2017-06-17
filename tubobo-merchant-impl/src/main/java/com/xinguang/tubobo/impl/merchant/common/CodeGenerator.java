@@ -5,6 +5,7 @@ package com.xinguang.tubobo.impl.merchant.common;/**
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.service.SysSeqService;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class CodeGenerator {
     private static final String ORDER_CODE_NAME = "order_";
 
     public enum BusinessTypeEnum {
-        merchant_order("03","商家订单");
+        MERCHANT_SMALL_ORDER("03","商家订单"),
+        MERCHANT_BIG_ORDER("04","车配订单");
 
         BusinessTypeEnum(String code, String name) {
             this.code = code;
@@ -74,11 +76,15 @@ public class CodeGenerator {
      * generator the customer code
      * @return
      */
-    public String nextCustomerCode() {
+    public String nextCustomerCode(String orderType) {
+        String code = BusinessTypeEnum.MERCHANT_SMALL_ORDER.getCode();
+        if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
+            code = BusinessTypeEnum.MERCHANT_BIG_ORDER.getCode();
+        }
         String date = DateUtils.getDate("yyMMdd");
         Long seq = getCurrentSequenceValue(ORDER_CODE_NAME , date, 10);
 
-        return BusinessTypeEnum.merchant_order.getCode()+date + StringUtils.leftPad(String.valueOf(seq), 5, '0');
+        return code+date + StringUtils.leftPad(String.valueOf(seq), 5, '0');
     }
 
 }

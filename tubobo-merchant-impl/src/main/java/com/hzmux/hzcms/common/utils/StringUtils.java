@@ -139,81 +139,79 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		Locale localLocale = localLocaleResolver.resolveLocale(request);
 		return SpringContextHolder.getApplicationContext().getMessage(code, args, localLocale);
 	}
-	
-	/**
-	 * 获得用户远程地址
-	 */
-	public static String getRemoteAddr(HttpServletRequest request){
-		String remoteAddr = request.getHeader("X-Real-IP");
-        if (isNotBlank(remoteAddr)) {
-        	remoteAddr = request.getHeader("X-Forwarded-For");
-        }else if (isNotBlank(remoteAddr)) {
-        	remoteAddr = request.getHeader("Proxy-Client-IP");
-        }else if (isNotBlank(remoteAddr)) {
-        	remoteAddr = request.getHeader("WL-Proxy-Client-IP");
-        }
-        return remoteAddr != null ? remoteAddr : request.getRemoteAddr();
+
+	public static boolean isContainIllegalChars(String value){
+		if (StringUtils.isBlank(value))
+			return false;
+		if (value.contains("<") || value.contains(">"))
+			return true;
+		return false;
 	}
-	
-	/**
-	 * 判断keywords里是否已经包含给定的newKeyword
-	 * @param keywords
-	 * @param newKeyword
-	 * @return
-	 */
-    public static boolean existKeyword(String keywords, String newKeyword) {
-        if(StringUtils.isBlank(keywords) || StringUtils.isBlank(newKeyword)) {
-            return false;
-        }
-        String[] ka = keywords.split(",");
-        for (String k : ka) {
-            if(newKeyword.equals(k)){
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * 格式化运单号 
-     * @param str
-     * @return
-     */
-    public static String formartWayBillNo(String waybillNo){
-    	if (StringUtils.isBlank(waybillNo)) {
-			return "";
+	public static String stripXSS(String value) {
+		if (value != null) {
+
+			// Avoid null characters
+			value = value.replaceAll("", "");
+
+			// Avoid anything between script tags
+			Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			// Avoid anything in a src='...' type of e­xpression
+			scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			// Remove any lonesome </script> tag
+			scriptPattern = Pattern.compile("</script>", Pattern.CASE_INSENSITIVE);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			// Remove any lonesome <script ...> tag
+			scriptPattern = Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			// Avoid eval(...) e­xpressions
+			scriptPattern = Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			// Avoid e­xpression(...) e­xpressions
+			scriptPattern = Pattern.compile("e­xpression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			// Avoid javascript:... e­xpressions
+			scriptPattern = Pattern.compile("javascript:", Pattern.CASE_INSENSITIVE);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			// Avoid vbscript:... e­xpressions
+			scriptPattern = Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE);
+			value = scriptPattern.matcher(value).replaceAll("");
+
+			// Avoid onload= e­xpressions
+			scriptPattern = Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+			value = scriptPattern.matcher(value).replaceAll("");
 		}
-    	if (waybillNo.length() > 4) {
-    		return "**" + waybillNo.substring(waybillNo.length() - 4);
-		}else {
-			return "**" + waybillNo;
-		}
-    }
-    
-    /**
-     * 格式化区域码
-     * @param areaNum
-     * @return
-     */
-    public static String formartAreaNum(String areaNum) {
-		if (areaNum.length() == 6) {
-			if (areaNum.startsWith("00")) {
-				areaNum = areaNum.replaceFirst("00", "室外");
-			} else {
-				areaNum = areaNum.substring(0,2) + areaNum.substring(3);
-			}
-		}
-		return areaNum;
+		return cleanXSS(value);
 	}
-    
-    
-    /**
-     * 格式化退回件运单号 【20161013退回】+ waybillNo
-     * @param waybillNo
-     * @return
-     */
-    public static String formartWaybillNoToReturnBack(String waybillNo){
-    	waybillNo = "【退回" + DateUtils.formatDate(new Date(), "yyyyMMdd") + "】" + waybillNo;
-    	return waybillNo;
-    }
+	/**
+	 * 过滤特殊字符
+	 */
+	private  static  String cleanXSS(String value) {
+		value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+		value = value.replaceAll("%3C", "&lt;").replaceAll("%3E", "&gt;");
+//		value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
+		value = value.replaceAll("%28", "&#40;").replaceAll("%29", "&#41;");
+		value = value.replaceAll("'", "&#39;");
+		value = value.replaceAll("eval\\((.*)\\)", "");
+		value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
+//		value = value.replaceAll("script", "");
+		return value;
+	}
+
+	public static void main(String[] args) {
+		String input = "<script alert('123')</script";
+		input =cleanXSS(input);
+		System.out.println(input);
+	}
 }

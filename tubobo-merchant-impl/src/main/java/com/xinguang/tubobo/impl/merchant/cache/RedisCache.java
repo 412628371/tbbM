@@ -5,6 +5,8 @@
  */
 package com.xinguang.tubobo.impl.merchant.cache;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.dao.DataAccessException;
@@ -15,8 +17,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.io.*;
 import java.util.Set;
 
+
 public class RedisCache implements Cache{
 
+	Logger logger  = LoggerFactory.getLogger(RedisCache.class);
 	public static final String MERCHANT = "merchantCache";
 
 	private RedisTemplate<String, Object> redisTemplate;
@@ -131,14 +135,15 @@ public class RedisCache implements Cache{
 	@Override
 	public void evict(Object key) {
 		// TODO Auto-generated method stub
-
 		final String keyf = key.toString();
+		logger.info("注意，调用evict 方法:{}",keyf);
 		redisTemplate.execute(new RedisCallback<Long>() {
 			public Long doInRedis(RedisConnection connection)
 					throws DataAccessException {
 				Set<byte[]> keyset = connection.keys(keyf.getBytes());
 				for (byte[] keyd: keyset){
 					connection.del(keyd);
+					logger.info("!!!!!!!!!!!evict key:{}",new String(keyd));
 				}
 				return 0l;
 			}

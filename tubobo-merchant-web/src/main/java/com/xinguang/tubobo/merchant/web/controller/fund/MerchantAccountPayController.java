@@ -1,5 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
+import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
+import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
@@ -11,6 +13,7 @@ import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -21,7 +24,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountPay;
-import com.xinguang.tubobo.merchant.web.response.RespOrderPay;
+import com.xinguang.tubobo.merchant.web.response.order.RespOrderPay;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,7 +93,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             redisOp.resetPwdErrorTimes(userId);
             long payId = response.getData().getId();
             orderEntity.setPayId(payId);
-            MerchantOrderDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
+            TaskCreateDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),amount);
@@ -125,9 +128,14 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
 
 
 
-    private MerchantOrderDTO buildMerchantOrderDTO(MerchantOrderEntity entity,MerchantInfoEntity infoEntity){
-        MerchantOrderDTO merchantOrderDTO = new MerchantOrderDTO();
+    private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
+        TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
         BeanUtils.copyProperties(entity,merchantOrderDTO);
+        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
+            merchantOrderDTO.setTaskType(TaskTypeEnum.M_BIG_ORDER);
+        }else if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
+            merchantOrderDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
+        }
         if (entity.getPayAmount() != null){
             merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
         }
@@ -140,6 +148,9 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
                 +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
+        String [] shopUrls = new String[1];
+        shopUrls[0] = ConvertUtil.handleNullString(infoEntity.getShopImageUrl());
+        merchantOrderDTO.setSenderShopUrls(shopUrls);
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;
     }

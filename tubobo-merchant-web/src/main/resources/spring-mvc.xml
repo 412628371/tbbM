@@ -18,6 +18,7 @@
 	<!-- 使用Annotation自动注册Bean,只扫描@Controller -->
 	<context:component-scan base-package="com.xinguang.tubobo.merchant.web" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
 	</context:component-scan>
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<!-- 默认的注解映射的支持，org.springframewsysWeb.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping -->

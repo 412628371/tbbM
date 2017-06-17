@@ -7,6 +7,7 @@ package com.hzmux.hzcms.common.persistence;
 
 import com.hzmux.hzcms.common.utils.Reflections;
 import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import org.hibernate.*;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
@@ -46,7 +47,7 @@ public class BaseDao<T> {
 	 * 实体类类型(由构造方法自动赋值)
 	 */
 	private Class<?> entityClass;
-	
+
 	/**
 	 * 构造方法，根据实例类自动获取实体类类型
 	 */
@@ -57,8 +58,8 @@ public class BaseDao<T> {
 	/**
 	 * 获取 Session
 	 */
-	public Session getSession(){  
-	  return sessionFactory.getCurrentSession();
+	public Session getSession(){
+		return sessionFactory.getCurrentSession();
 	}
 
 	/**
@@ -71,10 +72,10 @@ public class BaseDao<T> {
 	/**
 	 * 清除缓存数据
 	 */
-	public void clear(){ 
+	public void clear(){
 		getSession().clear();
 	}
-	
+
 	// -------------- QL Query --------------
 
 	/**
@@ -84,9 +85,9 @@ public class BaseDao<T> {
 	 * @return
 	 */
 	public <E> Page<E> find(Page<E> page, String qlString){
-    	return find(page, qlString, null);
-    }
-    
+		return find(page, qlString, null);
+	}
+
 	/**
 	 * QL 分页查询
 	 * @param page
@@ -94,40 +95,40 @@ public class BaseDao<T> {
 	 * @param parameter
 	 * @return
 	 */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public <E> Page<E> find(Page<E> page, String qlString, Parameter parameter){
 		// get count
-    	if (!page.isDisabled() && !page.isNotCount()){
-	        String countQlString = "select count(*) " + removeSelect(removeOrders(qlString));  
+		if (!page.isDisabled() && !page.isNotCount()){
+			String countQlString = "select count(*) " + removeSelect(removeOrders(qlString));
 //	        page.setCount(Long.valueOf(createQuery(countQlString, parameter).uniqueResult().toString()));
-	        Query query = createQuery(countQlString, parameter);
-	        List<Object> list = query.list();
-	        if (list.size() > 0){
-	        	page.setCount(Long.valueOf(list.get(0).toString()));
-	        }else{
-	        	page.setCount(list.size());
-	        }
+			Query query = createQuery(countQlString, parameter);
+			List<Object> list = query.list();
+			if (list.size() > 0){
+				page.setCount(Long.valueOf(list.get(0).toString()));
+			}else{
+				page.setCount(list.size());
+			}
 			if (page.getCount() < 1) {
 				return page;
 			}
-    	}
-    	// order by
-    	String ql = qlString;
+		}
+		// order by
+		String ql = qlString;
 		if (StringUtils.isNotBlank(page.getOrderBy())){
 			ql += " order by " + page.getOrderBy();
 		}
-        Query query = createQuery(ql, parameter); 
-    	// set page
-        if (!page.isDisabled()){
-	        query.setFirstResult(page.getFirstResult());
-	        query.setMaxResults(page.getMaxResults()); 
-        }
-        page.setList(query.list());
+		Query query = createQuery(ql, parameter);
+		// set page
+		if (!page.isDisabled()){
+			query.setFirstResult(page.getFirstResult());
+			query.setMaxResults(page.getMaxResults());
+		}
+		page.setList(query.list());
 		return page;
-    }
-    
+	}
 
-    /**
+
+	/**
 	 * QL 查询
 	 * @param qlString
 	 * @return
@@ -135,8 +136,8 @@ public class BaseDao<T> {
 	public <E> List<E> find(String qlString){
 		return find(qlString, null);
 	}
-    
-    /**
+
+	/**
 	 * QL 查询
 	 * @param qlString
 	 * @param parameter
@@ -147,7 +148,7 @@ public class BaseDao<T> {
 		Query query = createQuery(qlString, parameter);
 		return query.list();
 	}
-	
+
 	/**
 	 * QL 查询所有
 	 * @return
@@ -156,7 +157,7 @@ public class BaseDao<T> {
 	public List<T> findAll(){
 		return getSession().createCriteria(entityClass).list();
 	}
-	
+
 	/**
 	 * 获取实体
 	 * @param id
@@ -166,7 +167,7 @@ public class BaseDao<T> {
 	public T get(Serializable id){
 		return (T)getSession().get(entityClass, id);
 	}
-	
+
 	/**
 	 * 获取实体
 	 * @param qlString
@@ -175,7 +176,7 @@ public class BaseDao<T> {
 	public T getByHql(String qlString){
 		return getByHql(qlString, null);
 	}
-	
+
 	/**
 	 * 获取实体
 	 * @param qlString
@@ -187,7 +188,7 @@ public class BaseDao<T> {
 		Query query = createQuery(qlString, parameter);
 		return (T)query.uniqueResult();
 	}
-	
+
 	/**
 	 * 保存实体
 	 * @param entity
@@ -232,7 +233,7 @@ public class BaseDao<T> {
 		}
 		getSession().saveOrUpdate(entity);
 	}
-	
+
 	/**
 	 * 保存实体列表
 	 * @param entityList
@@ -251,7 +252,7 @@ public class BaseDao<T> {
 	public int update(String qlString){
 		return update(qlString, null);
 	}
-	
+
 	/**
 	 * 更新
 	 * @param qlString
@@ -261,17 +262,17 @@ public class BaseDao<T> {
 	public int update(String qlString, Parameter parameter){
 		return createQuery(qlString, parameter).executeUpdate();
 	}
-	
+
 	/**
 	 * 逻辑删除
 	 * @param id
 	 * @return
 	 */
 	public int deleteById(Serializable id){
-		return update("update "+entityClass.getSimpleName()+" set delFlag='" + BaseEntity.DEL_FLAG_DELETE + "' where id = :p1", 
+		return update("update "+entityClass.getSimpleName()+" set delFlag='" + BaseMerchantEntity.DEL_FLAG_DELETE + "' where id = :p1",
 				new Parameter(id));
 	}
-	
+
 	/**
 	 * 逻辑删除
 	 * @param id
@@ -279,10 +280,10 @@ public class BaseDao<T> {
 	 * @return
 	 */
 	public int deleteById(Serializable id, String likeParentIds){
-		return update("update "+entityClass.getSimpleName()+" set delFlag = '" + BaseEntity.DEL_FLAG_DELETE + "' where id = :p1 or parentIds like :p2",
+		return update("update "+entityClass.getSimpleName()+" set delFlag = '" + BaseMerchantEntity.DEL_FLAG_DELETE + "' where id = :p1 or parentIds like :p2",
 				new Parameter(id, likeParentIds));
 	}
-	
+
 	/**
 	 * 更新删除标记
 	 * @param id
@@ -290,10 +291,10 @@ public class BaseDao<T> {
 	 * @return
 	 */
 	public int updateDelFlag(Serializable id, String delFlag){
-		return update("update "+entityClass.getSimpleName()+" set delFlag = :p2 where id = :p1", 
+		return update("update "+entityClass.getSimpleName()+" set delFlag = :p2 where id = :p1",
 				new Parameter(id, delFlag));
 	}
-	
+
 	/**
 	 * 创建 QL 查询对象
 	 * @param qlString
@@ -305,20 +306,20 @@ public class BaseDao<T> {
 		setParameter(query, parameter);
 		return query;
 	}
-	
+
 	// -------------- SQL Query --------------
 
-    /**
+	/**
 	 * SQL 分页查询
 	 * @param page
 	 * @param sqlString
 	 * @return
 	 */
 	public <E> Page<E> findBySql(Page<E> page, String sqlString){
-    	return findBySql(page, sqlString, null, null);
-    }
+		return findBySql(page, sqlString, null, null);
+	}
 
-    /**
+	/**
 	 * SQL 分页查询
 	 * @param page
 	 * @param sqlString
@@ -326,10 +327,10 @@ public class BaseDao<T> {
 	 * @return
 	 */
 	public <E> Page<E> findBySql(Page<E> page, String sqlString, Parameter parameter){
-    	return findBySql(page, sqlString, parameter, null);
-    }
+		return findBySql(page, sqlString, parameter, null);
+	}
 
-    /**
+	/**
 	 * SQL 分页查询
 	 * @param page
 	 * @param sqlString
@@ -337,10 +338,10 @@ public class BaseDao<T> {
 	 * @return
 	 */
 	public <E> Page<E> findBySql(Page<E> page, String sqlString, Class<?> resultClass){
-    	return findBySql(page, sqlString, null, resultClass);
-    }
-    
-    /**
+		return findBySql(page, sqlString, null, resultClass);
+	}
+
+	/**
 	 * SQL 分页查询
 	 * @param page
 	 * @param sqlString
@@ -348,38 +349,38 @@ public class BaseDao<T> {
 	 * @param parameter
 	 * @return
 	 */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public <E> Page<E> findBySql(Page<E> page, String sqlString, Parameter parameter, Class<?> resultClass){
 		// get count
-    	if (!page.isDisabled() && !page.isNotCount()){
-	        String countSqlString = "select count(*) " + removeSelect(removeOrders(sqlString));  
+		if (!page.isDisabled() && !page.isNotCount()){
+			String countSqlString = "select count(*) " + removeSelect(removeOrders(sqlString));
 //	        page.setCount(Long.valueOf(createSqlQuery(countSqlString, parameter).uniqueResult().toString()));
-	        Query query = createSqlQuery(countSqlString, parameter);
-	        List<Object> list = query.list();
-	        if (list.size() > 0){
-	        	page.setCount(Long.valueOf(list.get(0).toString()));
-	        }else{
-	        	page.setCount(list.size());
-	        }
+			Query query = createSqlQuery(countSqlString, parameter);
+			List<Object> list = query.list();
+			if (list.size() > 0){
+				page.setCount(Long.valueOf(list.get(0).toString()));
+			}else{
+				page.setCount(list.size());
+			}
 			if (page.getCount() < 1) {
 				return page;
 			}
-    	}
-    	// order by
-    	String sql = sqlString;
+		}
+		// order by
+		String sql = sqlString;
 		if (StringUtils.isNotBlank(page.getOrderBy())){
 			sql += " order by " + page.getOrderBy();
 		}
-        SQLQuery query = createSqlQuery(sql, parameter); 
+		SQLQuery query = createSqlQuery(sql, parameter);
 		// set page
-        if (!page.isDisabled()){
-	        query.setFirstResult(page.getFirstResult());
-	        query.setMaxResults(page.getMaxResults()); 
-        }
-        setResultTransformer(query, resultClass);
-        page.setList(query.list());
+		if (!page.isDisabled()){
+			query.setFirstResult(page.getFirstResult());
+			query.setMaxResults(page.getMaxResults());
+		}
+		setResultTransformer(query, resultClass);
+		page.setList(query.list());
 		return page;
-    }
+	}
 
 
 	@SuppressWarnings("unchecked")
@@ -418,7 +419,7 @@ public class BaseDao<T> {
 	public <E> List<E> findBySql(String sqlString){
 		return findBySql(sqlString, null, null);
 	}
-	
+
 	/**
 	 * SQL 查询
 	 * @param sqlString
@@ -428,7 +429,7 @@ public class BaseDao<T> {
 	public <E> List<E> findBySql(String sqlString, Parameter parameter){
 		return findBySql(sqlString, parameter, null);
 	}
-	
+
 	/**
 	 * SQL 查询
 	 * @param sqlString
@@ -442,7 +443,7 @@ public class BaseDao<T> {
 		setResultTransformer(query, resultClass);
 		return query.list();
 	}
-	
+
 	/**
 	 * SQL 更新
 	 * @param sqlString
@@ -452,7 +453,7 @@ public class BaseDao<T> {
 	public int updateBySql(String sqlString, Parameter parameter){
 		return createSqlQuery(sqlString, parameter).executeUpdate();
 	}
-	
+
 	/**
 	 * 创建 SQL 查询对象
 	 * @param sqlString
@@ -464,7 +465,7 @@ public class BaseDao<T> {
 		setParameter(query, parameter);
 		return query;
 	}
-	
+
 	// -------------- Query Tools --------------
 
 	/**
@@ -483,7 +484,7 @@ public class BaseDao<T> {
 			}
 		}
 	}
-	
+
 	/**
 	 * 设置查询参数
 	 * @param query
@@ -491,49 +492,49 @@ public class BaseDao<T> {
 	 */
 	private void setParameter(Query query, Parameter parameter){
 		if (parameter != null) {
-            Set<String> keySet = parameter.keySet();
-            for (String string : keySet) {
-                Object value = parameter.get(string);
-                //这里考虑传入的参数是什么类型，不同类型使用的方法不同  
-                if(value instanceof Collection<?>){
-                    query.setParameterList(string, (Collection<?>)value);
-                }else if(value instanceof Object[]){
-                    query.setParameterList(string, (Object[])value);
-                }else{
-                    query.setParameter(string, value);
-                }
-            }
-        }
+			Set<String> keySet = parameter.keySet();
+			for (String string : keySet) {
+				Object value = parameter.get(string);
+				//这里考虑传入的参数是什么类型，不同类型使用的方法不同
+				if(value instanceof Collection<?>){
+					query.setParameterList(string, (Collection<?>)value);
+				}else if(value instanceof Object[]){
+					query.setParameterList(string, (Object[])value);
+				}else{
+					query.setParameter(string, value);
+				}
+			}
+		}
 	}
-	
-    /** 
-     * 去除qlString的select子句。 
-     * @param qlString
-     * @return 
-     */  
-    private String removeSelect(String qlString){  
-        int beginPos = qlString.toLowerCase().indexOf("from");  
-        return qlString.substring(beginPos);  
-    }  
-      
-    /** 
-     * 去除hql的orderBy子句。 
-     * @param qlString
-     * @return 
-     */  
-    private String removeOrders(String qlString) {  
-        Pattern p = Pattern.compile("order\\s*by[\\w|\\W|\\s|\\S]*", Pattern.CASE_INSENSITIVE);  
-        Matcher m = p.matcher(qlString);  
-        StringBuffer sb = new StringBuffer();  
-        while (m.find()) {  
-            m.appendReplacement(sb, "");  
-        }
-        m.appendTail(sb);
-        return sb.toString();  
-    } 
-	
+
+	/**
+	 * 去除qlString的select子句。
+	 * @param qlString
+	 * @return
+	 */
+	private String removeSelect(String qlString){
+		int beginPos = qlString.toLowerCase().indexOf("from");
+		return qlString.substring(beginPos);
+	}
+
+	/**
+	 * 去除hql的orderBy子句。
+	 * @param qlString
+	 * @return
+	 */
+	private String removeOrders(String qlString) {
+		Pattern p = Pattern.compile("order\\s*by[\\w|\\W|\\s|\\S]*", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(qlString);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			m.appendReplacement(sb, "");
+		}
+		m.appendTail(sb);
+		return sb.toString();
+	}
+
 	// -------------- Criteria --------------
-	
+
 	/**
 	 * 分页查询
 	 * @param page
@@ -542,7 +543,7 @@ public class BaseDao<T> {
 	public Page<T> find(Page<T> page) {
 		return find(page, createDetachedCriteria());
 	}
-	
+
 
 	/**
 	 * 使用检索标准对象分页查询
@@ -553,7 +554,7 @@ public class BaseDao<T> {
 	public Page<T> find(Page<T> page, DetachedCriteria detachedCriteria) {
 		return find(page, detachedCriteria, Criteria.DISTINCT_ROOT_ENTITY);
 	}
-	
+
 	/**
 	 * 使用检索标准对象分页查询
 	 * @param page
@@ -574,8 +575,8 @@ public class BaseDao<T> {
 		criteria.setResultTransformer(resultTransformer);
 		// set page
 		if (!page.isDisabled()){
-	        criteria.setFirstResult(page.getFirstResult());
-	        criteria.setMaxResults(page.getMaxResults()); 
+			criteria.setFirstResult(page.getFirstResult());
+			criteria.setMaxResults(page.getMaxResults());
 		}
 		// order by
 		if (StringUtils.isNotBlank(page.getOrderBy())){
@@ -604,7 +605,7 @@ public class BaseDao<T> {
 	public List<T> find(DetachedCriteria detachedCriteria) {
 		return find(detachedCriteria, Criteria.DISTINCT_ROOT_ENTITY);
 	}
-	
+
 	/**
 	 * 使用检索标准对象查询
 	 * @param detachedCriteria
@@ -615,9 +616,9 @@ public class BaseDao<T> {
 	public List<T> find(DetachedCriteria detachedCriteria, ResultTransformer resultTransformer) {
 		Criteria criteria = detachedCriteria.getExecutableCriteria(getSession());
 		criteria.setResultTransformer(resultTransformer);
-		return criteria.list(); 
+		return criteria.list();
 	}
-	
+
 	/**
 	 * 使用检索标准对象查询记录数
 	 * @param detachedCriteria
@@ -652,7 +653,7 @@ public class BaseDao<T> {
 	/**
 	 * 创建与会话无关的检索标准对象
 	 * @param criterions Restrictions.eq("name", value);
-	 * @return 
+	 * @return
 	 */
 	public DetachedCriteria createDetachedCriteria(Criterion... criterions) {
 		DetachedCriteria dc = DetachedCriteria.forClass(entityClass);
@@ -662,4 +663,5 @@ public class BaseDao<T> {
 		return dc;
 	}
 	
+
 }

@@ -29,7 +29,7 @@ public class OrderPayTimeoutHandler  implements ChannelAwareMessageListener{
             logger.error("订单超时未支付，未找到订单。orderNo:{}",orderNo);
             return;
         }
-        orderService.payExpired(entity.getSenderId(),orderNo);
+        orderService.payExpired(entity.getUserId(),orderNo);
         logger.info("订单超时未支付，orderNo: {}",orderNo);
     }
 }

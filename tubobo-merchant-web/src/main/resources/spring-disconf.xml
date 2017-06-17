@@ -23,6 +23,7 @@
 		<property name="locations">
 			<list>
 				<value>common.properties</value>
+				<value>errormsg.properties</value>
 			</list>
 		</property>
 	</bean>

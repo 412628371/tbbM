@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.hzmux.hzcms.common.beanvalidator.BeanValidators;
 import com.hzmux.hzcms.common.utils.StringUtils;
@@ -7,6 +8,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
+import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import com.xinguang.tubobo.merchant.web.response.ClientResp;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -51,8 +53,13 @@ public abstract class MerchantBaseController <P, R>{
             List<String> cons = extractMessage(e.getConstraintViolations());
             return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , StringUtils.join(cons, ","));
         }
+        String json = JSON.toJSONString(req);
+        if (StringUtils.isContainIllegalChars(json)){
+            return new ClientResp(EnumRespCode.PARAMS_ERROR.getValue() , "输入包含非法字符，请检查输入");
+        }
+//        String dealedJson = StringUtils.stripXSS(json);
+//        req = (P) JSON.parseObject(dealedJson,req.getClass());
         String userId = "";
-//        String userId = "30126";
 
         // 验证登录
         if (needLogin()) {
@@ -73,10 +80,15 @@ public abstract class MerchantBaseController <P, R>{
                         EnumRespCode.MERCHANT_NOT_EXISTS.getDesc());
             }
             if (entity != null){
-                if (EnumAuthentication.FROZEN.getValue().equals(entity.getMerchantStatus())){
+                String status = entity.getMerchantStatus();
+                if (EnumIdentifyType.CONSIGNOR.getValue().equals(entity.getIdentifyType())){
+                    status = entity.getConsignorStatus();
+                }
+                if (EnumAuthentication.FROZEN.getValue().equals(status)){
                     return  new ClientResp(EnumRespCode.MERCHANT_FROZEN.getValue(),
                             EnumRespCode.MERCHANT_FROZEN.getDesc());
-                }else if (!EnumAuthentication.SUCCESS.getValue().equals(entity.getMerchantStatus())){
+                }else if (!EnumAuthentication.SUCCESS.getValue().equals(entity.getMerchantStatus())&&
+                        !EnumAuthentication.SUCCESS.getValue().equals(entity.getConsignorStatus())){
                     return  new ClientResp(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE.getValue(),
                             EnumRespCode.MERCHANT_STATUS_CANT_OPERATE.getDesc());
                 }

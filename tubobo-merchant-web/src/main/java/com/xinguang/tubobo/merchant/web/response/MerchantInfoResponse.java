@@ -35,6 +35,16 @@ public class MerchantInfoResponse implements Serializable{
     private Boolean enablePwdFree;
     private Double nonConfidentialPaymentLimit;
     private Boolean hasSetPayPwd;
+    private String consignorStatus;
+
+    public String getConsignorStatus() {
+        return consignorStatus;
+    }
+
+    public void setConsignorStatus(String consignorStatus) {
+        this.consignorStatus = consignorStatus;
+    }
+
     public Double getNonConfidentialPaymentLimit() {
         return nonConfidentialPaymentLimit;
     }
@@ -238,6 +248,7 @@ public class MerchantInfoResponse implements Serializable{
                 ", enablePwdFree=" + enablePwdFree +
                 ", nonConfidentialPaymentLimit=" + nonConfidentialPaymentLimit +
                 ", hasSetPayPwd=" + hasSetPayPwd +
+                ", consignorStatus='" + consignorStatus + '\'' +
                 '}';
     }
 }

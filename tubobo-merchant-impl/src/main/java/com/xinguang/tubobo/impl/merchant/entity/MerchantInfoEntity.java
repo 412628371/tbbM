@@ -49,6 +49,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Boolean hasSetPayPwd;
 	private Boolean enablePwdFree;
 	private String identifyType;
+	private String consignorStatus;
 
 	public String getShopImageUrl() {
 		return shopImageUrl;
@@ -255,6 +256,14 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 		this.identifyType = identifyType;
 	}
 
+	public String getConsignorStatus() {
+		return consignorStatus;
+	}
+
+	public void setConsignorStatus(String consignorStatus) {
+		this.consignorStatus = consignorStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "MerchantInfoEntity{" +
@@ -278,10 +287,11 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 				", applyDate=" + applyDate +
 				", verifyDate=" + verifyDate +
 				", addressRoomNo='" + addressRoomNo + '\'' +
-				", hasSetPayPwd=" + hasSetPayPwd +
 				", shopImageUrl='" + shopImageUrl + '\'' +
+				", hasSetPayPwd=" + hasSetPayPwd +
 				", enablePwdFree=" + enablePwdFree +
 				", identifyType='" + identifyType + '\'' +
+				", consignorStatus='" + consignorStatus + '\'' +
 				'}';
 	}
 }

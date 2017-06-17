@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
@@ -46,9 +47,9 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         }
         logger.info("处理骑手接单：orderNo:{}",orderNo);
         boolean result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
-                orderNo,dto.getGrabTime(),dto.getExpectFinishTime()) > 0;
+                orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType()) > 0;
         if (result){
-            pushService.noticeGrab(entity.getUserId(),orderNo);
+            pushService.noticeGrab(entity.getUserId(),orderNo, MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
         }
         return result;
     }
@@ -86,7 +87,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         boolean result =  merchantOrderManager.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime) > 0;
         if (result){
             //发送骑手完成送货通知
-            pushService.noticeFinished(entity.getUserId(),orderNo);
+            pushService.noticeFinished(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
         }
         return result;
     }

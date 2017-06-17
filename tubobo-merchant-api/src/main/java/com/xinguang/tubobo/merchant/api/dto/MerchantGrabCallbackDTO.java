@@ -10,6 +10,9 @@ public class MerchantGrabCallbackDTO implements Serializable {
     private String riderId;
     private String riderName;
     private String riderPhone;
+    private String riderCarNo;
+    private String riderCarType;
+
     private String taskNo;
     private Date grabTime;
     private Double pickupDistance;
@@ -25,6 +28,19 @@ public class MerchantGrabCallbackDTO implements Serializable {
         this.grabTime = grabTime;
         this.pickupDistance = pickupDistance;
         this.expectFinishTime = expectFinishTime;
+    }
+    public MerchantGrabCallbackDTO(String riderId, String riderName, String riderPhone,
+                                   String taskNo, Date grabTime,Double pickupDistance,
+                                   Date expectFinishTime,String riderCarNo,String riderCarType){
+        this.riderId = riderId;
+        this.riderName = riderName;
+        this.riderPhone = riderPhone;
+        this.taskNo = taskNo;
+        this.grabTime = grabTime;
+        this.pickupDistance = pickupDistance;
+        this.expectFinishTime = expectFinishTime;
+        this.riderCarNo = riderCarNo;
+        this.riderCarType = riderCarType;
     }
 
     public MerchantGrabCallbackDTO(){
@@ -92,10 +108,28 @@ public class MerchantGrabCallbackDTO implements Serializable {
                 "riderId='" + riderId + '\'' +
                 ", riderName='" + riderName + '\'' +
                 ", riderPhone='" + riderPhone + '\'' +
+                ", riderCarNo='" + riderCarNo + '\'' +
+                ", riderCarType='" + riderCarType + '\'' +
                 ", taskNo='" + taskNo + '\'' +
                 ", grabTime=" + grabTime +
                 ", pickupDistance=" + pickupDistance +
                 ", expectFinishTime=" + expectFinishTime +
                 '}';
+    }
+
+    public String getRiderCarNo() {
+        return riderCarNo;
+    }
+
+    public void setRiderCarNo(String riderCarNo) {
+        this.riderCarNo = riderCarNo;
+    }
+
+    public String getRiderCarType() {
+        return riderCarType;
+    }
+
+    public void setRiderCarType(String riderCarType) {
+        this.riderCarType = riderCarType;
     }
 }

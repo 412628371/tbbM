@@ -1,7 +1,11 @@
 package com.xinguang.tubobo.merchant.web.filter;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
 /**
@@ -10,6 +14,19 @@ import java.util.regex.Pattern;
 public class XSSRequestWrapper extends HttpServletRequestWrapper {
     public XSSRequestWrapper(HttpServletRequest servletRequest) {
         super(servletRequest);
+    }
+
+    @Override
+    public ServletInputStream getInputStream() throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream(), "utf-8"));
+//        StringBuffer sb = new StringBuffer("");
+//        String temp;
+//        while ((temp = br.readLine()) != null) {
+//            sb.append(temp);
+//        }
+//        br.close();
+//        params = sb.toString();
+        return super.getInputStream();
     }
 
     @Override

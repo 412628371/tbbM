@@ -1,6 +1,8 @@
 package com.xinguang.tubobo.impl.merchant.common;
 
 
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
+
 import java.util.regex.Pattern;
 
 /**
@@ -9,6 +11,8 @@ import java.util.regex.Pattern;
 public class MerchantConstants {
     public static final String PUSH_ORDER_TYPE_BIG= "orderDetail-big";
     public static final String PUSH_ORDER_TYPE_SMALL= "orderDetail-small";
+
+    public static final String ORDER_LIST_QUERY_CONDITION_ALL= "all";
 
 
     public static final String DEFAULT_SEPARATOR = ",";
@@ -40,6 +44,19 @@ public class MerchantConstants {
     public static final String  PATTERN_PHONE= "^1\\d{10}?$";
     public static final String  PATTERN_ID_CARD= "^(^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$)|(^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])((\\d{4})|\\d{3}[Xx])$)$";
 
+    /**
+     * 根据订单类型，获得相应的推送参数
+     * @param orderType
+     * @return
+     */
+    public static String getPushParamByOrderType(String orderType){
+        if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
+            return PUSH_ORDER_TYPE_BIG;
+        }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
+            return PUSH_ORDER_TYPE_SMALL;
+        }
+        return "";
+    }
     public static void main(String[] args) {
         System.out.println(Pattern.matches(PATTERN_ID_CARD,"412702199001145034"));
         System.out.println(Pattern.matches(PATTERN_ID_CARD,"54242219861005262X"));
