@@ -136,14 +136,14 @@ public class RedisCache implements Cache{
 	public void evict(Object key) {
 		// TODO Auto-generated method stub
 		final String keyf = key.toString();
-		logger.info("注意，调用evict 方法:{}",keyf);
+//		logger.info("注意，调用evict 方法:{}",keyf);
 		redisTemplate.execute(new RedisCallback<Long>() {
 			public Long doInRedis(RedisConnection connection)
 					throws DataAccessException {
 				Set<byte[]> keyset = connection.keys(keyf.getBytes());
 				for (byte[] keyd: keyset){
 					connection.del(keyd);
-					logger.info("!!!!!!!!!!!evict key:{}",new String(keyd));
+//					logger.info("!!!!!!!!!!!evict key:{}",new String(keyd));
 				}
 				return 0l;
 			}
