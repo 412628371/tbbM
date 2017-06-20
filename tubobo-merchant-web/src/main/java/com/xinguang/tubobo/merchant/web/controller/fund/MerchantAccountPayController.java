@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
+import com.hzmux.hzcms.common.utils.AliOss;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
@@ -149,7 +150,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
                 +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
         String [] shopUrls = new String[1];
-        shopUrls[0] = ConvertUtil.handleNullString(infoEntity.getShopImageUrl());
+        shopUrls[0] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));
         merchantOrderDTO.setSenderShopUrls(shopUrls);
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;
