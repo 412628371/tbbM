@@ -5,6 +5,7 @@
  */
 package com.xinguang.tubobo.impl.merchant.manager;
 
+import com.alibaba.fastjson.JSON;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
@@ -16,6 +17,7 @@ import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.handler.OrderCreateProducer;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -41,7 +43,11 @@ public class MerchantOrderManager extends BaseService {
 	private OrderService orderService;
 
 	@Autowired
+	private OrderCreateProducer orderCreateProducer;
+
+	@Autowired
 	private TimeoutTaskProducer timeoutTaskProducer;
+
 //	@Autowired
 //	TaskCenterToMerchantServiceInterface taskCenterToMerchantServiceInterface;
 	@Autowired
@@ -73,6 +79,8 @@ public class MerchantOrderManager extends BaseService {
 			expiredMillSeconds = config.getConsignorPayExpiredMilliSeconds();
 		}
 		timeoutTaskProducer.sendMessage(orderNo,expiredMillSeconds);
+		String msg = JSON.toJSONString(entity);
+		orderCreateProducer.sendMessage(msg);
 		return orderNo;
 	}
 
