@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web.controller.order.v2;
+package com.xinguang.tubobo.merchant.web.controller.order;
 
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
@@ -17,18 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 /**
- * Created by XG on 2017/6/20.
+ * 收货人地址自动补全
+ * 根据手机号查询
  */
 @Controller
-@RequestMapping("/2.0/order/query")
-public class OrderQueryControllerV2 extends MerchantBaseController<ReqOrderQuery,RespOrderQueryV2> {
+@RequestMapping("/order/address/autoComplete")
+public class OrderAddressQueryController extends MerchantBaseController<ReqOrderQuery,RespOrderQueryV2> {
 
-    private final static int NUM = 5;
+    private final static int NUM = 5;//查询的条数
 
     @Autowired
     private AdminToMerchantService adminToMerchantService;
     @Autowired
-    MerchantInfoService merchantInfoService;
+    private MerchantInfoService merchantInfoService;
 
     @Override
     protected RespOrderQueryV2 doService(String userId, ReqOrderQuery req) throws MerchantClientException {
@@ -36,7 +37,7 @@ public class OrderQueryControllerV2 extends MerchantBaseController<ReqOrderQuery
         if (null == infoEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
-        String phone = req.getPhone();
+        String phone = req.getKeyword();
         RespOrderQueryV2 resp = new RespOrderQueryV2();
         List<AddressDTO> lists = adminToMerchantService.queryAddressRecords(userId, phone, NUM);
         if(CollectionUtils.isNotEmpty(lists)){

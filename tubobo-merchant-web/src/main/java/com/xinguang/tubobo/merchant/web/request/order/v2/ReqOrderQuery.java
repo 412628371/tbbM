@@ -3,24 +3,36 @@ package com.xinguang.tubobo.merchant.web.request.order.v2;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Created by Administrator on 2017/4/14.
+ * 查询收货人地址自动补全
+ * 请求类
  */
 public class ReqOrderQuery {
-    @NotBlank(message = "手机号不能为空")
-    private String phone;
+    @NotBlank(message = "手机号关键字不能为空")
+    private String keyword;
 
-    public String getPhone() {
-        return phone;
+    private String orderType;
+
+    public String getKeyword() {
+        return keyword;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
     }
 
     @Override
     public String toString() {
         return "ReqOrderQuery{" +
-                "phone='" + phone + '\'' +
+                "keyword='" + keyword + '\'' +
+                ", orderType='" + orderType + '\'' +
                 '}';
     }
 }
