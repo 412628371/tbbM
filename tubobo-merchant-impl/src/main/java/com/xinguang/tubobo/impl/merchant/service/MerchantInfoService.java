@@ -188,4 +188,16 @@ public class MerchantInfoService extends BaseService {
 		return count;
 	}
 
+	/**
+	 * 保存bd邀请码
+	 * @param userId
+	 * @param bdCode
+	 * @return
+	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+	@Transactional(readOnly = false)
+	public int updateDBCode(String userId, String bdCode){
+		int count = merchantInfoDao.updateDBCode(userId, bdCode);
+		return count;
+	}
 }

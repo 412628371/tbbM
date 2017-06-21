@@ -53,6 +53,16 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private String identifyType;
 	private String consignorStatus;
 
+	private String bdCode;					//bd邀请码
+
+	public String getBdCode() {
+		return bdCode;
+	}
+
+	public void setBdCode(String bdCode) {
+		this.bdCode = bdCode;
+	}
+
 	public String getShopImageUrl2() {
 		return shopImageUrl2;
 	}
