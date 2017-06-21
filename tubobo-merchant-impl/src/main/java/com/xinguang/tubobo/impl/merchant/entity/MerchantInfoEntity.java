@@ -28,15 +28,15 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Long accountId;
 
 	private String merchantStatus;
-	private String merchantName;//商家店铺名称
-	private String realName;//商家姓名
+	private String merchantName;			//商家店铺名称
+	private String realName;				//商家姓名
 	private String phone;
 	private String idCardNo;
-	private String addressProvince;//详细地址
-	private String addressCity;//地址缩略
-	private String addressDistrict;//地址名称
-	private String addressDetail;//地址详情
-	private String addressStreet;//地址名称
+	private String addressProvince;			//详细地址
+	private String addressCity;				//地址缩略
+	private String addressDistrict;			//地址名称
+	private String addressDetail;			//地址详情
+	private String addressStreet;			//地址名称
 	private String avatarUrl;
 	private String idCardFrontImageUrl;
 	private String idCardBackImageUrl;
@@ -44,12 +44,30 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Double latitude;
 	private Date applyDate;
 	private Date verifyDate;
-	private String addressRoomNo;//门牌号
+	private String addressRoomNo;			//门牌号
 	private String shopImageUrl;
+	private String shopImageUrl2;			//第二张商店照片
+	private String shopLicencesImgUrl;		//营业执照照片
 	private Boolean hasSetPayPwd;
 	private Boolean enablePwdFree;
 	private String identifyType;
 	private String consignorStatus;
+
+	public String getShopImageUrl2() {
+		return shopImageUrl2;
+	}
+
+	public void setShopImageUrl2(String shopImageUrl2) {
+		this.shopImageUrl2 = shopImageUrl2;
+	}
+
+	public String getShopLicencesImgUrl() {
+		return shopLicencesImgUrl;
+	}
+
+	public void setShopLicencesImgUrl(String shopLicencesImgUrl) {
+		this.shopLicencesImgUrl = shopLicencesImgUrl;
+	}
 
 	public String getShopImageUrl() {
 		return shopImageUrl;

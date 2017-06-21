@@ -131,6 +131,8 @@ public class MerchantInfoManager {
             existEntity.setAddressRoomNo(infoEntity.getAddressRoomNo());
             existEntity.setAddressStreet(infoEntity.getAddressStreet());
             existEntity.setShopImageUrl(infoEntity.getShopImageUrl());
+            existEntity.setShopImageUrl2(infoEntity.getShopImageUrl2());
+            existEntity.setShopLicencesImgUrl(infoEntity.getShopLicencesImgUrl());//营业执照
             existEntity.setMerchantName(infoEntity.getMerchantName());
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());
