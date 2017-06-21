@@ -51,6 +51,9 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                 DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
                         entity.getRiderCarType());
                 CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
+                //获取用车时间对象
+                AppointTask appointTask = new AppointTask(entity.getAppointTime());
+
                 detailVo.setCarInfo(carInfo);
                 detailVo.setOrderInfo(orderInfo);
                 detailVo.setPayInfo(payInfo);
@@ -58,6 +61,7 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                 detailVo.setConsignor(consignor);
                 detailVo.setCommentsInfo(commentsInfo);
                 detailVo.setReceiver(receiver);
+                detailVo.setAppointTask(appointTask);
                 list.add(detailVo);
             }
         }
