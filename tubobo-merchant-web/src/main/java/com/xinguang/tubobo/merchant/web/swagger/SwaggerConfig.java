@@ -44,7 +44,7 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter{
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
                 //"HTTP/2.0 Restful API文档",
-        		"牛�?�智能表�? formfantom API文档",
+        		"兔波波商家端 API文档",
                 "",
                 "My Apps API terms of service",
                 "My Apps API Contact Email",
