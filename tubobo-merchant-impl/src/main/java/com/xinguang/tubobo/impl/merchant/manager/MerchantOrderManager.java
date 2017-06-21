@@ -17,7 +17,7 @@ import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
-import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoQueryProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -43,7 +43,7 @@ public class MerchantOrderManager extends BaseService {
 	private OrderService orderService;
 
 	@Autowired
-	private RmqAddressInfoQueryProducer rmqAddressInfoQueryProducer;
+	private RmqAddressInfoProducer rmqAddressInfoProducer;
 
 	@Autowired
 	private TimeoutTaskProducer timeoutTaskProducer;
@@ -80,7 +80,7 @@ public class MerchantOrderManager extends BaseService {
 		}
 		timeoutTaskProducer.sendMessage(orderNo,expiredMillSeconds);
 		String msg = JSON.toJSONString(entity);
-		rmqAddressInfoQueryProducer.sendMessage(msg);
+		rmqAddressInfoProducer.sendMessage(msg);
 		return orderNo;
 	}
 

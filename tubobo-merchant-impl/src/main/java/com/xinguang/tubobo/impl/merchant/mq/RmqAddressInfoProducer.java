@@ -7,16 +7,15 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
  * 存储地址信息
  */
 @Service
-public class RmqAddressInfoQueryProducer {
+public class RmqAddressInfoProducer {
 
-    private Logger logger = LoggerFactory.getLogger(RmqAddressInfoQueryProducer.class);
+    private Logger logger = LoggerFactory.getLogger(RmqAddressInfoProducer.class);
 
     @Autowired
     @Qualifier(value = "addressInfoTemplate")
@@ -25,6 +24,6 @@ public class RmqAddressInfoQueryProducer {
     public void sendMessage(String msg) throws MerchantClientException {
         Message message = new Message(msg.getBytes(), null);
         logger.info("订单创建完加入mq, orderNo:{}",msg);
-        addressInfoTemplate.convertAndSend("addressInfoQueryQueue",message);
+        addressInfoTemplate.convertAndSend("addressInfoQueue",message);
     }
 }

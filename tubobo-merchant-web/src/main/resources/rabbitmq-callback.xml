@@ -50,8 +50,8 @@
     </rabbit:fanout-exchange>
 
     <!-- 创建rabbitTemplate 消息模板类 -->
-    <rabbit:template id="addressInfoTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="addressInfoQueryQueue" />
+    <rabbit:template id="addressInfoTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="addressInfoQueue" />
     <!-- 生产者 队列声明-->
-    <rabbit:queue id="addressInfoQueryQueue" durable="true" auto-delete="false" exclusive="false" name="addressInfoQueryQueue"/>
+    <rabbit:queue id="addressInfoQueue" durable="true" auto-delete="false" exclusive="false" name="addressInfoQueue"/>
 
 </beans>
