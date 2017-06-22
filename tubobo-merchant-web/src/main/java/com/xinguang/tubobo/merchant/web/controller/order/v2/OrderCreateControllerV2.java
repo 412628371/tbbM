@@ -60,6 +60,9 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             }
             entity.setCarType(req.getCarType());
             entity.setCarTypeName(carTypeDTO.getName());
+
+            entity.setAppointTime(req.getAppointTask().getAppointTime());
+
         }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);

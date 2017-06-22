@@ -18,6 +18,16 @@ public class RespOrderDetailV2  implements Serializable{
 
     private CarInfo carInfo;
 
+    private AppointTask appointTask;
+
+    public AppointTask getAppointTask() {
+        return appointTask;
+    }
+
+    public void setAppointTask(AppointTask appointTask) {
+        this.appointTask = appointTask;
+    }
+
     public CarInfo getCarInfo() {
         return carInfo;
     }

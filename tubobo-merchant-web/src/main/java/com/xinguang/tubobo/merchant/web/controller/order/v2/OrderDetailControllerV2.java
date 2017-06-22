@@ -45,6 +45,9 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
                 EnumCarType.getNameByType(entity.getRiderCarType()));
         CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
+        //获取用车时间对象
+        AppointTask appointTask = new AppointTask(entity.getAppointTime());
+
         RespOrderDetailV2 resp = new RespOrderDetailV2();
         resp.setCarInfo(carInfo);
         resp.setCommentsInfo(commentsInfo);
@@ -53,6 +56,7 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         resp.setDriverInfo(driverInfo);
         resp.setOrderInfo(orderInfo);
         resp.setPayInfo(payInfo);
+        resp.setAppointTask(appointTask);
         return resp;
     }
 

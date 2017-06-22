@@ -62,6 +62,30 @@ public class ShopIdentifyRequest implements Serializable {
     @NotBlank(message = "请上传店铺照片")
     private String shopImageUrl;
 
+    @Size(min = 1, max = 255,message = "店铺照片地址过长")
+    @NotBlank(message = "请上传店铺照片")
+    private String shopImageUrl2;
+
+    @Size(min = 1, max = 255,message = "营业执照照片地址过长")
+    @NotBlank(message = "请上传营业执照照片")
+    private String shopLicencesImgUrl;
+
+    public String getShopImageUrl2() {
+        return shopImageUrl2;
+    }
+
+    public void setShopImageUrl2(String shopImageUrl2) {
+        this.shopImageUrl2 = shopImageUrl2;
+    }
+
+    public String getShopLicencesImgUrl() {
+        return shopLicencesImgUrl;
+    }
+
+    public void setShopLicencesImgUrl(String shopLicencesImgUrl) {
+        this.shopLicencesImgUrl = shopLicencesImgUrl;
+    }
+
     public String getAddressRoomNo() {
         return addressRoomNo;
     }
