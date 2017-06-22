@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web.response.order.v2;
+package com.xinguang.tubobo.merchant.web.response.order;
 
 import com.xinguang.tubobo.api.dto.AddressDTO;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * 查询收货人地址自动补全
  * 返回数据
  */
-public class RespOrderQueryV2 implements Serializable{
+public class RespAddressInfoQuery implements Serializable{
 
     private List<AddressDTO> addressList;
 
@@ -33,7 +33,7 @@ public class RespOrderQueryV2 implements Serializable{
 
     @Override
     public String toString() {
-        return "RespOrderQueryV2{" +
+        return "RespAddressInfoQuery{" +
                 "addressList=" + addressList +
                 ", keyword='" + keyword + '\'' +
                 '}';

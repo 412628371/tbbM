@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web.request.order.v2;
+package com.xinguang.tubobo.merchant.web.request.order;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -6,7 +6,8 @@ import org.hibernate.validator.constraints.NotBlank;
  * 查询收货人地址自动补全
  * 请求类
  */
-public class ReqOrderQuery {
+public class ReqAddressInfoQuery {
+
     @NotBlank(message = "手机号关键字不能为空")
     private String keyword;
 
@@ -30,7 +31,7 @@ public class ReqOrderQuery {
 
     @Override
     public String toString() {
-        return "ReqOrderQuery{" +
+        return "ReqAddressInfoQuery{" +
                 "keyword='" + keyword + '\'' +
                 ", orderType='" + orderType + '\'' +
                 '}';
