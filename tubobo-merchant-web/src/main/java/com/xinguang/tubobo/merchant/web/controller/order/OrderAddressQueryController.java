@@ -41,8 +41,9 @@ public class OrderAddressQueryController extends MerchantBaseController<ReqAddre
         RespAddressInfoQuery resp = new RespAddressInfoQuery();
         List<AddressDTO> lists = adminToMerchantService.queryAddressRecords(userId, phone, NUM);
         if(CollectionUtils.isNotEmpty(lists)){
-            resp.setAddressList(lists);
+            resp.setList(lists);
         }
+        resp.setKeyword(phone);
         return resp;
     }
 }

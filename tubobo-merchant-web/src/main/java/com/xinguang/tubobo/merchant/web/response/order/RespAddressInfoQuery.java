@@ -11,16 +11,16 @@ import java.util.List;
  */
 public class RespAddressInfoQuery implements Serializable{
 
-    private List<AddressDTO> addressList;
+    private List<AddressDTO> list;
 
     private String keyword;
 
-    public List<AddressDTO> getAddressList() {
-        return addressList;
+    public List<AddressDTO> getList() {
+        return list;
     }
 
-    public void setAddressList(List<AddressDTO> addressList) {
-        this.addressList = addressList;
+    public void setList(List<AddressDTO> list) {
+        this.list = list;
     }
 
     public String getKeyword() {
@@ -34,8 +34,8 @@ public class RespAddressInfoQuery implements Serializable{
     @Override
     public String toString() {
         return "RespAddressInfoQuery{" +
-                "addressList=" + addressList +
-                ", keyword='" + keyword + '\'' +
+                "keyword='" + keyword + '\'' +
+                ", list=" + list +
                 '}';
     }
 }
