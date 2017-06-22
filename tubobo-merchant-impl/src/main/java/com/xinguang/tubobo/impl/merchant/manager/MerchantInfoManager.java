@@ -76,6 +76,7 @@ public class MerchantInfoManager {
                 entity.setAccountId(existEntity.getAccountId());
                 entity.setId(existEntity.getId());
                 entity.setCreateDate(existEntity.getCreateDate());
+                entity.setAvatarUrl(existEntity.getAvatarUrl());            //头像
                 boolean result = false;
                 TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),AESUtils.decrypt(payPassword));
                 if(response != null && response.isSucceeded() && response.getData()){
