@@ -134,7 +134,7 @@ public class OrderService extends BaseService {
     /**
      * 支付超时
      */
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
+//    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public void payExpired(String merchantId,String orderNo){
         merchantOrderDao.payExpire(orderNo);

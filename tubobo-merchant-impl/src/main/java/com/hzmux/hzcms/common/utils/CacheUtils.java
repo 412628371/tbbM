@@ -5,6 +5,7 @@
  */
 package com.hzmux.hzcms.common.utils;
 
+import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -18,7 +19,7 @@ public class CacheUtils {
 	
 	private static CacheManager cacheManager = ((CacheManager)SpringContextHolder.getBean("cacheManager"));
 
-	private static final String SYS_CACHE = "sysCache";
+	private static final String SYS_CACHE = RedisCache.MERCHANT;
 
 	public static Object get(String key) {
 		return get(SYS_CACHE, key);
@@ -31,7 +32,6 @@ public class CacheUtils {
 	public static void remove(String key) {
 		remove(SYS_CACHE, key);
 	}
-	
 	public static Object get(String cacheName, String key) {
 		Element element = getCache(cacheName).get(key);
 		return element==null?null:element.getObjectValue();

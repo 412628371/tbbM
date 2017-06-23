@@ -117,6 +117,7 @@ public class MerchantInfoManager {
                 !EnumAuthentication.SUCCESS.getValue().equals(existEntity.getConsignorStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NEED_TOBE_CONSIGNOR_FIRST);
         }
+
         if ( EnumAuthentication.FROZEN.getValue().equals(existEntity.getMerchantStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_FROZEN);
         }else if (EnumAuthentication.SUCCESS.getValue().equals(existEntity.getMerchantStatus())){
