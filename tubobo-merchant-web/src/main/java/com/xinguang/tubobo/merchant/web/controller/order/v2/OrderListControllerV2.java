@@ -52,7 +52,7 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                         entity.getRiderCarType());
                 CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
                 //获取用车时间对象
-                AppointTask appointTask = new AppointTask(entity.getAppointTime(), entity.getDeliveryType());
+                AppointTask appointTask = new AppointTask(entity.getAppointTime(), entity.getAppointType());
 
                 detailVo.setCarInfo(carInfo);
                 detailVo.setOrderInfo(orderInfo);

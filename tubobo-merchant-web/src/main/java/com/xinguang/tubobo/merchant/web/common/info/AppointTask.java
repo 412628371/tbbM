@@ -8,19 +8,13 @@ import java.io.Serializable;
  */
 public class AppointTask implements Serializable{
     private String appointTime;
-    private String deliveryType;
+    private String appointType;
 
-    public AppointTask(String appointTime, String deliveryType) {
+    public AppointTask(){}
+
+    public AppointTask(String appointTime, String appointType) {
         this.appointTime = appointTime;
-        this.deliveryType = deliveryType;
-    }
-
-    public String getDeliveryType() {
-        return deliveryType;
-    }
-
-    public void setDeliveryType(String deliveryType) {
-        this.deliveryType = deliveryType;
+        this.appointType = appointType;
     }
 
     public String getAppointTime() {
@@ -29,5 +23,13 @@ public class AppointTask implements Serializable{
 
     public void setAppointTime(String appointTime) {
         this.appointTime = appointTime;
+    }
+
+    public String getAppointType() {
+        return appointType;
+    }
+
+    public void setAppointType(String appointType) {
+        this.appointType = appointType;
     }
 }
