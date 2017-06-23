@@ -63,10 +63,10 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             entity.setCarTypeName(carTypeDTO.getName());
 
             entity.setAppointTime(req.getAppointTask().getAppointTime());
-            if(EnumDeliveryType.DELIVERY_IMMED.getValue().equals(req.getDeliveryType())){
-                entity.setDeliveryType(EnumDeliveryType.DELIVERY_IMMED.getValue());
-            }else if(EnumDeliveryType.DELIVERY_APPOINT.getValue().equals(req.getDeliveryType())){
-                entity.setDeliveryType(EnumDeliveryType.DELIVERY_APPOINT.getValue());
+            if(EnumAppointType.DELIVERY_IMMED.getValue().equals(req.getAppointTask().getDeliveryType())){
+                entity.setDeliveryType(EnumAppointType.DELIVERY_IMMED.getValue());
+            }else if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(req.getAppointTask().getDeliveryType())){
+                entity.setDeliveryType(EnumAppointType.DELIVERY_APPOINT.getValue());
             }else{
                 throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
             }

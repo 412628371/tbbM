@@ -8,9 +8,19 @@ import java.io.Serializable;
  */
 public class AppointTask implements Serializable{
     private String appointTime;
+    private String deliveryType;
 
-    public AppointTask(String appointTime) {
+    public AppointTask(String appointTime, String deliveryType) {
         this.appointTime = appointTime;
+        this.deliveryType = deliveryType;
+    }
+
+    public String getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(String deliveryType) {
+        this.deliveryType = deliveryType;
     }
 
     public String getAppointTime() {

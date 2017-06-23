@@ -3,14 +3,14 @@ package com.xinguang.tubobo.merchant.api.enums;
 /**
  * Created by lvhantai on 2017/6/23.
  */
-public enum EnumDeliveryType {
-    DELIVERY_IMMED("立即配送","deliveryImmed"),
-    DELIVERY_APPOINT("预约配送","deliveryAppoint");
+public enum EnumAppointType {
+    DELIVERY_IMMED("立即配送","immediate"),
+    DELIVERY_APPOINT("预约配送","appoint");
 
     private String name;
     private String value;
 
-    EnumDeliveryType(String name, String value) {
+    EnumAppointType(String name, String value) {
         this.name = name;
         this.value = value;
     }
