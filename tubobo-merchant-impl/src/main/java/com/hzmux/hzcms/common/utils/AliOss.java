@@ -61,6 +61,9 @@ public class AliOss {
 
     }
 
+    public static String generateSignedUrlUseDefaultBucketName(String key) {
+        return generateSignedUrl(key,AliOss.BUCKETNAME_PRIVATE);
+    }
     /**
      * 获取访问url (需bucket属性为公共读)
      *
