@@ -24,6 +24,15 @@ public class ReqOrderCreateV2 implements Serializable {
     private String carType;
     private String payMethod;
     private AppointTask appointTask; //立即用车为0，预约为时间字符串
+    private String deliveryType;     //配送类型：立即配送deliveryImmed，预约配送deliveryAppoint
+
+    public String getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(String deliveryType) {
+        this.deliveryType = deliveryType;
+    }
 
     public AppointTask getAppointTask() {
         return appointTask;

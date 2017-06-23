@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.CarTypeDTO;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
@@ -62,6 +63,13 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             entity.setCarTypeName(carTypeDTO.getName());
 
             entity.setAppointTime(req.getAppointTask().getAppointTime());
+            if(EnumDeliveryType.DELIVERY_IMMED.getValue().equals(req.getDeliveryType())){
+                entity.setDeliveryType(EnumDeliveryType.DELIVERY_IMMED.getValue());
+            }else if(EnumDeliveryType.DELIVERY_APPOINT.getValue().equals(req.getDeliveryType())){
+                entity.setDeliveryType(EnumDeliveryType.DELIVERY_APPOINT.getValue());
+            }else{
+                throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
+            }
 
         }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
