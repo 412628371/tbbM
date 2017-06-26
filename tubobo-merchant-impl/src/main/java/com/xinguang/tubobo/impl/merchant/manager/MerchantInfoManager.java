@@ -54,6 +54,8 @@ public class MerchantInfoManager {
         entity.setIdCardFrontImageUrl(AliOss.subAliossUrl(entity.getIdCardFrontImageUrl()));
         entity.setIdCardBackImageUrl(AliOss.subAliossUrl(entity.getIdCardBackImageUrl()));
         entity.setShopImageUrl(AliOss.subAliossUrl(entity.getShopImageUrl()));
+        entity.setShopImageUrl2(AliOss.subAliossUrl(entity.getShopImageUrl2()));
+        entity.setShopLicencesImgUrl(AliOss.subAliossUrl(entity.getShopLicencesImgUrl()));
         entity.setIdentifyType(identifyType);
         entity.setHasSetPayPwd(true);
         entity.setEnablePwdFree(false);
