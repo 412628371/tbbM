@@ -2,6 +2,7 @@ package com.xinguang.tubobo.merchant.web.request.order.v2;
 
 import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.info.AppointTask;
+import com.xinguang.tubobo.merchant.web.common.info.OverFeeInfo;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
@@ -24,6 +25,16 @@ public class ReqOrderCreateV2 implements Serializable {
     private String carType;
     private String payMethod;
     private AppointTask appointTask; //立即用车为0，预约为时间字符串
+    private OverFeeInfo overFeeInfo;
+
+
+    public OverFeeInfo getOverFeeInfo() {
+        return overFeeInfo;
+    }
+
+    public void setOverFeeInfo(OverFeeInfo overFeeInfo) {
+        this.overFeeInfo = overFeeInfo;
+    }
 
     public AppointTask getAppointTask() {
         return appointTask;

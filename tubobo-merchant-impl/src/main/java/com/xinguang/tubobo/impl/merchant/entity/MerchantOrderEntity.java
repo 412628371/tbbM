@@ -87,6 +87,27 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	private Boolean ratedFlag;
 
+	private Double peekOverFee;  //高峰溢价费用
+
+	private Double weatherOverFee; //天气溢价费用
+
+
+	public Double getPeekOverFee() {
+		return peekOverFee;
+	}
+
+	public void setPeekOverFee(Double peekOverFee) {
+		this.peekOverFee = peekOverFee;
+	}
+
+	public Double getWeatherOverFee() {
+		return weatherOverFee;
+	}
+
+	public void setWeatherOverFee(Double weatherOverFee) {
+		this.weatherOverFee = weatherOverFee;
+	}
+
 	public String getAppointType() {
 		return appointType;
 	}
