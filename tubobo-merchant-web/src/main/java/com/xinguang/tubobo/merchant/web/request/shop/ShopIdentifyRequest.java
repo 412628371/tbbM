@@ -70,6 +70,17 @@ public class ShopIdentifyRequest implements Serializable {
     @NotBlank(message = "请上传营业执照照片")
     private String shopLicencesImgUrl;
 
+    //@NotBlank(message = "区域编码不能为空")
+    private String addressAdCode;//高德区域编码
+
+    public String getAddressAdCode() {
+        return addressAdCode;
+    }
+
+    public void setAddressAdCode(String addressAdCode) {
+        this.addressAdCode = addressAdCode;
+    }
+
     public String getShopImageUrl2() {
         return shopImageUrl2;
     }

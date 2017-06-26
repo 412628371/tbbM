@@ -48,6 +48,20 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         //获取用车时间对象
         AppointTask appointTask = new AppointTask(entity.getAppointTime(), entity.getAppointType());
 
+        //封装overfee对象
+        OverFeeInfo overFeeInfo = new OverFeeInfo();
+        Double weatherOverFee= entity.getWeatherOverFee();
+        Double peekOverFee=entity.getPeekOverFee();
+        if (peekOverFee==null){
+            peekOverFee=0.0;
+        }
+        if (weatherOverFee==null){
+            weatherOverFee=0.0;
+        }
+        overFeeInfo.setPeekOverFee(peekOverFee);
+        overFeeInfo.setWeatherOverFee(weatherOverFee);
+        overFeeInfo.setTotalOverFee(peekOverFee+weatherOverFee);
+
         RespOrderDetailV2 resp = new RespOrderDetailV2();
         resp.setCarInfo(carInfo);
         resp.setCommentsInfo(commentsInfo);
@@ -57,6 +71,7 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         resp.setOrderInfo(orderInfo);
         resp.setPayInfo(payInfo);
         resp.setAppointTask(appointTask);
+        resp.setOverFeeInfo(overFeeInfo);
         return resp;
     }
 
