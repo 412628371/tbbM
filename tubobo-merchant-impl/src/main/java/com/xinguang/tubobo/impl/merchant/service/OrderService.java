@@ -75,6 +75,12 @@ public class OrderService extends BaseService {
                 entity.setPayAmount(entity.getDeliveryFee()+entity.getTipFee());
             }
         }
+        if (entity.getPeekOverFee()!=null){
+            entity.setPayAmount(entity.getPayAmount()+entity.getPeekOverFee());
+        }
+        if (entity.getWeatherOverFee()!=null){
+            entity.setPayAmount(entity.getPayAmount()+entity.getWeatherOverFee());
+        }
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         merchantOrderDao.save(entity);
         //将订单加入支付超时队列
