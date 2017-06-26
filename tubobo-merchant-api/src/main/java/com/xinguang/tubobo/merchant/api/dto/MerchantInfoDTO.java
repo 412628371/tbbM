@@ -32,6 +32,8 @@ public class MerchantInfoDTO implements Serializable{
 	private Date verifyDate;
 
 	private String shopImageUrl;
+	private String shopImageUrl2;			//第二张商店照片
+	private String shopLicencesImgUrl;		//营业执照照片
 	private Boolean enablePwdFree;
 
 	private String identifyType;
@@ -219,6 +221,22 @@ public class MerchantInfoDTO implements Serializable{
 
 	public void setConsignorStatus(String consignorStatus) {
 		this.consignorStatus = consignorStatus;
+	}
+
+	public String getShopImageUrl2() {
+		return shopImageUrl2;
+	}
+
+	public void setShopImageUrl2(String shopImageUrl2) {
+		this.shopImageUrl2 = shopImageUrl2;
+	}
+
+	public String getShopLicencesImgUrl() {
+		return shopLicencesImgUrl;
+	}
+
+	public void setShopLicencesImgUrl(String shopLicencesImgUrl) {
+		this.shopLicencesImgUrl = shopLicencesImgUrl;
 	}
 
 	@Override

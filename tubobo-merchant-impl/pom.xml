@@ -52,6 +52,10 @@
             <groupId>com.xinguang.tubobo</groupId>
             <artifactId>tubobo-rate-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.xinguang</groupId>
+            <artifactId>tubobo-reportdata-api</artifactId>
+        </dependency>
 
         <!--spring 相关jar -->
         <dependency>
