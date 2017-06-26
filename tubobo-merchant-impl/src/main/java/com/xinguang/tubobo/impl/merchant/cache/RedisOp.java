@@ -20,11 +20,11 @@ public class RedisOp {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private Config config;
-//    @Autowired
-//    private CacheManager cacheManager;
-//    public void evictCache(String key){
-//        cacheManager.getCache(RedisCache.MERCHANT).evict(key);
-//    }
+    @Autowired
+    private CacheManager cacheManager;
+    public void evictCache(String key){
+        cacheManager.getCache(RedisCache.MERCHANT).evict(key);
+    }
     private void increment(String opType,String userId,long step){
         stringRedisTemplate.opsForValue().increment(generateKey(opType,userId),step);
     }

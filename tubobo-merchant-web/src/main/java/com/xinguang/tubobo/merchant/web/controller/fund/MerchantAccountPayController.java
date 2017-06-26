@@ -146,6 +146,12 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if (entity.getTipFee() != null){
             merchantOrderDTO.setTipFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
         }
+        if (entity.getPeekOverFee() != null){
+            merchantOrderDTO.setPeekOverFee(ConvertUtil.convertYuanToFen(entity.getPeekOverFee()).intValue());
+        }
+        if (entity.getWeatherOverFee() != null){
+            merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
+        }
         merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
                 +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
