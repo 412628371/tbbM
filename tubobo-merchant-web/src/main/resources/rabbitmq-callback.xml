@@ -52,6 +52,16 @@
     <!-- 创建rabbitTemplate 消息模板类 -->
     <rabbit:template id="addressInfoTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="addressInfoQueue" />
     <!-- 生产者 队列声明-->
-    <rabbit:queue id="addressInfoQueue" durable="true" auto-delete="false" exclusive="false" name="addressInfoQueue"/>
-
+    <rabbit:queue id="addressInfoQueue" durable="true" auto-delete="false" exclusive="false" name="addressInfoQueue">
+        <rabbit:queue-arguments>
+            <entry key="x-dead-letter-exchange" value="merchant_addressInfo_query_exchange"/>
+            <entry key="x-dead-letter-routing-key" value="merchant_addressInfo_routeKey_normal"/>
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+    <!-- work exchange -->
+    <rabbit:direct-exchange name="merchant_addressInfo_query_exchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="addressInfoQueue" key="merchant_addressInfo_routeKey_normal"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
 </beans>

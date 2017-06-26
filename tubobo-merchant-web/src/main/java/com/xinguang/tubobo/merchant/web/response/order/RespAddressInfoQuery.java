@@ -15,6 +15,8 @@ public class RespAddressInfoQuery implements Serializable{
 
     private String keyword;
 
+    private long totalSize;
+
     public List<AddressDTO> getList() {
         return list;
     }
@@ -31,11 +33,20 @@ public class RespAddressInfoQuery implements Serializable{
         this.keyword = keyword;
     }
 
+    public long getTotalSize() {
+        return totalSize;
+    }
+
+    public void setTotalSize(long totalSize) {
+        this.totalSize = totalSize;
+    }
+
     @Override
     public String toString() {
         return "RespAddressInfoQuery{" +
                 "keyword='" + keyword + '\'' +
                 ", list=" + list +
+                ", totalSize=" + totalSize +
                 '}';
     }
 }

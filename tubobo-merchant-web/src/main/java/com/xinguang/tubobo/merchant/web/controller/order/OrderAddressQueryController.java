@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,10 +41,13 @@ public class OrderAddressQueryController extends MerchantBaseController<ReqAddre
         String phone = req.getKeyword();
         RespAddressInfoQuery resp = new RespAddressInfoQuery();
         List<AddressDTO> lists = adminToMerchantService.queryAddressRecords(userId, phone, NUM);
-        if(CollectionUtils.isNotEmpty(lists)){
-            resp.setList(lists);
-        }
         resp.setKeyword(phone);
+        resp.setList(lists);
+        if(lists==null || lists.size()==0){
+            resp.setTotalSize(0);
+        }else{
+            resp.setTotalSize(lists.size());
+        }
         return resp;
     }
 }
