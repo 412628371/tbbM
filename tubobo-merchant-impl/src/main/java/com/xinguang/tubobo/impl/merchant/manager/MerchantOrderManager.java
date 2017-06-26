@@ -16,6 +16,7 @@ import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.api.AdminToMerchantService;
+import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
@@ -79,10 +80,12 @@ public class MerchantOrderManager extends BaseService {
 			expiredMillSeconds = config.getConsignorPayExpiredMilliSeconds();
 		}
 		timeoutTaskProducer.sendMessage(orderNo,expiredMillSeconds);
-		String msg = JSON.toJSONString(entity);
+		AddressDTO dto = getAddressDTO(entity);
+		String msg = JSON.toJSONString(dto);
 		rmqAddressInfoProducer.sendMessage(msg);
 		return orderNo;
 	}
+
 
 	/**
 	 * 商家付款
@@ -256,5 +259,22 @@ public class MerchantOrderManager extends BaseService {
 			}
 		}
 		return false;
+	}
+
+
+	public AddressDTO getAddressDTO(MerchantOrderEntity entity){
+		AddressDTO dto = new AddressDTO();
+		dto.setMerchantId(entity.getUserId());
+		dto.setName(entity.getReceiverName());
+		dto.setPhone(entity.getReceiverPhone());
+		dto.setProvince(entity.getReceiverAddressProvince());
+		dto.setCity(entity.getReceiverAddressCity());
+		dto.setDistrict(entity.getReceiverAddressDistrict());
+		dto.setStreet(entity.getReceiverAddressStreet());
+		dto.setDetailAddress(entity.getReceiverAddressDetail());
+		dto.setRoomNo(entity.getReceiverAddressRoomNo());
+		dto.setLongitude(entity.getReceiverLongitude());
+		dto.setLatitude(entity.getReceiverLatitude());
+		return dto;
 	}
 }
