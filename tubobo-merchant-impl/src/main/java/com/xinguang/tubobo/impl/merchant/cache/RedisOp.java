@@ -6,6 +6,7 @@ import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,11 @@ public class RedisOp {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private Config config;
+//    @Autowired
+//    private CacheManager cacheManager;
+//    public void evictCache(String key){
+//        cacheManager.getCache(RedisCache.MERCHANT).evict(key);
+//    }
     private void increment(String opType,String userId,long step){
         stringRedisTemplate.opsForValue().increment(generateKey(opType,userId),step);
     }

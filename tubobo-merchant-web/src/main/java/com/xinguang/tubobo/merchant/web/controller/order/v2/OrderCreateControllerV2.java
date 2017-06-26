@@ -83,17 +83,20 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         AddressInfo receiverAddressInfo = req.getReceiver();
         //封装溢价信息
         OverFeeInfo overFeeInfo = req.getOverFeeInfo();
-        if (overFeeInfo==null){
-            throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
+        Double weatherOverFee = 0.0;
+        Double peekOverFee = 0.0;
+        if (overFeeInfo!=null){
+            weatherOverFee= overFeeInfo.getWeatherOverFee();
+            peekOverFee=overFeeInfo.getPeekOverFee();
+            if (peekOverFee!=null){
+                peekOverFee=overFeeInfo.getPeekOverFee();
+            }
+            if (weatherOverFee!=null){
+                weatherOverFee= overFeeInfo.getWeatherOverFee();
+            }
         }
-        Double weatherOverFee= overFeeInfo.getWeatherOverFee();
-        Double peekOverFee=overFeeInfo.getPeekOverFee();
-        if (peekOverFee==null){
-            peekOverFee=0.0;
-        }
-        if (weatherOverFee==null){
-            weatherOverFee=0.0;
-        }
+        entity.setWeatherOverFee(weatherOverFee);
+        entity.setPeekOverFee(peekOverFee);
 
 
         //把收货人地址信息设置到实体

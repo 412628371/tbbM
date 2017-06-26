@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.handler;
 
 import com.hzmux.hzcms.common.utils.CacheUtils;
 import com.rabbitmq.client.Channel;
+import com.xinguang.tubobo.impl.merchant.cache.RedisOp;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -20,6 +21,8 @@ public class OrderPayTimeoutHandler  implements ChannelAwareMessageListener{
     @Autowired
     MerchantPushService pushService;
 
+//    @Autowired
+//    RedisOp redisOp;
     Logger logger = LoggerFactory.getLogger(OrderPayTimeoutHandler.class);
 
     @Override
@@ -31,7 +34,8 @@ public class OrderPayTimeoutHandler  implements ChannelAwareMessageListener{
             return;
         }
         orderService.payExpired(entity.getUserId(),orderNo);
-        CacheUtils.remove("merchantOrder_"+entity.getUserId()+"_*");
+//        CacheUtils.remove("merchantOrder_"+entity.getUserId()+"_*");
+//        redisOp.evictCache("merchantOrder_"+entity.getUserId()+"_*");
         logger.info("订单超时未支付，orderNo: {}",orderNo);
     }
 }
