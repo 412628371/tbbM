@@ -42,6 +42,14 @@ public class MerchantInfoResponse implements Serializable{
 
     private String bdCode;					//bd邀请码
 
+    public String getBdCode() {
+        return bdCode;
+    }
+
+    public void setBdCode(String bdCode) {
+        this.bdCode = bdCode;
+    }
+
     public String getShopImageUrl2() {
         return shopImageUrl2;
     }
@@ -242,14 +250,6 @@ public class MerchantInfoResponse implements Serializable{
 
     public void setHasSetPayPwd(Boolean hasSetPayPwd) {
         this.hasSetPayPwd = hasSetPayPwd;
-    }
-
-    public String getBdCode() {
-        return bdCode;
-    }
-
-    public void setBdCode(String bdCode) {
-        this.bdCode = bdCode;
     }
 
     @Override

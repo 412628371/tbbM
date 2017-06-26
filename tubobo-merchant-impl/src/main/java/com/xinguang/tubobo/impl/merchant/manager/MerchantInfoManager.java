@@ -79,6 +79,7 @@ public class MerchantInfoManager {
                 entity.setId(existEntity.getId());
                 entity.setCreateDate(existEntity.getCreateDate());
                 entity.setAvatarUrl(existEntity.getAvatarUrl());            //头像
+                entity.setBdCode(existEntity.getBdCode());  //bd邀请码s
                 boolean result = false;
                 TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),AESUtils.decrypt(payPassword));
                 if(response != null && response.isSucceeded() && response.getData()){
@@ -137,6 +138,8 @@ public class MerchantInfoManager {
             existEntity.setShopImageUrl(infoEntity.getShopImageUrl());
             existEntity.setShopImageUrl2(infoEntity.getShopImageUrl2());
             existEntity.setShopLicencesImgUrl(infoEntity.getShopLicencesImgUrl());//营业执照
+            existEntity.setBdCode(infoEntity.getBdCode());//bd邀请码
+            existEntity.setAddressAdCode(infoEntity.getAddressAdCode());//高德区域编码
             existEntity.setMerchantName(infoEntity.getMerchantName());
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());

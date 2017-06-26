@@ -13,12 +13,23 @@ public class RespOrderDetailV2  implements Serializable{
     private CommentsInfo commentsInfo;
     private DriverInfo driverInfo;
 
+
     private AddressInfo consignor;
     private AddressInfo receiver;
 
     private CarInfo carInfo;
 
     private AppointTask appointTask;
+
+    private OverFeeInfo overFeeInfo;
+
+    public OverFeeInfo getOverFeeInfo() {
+        return overFeeInfo;
+    }
+
+    public void setOverFeeInfo(OverFeeInfo overFeeInfo) {
+        this.overFeeInfo = overFeeInfo;
+    }
 
     public AppointTask getAppointTask() {
         return appointTask;
