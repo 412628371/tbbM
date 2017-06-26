@@ -62,15 +62,18 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             }
             entity.setCarType(req.getCarType());
             entity.setCarTypeName(carTypeDTO.getName());
-
-            entity.setAppointTime(req.getAppointTask().getAppointTime());
-            if(EnumAppointType.DELIVERY_IMMED.getValue().equals(req.getAppointTask().getAppointType())){
+            if (req.getAppointTask() != null){
+                if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(req.getAppointTask().getAppointType())){
+                    entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
+                }else {
+                    entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
+                }
+                entity.setAppointTime(req.getAppointTask().getAppointTime());
+            }else {
                 entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
-            }else if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(req.getAppointTask().getAppointType())){
-                entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
-            }else{
-                throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
+                entity.setAppointTime("0");
             }
+            
 
         }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
