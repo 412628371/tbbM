@@ -18,13 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/shop/identify")
 public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyRequest,MerchantInfoResponse> {
-//    @Autowired
-//    MerchantInfoService merchantInfoService;
-//    @Autowired
-//    RiderToAdminServiceInterface riderToAdminServiceInterface;
-//
-//    @Autowired
-//    TbbAccountService tbbAccountService;
     @Autowired
     private MerchantInfoManager merchantInfoManager;
 

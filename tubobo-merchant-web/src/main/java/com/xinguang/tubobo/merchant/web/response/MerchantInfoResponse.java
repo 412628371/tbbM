@@ -40,6 +40,16 @@ public class MerchantInfoResponse implements Serializable{
     private Boolean hasSetPayPwd;
     private String consignorStatus;
 
+    private String bdCode;
+
+    public String getBdCode() {
+        return bdCode;
+    }
+
+    public void setBdCode(String bdCode) {
+        this.bdCode = bdCode;
+    }
+
     public String getShopImageUrl2() {
         return shopImageUrl2;
     }
