@@ -39,7 +39,7 @@ public class MerchantInfoDTO implements Serializable{
 	private String identifyType;
 	private String consignorStatus;
 
-	private String bdCode;					//bd邀请码
+	private String bdCode;					//bd邀请码字段
 
 	public String getBdCode() {
 		return bdCode;
