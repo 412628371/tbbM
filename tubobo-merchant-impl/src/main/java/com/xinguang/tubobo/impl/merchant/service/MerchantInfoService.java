@@ -150,6 +150,10 @@ public class MerchantInfoService extends BaseService {
 			sb.append("and merchant_name like :merchant_name ");
 			parameter.put("merchant_name", "%"+entity.getMerchantName()+"%");
 		}
+		if (StringUtils.isNotBlank(entity.getBdCode())){
+			sb.append("and bd_code like :bd_code ");
+			parameter.put("bd_code", "%"+entity.getBdCode()+"%");
+		}
 		if (StringUtils.isNotBlank(entity.getIdCardNo())){
 			sb.append("and id_card_no = :id_card_no ");
 			parameter.put("id_card_no", entity.getIdCardNo());
