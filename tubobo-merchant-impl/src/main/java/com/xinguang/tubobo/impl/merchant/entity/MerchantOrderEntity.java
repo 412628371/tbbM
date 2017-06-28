@@ -81,7 +81,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String carType;//车辆类型
 	private String carTypeName;//车辆类型名称
 
-	private String appointTime; //立即用车为0，预约为时间字符串
+	private Date appointTime; //预约时间
 
 	private String appointType; //配送类型
 
@@ -116,11 +116,11 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 		this.appointType = appointType;
 	}
 
-	public String getAppointTime() {
+	public Date getAppointTime() {
 		return appointTime;
 	}
 
-	public void setAppointTime(String appointTime) {
+	public void setAppointTime(Date appointTime) {
 		this.appointTime = appointTime;
 	}
 
