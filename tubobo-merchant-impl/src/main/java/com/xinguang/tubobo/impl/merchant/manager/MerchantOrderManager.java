@@ -19,6 +19,7 @@ import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
+import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -62,6 +63,9 @@ public class MerchantOrderManager extends BaseService {
 
 	@Autowired
 	AdminToMerchantService adminToMerchantService;
+	@Autowired
+	private TuboboReportDateMqHelp tuboboReportDateMqHelp;
+
 	@Resource
 	Config config;
 
@@ -111,6 +115,9 @@ public class MerchantOrderManager extends BaseService {
 			if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
 				adminToMerchantService.sendDistributeTaskSmsAlert();
 			}
+
+			//推送消息到报表mq
+			tuboboReportDateMqHelp.merchantOrder(taskCreateDTO);
 		}else {
 			logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
 		}
@@ -149,6 +156,9 @@ public class MerchantOrderManager extends BaseService {
 							if (!cancelResult){
 								logger.error("商家取消订单，更改订单状态出错，userId: "+merchantId+" orderNo: "+orderNo);
 							}
+
+							//推送消息到报表mq
+							tuboboReportDateMqHelp.orderCancelBySys(orderNo);
 							return cancelResult;
 						}else {
 							logger.error("商家取消订单，资金平台退款出错，userId: "+merchantId+" orderNo: "+orderNo+

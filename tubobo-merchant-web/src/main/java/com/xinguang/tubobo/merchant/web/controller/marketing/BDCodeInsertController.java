@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.marketing;
 
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BDCodeInsertController extends MerchantBaseController<ReqBDCode, Object>{
     @Autowired
     MerchantInfoService merchantInfoService;
+    @Autowired
+    private TuboboReportDateMqHelp tuboboReportDateMqHelp;
 
     @Override
     protected Object doService(String userId, ReqBDCode req) throws MerchantClientException {
@@ -31,6 +34,9 @@ public class BDCodeInsertController extends MerchantBaseController<ReqBDCode, Ob
         if(result != 1){
             throw new MerchantClientException(EnumRespCode.FAIL);
         }
+
+        //消息放入报表mq
+        tuboboReportDateMqHelp.updateBD(userId, code);
         return result;
     }
 }
