@@ -73,26 +73,27 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             if (req.getAppointTask() != null){
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String time = req.getAppointTask().getAppointTime();
-                Date appointTime;
-                try{
-                     appointTime = dateFormat.parse(time);
-                }catch(ParseException e){
-                    throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
-                }
                 String appointType = req.getAppointTask().getAppointType();
+                Date appointTime;
                 if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(appointType)){
                     //获取当前时间
 //                    String currentTime = DateUtils.getDateTime();
 //                    String tomorrowTime = DateUtils.getDaysAfter(new Date(), 1, "23:59:59");
+                    try{
+                        appointTime = dateFormat.parse(time);
+                    }catch(ParseException e){
+                        throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
+                    }
                     if(new Date().getTime()<=appointTime.getTime()){
                         entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
+                        entity.setAppointTime(appointTime);
                     }else{
                         throw new MerchantClientException(EnumRespCode.MERCHANT_APPOINTTIME_ERROR);
                     }
                 }else {
                     entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
+                    entity.setAppointTime(new Date());
                 }
-                entity.setAppointTime(appointTime);
             }else {
                 entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
                 entity.setAppointTime(new Date());
