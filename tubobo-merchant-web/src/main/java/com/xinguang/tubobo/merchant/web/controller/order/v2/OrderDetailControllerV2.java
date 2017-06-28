@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * 订单详情controller 2.0.
@@ -46,7 +49,12 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
                 EnumCarType.getNameByType(entity.getRiderCarType()));
         CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
         //获取用车时间对象
-        AppointTask appointTask = new AppointTask(entity.getAppointTime(), entity.getAppointType());
+        SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timeStr="";
+        if(entity.getAppointTime() != null){
+            timeStr = sm.format(entity.getAppointTime());
+        }
+        AppointTask appointTask = new AppointTask(timeStr, entity.getAppointType());
 
         //封装overfee对象
         OverFeeInfo overFeeInfo = new OverFeeInfo();
