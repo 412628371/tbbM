@@ -111,11 +111,12 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         //封装溢价信息并校验
 
         OverFeeInfo overFeeInfo = req.getOverFeeInfo();
-        //校验溢价信息是否实时原来一样
-        checkOverFee(overFeeInfo,infoEntity.getAddressAdCode());
+
         Double weatherOverFee = 0.0;
         Double peekOverFee = 0.0;
         if (overFeeInfo!=null){
+            //校验溢价信息是否实时原来一样
+            checkOverFee(overFeeInfo,infoEntity.getAddressAdCode());
             weatherOverFee= overFeeInfo.getWeatherOverFee();
             peekOverFee=overFeeInfo.getPeekOverFee();
             if (peekOverFee!=null){
