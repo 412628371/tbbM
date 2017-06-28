@@ -81,7 +81,49 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String carType;//车辆类型
 	private String carTypeName;//车辆类型名称
 
+	private String appointTime; //立即用车为0，预约为时间字符串
+
+	private String appointType; //配送类型
+
 	private Boolean ratedFlag;
+
+	private Double peekOverFee;  //高峰溢价费用
+
+	private Double weatherOverFee; //天气溢价费用
+
+
+	public Double getPeekOverFee() {
+		return peekOverFee;
+	}
+
+	public void setPeekOverFee(Double peekOverFee) {
+		this.peekOverFee = peekOverFee;
+	}
+
+	public Double getWeatherOverFee() {
+		return weatherOverFee;
+	}
+
+	public void setWeatherOverFee(Double weatherOverFee) {
+		this.weatherOverFee = weatherOverFee;
+	}
+
+	public String getAppointType() {
+		return appointType;
+	}
+
+	public void setAppointType(String appointType) {
+		this.appointType = appointType;
+	}
+
+	public String getAppointTime() {
+		return appointTime;
+	}
+
+	public void setAppointTime(String appointTime) {
+		this.appointTime = appointTime;
+	}
+
 	public String getReceiverAddressRoomNo() {
 		return receiverAddressRoomNo;
 	}

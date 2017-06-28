@@ -94,5 +94,11 @@ public class AliOss {
         if (StringUtils.isNotBlank(info.getShopImageUrl())){
             info.setShopImageUrl(generateSignedUrl(info.getShopImageUrl(),AliOss.BUCKETNAME_PRIVATE));
         }
+        if (StringUtils.isNotBlank(info.getShopImageUrl2())){
+            info.setShopImageUrl2(generateSignedUrl(info.getShopImageUrl2(),AliOss.BUCKETNAME_PRIVATE));
+        }
+        if (StringUtils.isNotBlank(info.getShopLicencesImgUrl())){
+            info.setShopLicencesImgUrl(generateSignedUrl(info.getShopLicencesImgUrl(),AliOss.BUCKETNAME_PRIVATE));
+        }
     }
 }

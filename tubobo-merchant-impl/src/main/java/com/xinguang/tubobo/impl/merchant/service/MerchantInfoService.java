@@ -150,6 +150,10 @@ public class MerchantInfoService extends BaseService {
 			sb.append("and merchant_name like :merchant_name ");
 			parameter.put("merchant_name", "%"+entity.getMerchantName()+"%");
 		}
+		if (StringUtils.isNotBlank(entity.getBdCode())){
+			sb.append("and bd_code like :bd_code ");
+			parameter.put("bd_code", "%"+entity.getBdCode()+"%");
+		}
 		if (StringUtils.isNotBlank(entity.getIdCardNo())){
 			sb.append("and id_card_no = :id_card_no ");
 			parameter.put("id_card_no", entity.getIdCardNo());
@@ -188,4 +192,16 @@ public class MerchantInfoService extends BaseService {
 		return count;
 	}
 
+	/**
+	 * 保存bd邀请码
+	 * @param userId
+	 * @param bdCode
+	 * @return
+	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+	@Transactional(readOnly = false)
+	public int updateDBCode(String userId, String bdCode){
+		int count = merchantInfoDao.updateDBCode(userId, bdCode);
+		return count;
+	}
 }

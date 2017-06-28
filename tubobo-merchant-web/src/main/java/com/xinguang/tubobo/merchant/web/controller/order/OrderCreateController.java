@@ -66,6 +66,8 @@ public class OrderCreateController extends MerchantBaseController<CreateOrderReq
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
         entity.setOrderType(EnumOrderType.SMALLORDER.getValue());
         AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
+        entity.setPeekOverFee(0.0);
+        entity.setWeatherOverFee(0.0);
         return entity;
     }
 }

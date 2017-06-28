@@ -75,6 +75,12 @@ public class OrderService extends BaseService {
                 entity.setPayAmount(entity.getDeliveryFee()+entity.getTipFee());
             }
         }
+        if (entity.getPeekOverFee()!=null){
+            entity.setPayAmount(entity.getPayAmount()+entity.getPeekOverFee());
+        }
+        if (entity.getWeatherOverFee()!=null){
+            entity.setPayAmount(entity.getPayAmount()+entity.getWeatherOverFee());
+        }
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         merchantOrderDao.save(entity);
         //将订单加入支付超时队列
@@ -134,7 +140,7 @@ public class OrderService extends BaseService {
     /**
      * 支付超时
      */
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
+//    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public void payExpired(String merchantId,String orderNo){
         merchantOrderDao.payExpire(orderNo);

@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.CarTypeDTO;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
@@ -14,12 +15,17 @@ import com.xinguang.tubobo.merchant.api.enums.*;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.AddressInfoToOrderBeanHelper;
+import com.xinguang.tubobo.merchant.web.common.info.OverFeeInfo;
 import com.xinguang.tubobo.merchant.web.request.order.v2.ReqOrderCreateV2;
 import com.xinguang.tubobo.merchant.web.response.order.CreateOrderResponse;
+import freemarker.template.utility.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -60,14 +66,61 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             }
             entity.setCarType(req.getCarType());
             entity.setCarTypeName(carTypeDTO.getName());
+            if (req.getAppointTask() != null){
+                String appointTime = req.getAppointTask().getAppointTime();
+                String appointType = req.getAppointTask().getAppointType();
+                if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(appointType)){
+                    //获取当前时间
+                    String currentTime = DateUtils.getDateTime();
+                    String tomorrowTime = DateUtils.getDaysAfter(new Date(), 1, "23:59:59");
+
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    try{
+                        if(dateFormat.parse(currentTime).getTime()<=dateFormat.parse(appointTime).getTime() &&
+                                dateFormat.parse(tomorrowTime).getTime()>=dateFormat.parse(appointTime).getTime()){
+                            entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
+                        }else{
+                            throw new MerchantClientException(EnumRespCode.MERCHANT_APPOINTTIME_ERROR);
+                        }
+                    }catch(ParseException e){
+                        e.printStackTrace();
+                    }
+                }else {
+                    entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
+                }
+                entity.setAppointTime(appointTime);
+            }else {
+                entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
+                entity.setAppointTime("0");
+            }
+
         }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
+
         }else {
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_TYPE_NOT_SUPPORT);
         }
         entity.setOrderType(orderType);
         AddressInfo receiverAddressInfo = req.getReceiver();
+        //封装溢价信息
+        OverFeeInfo overFeeInfo = req.getOverFeeInfo();
+        Double weatherOverFee = 0.0;
+        Double peekOverFee = 0.0;
+        if (overFeeInfo!=null){
+            weatherOverFee= overFeeInfo.getWeatherOverFee();
+            peekOverFee=overFeeInfo.getPeekOverFee();
+            if (peekOverFee!=null){
+                peekOverFee=overFeeInfo.getPeekOverFee();
+            }
+            if (weatherOverFee!=null){
+                weatherOverFee= overFeeInfo.getWeatherOverFee();
+            }
+        }
+        entity.setWeatherOverFee(weatherOverFee);
+        entity.setPeekOverFee(peekOverFee);
+
+
         //把收货人地址信息设置到实体
         AddressInfoToOrderBeanHelper.putReceiverAddressInfo(entity,receiverAddressInfo);
         entity.setDeliveryFee(req.getDeliveryFee());
@@ -80,6 +133,8 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setDispatchRadius(config.getDispatchRadiusKiloMiles());
         entity.setOrderRemark(ConvertUtil.handleNullString(req.getOrderRemarks()));
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
+        entity.setWeatherOverFee(weatherOverFee);
+        entity.setPeekOverFee(peekOverFee);
         String orderNo = merchantOrderManager.order(userId,entity);
         CreateOrderResponse response = new CreateOrderResponse();
         response.setOrderNo(orderNo);

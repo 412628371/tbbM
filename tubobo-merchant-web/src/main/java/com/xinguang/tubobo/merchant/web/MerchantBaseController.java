@@ -60,6 +60,7 @@ public abstract class MerchantBaseController <P, R>{
 //        String dealedJson = StringUtils.stripXSS(json);
 //        req = (P) JSON.parseObject(dealedJson,req.getClass());
         String userId = "";
+        //String userId = "75995";
 
         // 验证登录
         if (needLogin()) {

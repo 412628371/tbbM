@@ -31,11 +31,40 @@ public class MerchantInfoResponse implements Serializable{
     private String merchantName;
 
     private String shopImageUrl;
+    private String shopImageUrl2;
+    private String shopLicencesImgUrl;  //营业执照
+
     private String identifyType;
     private Boolean enablePwdFree;
     private Double nonConfidentialPaymentLimit;
     private Boolean hasSetPayPwd;
     private String consignorStatus;
+
+    private String bdCode;					//bd邀请码
+
+    public String getBdCode() {
+        return bdCode;
+    }
+
+    public void setBdCode(String bdCode) {
+        this.bdCode = bdCode;
+    }
+
+    public String getShopImageUrl2() {
+        return shopImageUrl2;
+    }
+
+    public void setShopImageUrl2(String shopImageUrl2) {
+        this.shopImageUrl2 = shopImageUrl2;
+    }
+
+    public String getShopLicencesImgUrl() {
+        return shopLicencesImgUrl;
+    }
+
+    public void setShopLicencesImgUrl(String shopLicencesImgUrl) {
+        this.shopLicencesImgUrl = shopLicencesImgUrl;
+    }
 
     public String getConsignorStatus() {
         return consignorStatus;
