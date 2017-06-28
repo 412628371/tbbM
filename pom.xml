@@ -17,6 +17,7 @@
         <module>tubobo-merchant-api</module>
         <module>tubobo-merchant-impl</module>
         <module>tubobo-merchant-web</module>
+        <module>takeout-thirdpart-api</module>
     </modules>
 
     <properties>
