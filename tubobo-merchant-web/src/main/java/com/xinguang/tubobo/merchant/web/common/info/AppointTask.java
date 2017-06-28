@@ -1,6 +1,9 @@
 package com.xinguang.tubobo.merchant.web.common.info;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by lvhantai on 2017/6/21.

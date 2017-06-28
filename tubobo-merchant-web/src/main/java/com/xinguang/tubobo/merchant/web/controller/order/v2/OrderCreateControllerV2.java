@@ -3,7 +3,9 @@ package com.xinguang.tubobo.merchant.web.controller.order.v2;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.api.AdminToMerchantService;
+import com.xinguang.tubobo.api.OverFeeService;
 import com.xinguang.tubobo.api.dto.CarTypeDTO;
+import com.xinguang.tubobo.api.dto.OverFeeDTO;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
@@ -42,6 +44,8 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
     Config config;
     @Autowired
     AdminToMerchantService adminToMerchantService;
+    @Autowired
+    private OverFeeService overFeeService;
     @Override
     protected CreateOrderResponse doService(String userId, ReqOrderCreateV2 req) throws MerchantClientException {
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
@@ -67,23 +71,23 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             entity.setCarType(req.getCarType());
             entity.setCarTypeName(carTypeDTO.getName());
             if (req.getAppointTask() != null){
-                String appointTime = req.getAppointTask().getAppointTime();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String time = req.getAppointTask().getAppointTime();
+                Date appointTime;
+                try{
+                     appointTime = dateFormat.parse(time);
+                }catch(ParseException e){
+                    throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
+                }
                 String appointType = req.getAppointTask().getAppointType();
                 if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(appointType)){
                     //获取当前时间
-                    String currentTime = DateUtils.getDateTime();
-                    String tomorrowTime = DateUtils.getDaysAfter(new Date(), 1, "23:59:59");
-
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    try{
-                        if(dateFormat.parse(currentTime).getTime()<=dateFormat.parse(appointTime).getTime() &&
-                                dateFormat.parse(tomorrowTime).getTime()>=dateFormat.parse(appointTime).getTime()){
-                            entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
-                        }else{
-                            throw new MerchantClientException(EnumRespCode.MERCHANT_APPOINTTIME_ERROR);
-                        }
-                    }catch(ParseException e){
-                        e.printStackTrace();
+//                    String currentTime = DateUtils.getDateTime();
+//                    String tomorrowTime = DateUtils.getDaysAfter(new Date(), 1, "23:59:59");
+                    if(new Date().getTime()<=appointTime.getTime()){
+                        entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
+                    }else{
+                        throw new MerchantClientException(EnumRespCode.MERCHANT_APPOINTTIME_ERROR);
                     }
                 }else {
                     entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
@@ -91,7 +95,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
                 entity.setAppointTime(appointTime);
             }else {
                 entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
-                entity.setAppointTime("0");
+                entity.setAppointTime(new Date());
             }
 
         }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
@@ -103,8 +107,11 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         }
         entity.setOrderType(orderType);
         AddressInfo receiverAddressInfo = req.getReceiver();
-        //封装溢价信息
+        //封装溢价信息并校验
+
         OverFeeInfo overFeeInfo = req.getOverFeeInfo();
+        //校验溢价信息是否实时原来一样
+        checkOverFee(overFeeInfo,infoEntity.getAddressAdCode());
         Double weatherOverFee = 0.0;
         Double peekOverFee = 0.0;
         if (overFeeInfo!=null){
@@ -164,6 +171,41 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
                 throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_WORK);
             }
         }
+
+    }
+
+    public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
+        OverFeeDTO overFee = overFeeService.findOverFee(AreaCode);
+        Double peekOverFeeOld = overFeeInfo.getPeekOverFee();
+        Double weatherOverFeeOld = overFeeInfo.getWeatherOverFee();
+        Double weatherOverFeeNew = overFee.getWeatherOverFee();
+        Double peekOverFeeNew = overFee.getPeekOverFee();
+        if (weatherOverFeeNew!=null){
+            //该地区实时开启了天气溢价
+            if (!peekOverFeeNew.equals(peekOverFeeOld)&&!weatherOverFeeNew.equals(weatherOverFeeOld)){
+                //天气溢价高峰溢价均发生改变抛出如下信息
+                throw new MerchantClientException(EnumRespCode.ALL_OVER_FEE_CHANGE);
+            }
+            if (!weatherOverFeeNew.equals(weatherOverFeeOld)){
+                //天气溢价发生改变抛出如下信息
+                throw new MerchantClientException(EnumRespCode.WEATHER_OVER_FEE_CHANGE);
+            }
+        }else{
+            //该地区实时关闭了天气溢价
+            if (!weatherOverFeeOld.equals(0.0)&&peekOverFeeNew.equals(0.0)){
+                //实际后台已经关闭该区域天气溢价和高峰溢价, 但是订单天气溢价不为零
+                throw new MerchantClientException(EnumRespCode.OVER_FEE_CLOSE);
+            }
+            if (!weatherOverFeeOld.equals(0)){
+                //原有天气溢价不为零 实时后台天气溢价已经关闭 发生改变抛出如下信息
+                throw new MerchantClientException(EnumRespCode.WEATHER_OVER_FEE_CHANGE);
+            }
+        }
+        if (!peekOverFeeNew.equals(peekOverFeeOld)){
+            //高峰溢价均发生改变抛出如下信息
+            throw new MerchantClientException(EnumRespCode.PEEK_OVER_FEE_CHANGE);
+        }
+
 
     }
 

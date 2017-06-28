@@ -24,7 +24,7 @@ public class ReqOrderCreateV2 implements Serializable {
     private String type;
     private String carType;
     private String payMethod;
-    private AppointTask appointTask; //立即用车为0，预约为时间字符串
+    private AppointTask appointTask; //预约时间
     private OverFeeInfo overFeeInfo;
 
 
