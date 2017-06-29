@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.takeout.mt;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 美团订单DTO.
@@ -11,8 +12,9 @@ public class MtOrderDTO implements Serializable {
     private String receiverPhone;
     private String receiverName;
     private String receiverAddressDetail;
-    private String receiverLatitude;
-    private String receiverLongitude;
+    private Double receiverLatitude;
+    private Double receiverLongitude;
+    private Date originCreateTime;
 
     public String getOriginOrderId() {
         return originOrderId;
@@ -54,19 +56,27 @@ public class MtOrderDTO implements Serializable {
         this.receiverAddressDetail = receiverAddressDetail;
     }
 
-    public String getReceiverLatitude() {
+    public Double getReceiverLatitude() {
         return receiverLatitude;
     }
 
-    public void setReceiverLatitude(String receiverLatitude) {
+    public void setReceiverLatitude(Double receiverLatitude) {
         this.receiverLatitude = receiverLatitude;
     }
 
-    public String getReceiverLongitude() {
+    public Double getReceiverLongitude() {
         return receiverLongitude;
     }
 
-    public void setReceiverLongitude(String receiverLongitude) {
+    public void setReceiverLongitude(Double receiverLongitude) {
         this.receiverLongitude = receiverLongitude;
+    }
+
+    public Date getOriginCreateTime() {
+        return originCreateTime;
+    }
+
+    public void setOriginCreateTime(Date originCreateTime) {
+        this.originCreateTime = originCreateTime;
     }
 }
