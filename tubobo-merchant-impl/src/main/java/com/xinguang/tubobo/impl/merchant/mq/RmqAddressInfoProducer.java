@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+
 
 /**
  * 存储地址信息
@@ -28,10 +30,11 @@ public class RmqAddressInfoProducer {
         MessageProperties properties = new MessageProperties();
         Message message = null;
         try {
-            message = new Message(msg.getBytes("UTF-8"), properties);
+            message = new Message(msg.getBytes("utf-8"), properties);
         } catch (UnsupportedEncodingException e) {
-            logger.error("消息发送异常：" + message);
+            logger.error("发送消息异常:"+message);
         }
+
         logger.info("订单创建完加入mq存储地址信息, orderNo:{}",msg);
         addressInfoTemplate.convertAndSend("merchant_addressInfo_query_exchange","merchant_addressInfo_routeKey_normal",message);
     }
