@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+
+
 /**
  * 存储地址信息
  */
@@ -22,9 +26,15 @@ public class RmqAddressInfoProducer {
     @Qualifier(value = "addressInfoTemplate")
     private RabbitTemplate addressInfoTemplate;
 
-    public void sendMessage(String msg) throws MerchantClientException {
+    public void sendMessage(String msg) throws MerchantClientException{
         MessageProperties properties = new MessageProperties();
-        Message message = new Message(msg.getBytes(), properties);
+        Message message = null;
+        try {
+            message = new Message(msg.getBytes("utf-8"), properties);
+        } catch (UnsupportedEncodingException e) {
+            logger.error("发送消息异常:"+message);
+        }
+
         logger.info("订单创建完加入mq存储地址信息, orderNo:{}",msg);
         addressInfoTemplate.convertAndSend("merchant_addressInfo_query_exchange","merchant_addressInfo_routeKey_normal",message);
     }
