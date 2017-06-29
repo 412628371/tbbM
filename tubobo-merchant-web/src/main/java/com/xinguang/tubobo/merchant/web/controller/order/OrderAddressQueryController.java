@@ -53,8 +53,8 @@ public class OrderAddressQueryController extends MerchantBaseController<ReqAddre
 
     public List<AddressInfo> getAddressInfoList(List<AddressDTO> lists){
         List<AddressInfo> infolists = new ArrayList<AddressInfo>();
-        AddressInfo a = new AddressInfo();
         for(AddressDTO dto : lists){
+            AddressInfo a = new AddressInfo();
             a.setAddressProvince(dto.getProvince());
             a.setAddressCity(dto.getCity());
             a.setAddressStreet(dto.getStreet());
