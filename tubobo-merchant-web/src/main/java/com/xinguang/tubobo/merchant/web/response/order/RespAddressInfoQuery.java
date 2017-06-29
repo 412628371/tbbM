@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.response.order;
 
 import com.xinguang.tubobo.api.dto.AddressDTO;
+import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,17 +12,17 @@ import java.util.List;
  */
 public class RespAddressInfoQuery implements Serializable{
 
-    private List<AddressDTO> list;
+    private List<AddressInfo> list;
 
     private String keyword;
 
     private long totalSize;
 
-    public List<AddressDTO> getList() {
+    public List<AddressInfo> getList() {
         return list;
     }
 
-    public void setList(List<AddressDTO> list) {
+    public void setList(List<AddressInfo> list) {
         this.list = list;
     }
 
@@ -44,8 +45,8 @@ public class RespAddressInfoQuery implements Serializable{
     @Override
     public String toString() {
         return "RespAddressInfoQuery{" +
-                "keyword='" + keyword + '\'' +
-                ", list=" + list +
+                "list=" + list +
+                ", keyword='" + keyword + '\'' +
                 ", totalSize=" + totalSize +
                 '}';
     }

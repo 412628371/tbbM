@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.impl.merchant.mq;
 
+import com.fasterxml.jackson.core.json.UTF8JsonGenerator;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * 存储地址信息
@@ -22,9 +25,9 @@ public class RmqAddressInfoProducer {
     @Qualifier(value = "addressInfoTemplate")
     private RabbitTemplate addressInfoTemplate;
 
-    public void sendMessage(String msg) throws MerchantClientException {
+    public void sendMessage(String msg) throws MerchantClientException, UnsupportedEncodingException {
         MessageProperties properties = new MessageProperties();
-        Message message = new Message(msg.getBytes(), properties);
+        Message message = new Message(msg.getBytes("UTF-8"), properties);
         logger.info("订单创建完加入mq存储地址信息, orderNo:{}",msg);
         addressInfoTemplate.convertAndSend("merchant_addressInfo_query_exchange","merchant_addressInfo_routeKey_normal",message);
     }

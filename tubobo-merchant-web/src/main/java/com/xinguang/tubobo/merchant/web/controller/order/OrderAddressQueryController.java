@@ -7,13 +7,12 @@ import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
+import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 import com.xinguang.tubobo.merchant.web.request.order.ReqAddressInfoQuery;
 import com.xinguang.tubobo.merchant.web.response.order.RespAddressInfoQuery;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,8 @@ public class OrderAddressQueryController extends MerchantBaseController<ReqAddre
         }
         String phone = req.getKeyword();
         RespAddressInfoQuery resp = new RespAddressInfoQuery();
-        List<AddressDTO> lists = adminToMerchantService.queryAddressRecords(userId, phone, NUM);
+        List<AddressDTO> dtolists = adminToMerchantService.queryAddressRecords(userId, phone, NUM);
+        List<AddressInfo> lists = getAddressInfoList(dtolists);
         resp.setKeyword(phone);
         resp.setList(lists);
         if(lists==null || lists.size()==0){
@@ -49,5 +49,24 @@ public class OrderAddressQueryController extends MerchantBaseController<ReqAddre
             resp.setTotalSize(lists.size());
         }
         return resp;
+    }
+
+    public List<AddressInfo> getAddressInfoList(List<AddressDTO> lists){
+        List<AddressInfo> infolists = new ArrayList<AddressInfo>();
+        AddressInfo a = new AddressInfo();
+        for(AddressDTO dto : lists){
+            a.setAddressProvince(dto.getProvince());
+            a.setAddressCity(dto.getCity());
+            a.setAddressStreet(dto.getStreet());
+            a.setAddressDetail(dto.getDetailAddress());
+            a.setAddressDistrict(dto.getDistrict());
+            a.setAddressRoomNo(dto.getRoomNo());
+            a.setName(dto.getName());
+            a.setTelephone(dto.getPhone());
+            a.setLatitude(dto.getLatitude());
+            a.setLongitude(dto.getLongitude());
+            infolists.add(a);
+        }
+        return infolists;
     }
 }
