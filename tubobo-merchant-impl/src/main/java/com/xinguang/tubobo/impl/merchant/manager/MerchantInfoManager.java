@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 
 /**
  * Created by Administrator on 2017/5/26.
@@ -151,7 +153,7 @@ public class MerchantInfoManager {
             existEntity.setMerchantName(infoEntity.getMerchantName());
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());
-
+            existEntity.setApplyDate(new Date());
             existEntity.setIdentifyType(EnumIdentifyType.MERCHANT.getValue());
             existEntity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
             boolean result = merchantInfoService.merchantUpdate(existEntity);
