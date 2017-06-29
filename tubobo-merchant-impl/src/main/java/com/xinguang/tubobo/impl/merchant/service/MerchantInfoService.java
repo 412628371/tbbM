@@ -159,11 +159,11 @@ public class MerchantInfoService extends BaseService {
 			parameter.put("id_card_no", entity.getIdCardNo());
 		}
 		if (null != entity.getCreateDate()){
-			sb.append("and apply_date >= :create_date ");
+			sb.append("and create_date >= :create_date ");
 			parameter.put("create_date", DateUtils.getDateStart(entity.getCreateDate()));
 		}
 		if (null != entity.getUpdateDate()){
-			sb.append("and apply_date <= :update_date ");
+			sb.append("and create_date <= :update_date ");
 			parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
 		}
 		sb.append(" order by create_date desc ");
