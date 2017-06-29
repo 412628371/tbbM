@@ -41,6 +41,9 @@ public class MerchantInfoDTO implements Serializable{
 
 	private String bdCode;					//bd邀请码字段
 
+	private Date createDate;
+	private Date updateDate;
+
 	public String getBdCode() {
 		return bdCode;
 	}
@@ -247,6 +250,22 @@ public class MerchantInfoDTO implements Serializable{
 
 	public void setShopLicencesImgUrl(String shopLicencesImgUrl) {
 		this.shopLicencesImgUrl = shopLicencesImgUrl;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	@Override

@@ -17,7 +17,10 @@ import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
@@ -26,9 +29,6 @@ import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,7 +158,7 @@ public class MerchantOrderManager extends BaseService {
 							}
 
 							//推送消息到报表mq
-							tuboboReportDateMqHelp.orderCancelBySys(orderNo);
+							tuboboReportDateMqHelp.orderCancel(orderNo,"merchant",EnumCancelReason.GRAB_MERCHANT.getValue());
 							return cancelResult;
 						}else {
 							logger.error("商家取消订单，资金平台退款出错，userId: "+merchantId+" orderNo: "+orderNo+
@@ -268,6 +268,9 @@ public class MerchantOrderManager extends BaseService {
 						"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			}
 		}
+
+		//推送消息到报表mq
+		tuboboReportDateMqHelp.orderCancel(orderNo,"system",EnumCancelReason.GRAB_OVERTIME.getValue());
 		return false;
 	}
 

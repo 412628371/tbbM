@@ -89,15 +89,18 @@ public class TuboboReportDateMqHelp {
         dto.setMerchantId(task.getUserId());
         dto.setDeliveryDistance(task.getDeliveryDistance());
         dto.setSendBillTime(task.getOrderTime());
+        dto.setOrdetType(task.getTaskType().getValue());
         dto.setOrderAmount(task.getPayAmount()*100);
         dto.setBenefitAmount(task.getWeatherOverFee()*100+task.getPeekOverFee()*100);
         sendToMq(dto);
     }
 
-    public void orderCancelBySys(String orderNo) {
+    public void orderCancel(String orderNo,String cancelType,String cancelReason) {
         OrderCancelDTO dto = new OrderCancelDTO();
-        dto.setMsgType(EnumMqMsgType.SYS_CANCEL_ORDER.getValue());
+        dto.setMsgType(EnumMqMsgType.CANCEL_ORDER.getValue());
         dto.setId(orderNo);
+        dto.setCancelType(cancelType);
+        dto.setCancelReason(cancelReason);
         sendToMq(dto);
     }
 
