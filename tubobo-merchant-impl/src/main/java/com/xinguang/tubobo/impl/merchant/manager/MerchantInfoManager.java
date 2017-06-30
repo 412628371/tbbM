@@ -10,6 +10,8 @@ import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
+import com.xinguang.tubobo.lbs.api.GdDistanceService;
+import com.xinguang.tubobo.lbs.api.dto.InverseGeocodeDto;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
@@ -41,6 +43,9 @@ public class MerchantInfoManager {
     @Autowired
     private TuboboReportDateMqHelp tuboboReportDateMqHelp;
 
+    @Autowired
+    GdDistanceService gdDistanceService;
+
     /**
      * 认证，包括货主认证和商家认证
      * @param userId
@@ -65,6 +70,19 @@ public class MerchantInfoManager {
         entity.setIdentifyType(identifyType);
         entity.setHasSetPayPwd(true);
         entity.setEnablePwdFree(false);
+        //高德区域编码
+        if(StringUtils.isBlank(entity.getAddressAdCode())){
+            //地理反编码
+            InverseGeocodeDto inverseGeocodeDto = gdDistanceService.inverseGeocode(
+                    entity.getLongitude(),entity.getLatitude());
+            if(inverseGeocodeDto == null || inverseGeocodeDto.getRegeocode() == null ||
+                    inverseGeocodeDto.getRegeocode().getAddressComponent() ==null||
+                    StringUtils.isBlank(inverseGeocodeDto.getRegeocode().getAddressComponent().getAdcode())){
+                logger.error("店铺认证，高德根据经纬度获取区域编码失败");
+                throw new MerchantClientException(EnumRespCode.FAIL);
+            }
+            entity.setAddressAdCode(inverseGeocodeDto.getRegeocode().getAddressComponent().getAdcode());
+        }
         MerchantInfoEntity existEntity  = merchantInfoService.findByUserId(userId);
 
         if (null == existEntity){
@@ -85,7 +103,7 @@ public class MerchantInfoManager {
                 entity.setId(existEntity.getId());
                 entity.setCreateDate(existEntity.getCreateDate());
                 entity.setAvatarUrl(existEntity.getAvatarUrl());            //头像
-                entity.setBdCode(existEntity.getBdCode());  //bd邀请码s
+
                 boolean result = false;
                 TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),AESUtils.decrypt(payPassword));
                 if(response != null && response.isSucceeded() && response.getData()){
@@ -149,10 +167,24 @@ public class MerchantInfoManager {
             existEntity.setShopImageUrl2(infoEntity.getShopImageUrl2());
             existEntity.setShopLicencesImgUrl(infoEntity.getShopLicencesImgUrl());//营业执照
             existEntity.setBdCode(infoEntity.getBdCode());//bd邀请码
-            existEntity.setAddressAdCode(infoEntity.getAddressAdCode());//高德区域编码
             existEntity.setMerchantName(infoEntity.getMerchantName());
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());
+            //高德区域编码
+            if(StringUtils.isBlank(infoEntity.getAddressAdCode())){
+                //地理反编码
+                InverseGeocodeDto inverseGeocodeDto = gdDistanceService.inverseGeocode(
+                        infoEntity.getLongitude(),infoEntity.getLatitude());
+                if(inverseGeocodeDto == null || inverseGeocodeDto.getRegeocode() == null ||
+                        inverseGeocodeDto.getRegeocode().getAddressComponent() ==null||
+                        StringUtils.isBlank(inverseGeocodeDto.getRegeocode().getAddressComponent().getAdcode())){
+                    logger.error("店铺完善，高德根据经纬度获取区域编码失败");
+                    throw new MerchantClientException(EnumRespCode.FAIL);
+                }
+                existEntity.setAddressAdCode(inverseGeocodeDto.getRegeocode().getAddressComponent().getAdcode());
+            }else{
+                existEntity.setAddressAdCode(infoEntity.getAddressAdCode());
+            }
             existEntity.setApplyDate(new Date());
             existEntity.setIdentifyType(EnumIdentifyType.MERCHANT.getValue());
             existEntity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
