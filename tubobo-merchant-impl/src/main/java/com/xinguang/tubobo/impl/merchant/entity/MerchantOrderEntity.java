@@ -93,6 +93,9 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 
 	public Double getPeekOverFee() {
+		if (peekOverFee == null){
+			return 0.0;
+		}
 		return peekOverFee;
 	}
 
@@ -101,6 +104,9 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	}
 
 	public Double getWeatherOverFee() {
+		if (weatherOverFee == null){
+			return 0.0;
+		}
 		return weatherOverFee;
 	}
 
