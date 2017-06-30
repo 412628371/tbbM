@@ -26,7 +26,7 @@ public class TuboboReportDateMqHelp {
     private static String REPORTDATA_MQ_QUEUE = "reportDataMqQueue";
 
     //默认所属区域
-    private static String BELONG_AREA = "杭州";
+    private static String BELONG_AREA = "330100";
 
     @Autowired
     private RabbitTemplate reportDataMqTemplate;
@@ -84,21 +84,24 @@ public class TuboboReportDateMqHelp {
     public void merchantOrder(TaskCreateDTO task) {
         MerchantOrderDTO dto = new MerchantOrderDTO();
         dto.setMsgType(EnumMqMsgType.MERCHANT_ORDER.getValue());
-        dto.setId(task.getOrderNo());
+        dto.setOrderNo(task.getOrderNo());
         dto.setMerchantName(task.getSenderName());
         dto.setMerchantId(task.getUserId());
         dto.setDeliveryDistance(task.getDeliveryDistance());
         dto.setSendBillTime(task.getOrderTime());
         dto.setOrdetType(task.getTaskType().getValue());
-        dto.setOrderAmount(task.getPayAmount()*100);
-        dto.setBenefitAmount(task.getWeatherOverFee()*100+task.getPeekOverFee()*100);
+        dto.setOrderAmount(task.getPayAmount());
+        dto.setDeliveryFee(task.getDeliveryFee());
+        dto.setTipFee(task.getTipFee());
+        dto.setWeatherOverFee(task.getWeatherOverFee());
+        dto.setPeekOverFee(task.getWeatherOverFee());
         sendToMq(dto);
     }
 
     public void orderCancel(String orderNo,String cancelType,String cancelReason) {
         OrderCancelDTO dto = new OrderCancelDTO();
         dto.setMsgType(EnumMqMsgType.CANCEL_ORDER.getValue());
-        dto.setId(orderNo);
+        dto.setOrderNo(orderNo);
         dto.setCancelType(cancelType);
         dto.setCancelReason(cancelReason);
         sendToMq(dto);
