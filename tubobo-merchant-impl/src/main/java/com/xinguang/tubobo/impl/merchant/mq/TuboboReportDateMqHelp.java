@@ -3,10 +3,9 @@ package com.xinguang.tubobo.impl.merchant.mq;
 import com.alibaba.fastjson.JSONObject;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.api.MqMsgDTO.*;
+import com.xinguang.tubobo.api.ReportDateConstants;
 import com.xinguang.tubobo.api.enums.EnumMqMsgType;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,14 +18,6 @@ import java.util.Date;
  */
 @Service
 public class TuboboReportDateMqHelp {
-
-    private static Logger logger = LoggerFactory.getLogger(TuboboReportDateMqHelp.class);
-
-    //兔波波报表队列
-    private static String REPORTDATA_MQ_QUEUE = "reportDataMqQueue";
-
-    //默认所属区域
-    private static String BELONG_AREA = "330100";
 
     @Autowired
     private RabbitTemplate reportDataMqTemplate;
@@ -43,7 +34,7 @@ public class TuboboReportDateMqHelp {
         dto.setIdCard(entity.getIdCardNo());
         dto.setShopName(entity.getMerchantName());
         dto.setRegisterTime(entity.getCreateDate());
-        dto.setBelongArea(BELONG_AREA);
+        dto.setBelongArea(ReportDateConstants.BELONG_AREA_HZ);
         sendToMq(dto);
     }
 
@@ -117,7 +108,7 @@ public class TuboboReportDateMqHelp {
     }
 
     private void sendToMq(Object obj){
-        reportDataMqTemplate.convertAndSend(REPORTDATA_MQ_QUEUE, JSONObject.toJSONString(obj));
+        reportDataMqTemplate.convertAndSend(ReportDateConstants.REPORTDATA_MQ_QUEUE, JSONObject.toJSONString(obj));
     }
 
 }
