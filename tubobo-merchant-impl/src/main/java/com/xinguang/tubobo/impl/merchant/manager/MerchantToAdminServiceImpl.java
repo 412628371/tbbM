@@ -141,6 +141,8 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
             dto.setPayAmount(order.getPayAmount()==null?0:(int)(order.getPayAmount()*100));
             dto.setDeliveryFee(order.getDeliveryFee()==null?0:(int)(order.getDeliveryFee()*100));
             dto.setTipFee(order.getTipFee()==null?0:(int)(order.getTipFee()*100));
+            dto.setPeekOverFee(order.getPeekOverFee()==null?0:(int)(order.getPeekOverFee()*100));
+            dto.setWeatherOverFee(order.getWeatherOverFee()==null?0:(int)(order.getWeatherOverFee()*100));
             return dto;
         }
         return null;

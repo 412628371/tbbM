@@ -78,6 +78,25 @@ public class MerchantOrderDTO implements Serializable{
 	protected Date updateDate;
 	protected String updateBy;
 
+	private Integer peekOverFee;  //高峰溢价费用
+	private Integer weatherOverFee; //天气溢价费用
+
+	public Integer getPeekOverFee() {
+		return peekOverFee;
+	}
+
+	public void setPeekOverFee(Integer peekOverFee) {
+		this.peekOverFee = peekOverFee;
+	}
+
+	public Integer getWeatherOverFee() {
+		return weatherOverFee;
+	}
+
+	public void setWeatherOverFee(Integer weatherOverFee) {
+		this.weatherOverFee = weatherOverFee;
+	}
+
 	public Date getAppointTime() {
 		return appointTime;
 	}
