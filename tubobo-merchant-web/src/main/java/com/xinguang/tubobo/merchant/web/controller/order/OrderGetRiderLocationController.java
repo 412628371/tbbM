@@ -3,6 +3,7 @@ package com.xinguang.tubobo.merchant.web.controller.order;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
 import com.xinguang.taskcenter.api.request.GeoLocation;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
@@ -32,7 +33,11 @@ public class OrderGetRiderLocationController extends MerchantBaseController<ReqO
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
 
-        TbbTaskResponse<GeoLocation> response =taskDispatchService.getRiderLocation(entity.getRiderId());
+        boolean isRider = true;
+        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
+            isRider = false;
+        }
+        TbbTaskResponse<GeoLocation> response =taskDispatchService.getRiderOrDriverLocation(entity.getRiderId(),isRider);
         if (!response.isSucceeded() || response.getData()==null){
             logger.error("获取骑手位置，位置数据不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_RIDER_LOCATION_NOT_FOUND);
