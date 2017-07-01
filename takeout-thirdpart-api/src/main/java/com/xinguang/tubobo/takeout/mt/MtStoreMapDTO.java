@@ -10,6 +10,8 @@ public class MtStoreMapDTO implements Serializable {
     private String appAuthToken;
     private String timestamp;
 
+    public MtStoreMapDTO(){
+    }
     public MtStoreMapDTO(String appAuthToken,String timestamp){
         this.appAuthToken = appAuthToken;
         this.timestamp = timestamp;

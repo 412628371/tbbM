@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller;
 
+import com.xinguang.tubobo.impl.merchant.service.MerchantThirdBindService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
@@ -14,11 +15,12 @@ public class TestController extends MerchantBaseController<Object,Object>{
 
 	@Autowired
 	private OrderService orderService;
+	@Autowired private MerchantThirdBindService bindService;
 
 	@Override
 	protected Object doService(String userId, Object req) throws MerchantClientException {
 
-		orderService.clearRedisCache(userId);
+		bindService.bindMt(userId,"aaa");
 
 		return null;
 	}

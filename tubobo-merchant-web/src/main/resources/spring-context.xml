@@ -11,6 +11,7 @@
 
 	<import resource="spring-disconf.xml" />
 	<import resource="rabbitmq-callback.xml"/>
+	<import resource="rabbitmq-takeout.xml"/>
 	<import resource="rabbitmq-delay.xml"/>
 	<import resource="spring-dubbo-consumer.xml"/>
 	<import resource="spring-dubbo-provider.xml"/>

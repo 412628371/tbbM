@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.xinguang.tubobo.impl.merchant.dao.MerchantThirdBindDao;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantThirdBindEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,5 +21,9 @@ public class MerchantThirdBindService {
     @Transactional(readOnly = false)
     public void unbindMt(String userId){
         thirdBindDao.updateMtBindInfo(userId,false,"");
+    }
+    @Transactional(readOnly = true)
+    public MerchantThirdBindEntity getByUserId(String userId){
+        return thirdBindDao.findByUserId(userId);
     }
 }

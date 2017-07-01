@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.impl.merchant.entity;
 
-import net.sf.ehcache.util.MergedEnumeration;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
