@@ -71,7 +71,8 @@ public class MerchantInfoManager {
         entity.setHasSetPayPwd(true);
         entity.setEnablePwdFree(false);
         //高德区域编码
-        if(StringUtils.isBlank(entity.getAddressAdCode())){
+        if(EnumIdentifyType.MERCHANT.getValue().equals(identifyType) &&
+                StringUtils.isBlank(entity.getAddressAdCode())){
             //地理反编码
             InverseGeocodeDto inverseGeocodeDto = gdDistanceService.inverseGeocode(
                     entity.getLongitude(),entity.getLatitude());
