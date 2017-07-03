@@ -6,6 +6,7 @@ import com.xinguang.tubobo.api.MqMsgDTO.*;
 import com.xinguang.tubobo.api.ReportDateConstants;
 import com.xinguang.tubobo.api.enums.EnumMqMsgType;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,6 +96,20 @@ public class TuboboReportDateMqHelp {
         dto.setOrderNo(orderNo);
         dto.setCancelType(cancelType);
         dto.setCancelReason(cancelReason);
+        sendToMq(dto);
+    }
+
+    public void orderFinish(MerchantOrderEntity entity) {
+        OrderFinishDTO dto = new OrderFinishDTO();
+        dto.setMsgType(EnumMqMsgType.ORDER_FINISH.getValue());
+        dto.setOrderNo(entity.getOrderNo());
+        dto.setMerchantId(entity.getUserId());
+        dto.setRiderId(entity.getRiderId());
+        dto.setRiderName(entity.getRiderName());
+        dto.setExpectedArriveTime(entity.getExpectFinishTime());
+        dto.setReceiveBillTime(entity.getGrabOrderTime());
+        dto.setPickupTime(entity.getGrabItemTime());
+        dto.setFinishTime(entity.getFinishOrderTime());
         sendToMq(dto);
     }
 
