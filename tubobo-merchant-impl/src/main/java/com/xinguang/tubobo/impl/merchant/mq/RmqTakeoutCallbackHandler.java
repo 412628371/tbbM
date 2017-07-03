@@ -2,7 +2,7 @@ package com.xinguang.tubobo.impl.merchant.mq;
 
 import com.alibaba.dubbo.common.json.JSON;
 import com.rabbitmq.client.Channel;
-import com.xinguang.tubobo.impl.merchant.thirdpart.ThirdCallbackHandler;
+import com.xinguang.tubobo.impl.merchant.handler.ThirdCallbackHandler;
 import com.xinguang.tubobo.takeout.mt.MtNotifyDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
