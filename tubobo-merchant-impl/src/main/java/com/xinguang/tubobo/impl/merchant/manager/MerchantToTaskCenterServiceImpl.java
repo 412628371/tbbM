@@ -93,7 +93,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
             pushService.noticeFinished(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
 
             //推送到报表mq
-            tuboboReportDateMqHelp.orderFinish(entity);
+            tuboboReportDateMqHelp.orderFinish(entity,finishOrderTime);
         }
         return result;
     }

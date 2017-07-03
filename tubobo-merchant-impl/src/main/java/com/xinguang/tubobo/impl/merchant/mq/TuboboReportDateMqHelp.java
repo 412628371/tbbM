@@ -99,7 +99,7 @@ public class TuboboReportDateMqHelp {
         sendToMq(dto);
     }
 
-    public void orderFinish(MerchantOrderEntity entity) {
+    public void orderFinish(MerchantOrderEntity entity, Date finishOrderTime) {
         OrderFinishDTO dto = new OrderFinishDTO();
         dto.setMsgType(EnumMqMsgType.ORDER_FINISH.getValue());
         dto.setOrderNo(entity.getOrderNo());
@@ -109,7 +109,7 @@ public class TuboboReportDateMqHelp {
         dto.setExpectedArriveTime(entity.getExpectFinishTime());
         dto.setReceiveBillTime(entity.getGrabOrderTime());
         dto.setPickupTime(entity.getGrabItemTime());
-        dto.setFinishTime(entity.getFinishOrderTime());
+        dto.setFinishTime(finishOrderTime);
         sendToMq(dto);
     }
 
