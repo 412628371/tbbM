@@ -36,11 +36,7 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
         }
         if (StringUtils.isNotBlank(platformCode)){
             hqlSb.append(" and platform_code=:platformCode ");
-            parameter.put("platformCode",userId);
-        }
-        if (StringUtils.isNotBlank(platformCode)){
-            hqlSb.append(" and platform_code=:platformCode ");
-            parameter.put("platformCode",userId);
+            parameter.put("platformCode",platformCode);
         }
         if (StringUtils.isNotBlank(keyword)){
             hqlSb.append(" and origin_order_view_id like :keyword ");
