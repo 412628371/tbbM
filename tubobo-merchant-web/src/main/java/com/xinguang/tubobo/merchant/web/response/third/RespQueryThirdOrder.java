@@ -7,6 +7,7 @@ import java.util.Date;
  * Created by xuqinghua on 2017/7/1.
  */
 public class RespQueryThirdOrder implements Serializable{
+    private String platformCode;
     private String userId;
     private String originOrderId;
     private String originOrderViewId;
@@ -88,5 +89,13 @@ public class RespQueryThirdOrder implements Serializable{
 
     public void setOriginCreateTime(Date originCreateTime) {
         this.originCreateTime = originCreateTime;
+    }
+
+    public String getPlatformCode() {
+        return platformCode;
+    }
+
+    public void setPlatformCode(String platformCode) {
+        this.platformCode = platformCode;
     }
 }

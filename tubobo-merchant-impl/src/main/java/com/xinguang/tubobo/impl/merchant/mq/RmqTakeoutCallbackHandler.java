@@ -2,8 +2,7 @@ package com.xinguang.tubobo.impl.merchant.mq;
 
 import com.alibaba.dubbo.common.json.JSON;
 import com.rabbitmq.client.Channel;
-import com.xinguang.tubobo.impl.merchant.thirdpart.MtCallbackHandler;
-import com.xinguang.tubobo.takeout.TakeoutNotifyConstant;
+import com.xinguang.tubobo.impl.merchant.thirdpart.ThirdCallbackHandler;
 import com.xinguang.tubobo.takeout.mt.MtNotifyDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class RmqTakeoutCallbackHandler implements ChannelAwareMessageListener {
     Logger logger = LoggerFactory.getLogger(RmqTakeoutCallbackHandler.class);
-    @Autowired private MtCallbackHandler mtCallbackHandler;
+    @Autowired private ThirdCallbackHandler thirdCallbackHandler;
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
 
@@ -25,9 +24,10 @@ public class RmqTakeoutCallbackHandler implements ChannelAwareMessageListener {
         MtNotifyDTO mtNotifyDTO = JSON.parse(body,MtNotifyDTO.class);
         switch (mtNotifyDTO.getPlatformCode()){
             case MT:
-                mtCallbackHandler.dispatch(mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
+                thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
                 break;
             case ELE:
+                thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
                 break;
             default:
 

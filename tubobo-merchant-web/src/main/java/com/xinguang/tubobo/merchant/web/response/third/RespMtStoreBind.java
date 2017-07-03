@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class RespMtStoreBind implements Serializable {
     private String mtStoreBindUrl;
     private String mtStoreReleaseBindingUrl;
+    private String eleStoreBindUrl;
 
     public String getMtStoreBindUrl() {
         return mtStoreBindUrl;
@@ -25,11 +26,20 @@ public class RespMtStoreBind implements Serializable {
         this.mtStoreReleaseBindingUrl = mtStoreReleaseBindingUrl;
     }
 
+    public String getEleStoreBindUrl() {
+        return eleStoreBindUrl;
+    }
+
+    public void setEleStoreBindUrl(String eleStoreBindUrl) {
+        this.eleStoreBindUrl = eleStoreBindUrl;
+    }
+
     @Override
     public String toString() {
         return "RespMtStoreBind{" +
                 "mtStoreBindUrl='" + mtStoreBindUrl + '\'' +
                 ", mtStoreReleaseBindingUrl='" + mtStoreReleaseBindingUrl + '\'' +
+                ", eleStoreBindUrl='" + eleStoreBindUrl + '\'' +
                 '}';
     }
 }

@@ -18,6 +18,7 @@ import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.AddressInfoToOrderBeanHelper;
 import com.xinguang.tubobo.merchant.web.common.info.OverFeeInfo;
+import com.xinguang.tubobo.merchant.web.common.info.ThirdInfo;
 import com.xinguang.tubobo.merchant.web.request.order.v2.ReqOrderCreateV2;
 import com.xinguang.tubobo.merchant.web.response.order.CreateOrderResponse;
 import freemarker.template.utility.DateUtil;
@@ -134,6 +135,12 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setPeekOverFee(peekOverFee);
 
 
+        ThirdInfo thirdInfo = req.getThirdInfo();
+        if (null != thirdInfo){
+            entity.setPlatformCode(thirdInfo.getPlatformCode());
+            entity.setOriginOrderId(thirdInfo.getOriginOrderId());
+            entity.setOriginOrderViewId(thirdInfo.getOriginOrderViewId());
+        }
         //把收货人地址信息设置到实体
         AddressInfoToOrderBeanHelper.putReceiverAddressInfo(entity,receiverAddressInfo);
         entity.setDeliveryFee(req.getDeliveryFee());

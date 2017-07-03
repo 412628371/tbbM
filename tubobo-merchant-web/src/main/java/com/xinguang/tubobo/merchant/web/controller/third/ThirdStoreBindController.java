@@ -12,11 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Created by xuqinghua on 2017/6/30.
+ * 获取第三方平台授权url.
  */
 @Controller
-@RequestMapping("third/mt/getStoreBindUrl")
-public class MtStoreBindController extends MerchantBaseController<Object,RespMtStoreBind> {
+@RequestMapping("third/getStoreBindUrl")
+public class ThirdStoreBindController extends MerchantBaseController<Object,RespMtStoreBind> {
     @Autowired private TbbNotifyService tbbNotifyService;
     @Autowired private MerchantThirdBindService thirdBindService;
     @Override
@@ -30,6 +30,7 @@ public class MtStoreBindController extends MerchantBaseController<Object,RespMtS
         RespMtStoreBind respMtStoreBind = new RespMtStoreBind();
         respMtStoreBind.setMtStoreBindUrl(storeMapDTO.getMtStoreBindUrl());
         respMtStoreBind.setMtStoreReleaseBindingUrl(storeMapDTO.getMtStoreReleaseBindingUrl());
+        respMtStoreBind.setEleStoreBindUrl(storeMapDTO.getEleStoreBindUrl());
         return respMtStoreBind;
     }
 }

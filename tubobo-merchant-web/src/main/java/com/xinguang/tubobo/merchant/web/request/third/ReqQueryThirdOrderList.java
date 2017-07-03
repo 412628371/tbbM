@@ -18,6 +18,7 @@ public class ReqQueryThirdOrderList implements Serializable {
     private Integer pageSize;
     @NotBlank(message = "平台编号不能为空")
     private String platformCode;
+    private String keyword;
 
     public Integer getPageNo() {
         return pageNo;
@@ -41,5 +42,13 @@ public class ReqQueryThirdOrderList implements Serializable {
 
     public void setPlatformCode(String platformCode) {
         this.platformCode = platformCode;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 }
