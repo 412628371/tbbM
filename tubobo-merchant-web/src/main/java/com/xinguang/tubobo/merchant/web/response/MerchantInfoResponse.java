@@ -41,6 +41,15 @@ public class MerchantInfoResponse implements Serializable{
     private String consignorStatus;
 
     private String bdCode;					//bd邀请码
+    private String addressAdCode;			//高德区域编码
+
+    public String getAddressAdCode() {
+        return addressAdCode;
+    }
+
+    public void setAddressAdCode(String addressAdCode) {
+        this.addressAdCode = addressAdCode;
+    }
 
     public String getBdCode() {
         return bdCode;

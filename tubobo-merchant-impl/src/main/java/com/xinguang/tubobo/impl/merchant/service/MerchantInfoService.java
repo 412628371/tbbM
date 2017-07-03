@@ -62,7 +62,6 @@ public class MerchantInfoService extends BaseService {
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#entity.getUserId()")
 	@Transactional(readOnly = false)
 	public boolean merchantUpdate(MerchantInfoEntity entity){
-//		entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
 		entity.setUpdateDate(new Date());
 		entity.setDelFlag(MerchantInfoEntity.DEL_FLAG_NORMAL);
 		merchantInfoDao.save(entity);
