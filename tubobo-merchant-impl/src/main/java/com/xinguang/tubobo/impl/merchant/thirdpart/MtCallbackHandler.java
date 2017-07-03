@@ -36,6 +36,7 @@ public class MtCallbackHandler {
                     ThirdMtOrderEntity mtOrderEntity = new ThirdMtOrderEntity();
                     BeanUtils.copyProperties(mtOrderDTO,mtOrderEntity);
                     mtOrderEntity.setUserId(merchantId);
+                    mtOrderEntity.setPlatformCode(TakeoutNotifyConstant.PlatformCode.MT.getValue());
                     mtOrderService.saveMtOrder(mtOrderEntity);
                 }
                 break;

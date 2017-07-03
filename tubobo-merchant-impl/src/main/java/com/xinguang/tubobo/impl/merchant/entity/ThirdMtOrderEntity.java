@@ -20,6 +20,7 @@ import java.util.Date;
 public class ThirdMtOrderEntity implements Serializable {
 
     private String userId;
+    private String platformCode;
     private String originOrderId;
     private String originOrderViewId;
     private String receiverAddressDetail;
@@ -38,6 +39,14 @@ public class ThirdMtOrderEntity implements Serializable {
     protected Date createDate;
     protected Date updateDate;
 
+
+    public String getPlatformCode() {
+        return platformCode;
+    }
+
+    public void setPlatformCode(String platformCode) {
+        this.platformCode = platformCode;
+    }
 
     public String getUserId() {
         return userId;
