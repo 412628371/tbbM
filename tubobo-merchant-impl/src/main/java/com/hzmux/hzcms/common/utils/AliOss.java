@@ -48,12 +48,13 @@ public class AliOss {
             if (key.startsWith("http://")) {
                 key = key.split("\\?")[0];
                 key = key.split("com/")[1];
+                // 设置URL过期时间为1小时
+                Date expiration = new Date(new Date().getTime() + 3600 * 1000);
+                // 生成URL
+                URL url = ossClient.generatePresignedUrl(bucketName, key, expiration);
+                return url.toString();
             }
-            // 设置URL过期时间为1小时
-            Date expiration = new Date(new Date().getTime() + 3600 * 1000);
-            // 生成URL
-            URL url = ossClient.generatePresignedUrl(bucketName, key, expiration);
-            return url.toString();
+            return "";
         }catch (Exception e){
             logger.error("generateSignedUrl error: ",e);
             return "";
