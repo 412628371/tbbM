@@ -21,6 +21,10 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	private String platformCode;
+	private String originOrderViewId;
+	private String originOrderId;
+
 	private String cancelReason;
 	private Long payId;
 	private String userId;//商家ID
@@ -558,5 +562,29 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	public void setCarTypeName(String carTypeName) {
 		this.carTypeName = carTypeName;
+	}
+
+	public String getPlatformCode() {
+		return platformCode;
+	}
+
+	public void setPlatformCode(String platformCode) {
+		this.platformCode = platformCode;
+	}
+
+	public String getOriginOrderViewId() {
+		return originOrderViewId;
+	}
+
+	public void setOriginOrderViewId(String originOrderViewId) {
+		this.originOrderViewId = originOrderViewId;
+	}
+
+	public String getOriginOrderId() {
+		return originOrderId;
+	}
+
+	public void setOriginOrderId(String originOrderId) {
+		this.originOrderId = originOrderId;
 	}
 }

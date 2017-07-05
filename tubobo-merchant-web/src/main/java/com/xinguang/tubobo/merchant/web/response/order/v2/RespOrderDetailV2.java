@@ -22,6 +22,7 @@ public class RespOrderDetailV2  implements Serializable{
     private AppointTask appointTask;
 
     private OverFeeInfo overFeeInfo;
+    private ThirdInfo thirdInfo;
 
     public OverFeeInfo getOverFeeInfo() {
         return overFeeInfo;
@@ -93,5 +94,13 @@ public class RespOrderDetailV2  implements Serializable{
 
     public void setReceiver(AddressInfo receiver) {
         this.receiver = receiver;
+    }
+
+    public ThirdInfo getThirdInfo() {
+        return thirdInfo;
+    }
+
+    public void setThirdInfo(ThirdInfo thirdInfo) {
+        this.thirdInfo = thirdInfo;
     }
 }

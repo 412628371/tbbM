@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,11 +62,13 @@ public class OrderOverFeeController extends MerchantBaseController<OverFeeInfoRe
 
             if (peekIsOpen){
                 peekOverFee=overFee.getPeekOverFee();
-                totalOverFee+=peekOverFee;
+                totalOverFee=add(totalOverFee,peekOverFee);
+                //totalOverFee+=peekOverFee;
             }
             if (null!=weatherOverFeeRemote){
                 weatherOverFee=weatherOverFeeRemote;
-                totalOverFee+=weatherOverFee;
+                totalOverFee=add(totalOverFee,weatherOverFee);
+//                totalOverFee+=weatherOverFee;
             }
         }
 
@@ -77,6 +80,11 @@ public class OrderOverFeeController extends MerchantBaseController<OverFeeInfoRe
         return orderOverFeeResponse;
     }
 
+    public  Double add(Number value1, Number value2) {
+        BigDecimal b1 = new BigDecimal(Double.toString(value1.doubleValue()));
+        BigDecimal b2 = new BigDecimal(Double.toString(value2.doubleValue()));
+        return b1.add(b2).doubleValue();
+    }
 
     /*boolean checkWeatherArea(String nativeAreaCode,String targetArea){
         boolean flag=false;
