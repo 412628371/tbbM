@@ -23,6 +23,7 @@ public class MerchantThirdBindEntity  implements Serializable{
     private boolean mtBound;
     private String mtAuthToken;
     private boolean eleBound;
+    private boolean yzBound;
 
 
     public MerchantThirdBindEntity(){
@@ -70,6 +71,14 @@ public class MerchantThirdBindEntity  implements Serializable{
         this.mtAuthToken = mtAuthToken;
     }
 
+    public boolean isYzBound() {
+        return yzBound;
+    }
+
+    public void setYzBound(boolean yzBound) {
+        this.yzBound = yzBound;
+    }
+
     public Long getId() {
         return id;
     }
@@ -101,4 +110,5 @@ public class MerchantThirdBindEntity  implements Serializable{
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
+
 }

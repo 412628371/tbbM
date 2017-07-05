@@ -84,7 +84,7 @@ public class CodeGenerator {
         String date = DateUtils.getDate("yyMMdd");
         Long seq = getCurrentSequenceValue(ORDER_CODE_NAME , date, 10);
 
-        return code+date + StringUtils.leftPad(String.valueOf(seq), 5, '0');
+        return code+date + StringUtils.leftPad(String.valueOf(seq), 7, '0');
     }
 
 }

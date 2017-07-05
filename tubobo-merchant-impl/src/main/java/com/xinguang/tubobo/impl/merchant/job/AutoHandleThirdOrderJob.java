@@ -2,7 +2,6 @@ package com.xinguang.tubobo.impl.merchant.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
