@@ -8,8 +8,9 @@ import java.io.Serializable;
 public interface TakeoutNotifyConstant extends Serializable{
 
     enum PlatformCode implements TakeoutNotifyConstant{
-        MT("MT"),
-        ELE("ELE");
+        MT("MT"),//美团
+        ELE("ELE"),//饿了么
+        YZ("YZ");//有赞
         private String value;
 
         PlatformCode(String value) {
