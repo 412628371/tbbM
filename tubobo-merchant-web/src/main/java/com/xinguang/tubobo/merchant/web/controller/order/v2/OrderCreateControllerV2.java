@@ -18,6 +18,7 @@ import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.AddressInfoToOrderBeanHelper;
 import com.xinguang.tubobo.merchant.web.common.info.OverFeeInfo;
+import com.xinguang.tubobo.merchant.web.common.info.ThirdInfo;
 import com.xinguang.tubobo.merchant.web.request.order.v2.ReqOrderCreateV2;
 import com.xinguang.tubobo.merchant.web.response.order.CreateOrderResponse;
 import freemarker.template.utility.DateUtil;
@@ -137,6 +138,12 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setPeekOverFee(peekOverFee);
 
 
+        ThirdInfo thirdInfo = req.getThirdInfo();
+        if (null != thirdInfo){
+            entity.setPlatformCode(thirdInfo.getPlatformCode());
+            entity.setOriginOrderId(thirdInfo.getOriginOrderId());
+            entity.setOriginOrderViewId(thirdInfo.getOriginOrderViewId());
+        }
         //把收货人地址信息设置到实体
         AddressInfoToOrderBeanHelper.putReceiverAddressInfo(entity,receiverAddressInfo);
         entity.setDeliveryFee(req.getDeliveryFee());
@@ -233,7 +240,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
                 peekOverFeeNew=0.0;
             }
             if (weatherOverFeeNew!=null){
-                if(weatherOverFeeNew==weatherOverFeeOld&&peekOverFeeOld==peekOverFeeNew){
+                if(weatherOverFeeNew.equals(weatherOverFeeOld)&&peekOverFeeOld.equals(peekOverFeeNew)){
                     logger.info("price is right");
                 }else{
                     //该地区实时开启了天气溢价
@@ -247,11 +254,11 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
                     }
                 }
             }else{
-                if(weatherOverFeeOld==0.0&&peekOverFeeOld==peekOverFeeNew){
+                if(weatherOverFeeOld==0.0&&peekOverFeeOld.equals(peekOverFeeNew)){
                     logger.info("price is right");
                 }else{
                     //该地区实时关闭了天气溢价
-                    if (!(weatherOverFeeOld==0.0)&&(peekOverFeeNew!=peekOverFeeOld)&&!overFee.getPeekIsOpen()){
+                    if (!(weatherOverFeeOld==0.0)&&(!peekOverFeeNew.equals(peekOverFeeOld))&&!overFee.getPeekIsOpen()){
                         //实际后台已经关闭该区域天气溢价和高峰溢价, 但是订单天气溢价不为零
                         throw new MerchantClientException(EnumRespCode.OVER_FEE_CLOSE);
                     }

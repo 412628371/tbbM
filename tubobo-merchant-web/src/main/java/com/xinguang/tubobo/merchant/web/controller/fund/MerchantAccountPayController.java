@@ -152,8 +152,6 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if (entity.getWeatherOverFee() != null){
             merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
         }
-        merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
-                +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
         String [] shopUrls = new String[5];
         shopUrls[0] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));

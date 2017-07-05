@@ -59,6 +59,10 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                     timeStr = sm.format(entity.getAppointTime());
                 }
                 AppointTask appointTask = new AppointTask(timeStr, entity.getAppointType());
+                ThirdInfo thirdInfo = new ThirdInfo();
+                thirdInfo.setPlatformCode(entity.getPlatformCode());
+                thirdInfo.setOriginOrderId(entity.getOriginOrderId());
+                thirdInfo.setOriginOrderViewId(entity.getOriginOrderViewId());
 
                 detailVo.setCarInfo(carInfo);
                 detailVo.setOrderInfo(orderInfo);
@@ -68,6 +72,7 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                 detailVo.setCommentsInfo(commentsInfo);
                 detailVo.setReceiver(receiver);
                 detailVo.setAppointTask(appointTask);
+                detailVo.setThirdInfo(thirdInfo);
                 list.add(detailVo);
             }
         }

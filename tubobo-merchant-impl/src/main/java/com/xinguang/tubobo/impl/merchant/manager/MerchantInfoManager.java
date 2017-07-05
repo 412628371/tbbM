@@ -71,7 +71,8 @@ public class MerchantInfoManager {
         entity.setHasSetPayPwd(true);
         entity.setEnablePwdFree(false);
         //高德区域编码
-        if(StringUtils.isBlank(entity.getAddressAdCode())){
+        if(EnumIdentifyType.MERCHANT.getValue().equals(identifyType) &&
+                StringUtils.isBlank(entity.getAddressAdCode())){
             //地理反编码
             InverseGeocodeDto inverseGeocodeDto = gdDistanceService.inverseGeocode(
                     entity.getLongitude(),entity.getLatitude());
@@ -103,7 +104,7 @@ public class MerchantInfoManager {
                 entity.setId(existEntity.getId());
                 entity.setCreateDate(existEntity.getCreateDate());
                 entity.setAvatarUrl(existEntity.getAvatarUrl());            //头像
-
+                entity.setApplyDate(new Date());
                 boolean result = false;
                 TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),AESUtils.decrypt(payPassword));
                 if(response != null && response.isSucceeded() && response.getData()){

@@ -7,6 +7,7 @@ package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.alibaba.fastjson.JSON;
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
@@ -26,6 +27,7 @@ import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
+import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -50,8 +52,8 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	private TimeoutTaskProducer timeoutTaskProducer;
 
-//	@Autowired
-//	TaskCenterToMerchantServiceInterface taskCenterToMerchantServiceInterface;
+	@Autowired
+	ThirdOrderService thirdOrderService;
 	@Autowired
 	TaskDispatchService taskDispatchService;
 
@@ -87,6 +89,14 @@ public class MerchantOrderManager extends BaseService {
 		AddressDTO dto = getAddressDTO(entity);
 		String msg = JSON.toJSONString(dto);
 		rmqAddressInfoProducer.sendMessage(msg);
+		if (StringUtils.isNotBlank(entity.getPlatformCode())){
+			try{
+				thirdOrderService.processOrder(entity.getUserId(),entity.getPlatformCode(),entity.getOriginOrderId());
+			}catch (Exception e){
+				logger.error("发单,更新第三方订单异常,userId:{},platformCode:{},originOrderId:{}",
+						entity.getUserId(),entity.getPlatformCode(),entity.getOriginOrderId());
+			}
+		}
 		return orderNo;
 	}
 

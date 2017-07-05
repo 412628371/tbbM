@@ -190,7 +190,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     /**
      * 商家订单分页查询
      */
-    public Page<MerchantOrderEntity> findMerchantOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
+    public Page<MerchantOrderEntity> findMerchantOrderPageToApp(int pageNo, int pageSize, MerchantOrderEntity entity){
         Parameter parameter = new Parameter();
         StringBuffer sb = new StringBuffer();
         //TODO 优化 select *
@@ -199,6 +199,50 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append("and user_id = :user_id  ");
             parameter.put("user_id", entity.getUserId());
          }
+        if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+                !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
+            sb.append("and order_status = :order_status ");
+            parameter.put("order_status", entity.getOrderStatus());
+        }
+        if (StringUtils.isNotBlank(entity.getOrderType())){
+            sb.append("and order_type = :order_type ");
+            parameter.put("order_type", entity.getOrderType());
+        }
+
+        sb.append(" order by create_date desc ");
+
+//        sb.append("select new com.xinguang.tubobo.impl.merchant.entity.OrderPojo(id,platformCode, userId, orderNo, orderType, ratedFlag, orderStatus, payAmount, deliveryFee,  tipFee,  orderTime,  grabOrderTime,  grabItemTime,  finishOrderTime,  receiverName,  receiverPhone,  receiverAddressProvince,  receiverAddressCity,  receiverAddressDistrict,  receiverAddressStreet,  receiverAddressDetail, receiverAddressRoomNo) from MerchantOrderEntity where delFlag = '0' ");
+//        if (StringUtils.isNotBlank(entity.getUserId())){
+//            sb.append("and userId = :userId  ");
+//            parameter.put("userId", entity.getUserId());
+//        }
+//        if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+//                !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
+//            sb.append("and orderStatus = :orderStatus ");
+//            parameter.put("orderStatus", entity.getOrderStatus());
+//        }
+//        if (StringUtils.isNotBlank(entity.getOrderType())){
+//            sb.append("and orderType = :orderType ");
+//            parameter.put("orderType", entity.getOrderType());
+//        }
+//
+//        sb.append(" order by createDate desc ");
+//        List<OrderPojo> list =  createQuery(sb.toString(),parameter).list();
+        return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
+    }
+
+    /**
+     * 后台查询商家订单，分页查询
+     */
+    public Page<MerchantOrderEntity> findMerchantOrderPageToAdmin(int pageNo, int pageSize, MerchantOrderEntity entity){
+        Parameter parameter = new Parameter();
+        StringBuffer sb = new StringBuffer();
+        //TODO 优化 select *
+        sb.append("select * from tubobo_merchant_order where del_flag = '0' ");
+        if (StringUtils.isNotBlank(entity.getUserId())){
+            sb.append("and user_id = :user_id  ");
+            parameter.put("user_id", entity.getUserId());
+        }
         if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
@@ -220,7 +264,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append("and receiver_phone like :receiver_phone ");
             parameter.put("receiver_phone", "%"+entity.getReceiverPhone()+"%");
         }
-
+        if (StringUtils.isNotBlank(entity.getSenderName())){
+            sb.append("and sender_name like :sender_name ");
+            parameter.put("sender_name", "%"+entity.getSenderName()+"%");
+        }
         if (null != entity.getCreateDate()){
             sb.append("and order_time >= :create_date ");
             parameter.put("create_date", DateUtils.getDateStart(entity.getCreateDate()));
@@ -232,7 +279,6 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         sb.append(" order by create_date desc ");
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
     }
-
     /**
      * 管理员关闭订单
      * @param orderNo

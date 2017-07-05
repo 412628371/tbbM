@@ -70,6 +70,11 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         overFeeInfo.setWeatherOverFee(weatherOverFee);
         overFeeInfo.setTotalOverFee(peekOverFee+weatherOverFee);
 
+        ThirdInfo thirdInfo = new ThirdInfo();
+        thirdInfo.setPlatformCode(entity.getPlatformCode());
+        thirdInfo.setOriginOrderId(entity.getOriginOrderId());
+        thirdInfo.setOriginOrderViewId(entity.getOriginOrderViewId());
+
         RespOrderDetailV2 resp = new RespOrderDetailV2();
         resp.setCarInfo(carInfo);
         resp.setCommentsInfo(commentsInfo);
@@ -80,6 +85,7 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         resp.setPayInfo(payInfo);
         resp.setAppointTask(appointTask);
         resp.setOverFeeInfo(overFeeInfo);
+        resp.setThirdInfo(thirdInfo);
         return resp;
     }
 
