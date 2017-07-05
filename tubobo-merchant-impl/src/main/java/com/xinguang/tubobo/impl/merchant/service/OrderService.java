@@ -161,14 +161,14 @@ public class OrderService extends BaseService {
      */
     @Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#entity.getUserId()+'_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")
     public Page<MerchantOrderEntity> merchantQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
-        return merchantOrderDao.findMerchantOrderPage(pageNo,pageSize,entity);
+        return merchantOrderDao.findMerchantOrderPageToApp(pageNo,pageSize,entity);
     }
 
     /**
      * 后台查询分页（不缓存）
      */
     public Page<MerchantOrderEntity> adminQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
-        return merchantOrderDao.findMerchantOrderPage(pageNo,pageSize,entity);
+        return merchantOrderDao.findMerchantOrderPageToAdmin(pageNo,pageSize,entity);
     }
 
     /**
