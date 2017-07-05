@@ -72,21 +72,24 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             entity.setCarTypeName(carTypeDTO.getName());
             if (req.getAppointTask() != null){
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String time = req.getAppointTask().getAppointTime();
+                String appointTime = req.getAppointTask().getAppointTime();
                 String appointType = req.getAppointTask().getAppointType();
-                Date appointTime;
+                Date appointDate,currentDate, tomorrowDate;
                 if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(appointType)){
-                    //获取当前时间
-//                    String currentTime = DateUtils.getDateTime();
-//                    String tomorrowTime = DateUtils.getDaysAfter(new Date(), 1, "23:59:59");
+                    //获取当前可预约时间
+                    String currentTime = DateUtils.getHourAfter(new Date(), 1);
+                    String tomorrowTime = DateUtils.getDaysAfter(new Date(), 1, "23:59:59");//明日凌晨
                     try{
-                        appointTime = dateFormat.parse(time);
+                        appointDate = dateFormat.parse(appointTime);
+                        currentDate = dateFormat.parse(currentTime);
+                        tomorrowDate = dateFormat.parse(tomorrowTime);
                     }catch(ParseException e){
                         throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
                     }
-                    if(new Date().getTime()<=appointTime.getTime()){
+                    if(currentDate.getTime()<=appointDate.getTime()&&
+                            tomorrowDate.getTime()>=appointDate.getTime()){
                         entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
-                        entity.setAppointTime(appointTime);
+                        entity.setAppointTime(appointDate);
                     }else{
                         throw new MerchantClientException(EnumRespCode.MERCHANT_APPOINTTIME_ERROR);
                     }
