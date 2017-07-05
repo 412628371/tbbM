@@ -30,7 +30,6 @@ public class MerchantThirdBindDao extends BaseDao<MerchantThirdBindEntity> {
             entity.setUserId(userId);
         }
         entity.setEleBound(bound);
-        entity.setEleAuthToken(authToken);
         entity.setUpdateDate(new Date());
         save(entity);
     }

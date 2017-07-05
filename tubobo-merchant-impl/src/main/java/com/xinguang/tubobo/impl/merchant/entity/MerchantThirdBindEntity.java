@@ -23,7 +23,6 @@ public class MerchantThirdBindEntity  implements Serializable{
     private boolean mtBound;
     private String mtAuthToken;
     private boolean eleBound;
-    private String eleAuthToken;
 
 
     public MerchantThirdBindEntity(){
@@ -69,15 +68,6 @@ public class MerchantThirdBindEntity  implements Serializable{
 
     public void setMtAuthToken(String mtAuthToken) {
         this.mtAuthToken = mtAuthToken;
-    }
-
-
-    public String getEleAuthToken() {
-        return eleAuthToken;
-    }
-
-    public void setEleAuthToken(String eleAuthToken) {
-        this.eleAuthToken = eleAuthToken;
     }
 
     public Long getId() {
