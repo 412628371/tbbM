@@ -277,6 +277,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		return formatDate(date, "yyyy-MM-dd") + " " + time;
 	}
 
+	public static String getHourAfter(Date currentDate, int hour){
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(currentDate);
+		calendar.add(Calendar.HOUR_OF_DAY, hour);
+		Date date = calendar.getTime();
+		return formatDateTime(date);
+	}
+
 	/**
 	 * @param args
 	 * @throws ParseException
@@ -292,27 +300,29 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 //
 //		System.out.println(getDaysBefore(new Date(),3));
 
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(new Date());
-		calendar.add(Calendar.DATE, +1);
-		Date date = calendar.getTime();
-		Date date1 = date;
+//		Calendar calendar = new GregorianCalendar();
+//		calendar.setTime(new Date());
+//		calendar.add(Calendar.DATE, +1);
+//		Date date = calendar.getTime();
+//		Date date1 = date;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		date = simpleDateFormat.parse(formatDate(date, "yyyy-MM-dd") +" 23:59:59");
-		date1 = simpleDateFormat.parse(formatDate(date1, "yyyy-MM-dd") +" 00:00:00");
-//		System.out.println(simpleDateFormat.format(date));
-//		System.out.println(simpleDateFormat.format(date1));
-//		String datet1 = simpleDateFormat.format(date);
-//		String datet2 = simpleDateFormat.format(date1);
-//		Date d1 = simpleDateFormat.parse(datet1);
-//		Date d2 = simpleDateFormat.parse(datet2);
-//		System.out.println(d2 + ", " + d1);
-//		System.out.println(d2.before(d1));
+//		date = simpleDateFormat.parse(formatDate(date, "yyyy-MM-dd") +" 23:59:59");
+//		date1 = simpleDateFormat.parse(formatDate(date1, "yyyy-MM-dd") +" 00:00:00");
+////		System.out.println(simpleDateFormat.format(date));
+////		System.out.println(simpleDateFormat.format(date1));
+////		String datet1 = simpleDateFormat.format(date);
+////		String datet2 = simpleDateFormat.format(date1);
+////		Date d1 = simpleDateFormat.parse(datet1);
+////		Date d2 = simpleDateFormat.parse(datet2);
+////		System.out.println(d2 + ", " + d1);
+////		System.out.println(d2.before(d1));
+//
+//		System.out.println(formatDate(date, "yyyy-MM-dd") +" 23:59:59");
+//		System.out.println(date);
+//
+//		System.out.println(getDaysAfter(new Date(), 1 , "23:59:59"));
 
-		System.out.println(formatDate(date, "yyyy-MM-dd") +" 23:59:59");
-		System.out.println(date);
-
-		System.out.println(getDaysAfter(new Date(), 1 , "23:59:59"));
+		System.out.println(getHourAfter(new Date(),1));
 
 	}
 }
