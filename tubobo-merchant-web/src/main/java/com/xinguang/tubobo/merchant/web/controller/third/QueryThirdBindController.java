@@ -26,6 +26,7 @@ public class QueryThirdBindController extends MerchantBaseController<Object,Resp
         if (null == entity){
             respQueryStoreBind.setEleBound(false);
             respQueryStoreBind.setMtBound(false);
+            respQueryStoreBind.setYzBound(false);
         }else {
             BeanUtils.copyProperties(entity,respQueryStoreBind);
         }

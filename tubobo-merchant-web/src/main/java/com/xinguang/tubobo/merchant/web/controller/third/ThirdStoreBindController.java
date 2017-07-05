@@ -31,6 +31,7 @@ public class ThirdStoreBindController extends MerchantBaseController<Object,Resp
         respMtStoreBind.setMtStoreBindUrl(storeMapDTO.getMtStoreBindUrl());
         respMtStoreBind.setMtStoreReleaseBindingUrl(storeMapDTO.getMtStoreReleaseBindingUrl());
         respMtStoreBind.setEleStoreBindUrl(storeMapDTO.getEleStoreBindUrl());
+        respMtStoreBind.setYzStoreBindUrl(storeMapDTO.getYzStoreBindUrl());
         return respMtStoreBind;
     }
 }

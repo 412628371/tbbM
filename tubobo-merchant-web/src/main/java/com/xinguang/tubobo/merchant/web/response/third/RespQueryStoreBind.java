@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class RespQueryStoreBind implements Serializable {
     private boolean eleBound;
     private boolean mtBound;
+    private boolean yzBound;
 
     public boolean isEleBound() {
         return eleBound;
@@ -23,5 +24,13 @@ public class RespQueryStoreBind implements Serializable {
 
     public void setMtBound(boolean mtBound) {
         this.mtBound = mtBound;
+    }
+
+    public boolean isYzBound() {
+        return yzBound;
+    }
+
+    public void setYzBound(boolean yzBound) {
+        this.yzBound = yzBound;
     }
 }

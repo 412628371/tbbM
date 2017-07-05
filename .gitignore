@@ -6,8 +6,6 @@ out/
 *.lock
 tubobo-merchant-web/.settings/
 tubobo-merchant-impl/.settings/
-tubobo-merchant-api/
-tubobo-merchant-impl/
 .settings/
 tubobo-merchant-web/.classpath
 tubobo-merchant-web/.project

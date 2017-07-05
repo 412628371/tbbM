@@ -86,9 +86,11 @@ public class MerchantOrderManager extends BaseService {
 			expiredMillSeconds = config.getConsignorPayExpiredMilliSeconds();
 		}
 		timeoutTaskProducer.sendMessage(orderNo,expiredMillSeconds);
-		AddressDTO dto = getAddressDTO(entity);
-		String msg = JSON.toJSONString(dto);
-		rmqAddressInfoProducer.sendMessage(msg);
+		if(StringUtils.isNotBlank(entity.getOrderType()) && EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
+			AddressDTO dto = getAddressDTO(entity);
+			String msg = JSON.toJSONString(dto);
+			rmqAddressInfoProducer.sendMessage(msg);
+		}
 		if (StringUtils.isNotBlank(entity.getPlatformCode())){
 			try{
 				thirdOrderService.processOrder(entity.getUserId(),entity.getPlatformCode(),entity.getOriginOrderId());

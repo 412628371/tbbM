@@ -5,6 +5,8 @@ import com.xinguang.tubobo.impl.merchant.dao.ThirdOrderDao;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
 import com.xinguang.tubobo.takeout.TakeoutNotifyConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ import java.util.Date;
 @Service
 @Transactional(readOnly = true)
 public class ThirdOrderService {
+    Logger logger = LoggerFactory.getLogger(ThirdOrderService.class);
+
     @Autowired private ThirdOrderDao mtOrderDao;
     @Transactional()
     public void saveMtOrder(ThirdOrderEntity mtOrderEntity){
@@ -36,5 +40,14 @@ public class ThirdOrderService {
     public Page<ThirdOrderEntity> findUnProcessedPageByUserId(String userId, String platformCode,
                                                               String keyword,int pageNo, int pageSize){
         return mtOrderDao.findUnProcessedPageByUserId(userId,platformCode,keyword,pageNo,pageSize);
+    }
+
+    /**
+     * 逻辑删除第三方平台记录
+     */
+    @Transactional()
+    public void deleteAllRecords(){
+        int count = mtOrderDao.delAllRecords();
+        logger.info("删除 {} 条第三方平台订单记录",count);
     }
 }

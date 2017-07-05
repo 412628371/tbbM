@@ -43,6 +43,7 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
             parameter.put("keyword","%"+keyword+"%");
         }
         parameter.put("processed",false);
+        hqlSb.append(" order by -origin_order_view_id asc");
         return findPage(hqlSb.toString(), parameter, ThirdOrderEntity.class,pageNo,pageSize);
     }
 
@@ -61,5 +62,17 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
         parameter.put("processed",true);
         int count = update(hql,parameter);
         return count == 1;
+    }
+
+    /**
+     * 逻辑删除所有的记录，即标志位变为删除状态
+     * @return
+     */
+    public int delAllRecords(){
+        String hql = "update ThirdOrderEntity set delFlag='1' ,updateDate=:updateDate where delFlag='0'";
+        Parameter parameter = new Parameter();
+        parameter.put("updateDate",new Date());
+        int count = update(hql,parameter);
+        return count;
     }
 }

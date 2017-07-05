@@ -23,14 +23,23 @@ public class MerchantThirdBindDao extends BaseDao<MerchantThirdBindEntity> {
         entity.setUpdateDate(new Date());
         save(entity);
     }
-    public void updateEleBindInfo(String userId,boolean bound,String authToken){
+    public void updateEleBindInfo(String userId,boolean bound){
         MerchantThirdBindEntity entity = findByUserId(userId);
         if (null == entity){
             entity = new MerchantThirdBindEntity();
             entity.setUserId(userId);
         }
         entity.setEleBound(bound);
-        entity.setEleAuthToken(authToken);
+        entity.setUpdateDate(new Date());
+        save(entity);
+    }
+    public void updateYzBindInfo(String userId,boolean bound){
+        MerchantThirdBindEntity entity = findByUserId(userId);
+        if (null == entity){
+            entity = new MerchantThirdBindEntity();
+            entity.setUserId(userId);
+        }
+        entity.setYzBound(bound);
         entity.setUpdateDate(new Date());
         save(entity);
     }

@@ -22,7 +22,10 @@ public class MerchantThirdBindService {
                 thirdBindDao.updateMtBindInfo(userId,true,mtAuthToken);
                 break;
             case ELE:
-                thirdBindDao.updateEleBindInfo(userId,true,mtAuthToken);
+                thirdBindDao.updateEleBindInfo(userId,true);
+                break;
+            case YZ:
+                thirdBindDao.updateYzBindInfo(userId,true);
                 break;
             default:
                 break;
@@ -36,7 +39,10 @@ public class MerchantThirdBindService {
                 thirdBindDao.updateMtBindInfo(userId,false,"");
                 break;
             case ELE:
-                thirdBindDao.updateEleBindInfo(userId,true,"");
+                thirdBindDao.updateEleBindInfo(userId,false);
+                break;
+            case YZ:
+                thirdBindDao.updateYzBindInfo(userId,false);
                 break;
             default:
                 break;
