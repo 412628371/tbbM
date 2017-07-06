@@ -50,6 +50,16 @@ public class Config {
 //    private String gdKey;
     private Integer autoRateDays;
     private String transportType;
+    private int thirdOrderRemainHours;
+
+    @DisconfFileItem(name = "thirdOrderRemainHours", associateField = "thirdOrderRemainHours")
+    public int getThirdOrderRemainHours() {
+        return thirdOrderRemainHours;
+    }
+
+    public void setThirdOrderRemainHours(int thirdOrderRemainHours) {
+        this.thirdOrderRemainHours = thirdOrderRemainHours;
+    }
 
     @DisconfFileItem(name = "consignorNoticeGrabTimeoutTemplate", associateField = "consignorNoticeGrabTimeoutTemplate")
     public String getConsignorNoticeGrabTimeoutTemplate() {
