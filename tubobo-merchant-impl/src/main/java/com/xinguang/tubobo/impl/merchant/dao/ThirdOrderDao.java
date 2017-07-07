@@ -68,10 +68,11 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
      * 逻辑删除所有的记录，即标志位变为删除状态
      * @return
      */
-    public int delAllRecords(){
-        String hql = "update ThirdOrderEntity set delFlag='1' ,updateDate=:updateDate where delFlag='0'";
+    public int delRecordsPastHours(int pastHours){
+        String hql = "update ThirdOrderEntity set delFlag='1' ,updateDate=:updateDate where delFlag='0' and DATE_ADD(create_date,INTERVAL :pastHours HOUR)<NOW()";
         Parameter parameter = new Parameter();
         parameter.put("updateDate",new Date());
+        parameter.put("pastHours",pastHours);
         int count = update(hql,parameter);
         return count;
     }

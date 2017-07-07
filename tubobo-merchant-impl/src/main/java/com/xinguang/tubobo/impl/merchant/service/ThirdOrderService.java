@@ -46,8 +46,8 @@ public class ThirdOrderService {
      * 逻辑删除第三方平台记录
      */
     @Transactional()
-    public void deleteAllRecords(){
-        int count = mtOrderDao.delAllRecords();
+    public void delRecordsPastHours(int pastHours){
+        int count = mtOrderDao.delRecordsPastHours(pastHours);
         logger.info("删除 {} 条第三方平台订单记录",count);
     }
 }
