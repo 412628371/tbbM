@@ -64,6 +64,20 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                 thirdInfo.setOriginOrderId(entity.getOriginOrderId());
                 thirdInfo.setOriginOrderViewId(entity.getOriginOrderViewId());
 
+                //封装overfee对象
+                OverFeeInfo overFeeInfo = new OverFeeInfo();
+                Double weatherOverFee= entity.getWeatherOverFee();
+                Double peekOverFee=entity.getPeekOverFee();
+                if (peekOverFee==null){
+                    peekOverFee=0.0;
+                }
+                if (weatherOverFee==null){
+                    weatherOverFee=0.0;
+                }
+                overFeeInfo.setPeekOverFee(peekOverFee);
+                overFeeInfo.setWeatherOverFee(weatherOverFee);
+                overFeeInfo.setTotalOverFee(peekOverFee+weatherOverFee);
+
                 detailVo.setCarInfo(carInfo);
                 detailVo.setOrderInfo(orderInfo);
                 detailVo.setPayInfo(payInfo);
@@ -73,6 +87,7 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                 detailVo.setReceiver(receiver);
                 detailVo.setAppointTask(appointTask);
                 detailVo.setThirdInfo(thirdInfo);
+                detailVo.setOverFeeInfo(overFeeInfo);
                 list.add(detailVo);
             }
         }

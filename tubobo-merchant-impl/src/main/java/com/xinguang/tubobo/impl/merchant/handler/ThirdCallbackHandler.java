@@ -5,6 +5,8 @@ import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantThirdBindService;
 import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
 import com.xinguang.tubobo.takeout.TakeoutNotifyConstant;
+import com.xinguang.tubobo.takeout.mt.MtCancelDTO;
+import com.xinguang.tubobo.takeout.mt.MtDispatchDTO;
 import com.xinguang.tubobo.takeout.mt.MtOrderDTO;
 import com.xinguang.tubobo.takeout.mt.MtStoreMapDTO;
 import org.springframework.beans.BeanUtils;
@@ -38,6 +40,18 @@ public class ThirdCallbackHandler {
                     mtOrderEntity.setUserId(merchantId);
                     mtOrderEntity.setPlatformCode(platformCode.getValue());
                     mtOrderService.saveMtOrder(mtOrderEntity);
+                }
+                break;
+            case ORDER_CANCEL:
+                MtCancelDTO mtCancelDTO = JSON.parseObject(jsonContent,MtCancelDTO.class);
+                if (null != mtCancelDTO){
+                    mtOrderService.processOrder(merchantId,platformCode.getValue(),mtCancelDTO.getOriginOrderId());
+                }
+                break;
+            case ORDER_DELIVERY_STATUS_CHANGE:
+                MtDispatchDTO mtDispatchDTO = JSON.parseObject(jsonContent,MtDispatchDTO.class);
+                if (null != mtDispatchDTO){
+                    mtOrderService.processOrder(merchantId,platformCode.getValue(),mtDispatchDTO.getOriginOrderId());
                 }
                 break;
             default:
