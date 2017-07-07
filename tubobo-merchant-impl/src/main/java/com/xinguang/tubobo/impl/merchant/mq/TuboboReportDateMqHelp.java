@@ -65,14 +65,6 @@ public class TuboboReportDateMqHelp {
         sendToMq(dto);
     }
 
-    public void merchantWithdraw(String userId, Long amount) {
-        MerchantWithdrawDTO dto = new MerchantWithdrawDTO();
-        dto.setMsgType(EnumMqMsgType.MERCHANT_WITHDRAW.getValue());
-        dto.setMerchantId(userId);
-        dto.setWithdrawCash(Long.valueOf(amount).intValue());
-        sendToMq(dto);
-    }
-
     public void merchantOrder(TaskCreateDTO task) {
         MerchantOrderDTO dto = new MerchantOrderDTO();
         dto.setMsgType(EnumMqMsgType.MERCHANT_ORDER.getValue());
