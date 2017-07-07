@@ -3,6 +3,7 @@ package com.xinguang.tubobo.impl.merchant.dao;
 import com.hzmux.hzcms.common.persistence.BaseDao;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
+import com.hzmux.hzcms.common.utils.DateUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
 import org.springframework.stereotype.Repository;
@@ -69,10 +70,11 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
      * @return
      */
     public int delRecordsPastHours(int pastHours){
-        String hql = "update ThirdOrderEntity set delFlag='1' ,updateDate=:updateDate where delFlag='0' and DATE_ADD(create_date,INTERVAL :pastHours HOUR)<NOW()";
+        Date lastValidDate = DateUtils.getHourAfterOfDate(new Date(),-pastHours);
+        String hql = "update ThirdOrderEntity set delFlag='1' ,updateDate=:updateDate where delFlag='0' and createDate < :lastValidDate";
         Parameter parameter = new Parameter();
         parameter.put("updateDate",new Date());
-        parameter.put("pastHours",pastHours);
+        parameter.put("lastValidDate",lastValidDate);
         int count = update(hql,parameter);
         return count;
     }

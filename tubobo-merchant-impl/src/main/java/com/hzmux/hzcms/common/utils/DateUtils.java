@@ -278,13 +278,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 	}
 
 	public static String getHourAfter(Date currentDate, int hour){
+		return formatDateTime(getHourAfterOfDate(currentDate,hour));
+	}
+	public static Date getHourAfterOfDate(Date currentDate, int hour){
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(currentDate);
 		calendar.add(Calendar.HOUR_OF_DAY, hour);
 		Date date = calendar.getTime();
-		return formatDateTime(date);
+		return date;
 	}
-
 	/**
 	 * @param args
 	 * @throws ParseException
@@ -322,7 +324,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 //
 //		System.out.println(getDaysAfter(new Date(), 1 , "23:59:59"));
 
-		System.out.println(getHourAfter(new Date(),1));
+		System.out.println(getHourAfterOfDate(new Date(),-1));
 
 	}
 }

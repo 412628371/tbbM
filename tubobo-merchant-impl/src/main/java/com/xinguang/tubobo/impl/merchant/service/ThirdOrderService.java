@@ -48,6 +48,6 @@ public class ThirdOrderService {
     @Transactional()
     public void delRecordsPastHours(int pastHours){
         int count = mtOrderDao.delRecordsPastHours(pastHours);
-        logger.info("删除 {} 条第三方平台订单记录",count);
+        logger.info("删除 {} 条,{} 小时之前的第三方平台订单记录",count,pastHours);
     }
 }
