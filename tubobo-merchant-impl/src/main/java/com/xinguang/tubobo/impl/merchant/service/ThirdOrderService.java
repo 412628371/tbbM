@@ -24,7 +24,8 @@ public class ThirdOrderService {
     @Autowired private ThirdOrderDao mtOrderDao;
     @Transactional()
     public void saveMtOrder(ThirdOrderEntity mtOrderEntity){
-        ThirdOrderEntity existEntity = mtOrderDao.findByOriginId(mtOrderEntity.getOriginOrderId());
+        ThirdOrderEntity existEntity = mtOrderDao.findByOriginId(mtOrderEntity.getOriginOrderId(),
+                mtOrderEntity.getPlatformCode());
         if (null == existEntity){
             mtOrderEntity.setCreateDate(new Date());
             mtOrderEntity.setUpdateDate(new Date());
