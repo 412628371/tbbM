@@ -30,7 +30,7 @@ public enum EnumRespCode {
 	MERCHANT_ORDER_NOT_FINISH("10212", "订单还未完成"),
 	MERCHANT_ORDER_TYPE_NOT_SUPPORT("10213", "不支持的订单类型"),
 	MERCHANT_CAR_TYPE_NOT_SUPPORT("10214", "不支持的车辆类型"),
-
+	MERCHANT_APPOINTTIME_ERROR("10215", "预约时间为当前时间一小时后，限今明两天，商家预约时间超出预约时间范围,或者用户本地系统时间不对"),
 
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
 	PASSWORD_DECRYPT_FAIL("10002", "密码解密失败"),
@@ -48,7 +48,15 @@ public enum EnumRespCode {
 	ACCOUNT_PWD_RESET_CREDENTIAL_INVALID("30054", "重置密码，令牌已无效"),
 
 	ACCOUNT_PWD_ERROR_TOO_MUCH("30055", "支付密码输错%s次，请找回密码"),
-	ACCOUNT_RECHARGE_FAIL("30060", "充值操作失败");
+	ACCOUNT_RECHARGE_FAIL("30060", "充值操作失败"),
+
+	PEEK_OVER_FEE_CHANGE("30070","高峰溢价费已发生变化,请重新提交订单"),
+	WEATHER_OVER_FEE_CHANGE("30071","天气溢价费已发生变化,请重新提交订单"),
+	OVER_FEE_CLOSE("30072","所有溢价均已结束"),
+	ALL_OVER_FEE_CHANGE("30073","天气溢价高峰溢价均发生变化"),
+	OVERFEE_VERSION_LOW("30074","您的版本过低，请先去更新版本再发单哦~");
+
+
 
 
 

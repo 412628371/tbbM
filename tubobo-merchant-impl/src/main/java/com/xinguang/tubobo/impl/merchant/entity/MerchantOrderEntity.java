@@ -21,6 +21,10 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	private String platformCode;
+	private String originOrderViewId;
+	private String originOrderId;
+
 	private String cancelReason;
 	private Long payId;
 	private String userId;//商家ID
@@ -81,7 +85,55 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String carType;//车辆类型
 	private String carTypeName;//车辆类型名称
 
+	private Date appointTime; //预约时间
+
+	private String appointType; //配送类型
+
 	private Boolean ratedFlag;
+
+	private Double peekOverFee;  //高峰溢价费用
+
+	private Double weatherOverFee; //天气溢价费用
+
+
+	public Double getPeekOverFee() {
+		if (peekOverFee == null){
+			return 0.0;
+		}
+		return peekOverFee;
+	}
+
+	public void setPeekOverFee(Double peekOverFee) {
+		this.peekOverFee = peekOverFee;
+	}
+
+	public Double getWeatherOverFee() {
+		if (weatherOverFee == null){
+			return 0.0;
+		}
+		return weatherOverFee;
+	}
+
+	public void setWeatherOverFee(Double weatherOverFee) {
+		this.weatherOverFee = weatherOverFee;
+	}
+
+	public String getAppointType() {
+		return appointType;
+	}
+
+	public void setAppointType(String appointType) {
+		this.appointType = appointType;
+	}
+
+	public Date getAppointTime() {
+		return appointTime;
+	}
+
+	public void setAppointTime(Date appointTime) {
+		this.appointTime = appointTime;
+	}
+
 	public String getReceiverAddressRoomNo() {
 		return receiverAddressRoomNo;
 	}
@@ -510,5 +562,29 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	public void setCarTypeName(String carTypeName) {
 		this.carTypeName = carTypeName;
+	}
+
+	public String getPlatformCode() {
+		return platformCode;
+	}
+
+	public void setPlatformCode(String platformCode) {
+		this.platformCode = platformCode;
+	}
+
+	public String getOriginOrderViewId() {
+		return originOrderViewId;
+	}
+
+	public void setOriginOrderViewId(String originOrderViewId) {
+		this.originOrderViewId = originOrderViewId;
+	}
+
+	public String getOriginOrderId() {
+		return originOrderId;
+	}
+
+	public void setOriginOrderId(String originOrderId) {
+		this.originOrderId = originOrderId;
 	}
 }

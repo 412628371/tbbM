@@ -17,6 +17,7 @@
         <module>tubobo-merchant-api</module>
         <module>tubobo-merchant-impl</module>
         <module>tubobo-merchant-web</module>
+        <module>takeout-thirdpart-api</module>
     </modules>
 
     <properties>
@@ -27,11 +28,12 @@
         <tubobo.merchant.api.version>0.0.2-SNAPSHOT</tubobo.merchant.api.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
         <tubobo-account-api-version>1.1-SNAPSHOT</tubobo-account-api-version>
-        <tubobo-push-api-version>1.0-SNAPSHOT</tubobo-push-api-version>
+        <tubobo-push-api-version>1.1-SNAPSHOT</tubobo-push-api-version>
         <tubobo-rate-version>1.1-SNAPSHOT</tubobo-rate-version>
         <tubobo-riddr-api-version>0.0.1-SNAPSHOT</tubobo-riddr-api-version>
         <tubobo-taskcenter.version>1.0-SNAPSHOT</tubobo-taskcenter.version>
         <tubobo-admin.version>0.0.1-SNAPSHOT</tubobo-admin.version>
+        <tubobo-reportdata-api.version>0.0.1-SNAPSHOT</tubobo-reportdata-api.version>
 
         <spring.version>4.2.6.RELEASE</spring.version>
         <spring.core.version>4.2.6.RELEASE</spring.core.version>
@@ -117,6 +119,16 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.xinguang.tubobo</groupId>
+                <artifactId>tubobo-notify-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.xinguang</groupId>
+                <artifactId>tubobo-merchant-takeout</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>com.xinguang</groupId>
                 <artifactId>tubobo-api</artifactId>
                 <version>${tubobo-admin.version}</version>
@@ -172,6 +184,11 @@
                 <groupId>com.xinguang.tubobo</groupId>
                 <artifactId>tubobo-rate-api</artifactId>
                 <version>${tubobo-rate-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.xinguang</groupId>
+                <artifactId>tubobo-reportdata-api</artifactId>
+                <version>${tubobo-reportdata-api.version}</version>
             </dependency>
 
             <!--spring 相关jar -->

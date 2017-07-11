@@ -70,12 +70,48 @@ public class MerchantOrderDTO implements Serializable{
 	private String carType;//车辆类型
 	private String carTypeName;//车辆类型名称
 
-
+	private Date appointTime;	//预约时间
+	private String appointType; //预约类型
 
 	protected Date createDate;
 	protected String createBy;
 	protected Date updateDate;
 	protected String updateBy;
+
+	private Integer peekOverFee;  //高峰溢价费用
+	private Integer weatherOverFee; //天气溢价费用
+
+	public Integer getPeekOverFee() {
+		return peekOverFee;
+	}
+
+	public void setPeekOverFee(Integer peekOverFee) {
+		this.peekOverFee = peekOverFee;
+	}
+
+	public Integer getWeatherOverFee() {
+		return weatherOverFee;
+	}
+
+	public void setWeatherOverFee(Integer weatherOverFee) {
+		this.weatherOverFee = weatherOverFee;
+	}
+
+	public Date getAppointTime() {
+		return appointTime;
+	}
+
+	public void setAppointTime(Date appointTime) {
+		this.appointTime = appointTime;
+	}
+
+	public String getAppointType() {
+		return appointType;
+	}
+
+	public void setAppointType(String appointType) {
+		this.appointType = appointType;
+	}
 
 	public String getCarType() {
 		return carType;

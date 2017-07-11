@@ -1,6 +1,9 @@
 package com.xinguang.tubobo.merchant.web.request.order.v2;
 
 import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
+import com.xinguang.tubobo.merchant.web.common.info.AppointTask;
+import com.xinguang.tubobo.merchant.web.common.info.OverFeeInfo;
+import com.xinguang.tubobo.merchant.web.common.info.ThirdInfo;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
@@ -22,6 +25,25 @@ public class ReqOrderCreateV2 implements Serializable {
     private String type;
     private String carType;
     private String payMethod;
+    private AppointTask appointTask; //预约时间
+    private OverFeeInfo overFeeInfo;
+    private ThirdInfo thirdInfo;
+
+    public OverFeeInfo getOverFeeInfo() {
+        return overFeeInfo;
+    }
+
+    public void setOverFeeInfo(OverFeeInfo overFeeInfo) {
+        this.overFeeInfo = overFeeInfo;
+    }
+
+    public AppointTask getAppointTask() {
+        return appointTask;
+    }
+
+    public void setAppointTask(AppointTask appointTask) {
+        this.appointTask = appointTask;
+    }
 
     public AddressInfo getConsignor() {
         return consignor;
@@ -87,17 +109,28 @@ public class ReqOrderCreateV2 implements Serializable {
         this.payMethod = payMethod;
     }
 
+    public ThirdInfo getThirdInfo() {
+        return thirdInfo;
+    }
+
+    public void setThirdInfo(ThirdInfo thirdInfo) {
+        this.thirdInfo = thirdInfo;
+    }
+
     @Override
     public String toString() {
         return "ReqOrderCreateV2{" +
-                "consignor=" + consignor.toString() +
-                ", receiver=" + receiver.toString() +
+                "consignor=" + consignor +
+                ", receiver=" + receiver +
                 ", orderRemarks='" + orderRemarks + '\'' +
                 ", deliveryFee=" + deliveryFee +
                 ", tipFee=" + tipFee +
                 ", type='" + type + '\'' +
                 ", carType='" + carType + '\'' +
                 ", payMethod='" + payMethod + '\'' +
+                ", appointTask=" + appointTask +
+                ", overFeeInfo=" + overFeeInfo +
+                ", thirdInfo=" + thirdInfo +
                 '}';
     }
 }

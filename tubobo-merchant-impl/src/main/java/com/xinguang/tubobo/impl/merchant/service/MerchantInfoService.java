@@ -62,7 +62,6 @@ public class MerchantInfoService extends BaseService {
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#entity.getUserId()")
 	@Transactional(readOnly = false)
 	public boolean merchantUpdate(MerchantInfoEntity entity){
-//		entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
 		entity.setUpdateDate(new Date());
 		entity.setDelFlag(MerchantInfoEntity.DEL_FLAG_NORMAL);
 		merchantInfoDao.save(entity);
@@ -150,16 +149,20 @@ public class MerchantInfoService extends BaseService {
 			sb.append("and merchant_name like :merchant_name ");
 			parameter.put("merchant_name", "%"+entity.getMerchantName()+"%");
 		}
+		if (StringUtils.isNotBlank(entity.getBdCode())){
+			sb.append("and bd_code like :bd_code ");
+			parameter.put("bd_code", "%"+entity.getBdCode()+"%");
+		}
 		if (StringUtils.isNotBlank(entity.getIdCardNo())){
 			sb.append("and id_card_no = :id_card_no ");
 			parameter.put("id_card_no", entity.getIdCardNo());
 		}
 		if (null != entity.getCreateDate()){
-			sb.append("and apply_date >= :create_date ");
+			sb.append("and create_date >= :create_date ");
 			parameter.put("create_date", DateUtils.getDateStart(entity.getCreateDate()));
 		}
 		if (null != entity.getUpdateDate()){
-			sb.append("and apply_date <= :update_date ");
+			sb.append("and create_date <= :update_date ");
 			parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
 		}
 		sb.append(" order by create_date desc ");
@@ -188,4 +191,16 @@ public class MerchantInfoService extends BaseService {
 		return count;
 	}
 
+	/**
+	 * 保存bd邀请码
+	 * @param userId
+	 * @param bdCode
+	 * @return
+	 */
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+	@Transactional(readOnly = false)
+	public int updateDBCode(String userId, String bdCode){
+		int count = merchantInfoDao.updateDBCode(userId, bdCode);
+		return count;
+	}
 }

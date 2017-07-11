@@ -5,7 +5,9 @@
  */
 package com.xinguang.tubobo.impl.merchant.manager;
 
+import com.alibaba.fastjson.JSON;
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
@@ -15,16 +17,20 @@ import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.api.AdminToMerchantService;
+import com.xinguang.tubobo.api.dto.AddressDTO;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
+import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
+import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +47,13 @@ public class MerchantOrderManager extends BaseService {
 	private OrderService orderService;
 
 	@Autowired
+	private RmqAddressInfoProducer rmqAddressInfoProducer;
+
+	@Autowired
 	private TimeoutTaskProducer timeoutTaskProducer;
-//	@Autowired
-//	TaskCenterToMerchantServiceInterface taskCenterToMerchantServiceInterface;
+
+	@Autowired
+	ThirdOrderService thirdOrderService;
 	@Autowired
 	TaskDispatchService taskDispatchService;
 
@@ -55,6 +65,9 @@ public class MerchantOrderManager extends BaseService {
 
 	@Autowired
 	AdminToMerchantService adminToMerchantService;
+	@Autowired
+	private TuboboReportDateMqHelp tuboboReportDateMqHelp;
+
 	@Resource
 	Config config;
 
@@ -73,8 +86,22 @@ public class MerchantOrderManager extends BaseService {
 			expiredMillSeconds = config.getConsignorPayExpiredMilliSeconds();
 		}
 		timeoutTaskProducer.sendMessage(orderNo,expiredMillSeconds);
+		if(StringUtils.isNotBlank(entity.getOrderType()) && EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
+			AddressDTO dto = getAddressDTO(entity);
+			String msg = JSON.toJSONString(dto);
+			rmqAddressInfoProducer.sendMessage(msg);
+		}
+		if (StringUtils.isNotBlank(entity.getPlatformCode())){
+			try{
+				thirdOrderService.processOrder(entity.getUserId(),entity.getPlatformCode(),entity.getOriginOrderId());
+			}catch (Exception e){
+				logger.error("发单,更新第三方订单异常,userId:{},platformCode:{},originOrderId:{}",
+						entity.getUserId(),entity.getPlatformCode(),entity.getOriginOrderId());
+			}
+		}
 		return orderNo;
 	}
+
 
 	/**
 	 * 商家付款
@@ -100,6 +127,9 @@ public class MerchantOrderManager extends BaseService {
 			if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
 				adminToMerchantService.sendDistributeTaskSmsAlert();
 			}
+
+			//推送消息到报表mq
+			tuboboReportDateMqHelp.merchantOrder(taskCreateDTO);
 		}else {
 			logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
 		}
@@ -138,6 +168,9 @@ public class MerchantOrderManager extends BaseService {
 							if (!cancelResult){
 								logger.error("商家取消订单，更改订单状态出错，userId: "+merchantId+" orderNo: "+orderNo);
 							}
+
+							//推送消息到报表mq
+							tuboboReportDateMqHelp.orderCancel(orderNo,"merchant",EnumCancelReason.GRAB_MERCHANT.getValue());
 							return cancelResult;
 						}else {
 							logger.error("商家取消订单，资金平台退款出错，userId: "+merchantId+" orderNo: "+orderNo+
@@ -247,6 +280,26 @@ public class MerchantOrderManager extends BaseService {
 						"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			}
 		}
+
+		//推送消息到报表mq
+		tuboboReportDateMqHelp.orderCancel(orderNo,"system",EnumCancelReason.GRAB_OVERTIME.getValue());
 		return false;
+	}
+
+
+	public AddressDTO getAddressDTO(MerchantOrderEntity entity){
+		AddressDTO dto = new AddressDTO();
+		dto.setMerchantId(entity.getUserId());
+		dto.setName(entity.getReceiverName());
+		dto.setPhone(entity.getReceiverPhone());
+		dto.setProvince(entity.getReceiverAddressProvince());
+		dto.setCity(entity.getReceiverAddressCity());
+		dto.setDistrict(entity.getReceiverAddressDistrict());
+		dto.setStreet(entity.getReceiverAddressStreet());
+		dto.setDetailAddress(entity.getReceiverAddressDetail());
+		dto.setRoomNo(entity.getReceiverAddressRoomNo());
+		dto.setLongitude(entity.getReceiverLongitude());
+		dto.setLatitude(entity.getReceiverLatitude());
+		return dto;
 	}
 }

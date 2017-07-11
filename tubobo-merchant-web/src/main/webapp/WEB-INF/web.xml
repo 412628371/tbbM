@@ -6,7 +6,7 @@
   <display-name>TuboboWebMerchant</display-name>
 
   <!-- 激活Tomcat的defaultServlet来处理静态文件 -->
-  <servlet-mapping>
+  <!--<servlet-mapping>
     <servlet-name>default</servlet-name>
     <url-pattern>*.jpg</url-pattern>
   </servlet-mapping>
@@ -25,7 +25,7 @@
   <servlet-mapping>
     <servlet-name>default</servlet-name>
     <url-pattern>*.css</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>-->
 
   <!-- 加载Spring配置文件 -->
   <context-param>
@@ -71,6 +71,15 @@
   <servlet-mapping>
     <servlet-name>springServlet</servlet-name>
     <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>HystrixMetricsStreamServlet</servlet-name>
+    <servlet-class>com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HystrixMetricsStreamServlet</servlet-name>
+    <url-pattern>/hystrix.stream</url-pattern>
   </servlet-mapping>
 
   <filter>

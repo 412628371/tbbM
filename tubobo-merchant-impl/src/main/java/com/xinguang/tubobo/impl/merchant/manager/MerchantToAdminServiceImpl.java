@@ -4,6 +4,7 @@ import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface;
@@ -29,6 +30,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private TuboboReportDateMqHelp tuboboReportDateMqHelp;
+
     /**
      * 查询商家详细信息
      * @param userId
@@ -81,7 +85,17 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
      */
     @Override
     public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType) {
-        return merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy,identifyType) > 0;
+        int i = merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy,identifyType);
+        if (i > 0){
+            //消息放入报表mq
+            if("CONSIGNOR".equals(identifyType)){
+                tuboboReportDateMqHelp.goodOwnerStatusVerify(userId,merchantStatus);
+            }else{
+                tuboboReportDateMqHelp.merchantStatusVerify(userId,merchantStatus);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -127,6 +141,8 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
             dto.setPayAmount(order.getPayAmount()==null?0:(int)(order.getPayAmount()*100));
             dto.setDeliveryFee(order.getDeliveryFee()==null?0:(int)(order.getDeliveryFee()*100));
             dto.setTipFee(order.getTipFee()==null?0:(int)(order.getTipFee()*100));
+            dto.setPeekOverFee(order.getPeekOverFee()==null?0:(int)(order.getPeekOverFee()*100));
+            dto.setWeatherOverFee(order.getWeatherOverFee()==null?0:(int)(order.getWeatherOverFee()*100));
             return dto;
         }
         return null;

@@ -11,10 +11,12 @@
 
 	<import resource="spring-disconf.xml" />
 	<import resource="rabbitmq-callback.xml"/>
+	<import resource="rabbitmq-takeout.xml"/>
 	<import resource="rabbitmq-delay.xml"/>
 	<import resource="spring-dubbo-consumer.xml"/>
 	<import resource="spring-dubbo-provider.xml"/>
 	<import resource="spring-jobCenter.xml"/>
+	<import resource="spring-redis.xml" />
     <!-- 加载配置属性文件 -->
 	<!--<context:property-placeholder ignore-unresolvable="true" location="classpath*:/hzcms.properties" />-->
 	

@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * 订单详情controller 2.0.
@@ -45,6 +48,33 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
                 EnumCarType.getNameByType(entity.getRiderCarType()));
         CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
+        //获取用车时间对象
+        SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timeStr="";
+        if(entity.getAppointTime() != null){
+            timeStr = sm.format(entity.getAppointTime());
+        }
+        AppointTask appointTask = new AppointTask(timeStr, entity.getAppointType());
+
+        //封装overfee对象
+        OverFeeInfo overFeeInfo = new OverFeeInfo();
+        Double weatherOverFee= entity.getWeatherOverFee();
+        Double peekOverFee=entity.getPeekOverFee();
+        if (peekOverFee==null){
+            peekOverFee=0.0;
+        }
+        if (weatherOverFee==null){
+            weatherOverFee=0.0;
+        }
+        overFeeInfo.setPeekOverFee(peekOverFee);
+        overFeeInfo.setWeatherOverFee(weatherOverFee);
+        overFeeInfo.setTotalOverFee(peekOverFee+weatherOverFee);
+
+        ThirdInfo thirdInfo = new ThirdInfo();
+        thirdInfo.setPlatformCode(entity.getPlatformCode());
+        thirdInfo.setOriginOrderId(entity.getOriginOrderId());
+        thirdInfo.setOriginOrderViewId(entity.getOriginOrderViewId());
+
         RespOrderDetailV2 resp = new RespOrderDetailV2();
         resp.setCarInfo(carInfo);
         resp.setCommentsInfo(commentsInfo);
@@ -53,6 +83,9 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         resp.setDriverInfo(driverInfo);
         resp.setOrderInfo(orderInfo);
         resp.setPayInfo(payInfo);
+        resp.setAppointTask(appointTask);
+        resp.setOverFeeInfo(overFeeInfo);
+        resp.setThirdInfo(thirdInfo);
         return resp;
     }
 

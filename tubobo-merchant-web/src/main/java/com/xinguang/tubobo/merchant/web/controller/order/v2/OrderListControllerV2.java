@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,32 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                 DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
                         entity.getRiderCarType());
                 CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
+                //获取用车时间对象
+                SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStr="";
+                if(entity.getAppointTime() != null){
+                    timeStr = sm.format(entity.getAppointTime());
+                }
+                AppointTask appointTask = new AppointTask(timeStr, entity.getAppointType());
+                ThirdInfo thirdInfo = new ThirdInfo();
+                thirdInfo.setPlatformCode(entity.getPlatformCode());
+                thirdInfo.setOriginOrderId(entity.getOriginOrderId());
+                thirdInfo.setOriginOrderViewId(entity.getOriginOrderViewId());
+
+                //封装overfee对象
+                OverFeeInfo overFeeInfo = new OverFeeInfo();
+                Double weatherOverFee= entity.getWeatherOverFee();
+                Double peekOverFee=entity.getPeekOverFee();
+                if (peekOverFee==null){
+                    peekOverFee=0.0;
+                }
+                if (weatherOverFee==null){
+                    weatherOverFee=0.0;
+                }
+                overFeeInfo.setPeekOverFee(peekOverFee);
+                overFeeInfo.setWeatherOverFee(weatherOverFee);
+                overFeeInfo.setTotalOverFee(peekOverFee+weatherOverFee);
+
                 detailVo.setCarInfo(carInfo);
                 detailVo.setOrderInfo(orderInfo);
                 detailVo.setPayInfo(payInfo);
@@ -58,6 +85,9 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
                 detailVo.setConsignor(consignor);
                 detailVo.setCommentsInfo(commentsInfo);
                 detailVo.setReceiver(receiver);
+                detailVo.setAppointTask(appointTask);
+                detailVo.setThirdInfo(thirdInfo);
+                detailVo.setOverFeeInfo(overFeeInfo);
                 list.add(detailVo);
             }
         }

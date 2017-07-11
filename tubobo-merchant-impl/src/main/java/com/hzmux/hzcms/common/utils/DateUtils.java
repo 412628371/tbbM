@@ -7,7 +7,9 @@ package com.hzmux.hzcms.common.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 
@@ -259,6 +261,32 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		Date d = new Date(pastMilSeconds);
 		return d;
 	}
+
+	/**
+	 * 得到当前时间之后的年月日以及任何十分秒
+	 * @param currentDate
+	 * @param days
+	 * @param time "00:00:00"
+	 * @return
+	 */
+	public static String getDaysAfter(Date currentDate, int days, String time){
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(currentDate);
+		calendar.add(Calendar.DATE, +days);
+		Date date = calendar.getTime();
+		return formatDate(date, "yyyy-MM-dd") + " " + time;
+	}
+
+	public static String getHourAfter(Date currentDate, int hour){
+		return formatDateTime(getHourAfterOfDate(currentDate,hour));
+	}
+	public static Date getHourAfterOfDate(Date currentDate, int hour){
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(currentDate);
+		calendar.add(Calendar.HOUR_OF_DAY, hour);
+		Date date = calendar.getTime();
+		return date;
+	}
 	/**
 	 * @param args
 	 * @throws ParseException
@@ -269,9 +297,34 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 //		long time = new Date().getTime()-parseDate("2012-11-19").getTime();
 //		System.out.println(time/(24*60*60*1000));
 //		System.out.println(countSecondsFromNowToTodayEnd());
-		System.out.println(isBeforeEndTimeInOneDay("20:00:00"));
-		System.out.println(isAfterBeginTimeInOneDay("08:00:00"));
+//		System.out.println(isBeforeEndTimeInOneDay("20:00:00"));
+//		System.out.println(isAfterBeginTimeInOneDay("08:00:00"));
+//
+//		System.out.println(getDaysBefore(new Date(),3));
 
-		System.out.println(getDaysBefore(new Date(),3));
+//		Calendar calendar = new GregorianCalendar();
+//		calendar.setTime(new Date());
+//		calendar.add(Calendar.DATE, +1);
+//		Date date = calendar.getTime();
+//		Date date1 = date;
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		date = simpleDateFormat.parse(formatDate(date, "yyyy-MM-dd") +" 23:59:59");
+//		date1 = simpleDateFormat.parse(formatDate(date1, "yyyy-MM-dd") +" 00:00:00");
+////		System.out.println(simpleDateFormat.format(date));
+////		System.out.println(simpleDateFormat.format(date1));
+////		String datet1 = simpleDateFormat.format(date);
+////		String datet2 = simpleDateFormat.format(date1);
+////		Date d1 = simpleDateFormat.parse(datet1);
+////		Date d2 = simpleDateFormat.parse(datet2);
+////		System.out.println(d2 + ", " + d1);
+////		System.out.println(d2.before(d1));
+//
+//		System.out.println(formatDate(date, "yyyy-MM-dd") +" 23:59:59");
+//		System.out.println(date);
+//
+//		System.out.println(getDaysAfter(new Date(), 1 , "23:59:59"));
+
+		System.out.println(getHourAfterOfDate(new Date(),-1));
+
 	}
 }

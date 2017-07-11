@@ -23,8 +23,6 @@
         <property name="messageListener" ref="rmqTaskGrabListenerAdapter"></property>
     </bean>
 
-
-
     <rabbit:queue id="rmqMerchantTaskOperateQueue" durable="true" auto-delete="false" exclusive="false"
                   name="rmqMerchantTaskOperateQueue" />
     <bean id="rmqTaskOperateHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqTaskOperateHandler"></bean>
@@ -50,4 +48,15 @@
             <rabbit:binding queue="rmqMerchantTaskOperateQueue"/>
         </rabbit:bindings>
     </rabbit:fanout-exchange>
+
+    <!-- 创建rabbitTemplate 消息模板类 -->
+    <rabbit:template id="addressInfoTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="merchant_addressInfo_query_exchange" />
+    <!-- 生产者 队列声明-->
+    <rabbit:queue id="addressInfoQueue" durable="true" auto-delete="false" exclusive="false" name="addressInfoQueue" />
+    <!-- work exchange -->
+    <rabbit:direct-exchange name="merchant_addressInfo_query_exchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="addressInfoQueue" key="merchant_addressInfo_routeKey_normal"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
 </beans>

@@ -146,11 +146,16 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if (entity.getTipFee() != null){
             merchantOrderDTO.setTipFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
         }
-        merchantOrderDTO.setSenderAddressDetail(ConvertUtil.handleNullString(entity.getSenderAddressDetail())
-                +ConvertUtil.handleNullString(entity.getSenderAddressRoomNo()));
+        if (entity.getPeekOverFee() != null){
+            merchantOrderDTO.setPeekOverFee(ConvertUtil.convertYuanToFen(entity.getPeekOverFee()).intValue());
+        }
+        if (entity.getWeatherOverFee() != null){
+            merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
+        }
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
-        String [] shopUrls = new String[1];
+        String [] shopUrls = new String[5];
         shopUrls[0] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));
+        shopUrls[1] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl2()));
         merchantOrderDTO.setSenderShopUrls(shopUrls);
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;

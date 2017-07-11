@@ -4,3 +4,9 @@ target/
 *.iml
 out/
 *.lock
+tubobo-merchant-web/.settings/
+tubobo-merchant-impl/.settings/
+.settings/
+tubobo-merchant-web/.classpath
+tubobo-merchant-web/.project
+.project

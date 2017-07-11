@@ -3,6 +3,7 @@ package com.xinguang.tubobo.impl.merchant.manager;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
+import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
@@ -26,6 +27,8 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     private OrderService orderService;
     @Autowired
     private TbbAccountService tbbAccountService;
+    @Autowired
+    private TuboboReportDateMqHelp tuboboReportDateMqHelp;
 
     /**
      * 骑手抢单
@@ -88,6 +91,9 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         if (result){
             //发送骑手完成送货通知
             pushService.noticeFinished(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
+
+            //推送到报表mq
+            tuboboReportDateMqHelp.orderFinish(entity,finishOrderTime);
         }
         return result;
     }
