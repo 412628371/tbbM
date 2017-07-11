@@ -9,6 +9,7 @@ import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by xuqinghua on 2017/7/1.
@@ -20,12 +21,15 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
      * @param originOrderId
      * @return
      */
-    public ThirdOrderEntity findByOriginId(String originOrderId){
-        String hql = "from ThirdOrderEntity where originOrderId=:originOrderId and delFlag='0'";
+    public ThirdOrderEntity findByOriginId(String originOrderId,String platformCode){
+        String hql = "from ThirdOrderEntity where originOrderId=:originOrderId and platformCode=:platformCode and delFlag='0'";
         Parameter parameter = new Parameter();
         parameter.put("originOrderId",originOrderId);
-        ThirdOrderEntity entity = getByHql(hql,parameter);
-        return entity;
+        parameter.put("platformCode",platformCode);
+        List<ThirdOrderEntity> list = find(hql,parameter);
+        if (null != list && list.size()>0)
+            return list.get(0);
+        return null;
     }
 
     public Page<ThirdOrderEntity> findUnProcessedPageByUserId(String userId,String platformCode,String keyword, int pageNo, int pageSize){
