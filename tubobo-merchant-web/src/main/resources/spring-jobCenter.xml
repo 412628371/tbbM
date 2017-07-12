@@ -26,5 +26,5 @@
     </bean>
     <!-- 配置作业 -->
     <job:simple id="autoRateJob" class="com.xinguang.tubobo.impl.merchant.job.AutoRateJob" registry-center-ref="regCenter" cron="0 0 23 * * ?" sharding-total-count="2" event-trace-rdb-data-source="jobLogDataSource" />
-    <job:simple id="autoHandleThirdOrderJob" class="com.xinguang.tubobo.impl.merchant.job.AutoHandleThirdOrderJob" registry-center-ref="regCenter" cron="0 59 23 * * ?" sharding-total-count="2" event-trace-rdb-data-source="jobLogDataSource" />
+    <job:simple id="autoHandleThirdOrderJob" class="com.xinguang.tubobo.impl.merchant.job.AutoHandleThirdOrderJob" registry-center-ref="regCenter" cron="0 0 12 * * ?" sharding-total-count="2" event-trace-rdb-data-source="jobLogDataSource" />
 </beans>
