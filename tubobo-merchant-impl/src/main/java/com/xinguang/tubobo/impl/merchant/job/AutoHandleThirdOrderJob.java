@@ -25,8 +25,10 @@ public class AutoHandleThirdOrderJob implements SimpleJob {
         switch (shardingItem){
             case 0:
                 thirdOrderService.delRecordsPastHours(config.getThirdOrderRemainHours());
+                break;
             case 1:
-//                    System.out.println("1");
+                thirdOrderService.delRecordsPastHours(config.getThirdOrderRemainHours());
+                break;
             default:
 
         }
