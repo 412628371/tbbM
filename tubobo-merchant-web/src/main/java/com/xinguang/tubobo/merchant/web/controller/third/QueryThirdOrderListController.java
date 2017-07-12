@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.third;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -26,22 +27,35 @@ public class QueryThirdOrderListController extends MerchantBaseController<ReqQue
     @Autowired private ThirdOrderService mtOrderService;
     @Override
     protected RespQueryThirdOrder doService(String userId, ReqQueryThirdOrderList req) throws MerchantClientException {
-        Page<ThirdOrderEntity> page = mtOrderService.findUnProcessedPageByUserId(userId,req.getPlatformCode(),
-                req.getKeyword(),req.getPageNo(),req.getPageSize());
-        List<RespQueryThirdOrderItem> list = new ArrayList<>(page.getPageNo());
-        if (page!= null && page.getList() != null && page.getList().size() > 0) {
-            for (ThirdOrderEntity entity :page.getList()) {
-                RespQueryThirdOrderItem vo = new RespQueryThirdOrderItem();
-                BeanUtils.copyProperties(entity,vo);
-                list.add(vo);
-            }
-        }
         RespQueryThirdOrder respQueryThirdOrder = new RespQueryThirdOrder();
+        List<RespQueryThirdOrderItem> list = new ArrayList<>();
+        int pageNo = req.getPageNo();
+        int pageSize = req.getPageSize();
+        int totalSize = 0;
+        String keyword = StringUtils.trim(req.getKeyword());
+        if (StringUtils.isNotBlank(keyword) && !StringUtils.isAlphanumeric(keyword)){
+
+        }else {
+            Page<ThirdOrderEntity> page = mtOrderService.findUnProcessedPageByUserId(userId,req.getPlatformCode(),
+                    keyword,req.getPageNo(),req.getPageSize());
+
+            if (page!= null && page.getList() != null && page.getList().size() > 0) {
+                for (ThirdOrderEntity entity :page.getList()) {
+                    RespQueryThirdOrderItem vo = new RespQueryThirdOrderItem();
+                    BeanUtils.copyProperties(entity,vo);
+                    list.add(vo);
+                }
+            }
+            pageNo = page.getPageNo();
+            pageSize = page.getPageSize();
+            totalSize = page.getTotalPage();
+        }
+
         respQueryThirdOrder.setKeyword(req.getKeyword());
         respQueryThirdOrder.setList(list);
-        respQueryThirdOrder.setPageNo(page.getPageNo());
-        respQueryThirdOrder.setPageSize(page.getPageSize());
-        respQueryThirdOrder.setTotalSize(page.getTotalPage());
+        respQueryThirdOrder.setPageNo(pageNo);
+        respQueryThirdOrder.setPageSize(pageSize);
+        respQueryThirdOrder.setTotalSize(totalSize);
         return respQueryThirdOrder;
     }
 }
