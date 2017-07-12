@@ -32,6 +32,9 @@ public class RmqTakeoutCallbackHandler implements ChannelAwareMessageListener {
             case YZ:
                 thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
                 break;
+            case BD:
+                thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
+                break;
             default:
 
         }

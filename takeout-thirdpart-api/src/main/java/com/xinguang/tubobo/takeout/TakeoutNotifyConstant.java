@@ -10,7 +10,8 @@ public interface TakeoutNotifyConstant extends Serializable{
     enum PlatformCode implements TakeoutNotifyConstant{
         MT("MT"),//美团
         ELE("ELE"),//饿了么
-        YZ("YZ");//有赞
+        YZ("YZ"),//有赞
+        BD("BD");//百度
         private String value;
 
         PlatformCode(String value) {
