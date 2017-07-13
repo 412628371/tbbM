@@ -18,6 +18,7 @@
     <bean id="rabbitAdmin"  class="org.springframework.amqp.rabbit.core.RabbitAdmin">
         <constructor-arg ref="rabbitmqConnectionFactory" />
     </bean>
+    <rabbit:template id="baseMqTemplate" connection-factory="rabbitmqConnectionFactory" />
 
     <!--报表数据 mq队列提供者-->
     <rabbit:template id="reportDataMqTemplate" connection-factory="rabbitmqConnectionFactory"/>
