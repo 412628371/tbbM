@@ -19,8 +19,17 @@ import java.util.Date;
 public class PushNoticeEntity {
 
     private String title;
+    private String noticeType;//通知类型，1-订单通知，2-公告
     private String content;
     private String userId;
+
+    private String orderType;
+    private String orderNo;
+    private String platformCode;
+    private String originOrderViewId;
+
+    private String identifyStatus;
+    private String identifyType;
     private boolean processed;
 
     @Id
@@ -94,5 +103,61 @@ public class PushNoticeEntity {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public String getNoticeType() {
+        return noticeType;
+    }
+
+    public void setNoticeType(String noticeType) {
+        this.noticeType = noticeType;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getPlatformCode() {
+        return platformCode;
+    }
+
+    public void setPlatformCode(String platformCode) {
+        this.platformCode = platformCode;
+    }
+
+    public String getOriginOrderViewId() {
+        return originOrderViewId;
+    }
+
+    public void setOriginOrderViewId(String originOrderViewId) {
+        this.originOrderViewId = originOrderViewId;
+    }
+
+    public String getIdentifyStatus() {
+        return identifyStatus;
+    }
+
+    public void setIdentifyStatus(String identifyStatus) {
+        this.identifyStatus = identifyStatus;
+    }
+
+    public String getIdentifyType() {
+        return identifyType;
+    }
+
+    public void setIdentifyType(String identifyType) {
+        this.identifyType = identifyType;
     }
 }

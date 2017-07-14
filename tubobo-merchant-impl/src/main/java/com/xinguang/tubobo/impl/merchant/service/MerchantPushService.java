@@ -101,9 +101,8 @@ public class MerchantPushService {
                 generateExtraParam(userId,orderNo,type));
         logger.info("订单超时未接单，通知商家。userId: {}, content: {}",userId,grabTimeoutTemplete);
     }
-//    public void noticeGrabTimeout(String userId,String orderNo){
-//        noticeGrabTimeout(userId,orderNo,MerchantConstants.PUSH_ORDER_TYPE_SMALL);
-//    }
+
+
 
     private static String  generateExtraParam(String userId,String orderNo,String type){
         NoticeParamVo paramVo = new NoticeParamVo();

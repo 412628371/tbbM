@@ -7,11 +7,17 @@ import java.io.Serializable;
  */
 public class NoticeDTO implements Serializable {
     private String title;
+    private String noticeType;//通知类型，1-订单通知，2-公告
     private String content;
     private String userId;
-    private String orderType;
 
-    private Integer noticeType;//通知类型，1-订单通知，2-公告
+    private String orderType;
+    private String orderNo;
+    private String platformCode;
+    private String originOrderViewId;
+
+    private String identifyStatus;
+    private String identifyType;
 
     public String getTitle() {
         return title;
@@ -45,11 +51,51 @@ public class NoticeDTO implements Serializable {
         this.orderType = orderType;
     }
 
-    public Integer getNoticeType() {
+    public String getNoticeType() {
         return noticeType;
     }
 
-    public void setNoticeType(Integer noticeType) {
+    public void setNoticeType(String noticeType) {
         this.noticeType = noticeType;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getIdentifyStatus() {
+        return identifyStatus;
+    }
+
+    public void setIdentifyStatus(String identifyStatus) {
+        this.identifyStatus = identifyStatus;
+    }
+
+    public String getIdentifyType() {
+        return identifyType;
+    }
+
+    public void setIdentifyType(String identifyType) {
+        this.identifyType = identifyType;
+    }
+
+    public String getPlatformCode() {
+        return platformCode;
+    }
+
+    public void setPlatformCode(String platformCode) {
+        this.platformCode = platformCode;
+    }
+
+    public String getOriginOrderViewId() {
+        return originOrderViewId;
+    }
+
+    public void setOriginOrderViewId(String originOrderViewId) {
+        this.originOrderViewId = originOrderViewId;
     }
 }
