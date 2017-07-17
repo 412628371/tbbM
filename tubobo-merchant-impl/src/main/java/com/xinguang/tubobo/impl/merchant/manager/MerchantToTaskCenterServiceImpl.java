@@ -2,15 +2,12 @@ package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
-import com.xinguang.tubobo.impl.merchant.mq.RmqProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
-import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
-import com.xinguang.tubobo.merchant.api.dto.NoticeDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +19,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
 
     Logger logger = LoggerFactory.getLogger(MerchantToTaskCenterServiceImpl.class);
     @Autowired
-    RmqProducer rmqProducer;
+    RmqNoticeProducer rmqNoticeProducer;
     @Autowired
     private MerchantOrderManager merchantOrderManager;
     @Autowired
@@ -54,7 +51,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         boolean result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
                 orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType()) > 0;
         if (result){
-            rmqProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+            rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 //            pushService.noticeGrab(entity.getUserId(),orderNo, MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
         }
         return result;
@@ -94,7 +91,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         if (result){
             //发送骑手完成送货通知
 //            pushService.noticeFinished(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
-            rmqProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+            rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 
             //推送到报表mq
             tuboboReportDateMqHelp.orderFinish(entity,finishOrderTime);

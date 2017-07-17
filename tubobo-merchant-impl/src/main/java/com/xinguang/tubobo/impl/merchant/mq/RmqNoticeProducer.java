@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * Created by xuqinghua on 2017/7/13.
  */
 @Service
-public class RmqProducer {
+public class RmqNoticeProducer {
     @Autowired private Config config;
     @Autowired private RabbitTemplate baseMqTemplate;
 

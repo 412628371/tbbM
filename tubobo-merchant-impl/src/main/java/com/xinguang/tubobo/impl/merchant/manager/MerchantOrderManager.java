@@ -23,6 +23,7 @@ import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
@@ -60,16 +61,12 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	private TbbAccountService tbbAccountService;
 
-	@Autowired
-	MerchantPushService pushService;
+	@Autowired private MerchantPushService pushService;
 
-	@Autowired
-	AdminToMerchantService adminToMerchantService;
-	@Autowired
-	private TuboboReportDateMqHelp tuboboReportDateMqHelp;
-
-	@Resource
-	Config config;
+	@Autowired private AdminToMerchantService adminToMerchantService;
+	@Autowired private TuboboReportDateMqHelp tuboboReportDateMqHelp;
+	@Autowired private RmqNoticeProducer rmqNoticeProducer;
+	@Resource private Config config;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -269,7 +266,8 @@ public class MerchantOrderManager extends BaseService {
 					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			orderExpire(entity.getUserId(),orderNo,expireTime);
 			if (enablePushNotice){
-				pushService.noticeGrabTimeout(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
+//				pushService.noticeGrabTimeout(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
+				rmqNoticeProducer.sendGrabTimeoutNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 			}
 			return true;
 		}else {
