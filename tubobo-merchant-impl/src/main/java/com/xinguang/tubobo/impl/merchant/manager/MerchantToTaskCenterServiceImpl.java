@@ -3,6 +3,7 @@ package com.xinguang.tubobo.impl.merchant.manager;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
+import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -10,6 +11,7 @@ import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
+import com.xinguang.tubobo.takeout.answer.DispatcherInfoDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     @Autowired
     private TuboboReportDateMqHelp tuboboReportDateMqHelp;
 
+    @Autowired private RmqTakeoutAnswerProducer rmqTakeoutAnswerProducer;
     /**
      * 骑手抢单
      * @param dto
@@ -54,6 +57,8 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         if (result){
             pushService.noticeGrab(entity.getUserId(),orderNo, MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
         }
+        rmqTakeoutAnswerProducer.sendAccepted(entity.getPlatformCode(),entity.getUserId(),entity.getOrderNo(),
+                entity.getOriginOrderId(),new DispatcherInfoDTO(dto.getRiderName(),dto.getRiderPhone()));
         return result;
     }
 
