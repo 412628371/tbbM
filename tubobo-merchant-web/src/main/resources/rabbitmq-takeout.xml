@@ -12,10 +12,12 @@
     <!--<rabbit:template id="addressInfoTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="merchant_addressInfo_query_exchange" />-->
     <!-- 生产者 队列声明-->
     <rabbit:queue id="merchant_takeout_queue_mt" durable="true" auto-delete="false" exclusive="false" name="merchant_takeout_queue_mt" />
+    <rabbit:queue id="merchant_takeout_queue_answer" durable="true" auto-delete="false" exclusive="false" name="merchant_takeout_queue_answer" />
     <!-- work exchange -->
     <rabbit:topic-exchange name="merchant_takeout_exchange" durable="true" auto-delete="false">
         <rabbit:bindings>
             <rabbit:binding pattern="merchant.takeout.bindingKey.mt.#" queue="merchant_takeout_queue_mt" ></rabbit:binding>
+            <rabbit:binding pattern="merchant.takeout.bindingKey.answer.#" queue="merchant_takeout_queue_answer" ></rabbit:binding>
         </rabbit:bindings>
     </rabbit:topic-exchange>
 

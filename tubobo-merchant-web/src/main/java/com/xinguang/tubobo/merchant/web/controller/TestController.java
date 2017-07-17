@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller;
 
+import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
 import com.xinguang.tubobo.impl.merchant.service.MerchantThirdBindService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -17,12 +18,17 @@ public class TestController extends MerchantBaseController<Object,Object>{
 	@Autowired
 	private OrderService orderService;
 	@Autowired private MerchantThirdBindService bindService;
-
+	@Autowired private RmqTakeoutAnswerProducer rmqTakeoutAnswerProducer;
 	@Override
 	protected Object doService(String userId, Object req) throws MerchantClientException {
 
-		bindService.bindMt(TakeoutNotifyConstant.PlatformCode.MT,userId,"aaa");
-
+//		bindService.bindMt(TakeoutNotifyConstant.PlatformCode.MT,userId,"aaa");
+//		rmqTakeoutAnswerProducer.sendAccepted("YZ","30126","20170001","111",null);
 		return null;
+	}
+
+	@Override
+	protected boolean needLogin() {
+		return false;
 	}
 }

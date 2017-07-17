@@ -21,11 +21,23 @@ public interface TakeoutNotifyConstant extends Serializable{
         public String getValue() {
             return value;
         }
+       public static PlatformCode getByCode(String code){
+            PlatformCode platformCode = null;
+            for (PlatformCode p :PlatformCode.values()){
+                if (p.getValue().equals(code)){
+                    platformCode = p;
+                    break;
+                }
+            }
+            return platformCode;
+        }
     }
     enum RmqConfig implements TakeoutNotifyConstant{
         EXCHANGE_NAME("merchant_takeout_exchange"),
+        THIRD_ANSWER_QUEUE_NAME("merchant_takeout_queue_answer"),
         MT_QUEUE_NAME("merchant_takeout_queue_mt"),
         ELE_QUEUE_NAME("merchant_takeout_queue_ele"),
+        THIRD_QUEUE_ANSWER_BINDING_KEY("merchant.takeout.bindingKey.answer.#"),
         MT_QUEUE_BINDING_KEY("merchant.takeout.bindingKey.mt.#"),
         ELE_QUEUE_BINDING_KEY("merchant.takeout.bindingKey.mt.#");
         private String value;
@@ -55,6 +67,26 @@ public interface TakeoutNotifyConstant extends Serializable{
         private String label;
 
         MtNotifyType(String code, String label) {
+            this.code = code;
+            this.label = label;
+        }
+        public String getCode() {
+            return this.code;
+        }
+        public String getLabel() {
+            return label;
+        }
+    }
+
+    enum ThirdAnswerType implements TakeoutNotifyConstant {
+        ACCEPTED("400", "已接单"),
+        PICKED("410", "已取货，配送中"),
+        FINISH("420", "已完成");
+
+        private String code;
+        private String label;
+
+        ThirdAnswerType(String code, String label) {
             this.code = code;
             this.label = label;
         }
