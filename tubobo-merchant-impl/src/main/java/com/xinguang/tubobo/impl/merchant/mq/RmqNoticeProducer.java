@@ -5,6 +5,7 @@ import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.dto.NoticeDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.api.enums.EnumNoticeType;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderNoticeType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class RmqNoticeProducer {
         NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
         noticeDTO.setTitle(config.getNoticeGrabedTitle());
         noticeDTO.setContent(config.getNoticeGrabedTemplate());
+        noticeDTO.setOrderOperateType(EnumOrderNoticeType.ACCEPTED.getValue());
         sendNotice(noticeDTO);
     }
 
@@ -44,6 +46,7 @@ public class RmqNoticeProducer {
         NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
         noticeDTO.setTitle(config.getNoticeGrabedTimeoutTitle());
         noticeDTO.setContent(config.getNoticeGrabedTimeoutTemplate());
+        noticeDTO.setOrderOperateType(EnumOrderNoticeType.GRAB_EXPIRED.getValue());
         sendNotice(noticeDTO);
     }
 
@@ -59,6 +62,7 @@ public class RmqNoticeProducer {
         NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
         noticeDTO.setTitle(config.getNoticeFinishedTitle());
         noticeDTO.setContent(config.getNoticeFinishedTemplate());
+        noticeDTO.setOrderOperateType(EnumOrderNoticeType.FINISH.getValue());
         sendNotice(noticeDTO);
     }
 
@@ -74,6 +78,7 @@ public class RmqNoticeProducer {
         NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
         noticeDTO.setTitle(config.getNoticeOrderCanceledTitle());
         noticeDTO.setContent(config.getNoticeOrderCanceledTemplate());
+        noticeDTO.setOrderOperateType(EnumOrderNoticeType.ADMIN_CANCEL.getValue());
         sendNotice(noticeDTO);
     }
 
@@ -83,7 +88,7 @@ public class RmqNoticeProducer {
      * @param auditSuccess
      * @return
      */
-    private void sendAuditNotice(String userId,boolean auditSuccess){
+    public void sendAuditNotice(String userId,boolean auditSuccess){
         NoticeDTO noticeDTO = new NoticeDTO();
         noticeDTO.setNoticeType(EnumNoticeType.AUDIT.getValue());
         noticeDTO.setUserId(userId);

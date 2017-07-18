@@ -24,6 +24,7 @@ public class PushNoticeEntity {
     private String userId;
 
     private String orderType;
+    private String orderOperateType;
     private String orderNo;
     private String platformCode;
     private String originOrderViewId;
@@ -159,5 +160,13 @@ public class PushNoticeEntity {
 
     public void setIdentifyType(String identifyType) {
         this.identifyType = identifyType;
+    }
+
+    public String getOrderOperateType() {
+        return orderOperateType;
+    }
+
+    public void setOrderOperateType(String orderOperateType) {
+        this.orderOperateType = orderOperateType;
     }
 }

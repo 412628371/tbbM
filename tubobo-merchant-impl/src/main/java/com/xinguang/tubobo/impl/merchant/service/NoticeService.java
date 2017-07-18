@@ -20,6 +20,18 @@ public class NoticeService {
         PushNoticeEntity entity = new PushNoticeEntity();
         BeanUtils.copyProperties(dto,entity);
         pushNoticeDao.saveEntity(entity);
-        //TODO 阿里推送
+        merchantPushService.pushAuditNotice(entity);
+    }
+    public void pushOrder(NoticeDTO dto){
+        PushNoticeEntity entity = new PushNoticeEntity();
+        BeanUtils.copyProperties(dto,entity);
+        pushNoticeDao.saveEntity(entity);
+        merchantPushService.pushOrderNotice(entity);
+    }
+    public void pushSystem(NoticeDTO dto){
+//        PushNoticeEntity entity = new PushNoticeEntity();
+//        BeanUtils.copyProperties(dto,entity);
+//        pushNoticeDao.saveEntity(entity);
+        merchantPushService.pushSystemNotice(dto);
     }
 }

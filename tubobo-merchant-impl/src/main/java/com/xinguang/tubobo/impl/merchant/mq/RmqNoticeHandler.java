@@ -34,5 +34,8 @@ public class RmqNoticeHandler implements ChannelAwareMessageListener {
         if (EnumNoticeType.AUDIT.getValue().equals(dto.getNoticeType())){
             noticeService.pushAudit(dto);
         }
+        if (EnumNoticeType.ORDER.getValue().equals(dto.getNoticeType())){
+            noticeService.pushOrder(dto);
+        }
     }
 }

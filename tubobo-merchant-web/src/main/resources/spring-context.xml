@@ -13,6 +13,7 @@
 	<import resource="rabbitmq-callback.xml"/>
 	<import resource="rabbitmq-takeout.xml"/>
 	<import resource="rabbitmq-delay.xml"/>
+	<import resource="rabbitmq-notice.xml"/>
 	<import resource="spring-dubbo-consumer.xml"/>
 	<import resource="spring-dubbo-provider.xml"/>
 	<import resource="spring-jobCenter.xml"/>

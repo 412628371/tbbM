@@ -6,12 +6,14 @@ import java.io.Serializable;
  * Created by xuqinghua on 2017/7/13.
  */
 public class NoticeDTO implements Serializable {
+    private Long id;
     private String title;
     private String noticeType;//通知类型，1-订单通知，2-公告
     private String content;
     private String userId;
 
     private String orderType;
+    private String orderOperateType;
     private String orderNo;
     private String platformCode;
     private String originOrderViewId;
@@ -97,5 +99,21 @@ public class NoticeDTO implements Serializable {
 
     public void setOriginOrderViewId(String originOrderViewId) {
         this.originOrderViewId = originOrderViewId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getOrderOperateType() {
+        return orderOperateType;
+    }
+
+    public void setOrderOperateType(String orderOperateType) {
+        this.orderOperateType = orderOperateType;
     }
 }
