@@ -55,7 +55,7 @@ public class PushNoticeDao extends BaseDao<PushNoticeEntity> {
 
     @Transactional()
     public boolean deleteNotice(String userId,long id){
-        String hql = "update PushNoticeEntity set delFlag='0' ,updateDate=:updateDate where id=:id  and userId=:userId and delFlag='1' ";
+        String hql = "update PushNoticeEntity set delFlag='1' ,updateDate=:updateDate where id=:id  and userId=:userId and delFlag='0' ";
         Parameter parameter = new Parameter();
         parameter.put("id",id);
         parameter.put("userId",userId);
