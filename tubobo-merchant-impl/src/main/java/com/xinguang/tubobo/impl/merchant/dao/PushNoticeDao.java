@@ -41,19 +41,28 @@ public class PushNoticeDao extends BaseDao<PushNoticeEntity> {
      * @return
      */
     @Transactional()
-    public boolean processNotice(String userId,long id,boolean processed,String delFlag){
+    public boolean processNotice(String userId,long id){
         String hql = "update PushNoticeEntity set processed=:processed ,updateDate=:updateDate where id=:id  and userId=:userId and delFlag=:delFlag ";
         Parameter parameter = new Parameter();
         parameter.put("id",id);
         parameter.put("userId",userId);
         parameter.put("updateDate",new Date());
-        parameter.put("processed",processed);
-        parameter.put("delFlag",delFlag);
+        parameter.put("processed",true);
+        parameter.put("delFlag","0");
         int count = update(hql,parameter);
         return count == 1;
     }
 
-
+    @Transactional()
+    public boolean deleteNotice(String userId,long id){
+        String hql = "update PushNoticeEntity set delFlag='0' ,updateDate=:updateDate where id=:id  and userId=:userId and delFlag='1' ";
+        Parameter parameter = new Parameter();
+        parameter.put("id",id);
+        parameter.put("userId",userId);
+        parameter.put("updateDate",new Date());
+        int count = update(hql,parameter);
+        return count == 1;
+    }
     /**
      *
      * @param userId
