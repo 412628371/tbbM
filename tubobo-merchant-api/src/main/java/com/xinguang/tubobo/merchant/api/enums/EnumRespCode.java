@@ -30,7 +30,8 @@ public enum EnumRespCode {
 	MERCHANT_ORDER_NOT_FINISH("10212", "订单还未完成"),
 	MERCHANT_ORDER_TYPE_NOT_SUPPORT("10213", "不支持的订单类型"),
 	MERCHANT_CAR_TYPE_NOT_SUPPORT("10214", "不支持的车辆类型"),
-	MERCHANT_APPOINTTIME_ERROR("10215", "预约时间为当前时间一小时后，限今明两天，商家预约时间超出预约时间范围,或者用户本地系统时间不对"),
+	MERCHANT_APPOINTTIME_ERROR("10215", "商家预约时间超出预约时间范围"),
+	MERCHANT_BDCODE_ERROR("10216","您已提交过邀请码"),
 
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
 	PASSWORD_DECRYPT_FAIL("10002", "密码解密失败"),
