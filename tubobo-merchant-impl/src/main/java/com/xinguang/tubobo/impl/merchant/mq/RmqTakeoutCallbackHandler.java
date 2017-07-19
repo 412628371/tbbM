@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.mq;
 
-import com.alibaba.dubbo.common.json.JSON;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
 import com.xinguang.tubobo.impl.merchant.handler.ThirdCallbackHandler;
 import com.xinguang.tubobo.takeout.mt.MtNotifyDTO;
@@ -21,7 +22,7 @@ public class RmqTakeoutCallbackHandler implements ChannelAwareMessageListener {
 
         String body = new String(message.getBody(),"utf-8");
         logger.info("收到外卖平台信息：{}",body);
-        MtNotifyDTO mtNotifyDTO = JSON.parse(body,MtNotifyDTO.class);
+        MtNotifyDTO mtNotifyDTO = JSON.toJavaObject(JSONObject.parseObject(body),MtNotifyDTO.class);
         switch (mtNotifyDTO.getPlatformCode()){
             case MT:
                 thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());

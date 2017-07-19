@@ -104,5 +104,15 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
        return merchantOrderManager.dealGrabOvertimeOrders(orderNo,expireTime,true);
     }
 
+    @Override
+    public boolean adminCancel(String orderNo, Date cancelTime) {
+        MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+        if (null == entity ){
+            logger.warn("后台取消订单，订单不存在。orderNo:{}",orderNo);
+            return false;
+        }
+        return merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true);
+    }
+
 
 }

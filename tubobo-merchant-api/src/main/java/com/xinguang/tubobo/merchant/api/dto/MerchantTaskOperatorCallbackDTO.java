@@ -11,12 +11,12 @@ public class MerchantTaskOperatorCallbackDTO implements Serializable {
     private String taskNo;
     private Date operateTime;
 
+    public MerchantTaskOperatorCallbackDTO(){}
+
     public MerchantTaskOperatorCallbackDTO(String taskNo, Date operateTime){
         this.taskNo = taskNo;
         this.operateTime = operateTime;
     }
-
-
 
     public String getTaskNo() {
         return taskNo;

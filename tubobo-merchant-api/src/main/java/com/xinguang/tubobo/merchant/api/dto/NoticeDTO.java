@@ -10,6 +10,7 @@ public class NoticeDTO implements Serializable {
     private String title;
     private String noticeType;//通知类型，1-订单通知，2-公告
     private String content;
+    private String summary;
     private String userId;
 
     private String orderType;
@@ -20,6 +21,14 @@ public class NoticeDTO implements Serializable {
 
     private String identifyStatus;
     private String identifyType;
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
 
     public String getTitle() {
         return title;
