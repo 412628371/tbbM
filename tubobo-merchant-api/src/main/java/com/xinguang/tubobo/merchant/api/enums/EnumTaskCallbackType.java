@@ -7,6 +7,7 @@ public enum  EnumTaskCallbackType {
     GRAB("已接单", "GRAB"),
     PICK("已取货", "PICK"),
     EXPIRED("过期未接单", "EXPIRED"),
+    ADMIN_CANCEL("系统取消", "ADMIN_CANCEL"),
     FINISH("送达", "FINISH");
 
     EnumTaskCallbackType(String name, String value){
