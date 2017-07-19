@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class NoticeDTO implements Serializable {
     private Long id;
     private String title;
-    private String noticeType;//通知类型，1-订单通知，2-公告
+    private String noticeType;//SYSTEM("系统公告", "SYSTEM"),ORDER("订单状态", "ORDER"),AUDIT("审核状态", "AUDIT");
     private String content;
     private String summary;
     private String userId;
