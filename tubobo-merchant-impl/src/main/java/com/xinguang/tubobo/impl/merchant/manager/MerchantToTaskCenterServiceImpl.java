@@ -17,7 +17,7 @@ import java.util.Date;
 
 public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServiceInterface {
 
-    Logger logger = LoggerFactory.getLogger(MerchantToTaskCenterServiceImpl.class);
+   private static final Logger logger = LoggerFactory.getLogger(MerchantToTaskCenterServiceImpl.class);
     @Autowired
     RmqNoticeProducer rmqNoticeProducer;
     @Autowired
