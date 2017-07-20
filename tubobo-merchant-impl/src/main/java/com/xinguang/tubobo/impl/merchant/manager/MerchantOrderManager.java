@@ -145,7 +145,9 @@ public class MerchantOrderManager extends BaseService {
 		if (isAdminCancel){
 			String cancelReason = EnumCancelReason.ADMIN_CANCEL.getValue();
 			boolean result ;
-			if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
+			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
+				result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true);
+			}else {
 				result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 				if (result){
 					//推送消息到报表mq
@@ -155,8 +157,6 @@ public class MerchantOrderManager extends BaseService {
 							entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true);
 				}
-			}else {
-				result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true);
 			}
 			return result;
 		}else {
