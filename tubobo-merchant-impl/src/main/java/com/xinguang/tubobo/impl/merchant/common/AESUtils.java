@@ -95,7 +95,7 @@ public class AESUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        String content = "qqqq_1111";
+        String content = "qa123456";
         //加密
         String encryptResult = AESUtils.encrypt(content);
         System.out.println("加密后：" + encryptResult);

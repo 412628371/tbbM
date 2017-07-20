@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Scope;
 public class Config {
 
     private static  final Logger logger = LoggerFactory.getLogger(Config.class);
-    private Double dispatchRadiusKiloMiles;//派单半径,km
+        private Double dispatchRadiusKiloMiles;//派单半径,km
     private Integer taskGrabExpiredMilSeconds;//过期毫秒数
     private Integer payExpiredMilSeconds;//过期毫秒数
     private Integer consignorPayExpiredMilliSeconds;//货主支付超时过期毫秒数
