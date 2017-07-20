@@ -2,7 +2,10 @@ package com.xinguang.tubobo.merchant.web.controller.marketing;
 
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.response.marketing.RechargeGiftPlanItem;
 import com.xinguang.tubobo.merchant.web.response.marketing.RechargeGiftPlanResp;
@@ -26,9 +29,17 @@ public class RechargeGiftPlanController extends MerchantBaseController<Object,Re
     @Autowired
     private TbbAccountService tbbAccountService;
 
+    @Autowired
+    MerchantInfoService merchantInfoService;
+
     @Override
     protected RechargeGiftPlanResp doService(String userId, Object req) throws MerchantClientException {
-        String plan = tbbAccountService.currentRechargeGiftPlan();
+
+        MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
+        if (null == infoEntity){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+        }
+        String plan = tbbAccountService.currentRechargeGiftPlan(infoEntity.getAccountId());
 
         RechargeGiftPlanResp resp = new RechargeGiftPlanResp();
         List<RechargeGiftPlanItem> list;
@@ -69,6 +80,6 @@ public class RechargeGiftPlanController extends MerchantBaseController<Object,Re
 
     @Override
     protected boolean needLogin() {
-        return false;
+        return true;
     }
 }

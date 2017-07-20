@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/rabbit
+		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
+       default-lazy-init="true">
+
+    <import resource="rabbitmq-base.xml"/>
+
+    <rabbit:queue id="tbb_notice_queue_merchant" durable="true" auto-delete="false" exclusive="false" name="tbb_notice_queue_merchant" />
+    <!-- work exchange -->
+    <rabbit:topic-exchange name="tbb_notice_exchange" durable="true" auto-delete="false">
+       <rabbit:bindings>
+           <rabbit:binding pattern="notice_bindingKey_merchant" queue="tbb_notice_queue_merchant"></rabbit:binding>
+           <rabbit:binding pattern="notice_bindingKey_rider" queue="tbb_notice_queue_rider"></rabbit:binding>
+       </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <!-- 用于接收消息的处理类 -->
+    <bean id="rmqNoticeMessageHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqNoticeHandler"></bean>
+
+    <!-- 用于消息的监听的容器类SimpleMessageListenerContainer,监听队列  queues可以传多个-->
+    <bean id="takeoutListenerContainer"  class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        <property name="queues" ref="tbb_notice_queue_merchant"></property>
+        <property name="connectionFactory" ref="rabbitmqConnectionFactory"></property>
+        <property name="messageListener" ref="rmqNoticeListenerAdapter"></property>
+    </bean>
+    <bean id="rmqNoticeListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
+        <constructor-arg ref="rmqNoticeMessageHandler" />
+        <property name="defaultListenerMethod" value="onMessage"></property>
+    </bean>
+</beans>

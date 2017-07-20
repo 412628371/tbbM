@@ -34,4 +34,6 @@ public interface MerchantToTaskCenterServiceInterface {
      */
      boolean orderExpire(String orderNo,Date expireTime);
 
+    boolean adminCancel(String orderNo,Date expireTime);
+
 }

@@ -164,7 +164,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         return count;
     }
     /**
-     *
+     *商家取消订单
      * @param merchantId
      * @param orderNo
      * @return
@@ -175,6 +175,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
                 new Date(),cancelReason,merchantId,
                 orderNo,orderStatusArr));
+        getSession().clear();
+        return count == 1;
+    }
+
+    /**
+     * 取消订单（任何状态下都可取消）
+     * @param orderNo
+     * @param cancelReason
+     * @return
+     */
+    public boolean adminCancel(String orderNo,String cancelReason){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 where order_no = :p4  and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
+                new Date(),cancelReason,orderNo));
         getSession().clear();
         return count == 1;
     }

@@ -2,10 +2,9 @@ package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
-import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
@@ -20,9 +19,9 @@ import java.util.Date;
 
 public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServiceInterface {
 
-    Logger logger = LoggerFactory.getLogger(MerchantToTaskCenterServiceImpl.class);
+   private static final Logger logger = LoggerFactory.getLogger(MerchantToTaskCenterServiceImpl.class);
     @Autowired
-    MerchantPushService pushService;
+    RmqNoticeProducer rmqNoticeProducer;
     @Autowired
     private MerchantOrderManager merchantOrderManager;
     @Autowired
@@ -55,7 +54,8 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         boolean result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
                 orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType()) > 0;
         if (result){
-            pushService.noticeGrab(entity.getUserId(),orderNo, MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
+            rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+//            pushService.noticeGrab(entity.getUserId(),orderNo, MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
         }
         rmqTakeoutAnswerProducer.sendAccepted(entity.getPlatformCode(),entity.getUserId(),entity.getOrderNo(),
                 entity.getOriginOrderId(),new DispatcherInfoDTO(dto.getRiderName(),dto.getRiderPhone()));
@@ -95,7 +95,8 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         boolean result =  merchantOrderManager.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime) > 0;
         if (result){
             //发送骑手完成送货通知
-            pushService.noticeFinished(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
+//            pushService.noticeFinished(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
+            rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 
             //推送到报表mq
             tuboboReportDateMqHelp.orderFinish(entity,finishOrderTime);
@@ -106,6 +107,16 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     @Override
     public boolean orderExpire(String orderNo,Date expireTime) {
        return merchantOrderManager.dealGrabOvertimeOrders(orderNo,expireTime,true);
+    }
+
+    @Override
+    public boolean adminCancel(String orderNo, Date cancelTime) {
+        MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+        if (null == entity ){
+            logger.warn("后台取消订单，订单不存在。orderNo:{}",orderNo);
+            return false;
+        }
+        return merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true);
     }
 
 
