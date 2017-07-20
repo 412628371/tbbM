@@ -20,6 +20,8 @@ public class ReqQueryThirdOrderList implements Serializable {
     private String platformCode;
     private String keyword;
 
+    private String queryType;
+
     public Integer getPageNo() {
         return pageNo;
     }
@@ -50,5 +52,13 @@ public class ReqQueryThirdOrderList implements Serializable {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public String getQueryType() {
+        return queryType;
+    }
+
+    public void setQueryType(String queryType) {
+        this.queryType = queryType;
     }
 }

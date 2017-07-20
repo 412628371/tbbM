@@ -38,9 +38,9 @@ public class ThirdOrderService {
         mtOrderDao.processOrder(userId,platformCode,originOrderId);
     }
 
-    public Page<ThirdOrderEntity> findUnProcessedPageByUserId(String userId, String platformCode,
+    public Page<ThirdOrderEntity> findUnProcessedPageByUserId(String userId, String platformCode,String queryType,
                                                               String keyword,int pageNo, int pageSize){
-        return mtOrderDao.findUnProcessedPageByUserId(userId,platformCode,keyword,pageNo,pageSize);
+        return mtOrderDao.findUnProcessedPageByUserId(userId,platformCode,queryType,keyword,pageNo,pageSize);
     }
 
     /**

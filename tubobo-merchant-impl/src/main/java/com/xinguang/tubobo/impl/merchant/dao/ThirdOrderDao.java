@@ -32,7 +32,7 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
         return null;
     }
 
-    public Page<ThirdOrderEntity> findUnProcessedPageByUserId(String userId,String platformCode,String keyword, int pageNo, int pageSize){
+    public Page<ThirdOrderEntity> findUnProcessedPageByUserId(String userId,String platformCode,String queryType,String keyword, int pageNo, int pageSize){
         StringBuffer hqlSb = new StringBuffer("select * from t_third_order where  processed=:processed and del_flag='0'");
         Parameter parameter = new Parameter();
         if (StringUtils.isNotBlank(userId)){
@@ -43,10 +43,18 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
             hqlSb.append(" and platform_code=:platformCode ");
             parameter.put("platformCode",platformCode);
         }
-        if (StringUtils.isNotBlank(keyword)){
-            hqlSb.append(" and origin_order_view_id like :keyword ");
-            parameter.put("keyword","%"+keyword+"%");
+        if ("PHONE".equals(queryType)){
+            if (StringUtils.isNotBlank(keyword)){
+                hqlSb.append(" and receiver_phone like :keyword ");
+                parameter.put("keyword","%"+keyword+"%");
+            }
+        }else {
+            if (StringUtils.isNotBlank(keyword)){
+                hqlSb.append(" and origin_order_view_id like :keyword ");
+                parameter.put("keyword","%"+keyword+"%");
+            }
         }
+
         parameter.put("processed",false);
         hqlSb.append(" order by create_date desc");
         return findPage(hqlSb.toString(), parameter, ThirdOrderEntity.class,pageNo,pageSize);
