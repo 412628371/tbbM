@@ -173,7 +173,7 @@ public class MerchantPushService {
             return;
         //TODO 通知的标题和内容待处理
         String data = generateCommonPushParam(dto.getUserId(),EnumNoticeType.SYSTEM,dto.getId());
-//        pushToUser(entity.getUserId(),entity.getTitle(),entity.getContent(), data);
+//        pushToAll(dto.getSummary(),dto.getTitle(),data);
     }
 
     /**

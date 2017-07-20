@@ -138,8 +138,10 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public boolean cancelOrder(String merchantId,String orderNo,boolean isAdminCancel){
 		MerchantOrderEntity entity = orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
-		if (null == entity )
+		if (null == entity || EnumMerchantOrderStatus.CANCEL.getValue().equals(entity.getOrderStatus())||
+				EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus()))
 			return false;
+
 		if (isAdminCancel){
 			String cancelReason = EnumCancelReason.ADMIN_CANCEL.getValue();
 			boolean result ;
@@ -148,6 +150,9 @@ public class MerchantOrderManager extends BaseService {
 				if (result){
 					//推送消息到报表mq
 					tuboboReportDateMqHelp.orderCancel(orderNo,"merchant",cancelReason);
+					//TODO
+					rmqNoticeProducer.sendOrderCancelNotice(entity.getUserId(),entity.getOrderNo(),
+							entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true);
 				}
 			}else {
