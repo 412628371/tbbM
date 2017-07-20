@@ -13,7 +13,6 @@
     <rabbit:topic-exchange name="tbb_notice_exchange" durable="true" auto-delete="false">
        <rabbit:bindings>
            <rabbit:binding pattern="notice_bindingKey_merchant" queue="tbb_notice_queue_merchant"></rabbit:binding>
-           <rabbit:binding pattern="notice_bindingKey_rider" queue="tbb_notice_queue_rider"></rabbit:binding>
        </rabbit:bindings>
     </rabbit:topic-exchange>
 
