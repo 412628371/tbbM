@@ -48,7 +48,7 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
             parameter.put("keyword","%"+keyword+"%");
         }
         parameter.put("processed",false);
-        hqlSb.append(" order by -origin_order_view_id asc");
+        hqlSb.append(" order by create_date desc");
         return findPage(hqlSb.toString(), parameter, ThirdOrderEntity.class,pageNo,pageSize);
     }
 
