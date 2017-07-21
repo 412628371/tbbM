@@ -46,7 +46,7 @@ public class ThirdOrderDao extends BaseDao<ThirdOrderEntity> {
         if ("PHONE".equals(queryType)){
             if (StringUtils.isNotBlank(keyword)){
                 hqlSb.append(" and receiver_phone like :keyword ");
-                parameter.put("keyword","%"+keyword+"%");
+                parameter.put("keyword","%"+keyword);
             }
         }else {
             if (StringUtils.isNotBlank(keyword)){
