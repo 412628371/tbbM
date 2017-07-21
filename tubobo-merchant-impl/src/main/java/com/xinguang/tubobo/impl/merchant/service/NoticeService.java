@@ -4,6 +4,7 @@ import com.hzmux.hzcms.common.persistence.Page;
 import com.xinguang.tubobo.impl.merchant.dao.PushNoticeDao;
 import com.xinguang.tubobo.impl.merchant.entity.PushNoticeEntity;
 import com.xinguang.tubobo.merchant.api.dto.NoticeDTO;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderNoticeType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,9 @@ public class NoticeService {
     public void pushOrder(NoticeDTO dto){
         PushNoticeEntity entity = new PushNoticeEntity();
         BeanUtils.copyProperties(dto,entity);
-        pushNoticeDao.saveEntity(entity);
+        if (EnumOrderNoticeType.ADMIN_CANCEL.getValue().equals(dto.getOrderOperateType())){
+            pushNoticeDao.saveEntity(entity);
+        }
         merchantPushService.pushOrderNotice(entity);
     }
     public void pushSystem(NoticeDTO dto){
