@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.marketing;
 
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
@@ -26,6 +27,10 @@ public class BDCodeInsertController extends MerchantBaseController<ReqBDCode, Ob
 
     @Override
     protected Object doService(String userId, ReqBDCode req) throws MerchantClientException {
+        MerchantInfoEntity merchantInfoEntity = merchantInfoService.findByUserId(userId);
+        if(StringUtils.isNotBlank(merchantInfoEntity.getBdCode())){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_BDCODE_ERROR);
+        }
         String code = req.getBdCode();
         if(code.length()>20){
            code = code.substring(0, 20);

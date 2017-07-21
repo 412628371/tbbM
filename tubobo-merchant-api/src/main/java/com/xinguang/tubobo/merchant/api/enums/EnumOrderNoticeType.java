@@ -1,19 +1,20 @@
 package com.xinguang.tubobo.merchant.api.enums;
 
 /**
- * Created by Administrator on 2017/4/21.
+ * 订单通知的类型，如已取货，已接单，已送达等等.
  */
-public enum EnumCancelReason {
-    GRAB_OVERTIME("超时未接单自动取消", "GRAB_OVERTIME"),
-    GRAB_MERCHANT("商家取消", "GRAB_MERCHANT"),
-    PAY_OVERTIME("支付超时取消", "PAY_OVERTIME"),
+public enum EnumOrderNoticeType {
+
+    GRAB_EXPIRED("超时未接单", "GRAB_EXPIRED"),
+    ACCEPTED("已接单", "ACCEPTED"),
+    PICKED("已取货", "PICKED"),
     ADMIN_CANCEL("后台取消", "ADMIN_CANCEL"),
-    PAY_MERCHANT("未支付商家取消", "PAY_MERCHANT");
+    FINISH("完成", "FINISH");
 
     private String name;
     private String value;
 
-    EnumCancelReason(String name, String value){
+    EnumOrderNoticeType(String name, String value){
         this.name = name;
         this.value = value;
     }
@@ -33,4 +34,5 @@ public enum EnumCancelReason {
     public void setValue(String value) {
         this.value = value;
     }
+
 }
