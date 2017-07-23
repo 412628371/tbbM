@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by xuqinghua on 2017/7/13.
  */
 public class NoticeDTO implements Serializable {
-    private Long id;
+    private String id;
     private String title;
     private String noticeType;//SYSTEM("系统公告", "SYSTEM"),ORDER("订单状态", "ORDER"),AUDIT("审核状态", "AUDIT");
     private String content;
@@ -110,11 +110,11 @@ public class NoticeDTO implements Serializable {
         this.originOrderViewId = originOrderViewId;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

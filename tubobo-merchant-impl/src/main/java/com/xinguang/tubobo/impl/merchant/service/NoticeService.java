@@ -30,6 +30,7 @@ public class NoticeService {
         PushNoticeEntity entity = new PushNoticeEntity();
         BeanUtils.copyProperties(dto,entity);
         if (EnumOrderNoticeType.ADMIN_CANCEL.getValue().equals(dto.getOrderOperateType())){
+            entity.setContent(String.format(dto.getContent(),dto.getOrderNo()));
             pushNoticeDao.saveEntity(entity);
         }
         merchantPushService.pushOrderNotice(entity);
