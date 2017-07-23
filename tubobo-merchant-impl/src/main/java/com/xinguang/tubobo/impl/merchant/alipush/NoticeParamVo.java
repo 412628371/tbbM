@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class NoticeParamVo implements Serializable{
     private String orderNo;
-    private Long id;
+    private String id;
     private String orderType;
 
     public String getOrderNo() {
@@ -18,11 +18,11 @@ public class NoticeParamVo implements Serializable{
         this.orderNo = orderNo;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

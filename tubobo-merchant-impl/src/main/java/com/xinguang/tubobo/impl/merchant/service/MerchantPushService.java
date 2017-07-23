@@ -57,6 +57,8 @@ public class MerchantPushService {
     }
 
     public void pushToAll(String content,String title,String extraJson){
+        List<String> list = new ArrayList<>(1);
+        list.add("1");
         Options options = Options.builder()
                 .setTargetType(Constance.TargetType.ALL)
                 .setDeviceType(Constance.DeviceType.ALL)
@@ -67,10 +69,10 @@ public class MerchantPushService {
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
-//            pushService.push(content,pushAppKey,list,options);
-//            logger.info("状态通知已发送给userId:{}",userId);
+            pushService.push(content,pushAppKey,list,options);
+            logger.info("状态通知已发送给所有人,title:{}",title);
         }catch (Exception e){
-//            logger.error("push to userId:{},content:{},title:{}.异常：",userId,content,title,e);
+            logger.error("push to all user,content:{},title:{}.异常：",content,title,e);
         }
     }
 
@@ -130,7 +132,7 @@ public class MerchantPushService {
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
-    private static String  generateCommonPushParam(String userId, EnumNoticeType enumNoticeType,Long id){
+    private static String  generateCommonPushParam(String userId, EnumNoticeType enumNoticeType,String id){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setId(id);
         NoticePushVo noticePushVo = new NoticePushVo();
@@ -143,7 +145,7 @@ public class MerchantPushService {
     private static String  generateOrderPushParam(String userId,
                                                   Long id,String orderType,String orderNo){
         NoticeParamVo paramVo = new NoticeParamVo();
-        paramVo.setId(id);
+        paramVo.setId(String.valueOf(id));
         paramVo.setOrderNo(orderNo);
         paramVo.setOrderType(orderType);
         NoticePushVo noticePushVo = new NoticePushVo();
@@ -161,19 +163,19 @@ public class MerchantPushService {
     public void pushAuditNotice(PushNoticeEntity entity){
         if (entity == null)
             return;
-        String data = generateCommonPushParam(entity.getUserId(),EnumNoticeType.AUDIT,entity.getId());
-        pushToUser(entity.getUserId(),entity.getTitle(),entity.getContent(), data);
+        String data = generateCommonPushParam(entity.getUserId(),EnumNoticeType.AUDIT,String.valueOf(entity.getId()));
+        pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
     }
     /**
      * 推送系统公告
-     * @param entity
+     * @param dto
      */
     public void pushSystemNotice(NoticeDTO dto){
         if (dto == null)
             return;
         //TODO 通知的标题和内容待处理
         String data = generateCommonPushParam(dto.getUserId(),EnumNoticeType.SYSTEM,dto.getId());
-//        pushToAll(dto.getSummary(),dto.getTitle(),data);
+        pushToAll(dto.getSummary(),dto.getTitle(),data);
     }
 
     /**
@@ -206,7 +208,7 @@ public class MerchantPushService {
         if (isOpen){
             String data = generateOrderPushParam(entity.getUserId(),
                     entity.getId(),entity.getOrderType(),entity.getOrderNo());
-            pushToUser(entity.getUserId(),entity.getTitle(),entity.getContent(), data);
+            pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
         }
     }
     public static void main(String[] args) {
