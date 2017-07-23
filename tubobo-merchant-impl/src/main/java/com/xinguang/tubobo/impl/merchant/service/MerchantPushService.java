@@ -208,7 +208,7 @@ public class MerchantPushService {
         if (isOpen){
             String data = generateOrderPushParam(entity.getUserId(),
                     entity.getId(),entity.getOrderType(),entity.getOrderNo());
-            pushToUser(entity.getUserId(),entity.getTitle(),entity.getContent(), data);
+            pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
         }
     }
     public static void main(String[] args) {
