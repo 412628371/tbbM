@@ -164,7 +164,7 @@ public class MerchantPushService {
         if (entity == null)
             return;
         String data = generateCommonPushParam(entity.getUserId(),EnumNoticeType.AUDIT,String.valueOf(entity.getId()));
-        pushToUser(entity.getUserId(),entity.getTitle(),entity.getContent(), data);
+        pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
     }
     /**
      * 推送系统公告
