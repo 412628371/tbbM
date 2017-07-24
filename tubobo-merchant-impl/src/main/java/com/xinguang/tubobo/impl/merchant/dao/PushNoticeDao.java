@@ -3,10 +3,13 @@ package com.xinguang.tubobo.impl.merchant.dao;
 import com.hzmux.hzcms.common.persistence.BaseDao;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
+import com.hzmux.hzcms.common.utils.DateUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.entity.PushNoticeEntity;
 import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +39,6 @@ public class PushNoticeDao extends BaseDao<PushNoticeEntity> {
      * 将通知标记为已读
      * @param userId
      * @param id
-     * @param processed 设置是否已读，true:已读，false:未读
-     * @param delFlag 设置是否删除标记位，0：不删除，1：删除
      * @return
      */
     @Transactional()
@@ -89,5 +90,18 @@ public class PushNoticeDao extends BaseDao<PushNoticeEntity> {
 
         hqlSb.append(" order by id desc");
         return findPage(hqlSb.toString(), parameter, PushNoticeEntity.class,pageNo,pageSize);
+    }
+
+    /**
+     * 获取未读的系统通知数量
+     * @param userId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Long getUnProcessedCount(String userId){
+        String sqlString = "select count(id) FROM PushNoticeEntity WHERE  userId=:p1 and processed = :p2 and delFlag=:p3";
+        Query query = createQuery(sqlString,new Parameter(userId, false, MerchantOrderEntity.DEL_FLAG_NORMAL));
+        Long count = (Long) query.uniqueResult();
+        return count;
     }
 }

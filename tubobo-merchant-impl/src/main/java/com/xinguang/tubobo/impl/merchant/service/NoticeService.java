@@ -63,4 +63,8 @@ public class NoticeService {
             pushNoticeDao.deleteNotice(userId,id);
         }
     }
+
+    public Long getUnProcessedCount(String userId){
+        return pushNoticeDao.getUnProcessedCount(userId);
+    }
 }
