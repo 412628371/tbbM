@@ -22,6 +22,7 @@
 
 	<dubbo:reference id="riderToAdminServiceInterface" interface="com.xinguang.tubobo.rider.api.RiderToAdminServiceInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="adminToMerchantService" interface="com.xinguang.tubobo.api.AdminToMerchantService" version="0.0.1" group="${dubbo.group}" check="false"/>
+	<dubbo:reference id="adminNotifyService" interface="com.xinguang.tubobo.api.AdminNotifyService" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="overFeeServiceImpl" interface="com.xinguang.tubobo.api.OverFeeService" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="tbbNotifyService" interface="com.xinguang.tubobo.notify.api.TbbNotifyService" version="0.0.1" group="${dubbo.group}" check="false"/>
 

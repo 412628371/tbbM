@@ -32,7 +32,7 @@
         <tubobo-rate-version>1.1-SNAPSHOT</tubobo-rate-version>
         <tubobo-riddr-api-version>0.0.1-SNAPSHOT</tubobo-riddr-api-version>
         <tubobo-taskcenter.version>1.0-SNAPSHOT</tubobo-taskcenter.version>
-        <tubobo-admin.version>0.0.1-SNAPSHOT</tubobo-admin.version>
+        <tubobo-admin.version>0.0.2-SNAPSHOT</tubobo-admin.version>
         <tubobo-reportdata-api.version>0.0.1-SNAPSHOT</tubobo-reportdata-api.version>
 
         <spring.version>4.2.6.RELEASE</spring.version>
