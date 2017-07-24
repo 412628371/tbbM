@@ -55,7 +55,6 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
                 orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType()) > 0;
         if (result){
             rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
-//            pushService.noticeGrab(entity.getUserId(),orderNo, MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
         }
         rmqTakeoutAnswerProducer.sendAccepted(entity.getPlatformCode(),entity.getUserId(),entity.getOrderNo(),
                 entity.getOriginOrderId(),new DispatcherInfoDTO(dto.getRiderName(),dto.getRiderPhone()));
@@ -95,7 +94,6 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         boolean result =  merchantOrderManager.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime) > 0;
         if (result){
             //发送骑手完成送货通知
-//            pushService.noticeFinished(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
             rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 
             //推送到报表mq
