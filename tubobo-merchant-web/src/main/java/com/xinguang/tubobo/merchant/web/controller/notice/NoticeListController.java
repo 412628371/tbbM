@@ -31,6 +31,7 @@ public class NoticeListController extends MerchantBaseController<ReqNoticeList,P
             for (PushNoticeEntity entity:page.getList()){
                 RespNoticeItem  item = new RespNoticeItem();
                 BeanUtils.copyProperties(entity,item);
+                item.setCreateTime(entity.getCreateDate());
                 list.add(item);
             }
         }
