@@ -17,7 +17,7 @@ public class RespNoticeItem implements Serializable {
     private String originOrderViewId;
 
     private boolean processed;
-    protected Date createDate;
+    protected Date createTime;
     protected Long id;
 
     public String getTitle() {
@@ -84,12 +84,12 @@ public class RespNoticeItem implements Serializable {
         this.processed = processed;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Long getId() {
