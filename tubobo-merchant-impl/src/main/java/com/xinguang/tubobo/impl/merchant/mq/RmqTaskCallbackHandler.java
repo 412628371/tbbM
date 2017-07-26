@@ -39,23 +39,23 @@ public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
                 MerchantGrabCallbackDTO dtoGrab =
                         JSON.parseObject(json,MerchantGrabCallbackDTO.class);
 //                merchantToTaskCenterServiceInterface.riderGrabOrder(dtoGrab);
-                merchantOrderManager.riderGrabOrder(dtoGrab,false);
+                merchantOrderManager.riderGrabOrder(dtoGrab,true);
                 break;
             case PICK:
                 MerchantTaskOperatorCallbackDTO dtoPick =
                         JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantOrderManager.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime(),false);
+                merchantOrderManager.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime(),true);
 //                merchantToTaskCenterServiceInterface.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime());
                 break;
             case FINISH:
                 MerchantTaskOperatorCallbackDTO dtoFinish =
                         JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantOrderManager.riderFinishOrder(dtoFinish.getTaskNo(),dtoFinish.getOperateTime(),false);
+                merchantOrderManager.riderFinishOrder(dtoFinish.getTaskNo(),dtoFinish.getOperateTime(),true);
                 break;
             case EXPIRED:
                 MerchantTaskOperatorCallbackDTO dtoExpire =
                         JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantOrderManager.dealGrabOvertimeOrders(dtoExpire.getTaskNo(),dtoExpire.getOperateTime(),false);
+                merchantOrderManager.dealGrabOvertimeOrders(dtoExpire.getTaskNo(),dtoExpire.getOperateTime(),true);
                 break;
             case ADMIN_CANCEL:
                 break;
