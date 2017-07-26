@@ -3,6 +3,7 @@ package com.xinguang.tubobo.impl.merchant.mq;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
+import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTaskOperatorCallbackDTO;
@@ -19,9 +20,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
-    private static final Logger logger = LoggerFactory.getLogger(RmqTaskCallbackHandler.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RmqTaskCallbackHandler.class);
     @Autowired
-    MerchantToTaskCenterServiceInterface merchantToTaskCenterServiceInterface;
+    private MerchantOrderManager merchantOrderManager;
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
 
@@ -37,27 +38,26 @@ public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
             case GRAB:
                 MerchantGrabCallbackDTO dtoGrab =
                         JSON.parseObject(json,MerchantGrabCallbackDTO.class);
-                merchantToTaskCenterServiceInterface.riderGrabOrder(dtoGrab);
+//                merchantToTaskCenterServiceInterface.riderGrabOrder(dtoGrab);
+                merchantOrderManager.riderGrabOrder(dtoGrab,false);
                 break;
             case PICK:
                 MerchantTaskOperatorCallbackDTO dtoPick =
                         JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantToTaskCenterServiceInterface.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime());
+                merchantOrderManager.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime(),false);
+//                merchantToTaskCenterServiceInterface.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime());
                 break;
             case FINISH:
                 MerchantTaskOperatorCallbackDTO dtoFinish =
                         JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantToTaskCenterServiceInterface.riderFinishOrder(dtoFinish.getTaskNo(),dtoFinish.getOperateTime());
+                merchantOrderManager.riderFinishOrder(dtoFinish.getTaskNo(),dtoFinish.getOperateTime(),false);
                 break;
             case EXPIRED:
                 MerchantTaskOperatorCallbackDTO dtoExpire =
                         JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantToTaskCenterServiceInterface.orderExpire(dtoExpire.getTaskNo(),dtoExpire.getOperateTime());
+                merchantOrderManager.dealGrabOvertimeOrders(dtoExpire.getTaskNo(),dtoExpire.getOperateTime(),false);
                 break;
             case ADMIN_CANCEL:
-                MerchantTaskOperatorCallbackDTO dtoCancel =
-                        JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantToTaskCenterServiceInterface.adminCancel(dtoCancel.getTaskNo(),dtoCancel.getOperateTime());
                 break;
         }
 
