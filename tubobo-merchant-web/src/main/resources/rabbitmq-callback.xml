@@ -7,47 +7,20 @@
        default-lazy-init="true">
 
     <import resource="rabbitmq-base.xml"/>
-    <!-- 消费者 队列声明-->
-    <rabbit:queue id="rmqMerchantTaskGrabQueue" durable="true" auto-delete="false" exclusive="false" name="rmqMerchantTaskGrabQueue"/>
-    <!-- 用于接收消息的处理类 -->
-    <bean id="rmqTaskGrabHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqTaskGrabHandler"></bean>
-    <bean id="rmqTaskGrabListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
-        <constructor-arg ref="rmqTaskGrabHandler" />
-        <property name="defaultListenerMethod" value="handleMessage"></property>
-        <!--<property name="messageConverter" ref="serializerMessageConverter"></property>-->
-    </bean>
-    <!-- 用于消息的监听的容器类SimpleMessageListenerContainer,监听队列  queues可以传多个-->
-    <bean id="rmqTaskGrabListenerContainer"  class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
-        <property name="queues" ref="rmqMerchantTaskGrabQueue"></property>
-        <property name="connectionFactory" ref="rabbitmqConnectionFactory"></property>
-        <property name="messageListener" ref="rmqTaskGrabListenerAdapter"></property>
-    </bean>
 
-    <rabbit:queue id="rmqMerchantTaskOperateQueue" durable="true" auto-delete="false" exclusive="false"
-                  name="rmqMerchantTaskOperateQueue" />
-    <bean id="rmqTaskOperateHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqTaskOperateHandler"></bean>
-    <bean id="rmqTaskOperateListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
-        <constructor-arg ref="rmqTaskOperateHandler" />
+    <rabbit:queue id="merchantTaskCallbackQueue" durable="true" auto-delete="false" exclusive="false"
+                  name="merchantTaskCallbackQueue" />
+    <bean id="rmqTaskCallbackHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqTaskCallbackHandler"></bean>
+    <bean id="rmqTaskCallbackListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
+        <constructor-arg ref="rmqTaskCallbackHandler" />
         <property name="defaultListenerMethod" value="handleMessage"></property>
     </bean>
 
-    <bean id="rmqMerchantTaskOperateListenerContainer"  class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
-        <property name="queues" ref="rmqMerchantTaskOperateQueue"></property>
+    <bean id="rmqMerchantTaskCallbackListenerContainer"  class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        <property name="queues" ref="merchantTaskCallbackQueue"></property>
         <property name="connectionFactory" ref="rabbitmqConnectionFactory"></property>
-        <property name="messageListener" ref="rmqTaskOperateListenerAdapter"></property>
+        <property name="messageListener" ref="rmqTaskCallbackListenerAdapter"></property>
     </bean>
-
-    <rabbit:fanout-exchange id="merchant-grab-fanoutexchange" name="merchant-grab-fanoutexchange" durable="true" auto-delete="false">
-        <rabbit:bindings>
-            <rabbit:binding queue="rmqMerchantTaskGrabQueue"/>
-        </rabbit:bindings>
-    </rabbit:fanout-exchange>
-
-    <rabbit:fanout-exchange id="merchant-task-operate-fanoutexchange" name="merchant-task-operate-fanoutexchange" durable="true" auto-delete="false">
-        <rabbit:bindings>
-            <rabbit:binding queue="rmqMerchantTaskOperateQueue"/>
-        </rabbit:bindings>
-    </rabbit:fanout-exchange>
 
     <!-- 创建rabbitTemplate 消息模板类 -->
     <rabbit:template id="addressInfoTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="merchant_addressInfo_query_exchange" />

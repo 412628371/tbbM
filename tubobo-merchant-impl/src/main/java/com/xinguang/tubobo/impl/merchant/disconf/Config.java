@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Scope;
 public class Config {
 
     private static  final Logger logger = LoggerFactory.getLogger(Config.class);
-    private Double dispatchRadiusKiloMiles;//派单半径,km
+        private Double dispatchRadiusKiloMiles;//派单半径,km
     private Integer taskGrabExpiredMilSeconds;//过期毫秒数
     private Integer payExpiredMilSeconds;//过期毫秒数
     private Integer consignorPayExpiredMilliSeconds;//货主支付超时过期毫秒数
@@ -26,11 +26,19 @@ public class Config {
     private Long aliPushAppKey;
     private String noticeGrabedTemplate;
     private String noticeGrabedTimeoutTemplate;
-    private String noticeFinishedTemplate;
     private String noticeGrabedTitle;
     private String noticeGrabedTimeoutTitle;
+    private String noticeFinishedTemplate;
     private String noticeFinishedTitle;
     private String consignorNoticeGrabTimeoutTemplate;//大件订单超时提醒
+
+    private String noticeOrderCanceledTemplate;
+    private String noticeOrderCanceledTitle;
+
+    private String noticeAuditSuccessTitle;
+    private String noticeAuditSuccessTemplate;
+    private String noticeAuditFailTitle;
+    private String noticeAuditFailTemplate;
 
     private String beginWorkTime;
     private String endWorkTime;
@@ -40,10 +48,11 @@ public class Config {
 
     private Double nonConfidentialPaymentLimit;
 
-    private Double firstLevelInitPrice;
+   /* 1.6版本稳定后删除,该配置改为从数据库中获取
+   private Double firstLevelInitPrice;
     private Double firstLevelPricePerKM;
     private Double secondLevelDistance;
-    private Double secondLevelPricePerKM;
+    private Double secondLevelPricePerKM;*/
     private Long payPwdMaxErrorTimes;
     private String distributionLimitationExpression;
 
@@ -142,7 +151,7 @@ public class Config {
         this.payPwdMaxErrorTimes = payPwdMaxErrorTimes;
     }
 
-    @DisconfFileItem(name = "firstLevelInitPrice", associateField = "firstLevelInitPrice")
+   /* @DisconfFileItem(name = "firstLevelInitPrice", associateField = "firstLevelInitPrice")
     public Double getFirstLevelInitPrice() {
         return firstLevelInitPrice;
     }
@@ -175,7 +184,7 @@ public class Config {
 
     public void setSecondLevelPricePerKM(Double secondLevelPricePerKM) {
         this.secondLevelPricePerKM = secondLevelPricePerKM;
-    }
+    }*/
 
     @DisconfFileItem(name = "nonConfidentialPaymentLimit", associateField = "nonConfidentialPaymentLimit")
     public Double getNonConfidentialPaymentLimit() {
@@ -336,5 +345,55 @@ public class Config {
 
     public void setBeginWorkTime(String beginWorkTime) {
         this.beginWorkTime = beginWorkTime;
+    }
+
+    @DisconfFileItem(name = "merchant.notice.orderCancel.template", associateField = "noticeOrderCanceledTemplate")
+    public String getNoticeOrderCanceledTemplate() {
+        return noticeOrderCanceledTemplate;
+    }
+
+    public void setNoticeOrderCanceledTemplate(String noticeOrderCanceledTemplate) {
+        this.noticeOrderCanceledTemplate = noticeOrderCanceledTemplate;
+    }
+
+    @DisconfFileItem(name = "merchant.notice.orderCancel.title", associateField = "noticeOrderCanceledTitle")
+    public String getNoticeOrderCanceledTitle() {
+        return noticeOrderCanceledTitle;
+    }
+
+    public void setNoticeOrderCanceledTitle(String noticeOrderCanceledTitle) {
+        this.noticeOrderCanceledTitle = noticeOrderCanceledTitle;
+    }
+    @DisconfFileItem(name = "merchant.notice.auditSuccess.title", associateField = "noticeAuditSuccessTitle")
+    public String getNoticeAuditSuccessTitle() {
+        return noticeAuditSuccessTitle;
+    }
+
+    public void setNoticeAuditSuccessTitle(String noticeAuditSuccessTitle) {
+        this.noticeAuditSuccessTitle = noticeAuditSuccessTitle;
+    }
+    @DisconfFileItem(name = "merchant.notice.auditSuccess.template", associateField = "noticeAuditSuccessTemplate")
+    public String getNoticeAuditSuccessTemplate() {
+        return noticeAuditSuccessTemplate;
+    }
+
+    public void setNoticeAuditSuccessTemplate(String noticeAuditSuccessTemplate) {
+        this.noticeAuditSuccessTemplate = noticeAuditSuccessTemplate;
+    }
+    @DisconfFileItem(name = "merchant.notice.auditFail.title", associateField = "noticeAuditFailTitle")
+    public String getNoticeAuditFailTitle() {
+        return noticeAuditFailTitle;
+    }
+
+    public void setNoticeAuditFailTitle(String noticeAuditFailTitle) {
+        this.noticeAuditFailTitle = noticeAuditFailTitle;
+    }
+    @DisconfFileItem(name = "merchant.notice.auditFail.template", associateField = "noticeAuditFailTemplate")
+    public String getNoticeAuditFailTemplate() {
+        return noticeAuditFailTemplate;
+    }
+
+    public void setNoticeAuditFailTemplate(String noticeAuditFailTemplate) {
+        this.noticeAuditFailTemplate = noticeAuditFailTemplate;
     }
 }

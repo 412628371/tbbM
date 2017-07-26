@@ -23,9 +23,11 @@
 	<!-- 声明需要暴露的服务接口 -->
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToTaskCenterService" />
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToAdminService" timeout="3000"/>
+	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantDeliverFeeConfigInterface" group="${dubbo.group}" version="0.0.1" ref="merchantDeliverFeeConfigService" timeout="3000"/>
 
 	<!-- 和本地bean一样实现服务 -->
 	<bean id="merchantToTaskCenterService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToTaskCenterServiceImpl" />
 	<bean id="merchantToAdminService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToAdminServiceImpl" />
+	<bean id="merchantDeliverFeeConfigService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantDeliverFeeConfigServiceImpl" />
 
 </beans>

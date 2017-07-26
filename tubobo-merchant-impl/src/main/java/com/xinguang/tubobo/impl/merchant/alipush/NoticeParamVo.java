@@ -7,6 +7,8 @@ import java.io.Serializable;
  */
 public class NoticeParamVo implements Serializable{
     private String orderNo;
+    private String id;
+    private String orderType;
 
     public String getOrderNo() {
         return orderNo;
@@ -14,5 +16,21 @@ public class NoticeParamVo implements Serializable{
 
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
     }
 }

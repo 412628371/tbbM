@@ -23,16 +23,20 @@ import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import com.xinguang.tubobo.takeout.answer.DispatcherInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,16 +64,13 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	private TbbAccountService tbbAccountService;
 
-	@Autowired
-	MerchantPushService pushService;
+	@Autowired private MerchantPushService pushService;
 
-	@Autowired
-	AdminToMerchantService adminToMerchantService;
-	@Autowired
-	private TuboboReportDateMqHelp tuboboReportDateMqHelp;
-
-	@Resource
-	Config config;
+	@Autowired private AdminToMerchantService adminToMerchantService;
+	@Autowired private TuboboReportDateMqHelp tuboboReportDateMqHelp;
+	@Autowired private RmqNoticeProducer rmqNoticeProducer;
+	@Autowired private RmqTakeoutAnswerProducer rmqTakeoutAnswerProducer;
+	@Resource private Config config;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -139,56 +140,96 @@ public class MerchantOrderManager extends BaseService {
 	/**
 	 * 商家取消订单
 	 */
-	public boolean cancelOrder(String merchantId,String orderNo){
+	public boolean cancelOrder(String merchantId,String orderNo,boolean isAdminCancel){
 		MerchantOrderEntity entity = orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
-		if (null == entity )
+		if (null == entity || EnumMerchantOrderStatus.CANCEL.getValue().equals(entity.getOrderStatus())||
+				EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus()))
 			return false;
-		if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
-			boolean cancelResult = orderService.merchantCancel(merchantId,orderNo,
-					EnumCancelReason.PAY_MERCHANT.getValue());
-			if (!cancelResult){
-				logger.error("商家取消订单，更改订单状态出错，userId: "+merchantId+" orderNo: "+orderNo);
+
+		if (isAdminCancel){
+			String cancelReason = EnumCancelReason.ADMIN_CANCEL.getValue();
+			boolean result ;
+			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
+				result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true);
+			}else {
+				result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
+				if (result){
+					//推送消息到报表mq
+					tuboboReportDateMqHelp.orderCancel(orderNo,"merchant",cancelReason);
+					//TODO
+					rmqNoticeProducer.sendOrderCancelNotice(entity.getUserId(),entity.getOrderNo(),
+							entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true);
+				}
 			}
-			return cancelResult;
-		}
-
-		if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
-			TbbTaskResponse<Boolean> taskResp = taskDispatchService.cancelTask(orderNo);
-			if (taskResp.isSucceeded()){
-				if (taskResp.getData()){
-					if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
-						PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
-								MerchantConstants.PAY_REJECT_REMARKS_CANCEL);
-						TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
-						if (resp != null || resp.isSucceeded()){
-							logger.error("订单取消，资金平台退款成功，userId: "+merchantId+" orderNo: "+orderNo+
-									"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-							boolean cancelResult = orderService.merchantCancel(merchantId,orderNo,
-									EnumCancelReason.GRAB_MERCHANT.getValue());
-							if (!cancelResult){
-								logger.error("商家取消订单，更改订单状态出错，userId: "+merchantId+" orderNo: "+orderNo);
-							}
-
-							//推送消息到报表mq
-							tuboboReportDateMqHelp.orderCancel(orderNo,"merchant",EnumCancelReason.GRAB_MERCHANT.getValue());
-							return cancelResult;
-						}else {
-							logger.error("商家取消订单，资金平台退款出错，userId: "+merchantId+" orderNo: "+orderNo+
-									"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-							return false;
+			return result;
+		}else {
+			boolean result = false;
+			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
+				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false);
+			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
+				TbbTaskResponse<Boolean> taskResp = taskDispatchService.cancelTask(orderNo);
+				if (taskResp.isSucceeded()){
+					if (taskResp.getData()){
+						result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
+						if (result){
+							result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false);
 						}
+					}else {
+						logger.error("商家取消订单，任务平台取消失败。userId:{},orderNo:{}",merchantId,orderNo);
+						return false;
 					}
 				}else {
-					logger.error("商家取消订单，任务平台取消失败。userId:{},orderNo:{}",merchantId,orderNo);
+					logger.error("商家取消订单，任务平台出错。userId:{},orderNo:{},errorCode:{},errorMsg:{}",
+							merchantId,orderNo,taskResp.getErrorCode(),taskResp.getMessage());
 				}
-			}else {
-				logger.error("商家取消订单，任务平台出错。userId:{},orderNo:{},errorCode:{},errorMsg:{}",
-						merchantId,orderNo,taskResp.getErrorCode(),taskResp.getMessage());
 			}
+			return result;
 		}
-		return false;
+
 	}
 
+	/**
+	 * 资金账户退款操作
+	 * @param payId
+	 * @param userId
+	 * @param orderNo
+	 * @return
+	 */
+	private boolean rejectPayConfirm(Long payId,String userId,String orderNo) {
+		PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(payId,
+				MerchantConstants.PAY_REJECT_REMARKS_CANCEL);
+		TbbAccountResponse<PayInfo> resp = tbbAccountService.payConfirm(confirmRequest);
+		if (resp != null || resp.isSucceeded()) {
+			logger.info("订单取消，资金平台退款成功，userId: {}  orderNo: {} ",userId,orderNo);
+			return true;
+		}else {
+			logger.error("订单取消，资金平台退款失败，userId: {}  orderNo: {} ",userId,orderNo);
+			return false;
+		}
+	}
+
+	/**
+	 * 将订单状态改为取消，取消原因为后台取消
+	 * @param userId
+	 * @param orderNo
+	 * @param cancelReason
+	 * @param isAdminCancel
+	 * @return
+	 */
+	private boolean dealCancel(String userId,String orderNo,String cancelReason,boolean isAdminCancel){
+		boolean cancelResult;
+		if (isAdminCancel){
+			cancelResult = orderService.adminCancel(userId,orderNo,cancelReason);
+		}else {
+			cancelResult = orderService.merchantCancel(userId, orderNo,
+					cancelReason);
+		}
+		if (!cancelResult) {
+			logger.error("取消订单，更改订单状态出错，userId:{} ,orderNo:{},cancelReason:{}" ,userId,orderNo,cancelReason);
+		}
+		return cancelResult;
+	}
 	/**
 	 * 商家删除订单
 	 */
@@ -196,33 +237,71 @@ public class MerchantOrderManager extends BaseService {
 		int count =  orderService.deleteOrder(merchantId,orderNo);
 		return count;
 	}
-//	/**
-//	 * 骑手抢单
-//	 */
-//	public int riderGrabOrder(String merchantId,String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime){
-//		return orderService.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime);
-//	}
+	/**
+	 * 骑手抢单
+	 */
+	public boolean riderGrabOrder(MerchantGrabCallbackDTO dto,boolean enableNotice){
+		if (null == dto || StringUtils.isBlank(dto.getTaskNo())){
+			logger.error("抢单回调dto为空");
+		}
+		logger.info("抢单回调：dto:{}",dto.toString());
+
+		String orderNo = dto.getTaskNo();
+		MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
+				EnumMerchantOrderStatus.WAITING_GRAB.getValue());
+		if (null == entity){
+			logger.error("骑手已接单通知，未找到订单或已处理接单。orderNo:{}",orderNo);
+			return false;
+		}
+		logger.info("处理骑手接单：orderNo:{}",orderNo);
+		boolean result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
+				orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType()) > 0;
+		if (enableNotice){
+			if (result){
+				rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+			}
+			rmqTakeoutAnswerProducer.sendAccepted(entity.getPlatformCode(),entity.getUserId(),entity.getOrderNo(),
+					entity.getOriginOrderId(),new DispatcherInfoDTO(dto.getRiderName(),dto.getRiderPhone()));
+		}
+		return result;
+	}
 
 	/**
 	 * 骑手取货
 	 */
-	public int riderGrabItem(String merchantId,String orderNo, Date grabItemTime){
-		return orderService.riderGrabItem(merchantId,orderNo,grabItemTime);
+	public boolean riderGrabItem(String orderNo, Date grabItemTime,boolean enableNotice){
+		MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
+				EnumMerchantOrderStatus.WAITING_PICK.getValue());
+		if (null == entity){
+			logger.info("骑手取货，未找到订单或已取货完成。orderNo:{}",orderNo);
+			return false;
+		}
+		logger.info("处理骑手取货：orderNo:{}",orderNo);
+		return orderService.riderGrabItem(entity.getUserId(),orderNo,grabItemTime)>0;
 	}
 
 	/**
 	 * 骑手完成订单
 	 */
-	public int riderFinishOrder(String merchantId,String orderNo, Date finishOrderTime){
-		return orderService.riderFinishOrder(merchantId,orderNo,finishOrderTime);
+	public boolean riderFinishOrder(String orderNo, Date finishOrderTime,boolean enableNotice){
+		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+		if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
+			logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
+			return false;
+		}
+		logger.info("处理骑手送达完成：orderNo:{}",orderNo);
+		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime)==1;
+		if (result){
+			if (enableNotice){
+				//发送骑手完成送货通知
+				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+				//推送到报表mq
+				tuboboReportDateMqHelp.orderFinish(entity,finishOrderTime);
+			}
+		}
+		return result;
 	}
 
-	/**
-	 * 支付超时
-	 */
-//	public void payExpired(String merchantId,String orderNo){
-//		orderService.payExpired(merchantId,orderNo);
-//	}
 
 	/**
 	 * 订单超时
@@ -269,7 +348,9 @@ public class MerchantOrderManager extends BaseService {
 					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			orderExpire(entity.getUserId(),orderNo,expireTime);
 			if (enablePushNotice){
-				pushService.noticeGrabTimeout(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
+				rmqNoticeProducer.sendGrabTimeoutNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+				//推送消息到报表mq
+				tuboboReportDateMqHelp.orderCancel(orderNo,"system",EnumCancelReason.GRAB_OVERTIME.getValue());
 			}
 			return true;
 		}else {
@@ -281,8 +362,6 @@ public class MerchantOrderManager extends BaseService {
 			}
 		}
 
-		//推送消息到报表mq
-		tuboboReportDateMqHelp.orderCancel(orderNo,"system",EnumCancelReason.GRAB_OVERTIME.getValue());
 		return false;
 	}
 

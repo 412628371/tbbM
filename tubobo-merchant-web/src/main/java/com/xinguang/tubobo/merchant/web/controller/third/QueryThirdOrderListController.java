@@ -36,7 +36,8 @@ public class QueryThirdOrderListController extends MerchantBaseController<ReqQue
         if (StringUtils.isNotBlank(keyword) && !StringUtils.isAlphanumeric(keyword)){
 
         }else {
-            Page<ThirdOrderEntity> page = mtOrderService.findUnProcessedPageByUserId(userId,req.getPlatformCode(),
+
+            Page<ThirdOrderEntity> page = mtOrderService.findUnProcessedPageByUserId(userId,req.getPlatformCode(),req.getQueryType(),
                     keyword,req.getPageNo(),req.getPageSize());
 
             if (page!= null && page.getList() != null && page.getList().size() > 0) {
