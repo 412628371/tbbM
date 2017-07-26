@@ -48,10 +48,11 @@ public class Config {
 
     private Double nonConfidentialPaymentLimit;
 
-    private Double firstLevelInitPrice;
+   /* 1.6版本稳定后删除,该配置改为从数据库中获取
+   private Double firstLevelInitPrice;
     private Double firstLevelPricePerKM;
     private Double secondLevelDistance;
-    private Double secondLevelPricePerKM;
+    private Double secondLevelPricePerKM;*/
     private Long payPwdMaxErrorTimes;
     private String distributionLimitationExpression;
 
@@ -150,7 +151,7 @@ public class Config {
         this.payPwdMaxErrorTimes = payPwdMaxErrorTimes;
     }
 
-    @DisconfFileItem(name = "firstLevelInitPrice", associateField = "firstLevelInitPrice")
+   /* @DisconfFileItem(name = "firstLevelInitPrice", associateField = "firstLevelInitPrice")
     public Double getFirstLevelInitPrice() {
         return firstLevelInitPrice;
     }
@@ -183,7 +184,7 @@ public class Config {
 
     public void setSecondLevelPricePerKM(Double secondLevelPricePerKM) {
         this.secondLevelPricePerKM = secondLevelPricePerKM;
-    }
+    }*/
 
     @DisconfFileItem(name = "nonConfidentialPaymentLimit", associateField = "nonConfidentialPaymentLimit")
     public Double getNonConfidentialPaymentLimit() {
