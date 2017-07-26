@@ -24,16 +24,19 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import com.xinguang.tubobo.takeout.answer.DispatcherInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +69,7 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired private AdminToMerchantService adminToMerchantService;
 	@Autowired private TuboboReportDateMqHelp tuboboReportDateMqHelp;
 	@Autowired private RmqNoticeProducer rmqNoticeProducer;
+	@Autowired private RmqTakeoutAnswerProducer rmqTakeoutAnswerProducer;
 	@Resource private Config config;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
@@ -233,33 +237,71 @@ public class MerchantOrderManager extends BaseService {
 		int count =  orderService.deleteOrder(merchantId,orderNo);
 		return count;
 	}
-//	/**
-//	 * 骑手抢单
-//	 */
-//	public int riderGrabOrder(String merchantId,String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime){
-//		return orderService.riderGrabOrder(riderId,riderName,riderPhone,orderNo,grabOrderTime);
-//	}
+	/**
+	 * 骑手抢单
+	 */
+	public boolean riderGrabOrder(MerchantGrabCallbackDTO dto,boolean enableNotice){
+		if (null == dto || StringUtils.isBlank(dto.getTaskNo())){
+			logger.error("抢单回调dto为空");
+		}
+		logger.info("抢单回调：dto:{}",dto.toString());
+
+		String orderNo = dto.getTaskNo();
+		MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
+				EnumMerchantOrderStatus.WAITING_GRAB.getValue());
+		if (null == entity){
+			logger.error("骑手已接单通知，未找到订单或已处理接单。orderNo:{}",orderNo);
+			return false;
+		}
+		logger.info("处理骑手接单：orderNo:{}",orderNo);
+		boolean result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
+				orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType()) > 0;
+		if (enableNotice){
+			if (result){
+				rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+			}
+			rmqTakeoutAnswerProducer.sendAccepted(entity.getPlatformCode(),entity.getUserId(),entity.getOrderNo(),
+					entity.getOriginOrderId(),new DispatcherInfoDTO(dto.getRiderName(),dto.getRiderPhone()));
+		}
+		return result;
+	}
 
 	/**
 	 * 骑手取货
 	 */
-	public int riderGrabItem(String merchantId,String orderNo, Date grabItemTime){
-		return orderService.riderGrabItem(merchantId,orderNo,grabItemTime);
+	public boolean riderGrabItem(String orderNo, Date grabItemTime,boolean enableNotice){
+		MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
+				EnumMerchantOrderStatus.WAITING_PICK.getValue());
+		if (null == entity){
+			logger.info("骑手取货，未找到订单或已取货完成。orderNo:{}",orderNo);
+			return false;
+		}
+		logger.info("处理骑手取货：orderNo:{}",orderNo);
+		return orderService.riderGrabItem(entity.getUserId(),orderNo,grabItemTime)>0;
 	}
 
 	/**
 	 * 骑手完成订单
 	 */
-	public int riderFinishOrder(String merchantId,String orderNo, Date finishOrderTime){
-		return orderService.riderFinishOrder(merchantId,orderNo,finishOrderTime);
+	public boolean riderFinishOrder(String orderNo, Date finishOrderTime,boolean enableNotice){
+		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+		if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
+			logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
+			return false;
+		}
+		logger.info("处理骑手送达完成：orderNo:{}",orderNo);
+		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime)==1;
+		if (result){
+			if (enableNotice){
+				//发送骑手完成送货通知
+				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+				//推送到报表mq
+				tuboboReportDateMqHelp.orderFinish(entity,finishOrderTime);
+			}
+		}
+		return result;
 	}
 
-	/**
-	 * 支付超时
-	 */
-//	public void payExpired(String merchantId,String orderNo){
-//		orderService.payExpired(merchantId,orderNo);
-//	}
 
 	/**
 	 * 订单超时
@@ -306,8 +348,9 @@ public class MerchantOrderManager extends BaseService {
 					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			orderExpire(entity.getUserId(),orderNo,expireTime);
 			if (enablePushNotice){
-//				pushService.noticeGrabTimeout(entity.getUserId(),orderNo,MerchantConstants.getPushParamByOrderType(entity.getOrderType()));
 				rmqNoticeProducer.sendGrabTimeoutNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+				//推送消息到报表mq
+				tuboboReportDateMqHelp.orderCancel(orderNo,"system",EnumCancelReason.GRAB_OVERTIME.getValue());
 			}
 			return true;
 		}else {
@@ -319,8 +362,6 @@ public class MerchantOrderManager extends BaseService {
 			}
 		}
 
-		//推送消息到报表mq
-		tuboboReportDateMqHelp.orderCancel(orderNo,"system",EnumCancelReason.GRAB_OVERTIME.getValue());
 		return false;
 	}
 
