@@ -35,7 +35,8 @@ public class TuboboReportDateMqHelp {
         dto.setIdCard(entity.getIdCardNo());
         dto.setShopName(entity.getMerchantName());
         dto.setRegisterTime(entity.getCreateDate());
-        dto.setBelongArea(ReportDateConstants.BELONG_AREA_HZ);
+        dto.setLatitude(entity.getLatitude());
+        dto.setLongitude(entity.getLongitude());
         sendToMq(dto);
     }
 
@@ -79,6 +80,7 @@ public class TuboboReportDateMqHelp {
         dto.setTipFee(task.getTipFee());
         dto.setWeatherOverFee(task.getWeatherOverFee());
         dto.setPeekOverFee(task.getWeatherOverFee());
+        dto.setOrderSource(task.getPlatformCode());
         sendToMq(dto);
     }
 
