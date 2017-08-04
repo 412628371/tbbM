@@ -33,6 +33,16 @@ public class PushNoticeEntity {
     private String identifyType;
     private boolean processed;
 
+    private String reason;
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "id", unique = true, nullable = false)

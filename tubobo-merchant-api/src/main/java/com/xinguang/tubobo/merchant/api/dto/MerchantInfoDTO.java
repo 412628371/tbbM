@@ -40,9 +40,19 @@ public class MerchantInfoDTO implements Serializable{
 	private String consignorStatus;
 
 	private String bdCode;					//bd邀请码字段
+	private Date bdUpdateDate;				//bd邀请码注册时间
+
 
 	private Date createDate;
 	private Date updateDate;
+
+	public Date getBdUpdateDate() {
+		return bdUpdateDate;
+	}
+
+	public void setBdUpdateDate(Date bdUpdateDate) {
+		this.bdUpdateDate = bdUpdateDate;
+	}
 
 	public String getBdCode() {
 		return bdCode;

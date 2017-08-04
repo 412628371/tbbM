@@ -158,6 +158,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
         entity.setWeatherOverFee(weatherOverFee);
         entity.setPeekOverFee(peekOverFee);
+        entity.setDeliveryDistance(req.getDeliveryDistance());
         String orderNo = merchantOrderManager.order(userId,entity);
         CreateOrderResponse response = new CreateOrderResponse();
         response.setOrderNo(orderNo);

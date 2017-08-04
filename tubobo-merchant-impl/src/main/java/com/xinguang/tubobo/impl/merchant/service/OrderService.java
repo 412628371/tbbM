@@ -1,6 +1,9 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.CalCulateUtil;
+import com.xinguang.taskcenter.api.OverTimeRuleInterface;
+import com.xinguang.taskcenter.api.dto.OverTimeRuleDto;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
@@ -17,6 +20,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +39,8 @@ public class OrderService extends BaseService {
     private DeliveryFeeService deliveryFeeService;
     @Autowired
     RoutePlanning routePlanning;
+    @Autowired
+    OverTimeRuleInterface overTimeRuleService;
 
 //    public MerchantOrderEntity get(String id) {
 //        return merchantOrderDao.get(id);
@@ -58,12 +65,17 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public String order(String userId,MerchantOrderEntity entity) throws MerchantClientException {
         double distance ;
+        //保存配送距离 从1.41版本保存为我们之前传给客户端的距离值,同时向下兼容
+        Double deliveryDistance = entity.getDeliveryDistance();
+        //1.41版本之前所展示的实时值
         if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
             distance = deliveryFeeService.sumDeliveryDistanceChePei(entity.getSenderLongitude(),entity.getSenderLatitude(),
                     entity.getReceiverLongitude(),entity.getReceiverLatitude());
         }else {
             distance = deliveryFeeService.sumDeliveryDistanceMerchant(userId,entity.getReceiverLatitude(),entity.getReceiverLongitude());
         }
+        //此处向下兼容
+        distance=deliveryDistance==null?distance:deliveryDistance;
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         entity.setOrderNo(orderNo);
@@ -137,8 +149,44 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int riderFinishOrder(String merchantId,String orderNo, Date finishOrderTime){
-        return merchantOrderDao.riderFinishOrder(orderNo,finishOrderTime);
+    public int riderFinishOrder(String merchantId,String orderNo, Date finishOrderTime) {
+        List<OverTimeRuleDto> list = overTimeRuleService.findAllOverTimeRule();
+        if (list != null && list.size() > 0) {
+            double initDistance=100000;
+            double initMinute=600;
+            double raiseMinute=60;
+            for (OverTimeRuleDto overTimeRuleDto : list) {
+                 initDistance = Double.parseDouble(overTimeRuleDto.getInitDistance());
+                 initMinute = Double.parseDouble(overTimeRuleDto.getInitMinute());
+                 raiseMinute = Double.parseDouble(overTimeRuleDto.getRaiseMinute());
+            }
+                MerchantOrderEntity order = findByOrderNo(orderNo);
+                double deliveryDistance = order.getDeliveryDistance()/1000;
+            Date orderTime = order.getOrderTime();
+            long timeSub = finishOrderTime.getTime() - orderTime.getTime();
+                double spendMinute = CalCulateUtil.div(timeSub, 60000, 2);
+                //获得送达花费时间
+                spendMinute = Math.ceil(spendMinute);
+                //计算规则内允许送达最长时间分钟
+                double maxAllowMinute;
+                if (deliveryDistance <= initDistance) {
+                    maxAllowMinute = initMinute;
+                } else {
+                    double subDistance = Math.ceil(deliveryDistance - initDistance);
+                    double etraMinute = CalCulateUtil.mul(subDistance, raiseMinute);
+                    maxAllowMinute = initMinute + etraMinute;
+                }
+                if (maxAllowMinute >= spendMinute) {
+                    return merchantOrderDao.riderFinishOrder(orderNo, finishOrderTime);
+                } else {
+                    return merchantOrderDao.riderFinishExpiredOrder(orderNo, finishOrderTime, spendMinute - maxAllowMinute);
+                }
+
+        } else {
+            return merchantOrderDao.riderFinishOrder(orderNo, finishOrderTime);
+
+        }
+
     }
 
     /**

@@ -20,9 +20,28 @@ public class OrderInfo implements Serializable {
     private Date grabItemTime;//取货时间
     private Date finishOrderTime;//送达时间
     private Date expectFinishTime;//预计送达时间
+    private Double expiredMinute;//超时时间(min)
+
+
 
     private Long grabRemainMillSeconds;
+    private Double deliveryDistance; //配送距离 1.41 版本加入
 
+    public Double getExpiredMinute() {
+        return expiredMinute;
+    }
+
+    public void setExpiredMinute(Double expiredMinute) {
+        this.expiredMinute = expiredMinute;
+    }
+
+    public Double getDeliveryDistance() {
+        return deliveryDistance;
+    }
+
+    public void setDeliveryDistance(Double deliveryDistance) {
+        this.deliveryDistance = deliveryDistance;
+    }
 
     public String getOrderType() {
         return orderType;

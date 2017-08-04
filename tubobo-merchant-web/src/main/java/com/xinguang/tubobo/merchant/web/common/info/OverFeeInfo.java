@@ -11,6 +11,7 @@ public class OverFeeInfo implements Serializable{
     private Double weatherOverFee;
     private Double totalOverFee;
 
+
     public Double getPeekOverFee() {
         return peekOverFee;
     }

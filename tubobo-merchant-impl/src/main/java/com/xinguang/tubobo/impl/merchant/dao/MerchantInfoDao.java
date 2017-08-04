@@ -37,9 +37,9 @@ public class MerchantInfoDao extends BaseDao<MerchantInfoEntity> {
         int count = createQuery(sqlString, new Parameter(true,userId)).executeUpdate();
         return count;
     }
-    public int updateVerifyStatus(String merchantStatus,String consignorStatus,String updateBy,String userId){
+    public int updateVerifyStatus(String merchantStatus,String consignorStatus,String updateBy,String userId,String reason){
 
-        String sqlString = "update MerchantInfoEntity set merchantStatus=:merchantStatus,consignorStatus=:consignorStatus,updateDate=:updateDate,updateBy=:updateBy,verifyDate=:verifyDate where userId = :userId and delFlag = '0' ";
+        String sqlString = "update MerchantInfoEntity set merchantStatus=:merchantStatus,consignorStatus=:consignorStatus,updateDate=:updateDate,updateBy=:updateBy,verifyDate=:verifyDate, reason=:reason where userId = :userId  and delFlag = '0' ";
         Parameter parameter = new Parameter();
         parameter.put("merchantStatus",merchantStatus);
         parameter.put("consignorStatus",consignorStatus);
@@ -47,13 +47,15 @@ public class MerchantInfoDao extends BaseDao<MerchantInfoEntity> {
         parameter.put("userId",userId);
         parameter.put("updateDate",new Date());
         parameter.put("verifyDate",new Date());
+        parameter.put("reason",reason);
+
         int count = createQuery(sqlString, parameter).executeUpdate();
         return count;
     }
 
     public int updateDBCode(String userId, String bdCode){
-        String sqlString = "update MerchantInfoEntity set bdCode=:p1 where userId = :p2 and delFlag = '0' ";
-        int count = createQuery(sqlString, new Parameter(bdCode, userId)).executeUpdate();
+        String sqlString = "update MerchantInfoEntity set bdCode=:p1 ,bdUpdateDate=:p2 where userId = :p3 and delFlag = '0' ";
+        int count = createQuery(sqlString, new Parameter(bdCode, new Date(),userId)).executeUpdate();
         return count;
     }
 }

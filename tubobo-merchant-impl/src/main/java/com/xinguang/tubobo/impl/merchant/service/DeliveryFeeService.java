@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -69,11 +70,13 @@ public class DeliveryFeeService  {
     }
 */
 
-    public double sumDeliveryFeeByLocation(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
+    public HashMap<Double, Double>  sumDeliveryFeeByLocation(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
         double distance = sumDeliveryDistanceMerchant(userId,lat,lng);
-        return sumDeliveryFeeByDistance(distance);
+        HashMap<Double, Double> map = new HashMap<>();
+        map.put(distance,sumDeliveryFeeByDistance(distance));
+        return map;
     }
-    public double sumChepeiFee(String carType,double lng1,double lat1,double lng2,double lat2) throws MerchantClientException {
+    public  HashMap<Double, Double> sumChepeiFee(String carType,double lng1,double lat1,double lng2,double lat2) throws MerchantClientException {
         double distance = routePlanning.getDistanceWithCar(lng1,lat1,lng2,lat2);
         Double distanceByKm = Math.ceil(distance/1000);
         CarTypeDTO carTypeDTO ;
@@ -88,11 +91,15 @@ public class DeliveryFeeService  {
         if (distanceByKm>startDistance){
             distanceByKm-=startDistance;
         }else {
-            return fee;
+            HashMap<Double, Double> map = new HashMap<>();
+            map.put(distance,fee);
+            return map;
         }
         double overDistanceFee = distanceByKm*beyondPrice;
         fee+=overDistanceFee;
-        return fee;
+        HashMap<Double, Double> map = new HashMap<>();
+        map.put(distance,fee);
+        return map;
     }
     public double sumDeliveryDistanceMerchant(String userId,Double lat,Double lng) throws MerchantClientException {
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);

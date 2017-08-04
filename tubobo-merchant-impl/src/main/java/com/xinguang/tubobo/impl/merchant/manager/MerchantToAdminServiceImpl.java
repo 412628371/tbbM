@@ -87,8 +87,8 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
      * @return
      */
     @Override
-    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType) {
-        int i = merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy,identifyType);
+    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType,String reason) {
+        int i = merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy,identifyType,reason);
         if (i > 0){
             //消息放入报表mq
             if("CONSIGNOR".equals(identifyType)){
@@ -96,9 +96,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
             }else{
                 tuboboReportDateMqHelp.merchantStatusVerify(userId,merchantStatus);
                 if (EnumAuthentication.FAIL.getValue().equals(merchantStatus)){
-                    rmqNoticeProducer.sendAuditNotice(userId,false);
+                    rmqNoticeProducer.sendAuditNotice(userId,false,reason);
                 }else if (EnumAuthentication.SUCCESS.getValue().equals(merchantStatus)){
-                    rmqNoticeProducer.sendAuditNotice(userId,true);
+                    rmqNoticeProducer.sendAuditNotice(userId,true,null);
                 }
             }
             return true;
