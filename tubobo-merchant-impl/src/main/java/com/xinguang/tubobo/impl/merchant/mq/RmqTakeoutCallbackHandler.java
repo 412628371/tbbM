@@ -22,22 +22,26 @@ public class RmqTakeoutCallbackHandler implements ChannelAwareMessageListener {
 
         String body = new String(message.getBody(),"utf-8");
         logger.info("收到外卖平台信息：{}",body);
-        MtNotifyDTO mtNotifyDTO = JSON.toJavaObject(JSONObject.parseObject(body),MtNotifyDTO.class);
-        switch (mtNotifyDTO.getPlatformCode()){
-            case MT:
-                thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
-                break;
-            case ELE:
-                thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
-                break;
-            case YZ:
-                thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
-                break;
-            case BD:
-                thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
-                break;
-            default:
+        try {
+            MtNotifyDTO mtNotifyDTO = JSON.toJavaObject(JSONObject.parseObject(body),MtNotifyDTO.class);
+            switch (mtNotifyDTO.getPlatformCode()){
+                case MT:
+                    thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
+                    break;
+                case ELE:
+                    thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
+                    break;
+                case YZ:
+                    thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
+                    break;
+                case BD:
+                    thirdCallbackHandler.dispatch(mtNotifyDTO.getPlatformCode(),mtNotifyDTO.getNotifyType(),mtNotifyDTO.getMerchantId(),mtNotifyDTO.getJsonData());
+                    break;
+                default:
 
+            }
+        }catch (Exception e){
+            logger.error("mq处理外卖平台信息，出错",e);
         }
     }
 }

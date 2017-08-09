@@ -20,45 +20,45 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
-//    private static final Logger logger = LoggerFactory.getLogger(RmqTaskCallbackHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RmqTaskCallbackHandler.class);
     @Autowired
     private MerchantOrderManager merchantOrderManager;
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
 
         String plain = new String(message.getBody(),"utf-8");
-        TaskCallbackDTO taskCallbackDTO = JSON.parseObject(plain, TaskCallbackDTO.class);
-        if (null == taskCallbackDTO) {
-            return;
-        }
-        //TODO 处理各种操作
-        String json = taskCallbackDTO.getJsonContent();
-//        JSONObject jo = JSONObject.parseObject(json);
-        switch (taskCallbackDTO.getType()){
-            case GRAB:
-                MerchantGrabCallbackDTO dtoGrab =
-                        JSON.parseObject(json,MerchantGrabCallbackDTO.class);
-//                merchantToTaskCenterServiceInterface.riderGrabOrder(dtoGrab);
-                merchantOrderManager.riderGrabOrder(dtoGrab,true);
-                break;
-            case PICK:
-                MerchantTaskOperatorCallbackDTO dtoPick =
-                        JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantOrderManager.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime(),true);
-//                merchantToTaskCenterServiceInterface.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime());
-                break;
-            case FINISH:
-                MerchantTaskOperatorCallbackDTO dtoFinish =
-                        JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantOrderManager.riderFinishOrder(dtoFinish.getTaskNo(),dtoFinish.getOperateTime(),true);
-                break;
-            case EXPIRED:
-                MerchantTaskOperatorCallbackDTO dtoExpire =
-                        JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                merchantOrderManager.dealGrabOvertimeOrders(dtoExpire.getTaskNo(),dtoExpire.getOperateTime(),true);
-                break;
-            case ADMIN_CANCEL:
-                break;
+        try {
+            TaskCallbackDTO taskCallbackDTO = JSON.parseObject(plain, TaskCallbackDTO.class);
+            if (null == taskCallbackDTO) {
+                return;
+            }
+            String json = taskCallbackDTO.getJsonContent();
+            switch (taskCallbackDTO.getType()){
+                case GRAB:
+                    MerchantGrabCallbackDTO dtoGrab =
+                            JSON.parseObject(json,MerchantGrabCallbackDTO.class);
+                    merchantOrderManager.riderGrabOrder(dtoGrab,true);
+                    break;
+                case PICK:
+                    MerchantTaskOperatorCallbackDTO dtoPick =
+                            JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
+                    merchantOrderManager.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime(),true);
+                    break;
+                case FINISH:
+                    MerchantTaskOperatorCallbackDTO dtoFinish =
+                            JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
+                    merchantOrderManager.riderFinishOrder(dtoFinish.getTaskNo(),dtoFinish.getOperateTime(),true);
+                    break;
+                case EXPIRED:
+                    MerchantTaskOperatorCallbackDTO dtoExpire =
+                            JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
+                    merchantOrderManager.dealGrabOvertimeOrders(dtoExpire.getTaskNo(),dtoExpire.getOperateTime(),true);
+                    break;
+                case ADMIN_CANCEL:
+                    break;
+            }
+        }catch (Exception e){
+            logger.error("mq处理任务回调异常",e);
         }
 
     }

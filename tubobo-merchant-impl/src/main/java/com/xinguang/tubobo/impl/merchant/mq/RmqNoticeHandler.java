@@ -24,21 +24,21 @@ public class RmqNoticeHandler implements ChannelAwareMessageListener {
         NoticeDTO dto = null;
         try {
             dto = JSON.parseObject(json,NoticeDTO.class);
-        }catch (Exception e){
-            logger.error("mq处理通知数据，数据转换失败。json:{}",json);
-            return;
-        }
-        if (null == dto)
-            return;
+            if (null == dto)
+                return;
 
-        if (EnumNoticeType.AUDIT.getValue().equals(dto.getNoticeType())){
-            noticeService.pushAudit(dto);
-        }
-        if (EnumNoticeType.ORDER.getValue().equals(dto.getNoticeType())){
-            noticeService.pushOrder(dto);
-        }
-        if (EnumNoticeType.SYSTEM.getValue().equals(dto.getNoticeType())){
-            noticeService.pushSystem(dto);
+            if (EnumNoticeType.AUDIT.getValue().equals(dto.getNoticeType())){
+                noticeService.pushAudit(dto);
+            }
+            if (EnumNoticeType.ORDER.getValue().equals(dto.getNoticeType())){
+                noticeService.pushOrder(dto);
+            }
+            if (EnumNoticeType.SYSTEM.getValue().equals(dto.getNoticeType())){
+                noticeService.pushSystem(dto);
+            }
+        }catch (Exception e){
+            logger.error("mq处理通知数据，数据转换失败。json:{}",json,e);
+            return;
         }
     }
 }

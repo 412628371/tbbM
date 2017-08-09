@@ -33,8 +33,12 @@ public class OrderPayTimeoutHandler  implements ChannelAwareMessageListener{
             logger.error("订单超时未支付，未找到订单。orderNo:{}",orderNo);
             return;
         }
-        orderService.payExpired(entity.getUserId(),orderNo);
-        redisOp.evictCache("merchantOrder_"+entity.getUserId()+"_*");
-        logger.info("订单超时未支付，orderNo: {}",orderNo);
+        try {
+            orderService.payExpired(entity.getUserId(),orderNo);
+            redisOp.evictCache("merchantOrder_"+entity.getUserId()+"_*");
+            logger.info("订单超时未支付，orderNo: {}",orderNo);
+        }catch (Exception e){
+            logger.error("mq支付超时处理异常",e);
+        }
     }
 }
