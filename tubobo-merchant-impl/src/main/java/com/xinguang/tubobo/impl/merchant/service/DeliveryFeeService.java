@@ -162,7 +162,9 @@ public class DeliveryFeeService  {
      */
     public Double sumDeliveryFeeByDistance(Double distance){
         List<MerchantDeliverFeeConfigDTO> all = merchantDeliverFeeConfigService.findAll();
-        double distanceInKm = Math.ceil((distance/1000));
+        //double distanceInKm = Math.ceil((distance/1000));
+        double distanceInKm = (distance/1000);
+
         double fee = 0.0;
         Double initFee=0.0;
         Double finalEndDistance=0.0;

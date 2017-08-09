@@ -7,9 +7,7 @@ import com.xinguang.taskcenter.api.dto.OverTimeRuleDto;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
-import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantOrderDao;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -20,8 +18,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -150,43 +146,15 @@ public class OrderService extends BaseService {
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public int riderFinishOrder(String merchantId,String orderNo, Date finishOrderTime) {
-        List<OverTimeRuleDto> list = overTimeRuleService.findAllOverTimeRule();
-        if (list != null && list.size() > 0) {
-            double initDistance=100000;
-            double initMinute=600;
-            double raiseMinute=60;
-            for (OverTimeRuleDto overTimeRuleDto : list) {
-                 initDistance = Double.parseDouble(overTimeRuleDto.getInitDistance());
-                 initMinute = Double.parseDouble(overTimeRuleDto.getInitMinute());
-                 raiseMinute = Double.parseDouble(overTimeRuleDto.getRaiseMinute());
-            }
-                MerchantOrderEntity order = findByOrderNo(orderNo);
-                double deliveryDistance = order.getDeliveryDistance()/1000;
-            Date orderTime = order.getOrderTime();
-            long timeSub = finishOrderTime.getTime() - orderTime.getTime();
-                double spendMinute = CalCulateUtil.div(timeSub, 60000, 2);
-                //获得送达花费时间
-                spendMinute = Math.ceil(spendMinute);
-                //计算规则内允许送达最长时间分钟
-                double maxAllowMinute;
-                if (deliveryDistance <= initDistance) {
-                    maxAllowMinute = initMinute;
-                } else {
-                    double subDistance = Math.ceil(deliveryDistance - initDistance);
-                    double etraMinute = CalCulateUtil.mul(subDistance, raiseMinute);
-                    maxAllowMinute = initMinute + etraMinute;
-                }
-                if (maxAllowMinute >= spendMinute) {
-                    return merchantOrderDao.riderFinishOrder(orderNo, finishOrderTime);
-                } else {
-                    return merchantOrderDao.riderFinishExpiredOrder(orderNo, finishOrderTime, spendMinute - maxAllowMinute);
-                }
 
-        } else {
+        double orderOverTime = getOrderOverTime(finishOrderTime, orderNo);
+        if (0.0==orderOverTime){
+            //订单未超时
             return merchantOrderDao.riderFinishOrder(orderNo, finishOrderTime);
-
+        }else {
+            //订单超时
+            return merchantOrderDao.riderFinishExpiredOrder(orderNo, finishOrderTime, orderOverTime);
         }
-
     }
 
     /**
@@ -261,6 +229,47 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantOrder_'+#userId+'_*'")
     public void clearRedisCache(String userId){
+
+    }
+    /**
+     * 获得骑手完成送达时的超时间分钟 0为未超时
+     * @param compareDate 传入时间, DeliverDistance 传入
+     * @param orderNo 订单编号(用于获取配送距离)
+     */
+    public double getOrderOverTime(Date compareDate,String  orderNo){
+        List<OverTimeRuleDto> list = overTimeRuleService.findAllOverTimeRule();
+        double returnOverMinute=0.0;
+        if (list != null && list.size() > 0) {
+            double initDistance=10000;
+            double initMinute=10000;
+            double raiseMinute=10000;
+            for (OverTimeRuleDto overTimeRuleDto : list) {
+                initDistance = Double.parseDouble(overTimeRuleDto.getInitDistance());
+                initMinute = Double.parseDouble(overTimeRuleDto.getInitMinute());
+                raiseMinute = Double.parseDouble(overTimeRuleDto.getRaiseMinute());
+            }
+            MerchantOrderEntity order = findByOrderNo(orderNo);
+            double deliveryDistance = order.getDeliveryDistance()/1000;
+            Date payTime = order.getPayTime();
+            long timeSub = compareDate.getTime() - payTime.getTime();
+            double spendMinute = CalCulateUtil.div(timeSub, 60000, 2);
+            //获得送达花费时间
+            spendMinute = Math.ceil(spendMinute);
+            //计算规则内允许送达最长时间分钟
+            double maxAllowMinute;
+            if (deliveryDistance <= initDistance) {
+                maxAllowMinute = initMinute;
+            } else {
+                double subDistance = Math.ceil(deliveryDistance - initDistance);
+                double etraMinute = CalCulateUtil.mul(subDistance, raiseMinute);
+                maxAllowMinute = initMinute + etraMinute;
+            }
+            if (maxAllowMinute < spendMinute) {
+                returnOverMinute=CalCulateUtil.sub(spendMinute,maxAllowMinute);
+            }
+        }
+        logger.info("订单超时:{}订单编号,{}超时时间",orderNo,returnOverMinute);
+        return  returnOverMinute;
 
     }
 
