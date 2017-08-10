@@ -293,9 +293,11 @@ public class OrderService extends BaseService {
      *
      * @param orderNo     订单编号(用于获取配送距离)
      */
-    public Date getExpectFinishTimeDueRule(String orderNo,Date expectFinishTime) {
+    public Date getExpectFinishTimeDueRule(String orderNo,Date acceptTime) {
+        logger.info("接单时间",acceptTime);
         List<OverTimeRuleDto> list = overTimeRuleService.findAllOverTimeRule();
         double maxAllowMinute;
+      //  Date expectFinishTime=new Date();
         if (list != null && list.size() > 0) {
             double initDistance = 10000;
             double initMinute = 10000;
@@ -316,9 +318,10 @@ public class OrderService extends BaseService {
                 double etraMinute = CalCulateUtil.mul(subDistance, raiseMinute);
                 maxAllowMinute = initMinute + etraMinute;
             }
-            expectFinishTime.setTime((long) (payTime.getTime() + maxAllowMinute * 60 * 1000));
+            acceptTime.setTime((long) (acceptTime.getTime() + maxAllowMinute * 60 * 1000));
+            logger.info("商家端 预计到达时间:{},最大允许分钟{}",acceptTime,maxAllowMinute);
         }
-        return expectFinishTime;
+        return acceptTime;
 
     }
 }
