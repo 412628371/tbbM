@@ -18,7 +18,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -136,8 +135,8 @@ public class OrderService extends BaseService {
     public int riderGrabOrder(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType) {
         //v1.41预计送达时间改为从规则表中获得
-        Date expectFinishTimeDueRule = getExpectFinishTimeDueRule(orderNo,grabOrderTime);
-        return merchantOrderDao.riderGrabOrder(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTimeDueRule, riderCarNo, riderCarType);
+        //Date expectFinishTimeDueRule = getExpectFinishTimeDueRule(orderNo,grabOrderTime);
+        return merchantOrderDao.riderGrabOrder(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, riderCarNo, riderCarType);
     }
 
     /**
@@ -293,9 +292,11 @@ public class OrderService extends BaseService {
      *
      * @param orderNo     订单编号(用于获取配送距离)
      */
-    public Date getExpectFinishTimeDueRule(String orderNo,Date expectFinishTime) {
+    public Date getExpectFinishTimeDueRule(String orderNo,Date acceptTime) {
+        logger.info("接单时间",acceptTime);
         List<OverTimeRuleDto> list = overTimeRuleService.findAllOverTimeRule();
         double maxAllowMinute;
+      //  Date expectFinishTime=new Date();
         if (list != null && list.size() > 0) {
             double initDistance = 10000;
             double initMinute = 10000;
@@ -306,6 +307,10 @@ public class OrderService extends BaseService {
                 raiseMinute = Double.parseDouble(overTimeRuleDto.getRaiseMinute());
             }
             MerchantOrderEntity order = findByOrderNo(orderNo);
+            if (null==order){
+                logger.info("查询预计时间时查找订单失败 订单编号:{}",orderNo);
+                return null;
+            }
             Date payTime = order.getPayTime();
             double deliveryDistance = order.getDeliveryDistance() / 1000;
             //计算规则内允许送达最长时间分钟
@@ -316,9 +321,10 @@ public class OrderService extends BaseService {
                 double etraMinute = CalCulateUtil.mul(subDistance, raiseMinute);
                 maxAllowMinute = initMinute + etraMinute;
             }
-            expectFinishTime.setTime((long) (payTime.getTime() + maxAllowMinute * 60 * 1000));
+            acceptTime.setTime((long) (acceptTime.getTime() + maxAllowMinute * 60 * 1000));
+            logger.info("商家端 预计到达时间:{},最大允许分钟{}",acceptTime,maxAllowMinute);
         }
-        return expectFinishTime;
+        return acceptTime;
 
     }
 }

@@ -42,4 +42,6 @@ public interface MerchantToTaskCenterServiceInterface {
      */
     double checkOrderOverTime(Date date,String orderNo);
 
+    public Date  getExpectFinishDate(String orderNo,Date acceptTime);
+
 }
