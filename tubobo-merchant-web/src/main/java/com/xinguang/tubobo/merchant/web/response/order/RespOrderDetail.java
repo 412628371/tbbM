@@ -61,6 +61,15 @@ public class RespOrderDetail implements Serializable{
 
     private Boolean ratedFlag;
     private Double deliveryDistance;
+    private  Double expiredMinute; //超时分钟数
+
+    public Double getExpiredMinute() {
+        return expiredMinute;
+    }
+
+    public void setExpiredMinute(Double expiredMinute) {
+        this.expiredMinute = expiredMinute;
+    }
 
     public Double getDeliveryDistance() {
         return deliveryDistance;
