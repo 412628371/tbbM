@@ -69,5 +69,8 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         return merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true);
     }
 
+    public double checkOrderOverTime(Date date,String orderNo){
+        return orderService.getOrderOverTime(date,orderNo);
+    }
 
 }

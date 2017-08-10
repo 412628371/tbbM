@@ -5,6 +5,15 @@ package com.xinguang.tubobo.merchant.web.response.order;
  */
 public class OrderDeliveryFeeResponse {
     private Double deliveryFee;
+    private Double deliveryDistance;
+
+    public Double getDeliveryDistance() {
+        return deliveryDistance;
+    }
+
+    public void setDeliveryDistance(Double deliveryDistance) {
+        this.deliveryDistance = deliveryDistance;
+    }
 
     public Double getDeliveryFee() {
         return deliveryFee;

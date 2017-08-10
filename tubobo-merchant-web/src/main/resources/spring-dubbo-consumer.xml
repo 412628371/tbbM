@@ -25,6 +25,10 @@
 	<dubbo:reference id="adminNotifyService" interface="com.xinguang.tubobo.api.AdminNotifyService" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="overFeeServiceImpl" interface="com.xinguang.tubobo.api.OverFeeService" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="tbbNotifyService" interface="com.xinguang.tubobo.notify.api.TbbNotifyService" version="0.0.1" group="${dubbo.group}" check="false"/>
+	<dubbo:reference id="overTimeRuleService" interface="com.xinguang.taskcenter.api.OverTimeRuleInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
+
+
+
 
 	<bean id="tbbRateServiceHystrixProxy" class="com.xinguang.tubobo.rate.api.hystrix.TbbRateServiceHystrixProxy" init-method="init">
 		<property name="target" ref="tbbRateService"/>

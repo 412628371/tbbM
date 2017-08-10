@@ -28,6 +28,15 @@ public class ReqOrderCreateV2 implements Serializable {
     private AppointTask appointTask; //预约时间
     private OverFeeInfo overFeeInfo;
     private ThirdInfo thirdInfo;
+    private Double deliveryDistance;  //配送距离, 客户端传回我们之前计算配送费时所提供的距离值 v1.41
+
+    public Double getDeliveryDistance() {
+        return deliveryDistance;
+    }
+
+    public void setDeliveryDistance(Double deliveryDistance) {
+        this.deliveryDistance = deliveryDistance;
+    }
 
     public OverFeeInfo getOverFeeInfo() {
         return overFeeInfo;

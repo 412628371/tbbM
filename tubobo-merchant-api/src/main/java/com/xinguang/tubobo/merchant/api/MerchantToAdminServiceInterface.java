@@ -32,7 +32,7 @@ public interface MerchantToAdminServiceInterface {
      * @param updateBy
      * @return
      */
-    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType);
+    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType,String reason);
 
 
     /**

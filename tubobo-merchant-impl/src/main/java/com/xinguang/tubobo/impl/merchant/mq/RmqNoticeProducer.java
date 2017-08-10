@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.merchant.api.dto.NoticeDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
+import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import com.xinguang.tubobo.merchant.api.enums.EnumNoticeType;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderNoticeType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -88,7 +89,7 @@ public class RmqNoticeProducer {
      * @param auditSuccess
      * @return
      */
-    public void sendAuditNotice(String userId,boolean auditSuccess){
+    public void sendAuditNotice(String userId,boolean auditSuccess,String reason){
         NoticeDTO noticeDTO = new NoticeDTO();
         noticeDTO.setNoticeType(EnumNoticeType.AUDIT.getValue());
         noticeDTO.setUserId(userId);
@@ -96,10 +97,14 @@ public class RmqNoticeProducer {
             noticeDTO.setTitle(config.getNoticeAuditSuccessTitle());
             noticeDTO.setContent(config.getNoticeAuditSuccessTemplate());
             noticeDTO.setIdentifyStatus(EnumAuthentication.SUCCESS.getValue());
+            noticeDTO.setIdentifyType(EnumIdentifyType.MERCHANT.getValue());
         }else {
             noticeDTO.setTitle(config.getNoticeAuditFailTitle());
             noticeDTO.setContent(config.getNoticeAuditFailTemplate());
             noticeDTO.setIdentifyStatus(EnumAuthentication.FAIL.getValue());
+            noticeDTO.setIdentifyType(EnumIdentifyType.MERCHANT.getValue());
+            //失败是加入审核失败原因
+            noticeDTO.setReason(reason);
         }
         sendNotice(noticeDTO);
     }

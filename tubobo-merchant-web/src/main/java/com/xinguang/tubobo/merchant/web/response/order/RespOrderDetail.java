@@ -60,6 +60,15 @@ public class RespOrderDetail implements Serializable{
     private Long payRemainMillSeconds;
 
     private Boolean ratedFlag;
+    private Double deliveryDistance;
+
+    public Double getDeliveryDistance() {
+        return deliveryDistance;
+    }
+
+    public void setDeliveryDistance(Double deliveryDistance) {
+        this.deliveryDistance = deliveryDistance;
+    }
 
     public String getOrderType() {
         return orderType;
