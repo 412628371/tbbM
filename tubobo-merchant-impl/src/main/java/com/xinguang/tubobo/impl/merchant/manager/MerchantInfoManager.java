@@ -97,6 +97,7 @@ public class MerchantInfoManager {
                 createFundAccount(userId,entity,payPassword,identifyType);
             }
         }else {
+            entity.setHasSetPayPwd(existEntity.getHasSetPayPwd());
             String status = existEntity.getMerchantStatus();
             if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
                 status = existEntity.getConsignorStatus();
