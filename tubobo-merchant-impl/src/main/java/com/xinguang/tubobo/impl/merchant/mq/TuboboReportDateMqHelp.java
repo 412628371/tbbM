@@ -28,7 +28,7 @@ public class TuboboReportDateMqHelp {
         dto.setMsgType(EnumMqMsgType.MERCHANT_REGISTER.getValue());
         dto.setMerchantId(entity.getUserId());
         dto.setAccountId(entity.getAccountId() != null ? entity.getAccountId().toString():"");
-        dto.setGoodOwnerStatus(entity.getConsignorStatus());
+//        dto.setGoodOwnerStatus(entity.getConsignorStatus());
         dto.setMerchantStatus(entity.getMerchantStatus());
         dto.setName(entity.getRealName());
         dto.setPhone(entity.getPhone());
@@ -49,14 +49,14 @@ public class TuboboReportDateMqHelp {
         sendToMq(dto);
     }
 
-    public void goodOwnerStatusVerify(String userId, String driverStatus) {
-        MerchantUpdateDTO dto = new MerchantUpdateDTO();
-        dto.setMsgType(EnumMqMsgType.MERCHANT_UPDATE.getValue());
-        dto.setMerchantId(userId);
-        dto.setGoodOwnerStatus(driverStatus);
-        dto.setGoodOwnerAuthTime(new Date());
-        sendToMq(dto);
-    }
+//    public void goodOwnerStatusVerify(String userId, String driverStatus) {
+//        MerchantUpdateDTO dto = new MerchantUpdateDTO();
+//        dto.setMsgType(EnumMqMsgType.MERCHANT_UPDATE.getValue());
+//        dto.setMerchantId(userId);
+//        dto.setGoodOwnerStatus(driverStatus);
+//        dto.setGoodOwnerAuthTime(new Date());
+//        sendToMq(dto);
+//    }
 
     public void updateBD(String userId, String bd) {
         MerchantUpdateDTO dto = new MerchantUpdateDTO();

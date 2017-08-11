@@ -154,8 +154,6 @@ public class MerchantOrderManager extends BaseService {
 			}else {
 				result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 				if (result){
-					//推送消息到报表mq
-					tuboboReportDateMqHelp.orderCancel(orderNo,"merchant",cancelReason);
 					//TODO
 					rmqNoticeProducer.sendOrderCancelNotice(entity.getUserId(),entity.getOrderNo(),
 							entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
@@ -222,11 +220,13 @@ public class MerchantOrderManager extends BaseService {
 		if (isAdminCancel){
 			cancelResult = orderService.adminCancel(userId,orderNo,cancelReason);
 		}else {
-			cancelResult = orderService.merchantCancel(userId, orderNo,
-					cancelReason);
+			cancelResult = orderService.merchantCancel(userId, orderNo,cancelReason);
 		}
 		if (!cancelResult) {
 			logger.error("取消订单，更改订单状态出错，userId:{} ,orderNo:{},cancelReason:{}" ,userId,orderNo,cancelReason);
+		}else{
+			//推送消息到报表mq
+			tuboboReportDateMqHelp.orderCancel(orderNo,"",cancelReason);
 		}
 		return cancelResult;
 	}

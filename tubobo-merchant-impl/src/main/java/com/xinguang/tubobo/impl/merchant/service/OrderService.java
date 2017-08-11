@@ -287,44 +287,5 @@ public class OrderService extends BaseService {
 
     }
 
-    /**
-     * 根据配送规则获得骑手预计送达时间
-     *
-     * @param orderNo     订单编号(用于获取配送距离)
-     */
-    public Date getExpectFinishTimeDueRule(String orderNo,Date acceptTime) {
-        logger.info("接单时间",acceptTime);
-        List<OverTimeRuleDto> list = overTimeRuleService.findAllOverTimeRule();
-        double maxAllowMinute;
-      //  Date expectFinishTime=new Date();
-        if (list != null && list.size() > 0) {
-            double initDistance = 10000;
-            double initMinute = 10000;
-            double raiseMinute = 10000;
-            for (OverTimeRuleDto overTimeRuleDto : list) {
-                initDistance = Double.parseDouble(overTimeRuleDto.getInitDistance());
-                initMinute = Double.parseDouble(overTimeRuleDto.getInitMinute());
-                raiseMinute = Double.parseDouble(overTimeRuleDto.getRaiseMinute());
-            }
-            MerchantOrderEntity order = findByOrderNo(orderNo);
-            if (null==order){
-                logger.info("查询预计时间时查找订单失败 订单编号:{}",orderNo);
-                return null;
-            }
-            Date payTime = order.getPayTime();
-            double deliveryDistance = order.getDeliveryDistance() / 1000;
-            //计算规则内允许送达最长时间分钟
-            if (deliveryDistance <= initDistance) {
-                maxAllowMinute = initMinute;
-            } else {
-                double subDistance = Math.ceil(deliveryDistance - initDistance);
-                double etraMinute = CalCulateUtil.mul(subDistance, raiseMinute);
-                maxAllowMinute = initMinute + etraMinute;
-            }
-            acceptTime.setTime((long) (acceptTime.getTime() + maxAllowMinute * 60 * 1000));
-            logger.info("商家端 预计到达时间:{},最大允许分钟{}",acceptTime,maxAllowMinute);
-        }
-        return acceptTime;
 
-    }
 }
