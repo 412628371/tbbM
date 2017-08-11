@@ -92,7 +92,7 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if (i > 0){
             //消息放入报表mq
             if("CONSIGNOR".equals(identifyType)){
-                tuboboReportDateMqHelp.goodOwnerStatusVerify(userId,merchantStatus);
+//                tuboboReportDateMqHelp.goodOwnerStatusVerify(userId,merchantStatus);
             }else{
                 tuboboReportDateMqHelp.merchantStatusVerify(userId,merchantStatus);
                 if (EnumAuthentication.FAIL.getValue().equals(merchantStatus)){
