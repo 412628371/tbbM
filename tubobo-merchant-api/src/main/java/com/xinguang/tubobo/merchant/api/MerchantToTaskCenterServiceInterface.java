@@ -40,8 +40,6 @@ public interface MerchantToTaskCenterServiceInterface {
      * @param orderNo
      * @param date 传入时间
      */
-    double checkOrderOverTime(Date date,String orderNo);
 
-    public Date  getExpectFinishDate(String orderNo,Date acceptTime);
 
 }
