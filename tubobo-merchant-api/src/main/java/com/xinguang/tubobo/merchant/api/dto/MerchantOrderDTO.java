@@ -80,15 +80,6 @@ public class MerchantOrderDTO implements Serializable{
 
 	private Integer peekOverFee;  //高峰溢价费用
 	private Integer weatherOverFee; //天气溢价费用
-	private String addressCity;		//所属城市
-
-	public String getAddressCity() {
-		return addressCity;
-	}
-
-	public void setAddressCity(String addressCity) {
-		this.addressCity = addressCity;
-	}
 
 	public Integer getPeekOverFee() {
 		return peekOverFee;
