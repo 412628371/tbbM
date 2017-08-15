@@ -311,7 +311,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getSenderAddressCity())){
             sb.append("and sender_address_city = :sender_address_city ");
-            parameter.put("sender_address_city", entity.getSenderName());
+            parameter.put("sender_address_city", entity.getSenderAddressCity());
         }
         sb.append(" order by create_date desc ");
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
