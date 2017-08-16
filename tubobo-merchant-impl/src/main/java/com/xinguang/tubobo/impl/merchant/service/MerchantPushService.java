@@ -44,7 +44,7 @@ public class MerchantPushService {
                 .setDeviceType(Constance.DeviceType.ALL)
                 .setTitle(title)
                 .setiOSBadge(0)
-               // .setAndroidOpenType(Constance.AndroidOpenType.NONE)
+                .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setExtParameters(extraJson)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
