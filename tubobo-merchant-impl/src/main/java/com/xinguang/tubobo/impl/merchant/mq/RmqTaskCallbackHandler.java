@@ -32,21 +32,17 @@ public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
             if (null == taskCallbackDTO) {
                 return;
             }
-            //TODO 处理各种操作
             String json = taskCallbackDTO.getJsonContent();
-//        JSONObject jo = JSONObject.parseObject(json);
             switch (taskCallbackDTO.getType()){
                 case GRAB:
                     MerchantGrabCallbackDTO dtoGrab =
                             JSON.parseObject(json,MerchantGrabCallbackDTO.class);
-//                merchantToTaskCenterServiceInterface.riderGrabOrder(dtoGrab);
                     merchantOrderManager.riderGrabOrder(dtoGrab,true);
                     break;
                 case PICK:
                     MerchantTaskOperatorCallbackDTO dtoPick =
                             JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
                     merchantOrderManager.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime(),true);
-//                merchantToTaskCenterServiceInterface.riderGrabItem(dtoPick.getTaskNo(),dtoPick.getOperateTime());
                     break;
                 case FINISH:
                     MerchantTaskOperatorCallbackDTO dtoFinish =
@@ -61,9 +57,8 @@ public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
                 case ADMIN_CANCEL:
                     break;
             }
-
         }catch (Exception e){
-            logger.error("mq处理异常",e);
+            logger.error("mq处理任务回调异常",e);
         }
 
     }

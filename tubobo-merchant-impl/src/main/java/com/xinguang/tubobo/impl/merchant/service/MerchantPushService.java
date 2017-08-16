@@ -51,6 +51,7 @@ public class MerchantPushService {
         try{
             pushService.push(content,pushAppKey,list,options);
             logger.info("状态通知已发送给userId:{}",userId);
+            logger.info("发送的data为:{}",extraJson);
         }catch (Exception e){
             logger.error("push to userId:{},content:{},title:{}.异常：",userId,content,title,e);
         }
@@ -142,6 +143,18 @@ public class MerchantPushService {
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
+    private static String  generateAuditPushParam(String userId, EnumNoticeType enumNoticeType,String id,String reason,String verifyResult){
+        NoticeParamVo paramVo = new NoticeParamVo();
+        paramVo.setId(id);
+        paramVo.setReason(reason);
+        paramVo.setVerifyResult(verifyResult);
+        NoticePushVo noticePushVo = new NoticePushVo();
+        noticePushVo.setNoticeType(enumNoticeType.getValue());
+        noticePushVo.setParams(paramVo);
+        noticePushVo.setUserId(userId);
+        String s = JSON.toJSONString(noticePushVo);
+        return s;
+    }
     private static String  generateOrderPushParam(String userId,
                                                   Long id,String orderType,String orderNo){
         NoticeParamVo paramVo = new NoticeParamVo();
@@ -163,7 +176,7 @@ public class MerchantPushService {
     public void pushAuditNotice(PushNoticeEntity entity){
         if (entity == null)
             return;
-        String data = generateCommonPushParam(entity.getUserId(),EnumNoticeType.AUDIT,String.valueOf(entity.getId()));
+        String data = generateAuditPushParam(entity.getUserId(),EnumNoticeType.AUDIT,String.valueOf(entity.getId()),entity.getReason(),entity.getIdentifyType()+"_"+entity.getIdentifyStatus());
         pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
     }
     /**

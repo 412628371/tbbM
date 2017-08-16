@@ -20,9 +20,9 @@ public class RmqNoticeHandler implements ChannelAwareMessageListener {
 
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
-        String json = new String(message.getBody(),"utf-8");
-        NoticeDTO dto = null;
         try {
+            String json = new String(message.getBody(),"utf-8");
+            NoticeDTO dto = null;
             dto = JSON.parseObject(json,NoticeDTO.class);
             if (null == dto)
                 return;
@@ -37,9 +37,8 @@ public class RmqNoticeHandler implements ChannelAwareMessageListener {
                 noticeService.pushSystem(dto);
             }
         }catch (Exception e){
-            logger.error("mq处理通知数据，数据转换失败。json:{}",json);
+            logger.error("mq处理通知数据，异常：",e);
             return;
         }
-
     }
 }

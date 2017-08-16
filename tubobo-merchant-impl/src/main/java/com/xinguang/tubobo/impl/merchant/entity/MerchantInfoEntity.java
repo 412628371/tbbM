@@ -55,6 +55,24 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	private String bdCode;					//bd邀请码
 	private String addressAdCode;			//高德区域编码
+	private String reason;              //申请失败原因
+	private Date bdUpdateDate;			 //bd邀请码绑定时间
+
+	public Date getBdUpdateDate() {
+		return bdUpdateDate;
+	}
+
+	public void setBdUpdateDate(Date bdUpdateDate) {
+		this.bdUpdateDate = bdUpdateDate;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
 
 	public String getAddressAdCode() {
 		return addressAdCode;

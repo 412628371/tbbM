@@ -80,7 +80,7 @@ public class MerchantInfoService extends BaseService {
      */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
-	public int merchantStatusVerify(String userId,String status,String updateBy,String identifyType) {
+	public int merchantStatusVerify(String userId,String status,String updateBy,String identifyType,String reason) {
 		MerchantInfoEntity entity = merchantInfoDao.findByUserId(userId);
 		if (entity == null)
 			return 0;
@@ -112,7 +112,7 @@ public class MerchantInfoService extends BaseService {
 			merchantStatus = status;
 		}
 
-		result = merchantInfoDao.updateVerifyStatus(merchantStatus,consignorStatus,updateBy,userId);
+		result = merchantInfoDao.updateVerifyStatus(merchantStatus,consignorStatus,updateBy,userId,reason);
 		merchantInfoDao.getSession().clear();
 		return result;
 	}

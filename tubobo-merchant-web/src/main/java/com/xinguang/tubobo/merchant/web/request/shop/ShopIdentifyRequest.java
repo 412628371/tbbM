@@ -56,14 +56,13 @@ public class ShopIdentifyRequest implements Serializable {
     @Size(min = 1, max = 50,message = "长度为1-50")
     private String merchantName;
 
-    @NotBlank(message = "请输入支付密码")
     private String payPassword;
     @Size(min = 1, max = 255,message = "店铺照片地址过长")
 //    @NotBlank(message = "请上传店铺照片")
     private String shopImageUrl;
 
     @Size(min = 1, max = 255,message = "店铺照片地址过长")
-//    @NotBlank(message = "请上传店铺照片")
+//    @NotBhlank(message = "请上传店铺照片")
     private String shopImageUrl2;
 
     @Size(min = 1, max = 255,message = "营业执照照片地址过长")

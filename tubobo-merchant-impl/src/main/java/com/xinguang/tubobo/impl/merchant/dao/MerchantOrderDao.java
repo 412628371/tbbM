@@ -164,6 +164,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         return count;
     }
     /**
+     * 骑手超时完成送货
+     * @param orderNo
+     * @param finishOrderTime
+     * @return
+     */
+    public int riderFinishExpiredOrder(String orderNo, Date finishOrderTime,double expiredMinute){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, finish_order_time = :p2,expired_minute =:p3 where order_no = :p4 and order_status = :p5 and del_flag = '0' ";
+        int count =  updateBySql(sqlString,
+                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,expiredMinute,orderNo,
+                        EnumMerchantOrderStatus.DELIVERYING.getValue()));
+        getSession().clear();
+        return count;
+    }
+    /**
      *商家取消订单
      * @param merchantId
      * @param orderNo
@@ -213,7 +227,12 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append("and user_id = :user_id  ");
             parameter.put("user_id", entity.getUserId());
          }
-        if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+         //1.41版本增添待处理字段(已取消、待付款合并为待处理)
+         if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+                 MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
+             sb.append("and (order_status = 'CANCEL' or order_status='INIT') ");
+            // parameter.put("order_status", entity.getOrderStatus());
+         }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", entity.getOrderStatus());
@@ -289,6 +308,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         if (null != entity.getUpdateDate()){
             sb.append("and order_time <= :update_date ");
             parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
+        }
+        if (StringUtils.isNotBlank(entity.getSenderAddressCity())){
+            sb.append("and sender_address_city = :sender_address_city ");
+            parameter.put("sender_address_city", entity.getSenderAddressCity());
         }
         sb.append(" order by create_date desc ");
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);

@@ -9,6 +9,24 @@ public class NoticeParamVo implements Serializable{
     private String orderNo;
     private String id;
     private String orderType;
+    private String reason;
+    private String verifyResult;
+
+    public String getVerifyResult() {
+        return verifyResult;
+    }
+
+    public void setVerifyResult(String verifyResult) {
+        this.verifyResult = verifyResult;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
     public String getOrderNo() {
         return orderNo;

@@ -60,6 +60,24 @@ public class RespOrderDetail implements Serializable{
     private Long payRemainMillSeconds;
 
     private Boolean ratedFlag;
+    private Double deliveryDistance;
+    private  Double expiredMinute; //超时分钟数
+
+    public Double getExpiredMinute() {
+        return expiredMinute;
+    }
+
+    public void setExpiredMinute(Double expiredMinute) {
+        this.expiredMinute = expiredMinute;
+    }
+
+    public Double getDeliveryDistance() {
+        return deliveryDistance;
+    }
+
+    public void setDeliveryDistance(Double deliveryDistance) {
+        this.deliveryDistance = deliveryDistance;
+    }
 
     public String getOrderType() {
         return orderType;

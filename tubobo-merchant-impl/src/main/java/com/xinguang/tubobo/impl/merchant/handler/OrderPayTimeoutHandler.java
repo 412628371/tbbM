@@ -34,8 +34,7 @@ public class OrderPayTimeoutHandler  implements ChannelAwareMessageListener{
             redisOp.evictCache("merchantOrder_"+entity.getUserId()+"_*");
             logger.info("订单超时未支付，orderNo: {}",orderNo);
         }catch (Exception e){
-            logger.error("mq处理异常",e);
+            logger.error("mq支付超时处理异常",e);
         }
-
     }
 }

@@ -45,6 +45,7 @@ public class MerchantInfoManager {
 
     @Autowired
     GdDistanceService gdDistanceService;
+    private final String defaultPwd="112233";
 
     /**
      * 认证，包括货主认证和商家认证
@@ -68,7 +69,6 @@ public class MerchantInfoManager {
         entity.setShopImageUrl2(AliOss.subAliossUrl(entity.getShopImageUrl2()));
         entity.setShopLicencesImgUrl(AliOss.subAliossUrl(entity.getShopLicencesImgUrl()));
         entity.setIdentifyType(identifyType);
-        entity.setHasSetPayPwd(true);
         entity.setEnablePwdFree(false);
         //高德区域编码
         if(EnumIdentifyType.MERCHANT.getValue().equals(identifyType) &&
@@ -87,8 +87,17 @@ public class MerchantInfoManager {
         MerchantInfoEntity existEntity  = merchantInfoService.findByUserId(userId);
 
         if (null == existEntity){
-            createFundAccount(userId,entity,payPassword,identifyType);
+            //v1.41版本后支付密码改为单独设置而非在创建店铺时设置,同时兼容以前版本.此时因为api需求传入一个随意字段作为暂时密码
+            if (null==payPassword||StringUtils.isEmpty(payPassword)){
+                entity.setHasSetPayPwd(false);
+                createFundAccount(userId,entity,AESUtils.encrypt(defaultPwd),identifyType);
+            }else{
+                //1.41之前版本在此设置paypassword
+                entity.setHasSetPayPwd(true);
+                createFundAccount(userId,entity,payPassword,identifyType);
+            }
         }else {
+            entity.setHasSetPayPwd(existEntity.getHasSetPayPwd());
             String status = existEntity.getMerchantStatus();
             if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
                 status = existEntity.getConsignorStatus();
@@ -106,19 +115,23 @@ public class MerchantInfoManager {
                 entity.setAvatarUrl(existEntity.getAvatarUrl());            //头像
                 entity.setApplyDate(new Date());
                 boolean result = false;
-                TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),AESUtils.decrypt(payPassword));
-                if(response != null && response.isSucceeded() && response.getData()){
-                    logger.info("重新认证，重置支付密码成功：userID：{}",userId);
-                    //重新认证，
-                    if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
-                        entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
-                        entity.setMerchantStatus(EnumAuthentication.INIT.getValue());
-                    }else {
-                        entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
-                        entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
+                //v1.41支付密码单独设置  此处向下兼容
+                if (null!=payPassword){
+                    //v1.41之前进入该方法
+                    TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),AESUtils.decrypt(payPassword));
+                    if(response != null && response.isSucceeded() && response.getData()){
+                        logger.info("重新认证，重置支付密码成功：userID：{}",userId);
                     }
-                    result = merchantInfoService.merchantUpdate(entity);
                 }
+                //重新认证，
+                if (EnumIdentifyType.CONSIGNOR.getValue().equals(identifyType)){
+                    entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
+                    entity.setMerchantStatus(EnumAuthentication.INIT.getValue());
+                }else {
+                    entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
+                    entity.setConsignorStatus(EnumAuthentication.APPLY.getValue());
+                }
+                result = merchantInfoService.merchantUpdate(entity);
                 if (!result){
                     throw new MerchantClientException(EnumRespCode.FAIL);
                 }
@@ -153,9 +166,7 @@ public class MerchantInfoManager {
 
         if ( EnumAuthentication.FROZEN.getValue().equals(existEntity.getMerchantStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_FROZEN);
-        }else if (EnumAuthentication.SUCCESS.getValue().equals(existEntity.getMerchantStatus())){
-            throw new MerchantClientException(EnumRespCode.MERCHANT_APPLY_REPEAT);
-        }else if ( EnumAuthentication.APPLY.getValue().equals(existEntity.getMerchantStatus())){
+        } else if ( EnumAuthentication.APPLY.getValue().equals(existEntity.getMerchantStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_VERIFYING);
         }else{
             existEntity.setAddressDetail(infoEntity.getAddressDetail());
