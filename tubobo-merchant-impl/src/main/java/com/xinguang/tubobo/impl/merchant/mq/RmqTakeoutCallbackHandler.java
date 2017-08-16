@@ -20,9 +20,9 @@ public class RmqTakeoutCallbackHandler implements ChannelAwareMessageListener {
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
 
-        String body = new String(message.getBody(),"utf-8");
-        logger.info("收到外卖平台信息：{}",body);
         try {
+            String body = new String(message.getBody(),"utf-8");
+            logger.info("收到外卖平台信息：{}",body);
             MtNotifyDTO mtNotifyDTO = JSON.toJavaObject(JSONObject.parseObject(body),MtNotifyDTO.class);
             switch (mtNotifyDTO.getPlatformCode()){
                 case MT:

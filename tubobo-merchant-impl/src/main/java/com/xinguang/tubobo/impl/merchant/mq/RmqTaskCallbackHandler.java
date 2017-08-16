@@ -26,8 +26,8 @@ public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
 
-        String plain = new String(message.getBody(),"utf-8");
         try {
+            String plain = new String(message.getBody(),"utf-8");
             TaskCallbackDTO taskCallbackDTO = JSON.parseObject(plain, TaskCallbackDTO.class);
             if (null == taskCallbackDTO) {
                 return;

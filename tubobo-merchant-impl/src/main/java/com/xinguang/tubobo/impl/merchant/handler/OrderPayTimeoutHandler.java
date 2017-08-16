@@ -27,13 +27,13 @@ public class OrderPayTimeoutHandler  implements ChannelAwareMessageListener{
 
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
-        String orderNo = new String(message.getBody());
-        MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
-        if (null == entity){
-            logger.error("订单超时未支付，未找到订单。orderNo:{}",orderNo);
-            return;
-        }
         try {
+            String orderNo = new String(message.getBody());
+            MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+            if (null == entity){
+                logger.error("订单超时未支付，未找到订单。orderNo:{}",orderNo);
+                return;
+            }
             orderService.payExpired(entity.getUserId(),orderNo);
             redisOp.evictCache("merchantOrder_"+entity.getUserId()+"_*");
             logger.info("订单超时未支付，orderNo: {}",orderNo);
