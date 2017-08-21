@@ -165,6 +165,14 @@ public class MerchantInfoService extends BaseService {
 			sb.append("and create_date <= :update_date ");
 			parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
 		}
+		if (StringUtils.isNotBlank(entity.getUserId())){
+			sb.append("and user_id like :user_id ");
+			parameter.put("user_id", "%"+entity.getUserId()+"%");
+		}
+		if (StringUtils.isNotBlank(entity.getAddressCity())){
+			sb.append("and address_city = :address_city ");
+			parameter.put("address_city", entity.getAddressCity());
+		}
 		sb.append(" order by create_date desc ");
 		return merchantInfoDao.findPage(sb.toString(), parameter, MerchantInfoEntity.class,pageNo,pageSize);
 	}
