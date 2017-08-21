@@ -9,6 +9,16 @@ public class RespSettingsQuery {
     private Boolean pushMsgOrderExpired;
     private Boolean pushMsgOrderFinished;
     private Boolean pushMsgOrderGrabed;
+    private Boolean pushMsgVoiceOpen;
+
+    public Boolean getPushMsgVoiceOpen() {
+        return pushMsgVoiceOpen;
+    }
+
+    public void setPushMsgVoiceOpen(Boolean pushMsgVoiceOpen) {
+        this.pushMsgVoiceOpen = pushMsgVoiceOpen;
+    }
+
 
     public Boolean getPushMsgOrderExpired() {
         return pushMsgOrderExpired;

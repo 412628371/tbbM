@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.api.enums.EnumCarType;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -10,6 +11,8 @@ import com.xinguang.tubobo.merchant.web.manager.OrderDetailRespManager;
 import com.xinguang.tubobo.merchant.web.request.order.ReqOrderDetail;
 import com.xinguang.tubobo.merchant.web.response.order.RespOrderDetail;
 import com.xinguang.tubobo.merchant.web.response.order.v2.RespOrderDetailV2;
+import com.xinguang.tubobo.rider.api.RiderToAdminServiceInterface;
+import com.xinguang.tubobo.rider.api.dto.RiderInfoDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +30,8 @@ import java.util.Date;
 public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDetail,RespOrderDetailV2> {
     @Autowired
     OrderDetailRespManager manager;
+    @Autowired
+    RiderToAdminServiceInterface riderToAdminServiceInterface;
 
     @Override
     protected RespOrderDetailV2 doService(String userId, ReqOrderDetail req) throws MerchantClientException {
@@ -44,9 +49,15 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         BeanUtils.copyProperties(respOrderDetail,orderInfo);
         CommentsInfo commentsInfo = new CommentsInfo(respOrderDetail.getRatedFlag());
         BeanUtils.copyProperties(respOrderDetail,commentsInfo);
-
+        String headImage=null;
+        if (StringUtils.isNotEmpty(entity.getRiderId())){
+            RiderInfoDTO byUserId = riderToAdminServiceInterface.findByUserId(entity.getRiderId());
+            if (null!=byUserId){
+                headImage = byUserId.getHeadImage();
+            }
+        }
         DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
-                EnumCarType.getNameByType(entity.getRiderCarType()));
+                EnumCarType.getNameByType(entity.getRiderCarType()),headImage);
         CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
         //获取用车时间对象
         SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
