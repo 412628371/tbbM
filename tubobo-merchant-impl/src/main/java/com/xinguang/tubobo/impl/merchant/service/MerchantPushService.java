@@ -45,9 +45,30 @@ public class MerchantPushService {
                 .setDeviceType(Constance.DeviceType.ALL)
                 .setTitle(title)
                 .setiOSBadge(0)
-                .setAndroidOpenType(Constance.AndroidOpenType.NONE)
+              // .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setExtParameters(extraJson)
                 .setAndroidPopupBody(androidActivity)
+                .build();
+        Long pushAppKey = config.getAliPushAppKey();
+        try{
+            pushService.push(content,pushAppKey,list,options);
+            logger.info("状态通知已发送给userId:{}",userId);
+            logger.info("发送的data为:{}",extraJson);
+        }catch (Exception e){
+            logger.error("push to userId:{},content:{},title:{}.异常：",userId,content,title,e);
+        }
+    }
+    public void pushToUserWithSound(String userId,String content,String title,String extraJson){
+        List<String> list = new ArrayList<>(1);
+        list.add(userId);
+        Options options = Options.builder()
+                .setTargetType(Constance.TargetType.ACCOUNT)
+                .setDeviceType(Constance.DeviceType.ALL)
+                .setTitle(title)
+                .setiOSBadge(0)
+                .setAndroidOpenType(Constance.AndroidOpenType.NONE)
+                .setExtParameters(extraJson)
+                .setiOSMusic(config.getIosMusic())
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
@@ -211,10 +232,18 @@ public class MerchantPushService {
             if (settingsEntity.getPushMsgOrderExpired() &&
                     EnumOrderNoticeType.GRAB_EXPIRED.getValue().equals(entity.getOrderOperateType())){
                 isOpen = true;
+                if (settingsEntity.getPushMsgVoiceOpen()){
+                    //订单超时 语音提醒 TODO param 修改适配andriod
+                    String data = generateOrderPushParam(entity.getUserId(),
+                            entity.getId(),entity.getOrderType(),entity.getOrderNo());
+                    pushToUserWithSound(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
+                    return;
+                }
             }
             if (settingsEntity.getPushMsgOrderFinished() &&
                     EnumOrderNoticeType.FINISH.getValue().equals(entity.getOrderOperateType())){
                 isOpen = true;
+
             }
             if (settingsEntity.getPushMsgOrderGrabed() &&
                     EnumOrderNoticeType.ACCEPTED.getValue().equals(entity.getOrderOperateType())){
