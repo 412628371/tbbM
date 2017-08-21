@@ -35,7 +35,7 @@ public class MerchantPushService {
     Config config;
     @Autowired
     MerchantSettingsService settingsService;
-    private final String androidActivity="com.toobob.www.PopupPushActivity";
+    private final String androidActivity="com.toobob.test.PopupPushActivity";
 
     public void pushToUser(String userId,String content,String title,String extraJson){
         List<String> list = new ArrayList<>(1);
@@ -45,7 +45,7 @@ public class MerchantPushService {
                 .setDeviceType(Constance.DeviceType.ALL)
                 .setTitle(title)
                 .setiOSBadge(0)
-              // .setAndroidOpenType(Constance.AndroidOpenType.NONE)
+                .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setExtParameters(extraJson)
                 .setAndroidPopupBody(androidActivity)
                 .build();
@@ -69,6 +69,7 @@ public class MerchantPushService {
                 .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setExtParameters(extraJson)
                 .setiOSMusic(config.getIosMusic())
+                .setAndroidPopupBody(androidActivity)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
