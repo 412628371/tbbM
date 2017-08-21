@@ -45,10 +45,10 @@ public class MerchantPushService {
                 .setDeviceType(Constance.DeviceType.ALL)
                 .setTitle(title)
                 .setiOSBadge(0)
-//                .setAndroidOpenType(Constance.AndroidOpenType.NONE)
+//               .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setAndroidOpenType(Constance.AndroidOpenType.APPLICATION)
                 .setExtParameters(extraJson)
-                .setAndroidPopupBody(androidActivity)
+                .setAndroidPopupActivity(androidActivity)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
@@ -71,7 +71,7 @@ public class MerchantPushService {
                 .setAndroidOpenType(Constance.AndroidOpenType.APPLICATION)
                 .setExtParameters(extraJson)
                 .setiOSMusic(config.getIosMusic())
-                .setAndroidPopupBody(androidActivity)
+                .setAndroidPopupActivity(androidActivity)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
@@ -91,10 +91,9 @@ public class MerchantPushService {
                 .setDeviceType(Constance.DeviceType.ALL)
                 .setTitle(title)
                 .setiOSBadge(0)
-                //.setAndroidOpenType(Constance.AndroidOpenType.NONE)
-                .setAndroidOpenType(Constance.AndroidOpenType.APPLICATION)
+                .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setExtParameters(extraJson)
-                .setAndroidPopupBody(androidActivity)
+                .setAndroidPopupActivity(androidActivity)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
