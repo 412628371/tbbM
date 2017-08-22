@@ -13,8 +13,16 @@ public class ReqShopUpdatePhone implements Serializable {
 
     @NotBlank(message = "电话号码不能为空")
     private String newPhone;//新手机号码
-    @NotBlank(message = "操作凭据不能为空")
-    private String credential; //验证凭据
+    @NotBlank(message = "验证码是不能为空")
+    private String verifyCode; //验证凭据
+
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
+    }
 
     public String getNewPhone() {
         return newPhone;
@@ -24,19 +32,12 @@ public class ReqShopUpdatePhone implements Serializable {
         this.newPhone = newPhone;
     }
 
-    public String getCredential() {
-        return credential;
-    }
-
-    public void setCredential(String credential) {
-        this.credential = credential;
-    }
 
     @Override
     public String toString() {
         return "ReqShopUpdatePhone{" +
                 "newPhone='" + newPhone + '\'' +
-                ", credential='" + credential + '\'' +
+                ", verifyCode='" + verifyCode + '\'' +
                 '}';
     }
 }
