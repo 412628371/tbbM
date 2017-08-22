@@ -15,6 +15,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.xinguang.xinchen</groupId>
+            <artifactId>SMSApi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>tubobo-express-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

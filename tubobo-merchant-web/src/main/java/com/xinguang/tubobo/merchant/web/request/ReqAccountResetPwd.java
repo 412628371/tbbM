@@ -10,6 +10,16 @@ public class ReqAccountResetPwd {
     private String credential;
     @NotBlank(message = "请输入支付密码")
     private String payPassword;
+    @NotBlank(message = "验证码不能为空")
+    private String  verifyCode;
+
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
+    }
 
     public String getCredential() {
         return credential;
