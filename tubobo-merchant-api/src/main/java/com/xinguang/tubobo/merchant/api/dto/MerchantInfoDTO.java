@@ -46,6 +46,16 @@ public class MerchantInfoDTO implements Serializable{
 	private Date createDate;
 	private Date updateDate;
 
+	private String cityCode;
+
+	public String getCityCode() {
+		return cityCode;
+	}
+
+	public void setCityCode(String cityCode) {
+		this.cityCode = cityCode;
+	}
+
 	public Date getBdUpdateDate() {
 		return bdUpdateDate;
 	}
