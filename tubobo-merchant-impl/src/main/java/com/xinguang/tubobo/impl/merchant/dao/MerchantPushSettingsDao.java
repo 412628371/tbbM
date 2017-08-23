@@ -28,6 +28,7 @@ public class MerchantPushSettingsDao extends BaseDao<MerchantSettingsEntity> {
             existEntity.setPushMsgOrderExpired(true);
             existEntity.setPushMsgOrderFinished(true);
             existEntity.setPushMsgOrderGrabed(true);
+            existEntity.setPushMsgVoiceOpen(true);
             save(entity);
         }
         Map<String,Object> map = new HashMap<>();
@@ -45,6 +46,10 @@ public class MerchantPushSettingsDao extends BaseDao<MerchantSettingsEntity> {
         if (null !=entity.getPushMsgOrderGrabed()){
             hqlSb.append(", t.pushMsgOrderGrabed = :grabed ");
             map.put("grabed",entity.getPushMsgOrderGrabed());
+        }
+        if (null !=entity.getPushMsgVoiceOpen()){
+            hqlSb.append(", t.pushMsgVoiceOpen = :open ");
+            map.put("open",entity.getPushMsgVoiceOpen());
         }
 //        if (entity.getDeviceToken() != null){
 //            hqlSb.append(", t.deviceToken = :deviceToken ");

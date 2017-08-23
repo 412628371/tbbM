@@ -22,6 +22,15 @@ public class MerchantSettingsEntity extends BaseMerchantEntity {
     private Boolean pushMsgOrderGrabed;
     private Boolean pushMsgOrderFinished;
     private String deviceToken;
+    private Boolean pushMsgVoiceOpen;
+
+    public Boolean getPushMsgVoiceOpen() {
+        return pushMsgVoiceOpen;
+    }
+
+    public void setPushMsgVoiceOpen(Boolean pushMsgVoiceOpen) {
+        this.pushMsgVoiceOpen = pushMsgVoiceOpen;
+    }
 
     public String getUserId() {
         return userId;

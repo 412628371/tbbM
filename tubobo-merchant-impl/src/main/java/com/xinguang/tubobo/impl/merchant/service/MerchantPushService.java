@@ -35,6 +35,11 @@ public class MerchantPushService {
     Config config;
     @Autowired
     MerchantSettingsService settingsService;
+    private final String androidActivity="com.toobob.test.PopupPushActivity";
+    private  static final String andriodMusicName="OrderExpired";
+    private static final String andriodMusicBar="0";  //安卓端开启声音样式 0开启 1关闭
+
+
 
     public void pushToUser(String userId,String content,String title,String extraJson){
         List<String> list = new ArrayList<>(1);
@@ -46,6 +51,29 @@ public class MerchantPushService {
                 .setiOSBadge(0)
                 .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setExtParameters(extraJson)
+                .setAndroidPopupActivity(androidActivity)
+                .build();
+        Long pushAppKey = config.getAliPushAppKey();
+        try{
+            pushService.push(content,pushAppKey,list,options);
+            logger.info("状态通知已发送给userId:{}",userId);
+            logger.info("发送的data为:{}",extraJson);
+        }catch (Exception e){
+            logger.error("push to userId:{},content:{},title:{}.异常：",userId,content,title,e);
+        }
+    }
+    public void pushToUserWithSound(String userId,String content,String title,String extraJson){
+        List<String> list = new ArrayList<>(1);
+        list.add(userId);
+        Options options = Options.builder()
+                .setTargetType(Constance.TargetType.ACCOUNT)
+                .setDeviceType(Constance.DeviceType.ALL)
+                .setTitle(title)
+                .setiOSBadge(0)
+                .setAndroidOpenType(Constance.AndroidOpenType.NONE)
+                .setExtParameters(extraJson)
+                .setiOSMusic(config.getIosMusic())
+                .setAndroidPopupActivity(androidActivity)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
@@ -67,6 +95,7 @@ public class MerchantPushService {
                 .setiOSBadge(0)
                 .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setExtParameters(extraJson)
+                .setAndroidPopupActivity(androidActivity)
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
@@ -170,6 +199,25 @@ public class MerchantPushService {
         return s;
     }
     /**
+    * 推送订单 (带声音适配安卓)
+    * */
+    private static String  generateOrderPushParamWithSound(String userId,
+                                                  Long id,String orderType,String orderNo){
+        NoticeParamVo paramVo = new NoticeParamVo();
+        paramVo.setId(String.valueOf(id));
+        paramVo.setOrderNo(orderNo);
+        paramVo.setOrderType(orderType);
+        NoticePushVo noticePushVo = new NoticePushVo();
+        noticePushVo.setNoticeType(EnumNoticeType.ORDER.getValue());
+        noticePushVo.setParams(paramVo);
+        noticePushVo.setUserId(userId);
+        noticePushVo.setType(MerchantConstants.getPushParamByOrderType(orderType));
+        noticePushVo.set_NOTIFICATION_BAR_STYLE(andriodMusicBar);
+        noticePushVo.setAndroidMusicName(andriodMusicName);
+        String s = JSON.toJSONString(noticePushVo);
+        return s;
+    }
+    /**
      * 推送审核结果通知
      * @param entity
      */
@@ -208,10 +256,18 @@ public class MerchantPushService {
             if (settingsEntity.getPushMsgOrderExpired() &&
                     EnumOrderNoticeType.GRAB_EXPIRED.getValue().equals(entity.getOrderOperateType())){
                 isOpen = true;
+                if (settingsEntity.getPushMsgVoiceOpen()){
+                    //订单超时 语音提醒 TODO param 修改适配andriod
+                    String data = generateOrderPushParamWithSound(entity.getUserId(),
+                            entity.getId(),entity.getOrderType(),entity.getOrderNo());
+                    pushToUserWithSound(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
+                    return;
+                }
             }
             if (settingsEntity.getPushMsgOrderFinished() &&
                     EnumOrderNoticeType.FINISH.getValue().equals(entity.getOrderOperateType())){
                 isOpen = true;
+
             }
             if (settingsEntity.getPushMsgOrderGrabed() &&
                     EnumOrderNoticeType.ACCEPTED.getValue().equals(entity.getOrderOperateType())){

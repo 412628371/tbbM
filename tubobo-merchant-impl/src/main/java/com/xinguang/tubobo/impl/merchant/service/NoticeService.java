@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.dao.PushNoticeDao;
 import com.xinguang.tubobo.impl.merchant.entity.PushNoticeEntity;
 import com.xinguang.tubobo.merchant.api.dto.NoticeDTO;
@@ -53,7 +54,9 @@ public class NoticeService {
         if (null == ids || ids.size() ==0)
             return;
         for (Long id :ids){
-            pushNoticeDao.processNotice(userId,id);
+            if (id != null && StringUtils.isNotBlank(userId)){
+                pushNoticeDao.processNotice(userId,id);
+            }
         }
     }
     public void deleteMsgs(String userId, List<Long> ids){

@@ -22,8 +22,9 @@ public class NoticeOperateController extends MerchantBaseController<ReqNoticeOpe
         if ("DEL".equals(operate)){
             noticeService.deleteMsgs(userId,req.getIds());
         }else if ("PROCESS".equals(operate)){
+            logger.info("通知标记为已读接口，req:{}",req.toString());
             noticeService.processMsgsRead(userId,req.getIds());
         }
-        return null;
+        return "";
     }
 }

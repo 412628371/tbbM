@@ -67,6 +67,10 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if (dto != null){
             BeanUtils.copyProperties(dto,entity);
         }
+        //市的code前四字母与区的前四个字母一直，将市的code前四个截取用于模糊查询
+        if(StringUtils.isNotBlank(dto.getCityCode())){
+            entity.setAddressAdCode(dto.getCityCode().substring(0,4));
+        }
         Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(pageNo,pageSize,entity);
         List<MerchantInfoDTO> dtoList = new ArrayList<>();
         if (page!= null && page.getList() != null && page.getList().size() > 0){

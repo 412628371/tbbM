@@ -10,6 +10,24 @@ public class NoticePushVo implements Serializable{
     private String noticeType;
     private String userId;
     private NoticeParamVo params;
+    private String _NOTIFICATION_BAR_STYLE="1"; //0开启 1关闭
+    private String androidMusicName;            //指定音乐样式
+
+    public String get_NOTIFICATION_BAR_STYLE() {
+        return _NOTIFICATION_BAR_STYLE;
+    }
+
+    public void set_NOTIFICATION_BAR_STYLE(String _NOTIFICATION_BAR_STYLE) {
+        this._NOTIFICATION_BAR_STYLE = _NOTIFICATION_BAR_STYLE;
+    }
+
+    public String getAndroidMusicName() {
+        return androidMusicName;
+    }
+
+    public void setAndroidMusicName(String androidMusicName) {
+        this.androidMusicName = androidMusicName;
+    }
 
     public String getType() {
         return type;

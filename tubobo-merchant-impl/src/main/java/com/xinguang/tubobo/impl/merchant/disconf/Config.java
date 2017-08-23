@@ -60,6 +60,16 @@ public class Config {
     private Integer autoRateDays;
     private String transportType;
     private int thirdOrderRemainHours;
+    private String iosMusic;
+
+    @DisconfFileItem(name = "iosMusic", associateField = "iosMusic")
+    public String getIosMusic() {
+        return iosMusic;
+    }
+
+    public void setIosMusic(String iosMusic) {
+        this.iosMusic = iosMusic;
+    }
 
     @DisconfFileItem(name = "thirdOrderRemainHours", associateField = "thirdOrderRemainHours")
     public int getThirdOrderRemainHours() {

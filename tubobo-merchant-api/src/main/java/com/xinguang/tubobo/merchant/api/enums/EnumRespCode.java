@@ -57,7 +57,8 @@ public enum EnumRespCode {
 	WEATHER_OVER_FEE_CHANGE("30071","天气溢价费已发生变化,请重新提交订单"),
 	OVER_FEE_CLOSE("30072","所有溢价均已结束"),
 	ALL_OVER_FEE_CHANGE("30073","天气溢价高峰溢价均发生变化"),
-	OVERFEE_VERSION_LOW("30074","您的版本过低，请先去更新版本再发单哦~");
+	OVERFEE_VERSION_LOW("30074","您的版本过低，请先去更新版本再发单哦~"),
+	VERIFY_CODE_FAIL("30075","验证码错误");
 
 
 

@@ -11,14 +11,29 @@ public class DriverInfo implements Serializable{
     private String carType;
     private String name;
     private String telephone;
+    private String headImage;  //1.42加入骑手头像
 
 
 
-    public DriverInfo(String name,String phone,String carNo,String carType){
+    public DriverInfo(String name, String phone, String carNo, String carType){
         this.name = name;
         this.telephone = phone;
         this.carNo = carNo;
         this.carType = carType;
+    }
+    public DriverInfo(String name, String phone, String carNo, String carType,String headImage){
+        this.name = name;
+        this.telephone = phone;
+        this.carNo = carNo;
+        this.carType = carType;
+        this.headImage=headImage;
+    }
+    public String getHeadImage() {
+        return headImage;
+    }
+
+    public void setHeadImage(String headImage) {
+        this.headImage = headImage;
     }
     public String getCarNo() {
         return carNo;

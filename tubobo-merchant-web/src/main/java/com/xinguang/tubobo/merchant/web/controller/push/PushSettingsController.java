@@ -31,6 +31,9 @@ public class PushSettingsController extends MerchantBaseController<ReqPushSettin
         if (null != req.getPushMsgOrderExpired()){
             entity.setPushMsgOrderExpired(req.getPushMsgOrderExpired());
         }
+        if (null != req.getPushMsgVoiceOpen()){
+            entity.setPushMsgVoiceOpen(req.getPushMsgVoiceOpen());
+        }
 //        if (null != req.getDeviceToken()){
 //            entity.setDeviceToken(req.getDeviceToken());
 //        }

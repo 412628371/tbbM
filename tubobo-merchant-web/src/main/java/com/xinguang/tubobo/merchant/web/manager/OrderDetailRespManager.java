@@ -71,7 +71,6 @@ public class OrderDetailRespManager {
 //        grabRemainMilSeconds += 2000;
 
         handleTimeoutDelay(entity,payRemainMilSeconds,grabRemainMilSeconds);
-
         RespOrderDetail respOrderDetail = new RespOrderDetail();
         BeanUtils.copyProperties(entity,respOrderDetail);
         respOrderDetail.setOrderRemarks(ConvertUtil.handleNullString(entity.getOrderRemark()));

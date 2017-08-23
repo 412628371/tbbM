@@ -8,6 +8,15 @@ public class ReqPushSettings {
     private Boolean pushMsgOrderExpired;
     private Boolean pushMsgOrderGrabed;
     private Boolean pushMsgOrderFinished;
+    private Boolean pushMsgVoiceOpen;
+
+    public Boolean getPushMsgVoiceOpen() {
+        return pushMsgVoiceOpen;
+    }
+
+    public void setPushMsgVoiceOpen(Boolean pushMsgVoiceOpen) {
+        this.pushMsgVoiceOpen = pushMsgVoiceOpen;
+    }
 
     public String getDeviceToken() {
         return deviceToken;
