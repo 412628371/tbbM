@@ -3,11 +3,11 @@ package com.xinguang.tubobo.merchant.web.controller.fund;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.TbbConstants;
 import com.xinguang.tubobo.account.api.TbbPage;
-import com.xinguang.tubobo.account.api.request.AccountRecordsQueryCondition;
+import com.xinguang.tubobo.account.api.request.AccountOperationsQueryCondition;
+import com.xinguang.tubobo.account.api.response.AccountOperationInfo;
 import com.xinguang.tubobo.account.api.response.AccountRecordInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountTradeRecordList;
 import com.xinguang.tubobo.merchant.web.response.ResAccountTradeRecord;
@@ -39,13 +39,27 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 			throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
 		}
 
-		AccountRecordsQueryCondition condition = new AccountRecordsQueryCondition(merchant.getAccountId(), TbbConstants.RecordType.fromCode(req.getType()),null,null);
-		TbbAccountResponse<TbbPage<AccountRecordInfo>> response = tbbAccountService.findAccountRecords(req.getPageSize(),req.getPageNo(), condition);
+		/*AccountRecordsQueryCondition condition = new AccountRecordsQueryCondition(merchant.getAccountId(), TbbConstants.RecordType.fromCode(req.getType()),null,null);
+		TbbAccountResponse<TbbPage<AccountRecordInfo>> response = tbbAccountService.findAccountRecords(req.getPageSize(),req.getPageNo(), condition);*/
+		//v1.42后展示流水状态
+		AccountOperationsQueryCondition condition=new AccountOperationsQueryCondition(merchant.getAccountId(), TbbConstants.OperationType.fromCode(req.getType()),null,null,null);
+		TbbAccountResponse<TbbPage<AccountOperationInfo>> response = tbbAccountService.findAccountOperations(req.getPageSize(), req.getPageNo(), condition);
 
-		PageDTO<ResAccountTradeRecord> page;
+		/*PageDTO<ResAccountTradeRecord> page;
 		List<ResAccountTradeRecord> voList = new ArrayList<>();
 		if (response != null && response.isSucceeded() && response.getData() != null && response.getData().getList() != null && response.getData().getList().size() > 0){
 			for(AccountRecordInfo recordInfo :response.getData().getList()){
+//				BeanUtils.copyProperties(recordInfo,vo);
+				voList.add(convertToShow(recordInfo));
+			}
+			page = new PageDTO<>(response.getData().getPageNo(),response.getData().getPageSize(),response.getData().getTotal(),voList);
+		}else {
+			page = new PageDTO<>(req.getPageNo(),req.getPageSize(),0,voList);
+		}*/
+		PageDTO<ResAccountTradeRecord> page;
+		List<ResAccountTradeRecord> voList = new ArrayList<>();
+		if (response != null && response.isSucceeded() && response.getData() != null && response.getData().getList() != null && response.getData().getList().size() > 0){
+			for(AccountOperationInfo recordInfo :response.getData().getList()){
 //				BeanUtils.copyProperties(recordInfo,vo);
 				voList.add(convertToShow(recordInfo));
 			}
@@ -81,6 +95,45 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 		record.setCurrentBalance(ConvertUtil.formatMoneyToString(operInfo.getCurrentBalance()));
 		record.setCurrentDeposit(ConvertUtil.formatMoneyToString(operInfo.getCurrentDeposit()));
 		record.setCurrentFrozen(ConvertUtil.formatMoneyToString(operInfo.getCurrentFrozen()));
+		return record;
+	}
+
+	public ResAccountTradeRecord convertToShow(AccountOperationInfo operInfo){
+		ResAccountTradeRecord record = new ResAccountTradeRecord();
+		String amount = ConvertUtil.formatMoneyToString(operInfo.getAmount());
+		if (TbbConstants.OperationType.FINE == operInfo.getType()){
+			if (operInfo.getAmount() > 0){
+				amount = "-"+amount;
+			}
+		}
+		if (TbbConstants.OperationType.PAY == operInfo.getType()){
+			if (operInfo.getAmount() > 0){
+				// 成功
+				if (TbbConstants.OperationStatus.SUCCEED== operInfo.getStatus()){
+					amount = "-"+amount+"元";
+				}
+				//失败 退回
+				if (TbbConstants.OperationStatus.CLOSE== operInfo.getStatus()){
+					amount = " 解冻金额"+amount+"元";
+				}
+				//交易中
+				if (TbbConstants.OperationStatus.INIT== operInfo.getStatus()){
+					amount = "冻结金额"+amount+"元";
+				}
+
+			}
+		}
+		if (TbbConstants.OperationType.WITHDRAW == operInfo.getType()){
+			if (operInfo.getAmount() > 0){
+				amount = "-"+amount;
+			}
+		}
+		record.setType(operInfo.getType().getLabel());
+		record.setAmount(amount);
+		record.setCreateTime(operInfo.getCreateTime());
+		record.setRecordId(operInfo.getId().toString());
+
+
 		return record;
 	}
 
