@@ -74,6 +74,7 @@ public class MerchantPushService {
                 .setExtParameters(extraJson)
                 .setiOSMusic(config.getIosMusic())
                 .setAndroidPopupActivity(androidActivity)
+                .setAndroidNotificationBarType("2")  //与客户端约定超时声音提示的样式为2 默认为1
                 .build();
         Long pushAppKey = config.getAliPushAppKey();
         try{
@@ -212,7 +213,7 @@ public class MerchantPushService {
         noticePushVo.setParams(paramVo);
         noticePushVo.setUserId(userId);
         noticePushVo.setType(MerchantConstants.getPushParamByOrderType(orderType));
-        noticePushVo.set_NOTIFICATION_BAR_STYLE(andriodMusicBar);
+        //noticePushVo.set_NOTIFICATION_BAR_STYLE(andriodMusicBar);
         noticePushVo.setAndroidMusicName(andriodMusicName);
         String s = JSON.toJSONString(noticePushVo);
         return s;
