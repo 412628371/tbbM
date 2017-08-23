@@ -310,7 +310,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
         }
         if (StringUtils.isNotBlank(entity.getSenderAdcode())){
-            sb.append("and sender_address_city like :sender_address_city ");
+            sb.append("and sender_address_city like :sender_adcode ");
             parameter.put("sender_adcode", entity.getSenderAdcode()+"%");
         }
         sb.append(" order by create_date desc ");
