@@ -42,6 +42,7 @@ public class AddressInfoToOrderBeanHelper {
 
         entity.setSenderLatitude(sender.getLatitude());
         entity.setSenderLongitude(sender.getLongitude());
+        entity.setSenderAdcode(sender.getAddressAdCode());
         return entity;
     }
     public static MerchantOrderEntity putReceiverAddressInfo(MerchantOrderEntity entity,AddressInfo receiver){

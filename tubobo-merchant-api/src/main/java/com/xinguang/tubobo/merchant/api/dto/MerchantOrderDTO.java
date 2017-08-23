@@ -77,6 +77,7 @@ public class MerchantOrderDTO implements Serializable{
 	protected String createBy;
 	protected Date updateDate;
 	protected String updateBy;
+	protected String senderAdcode;
 
 	private Integer peekOverFee;  //高峰溢价费用
 	private Integer weatherOverFee; //天气溢价费用
@@ -561,6 +562,14 @@ public class MerchantOrderDTO implements Serializable{
 
 	public void setRiderCarNo(String riderCarNo) {
 		this.riderCarNo = riderCarNo;
+	}
+
+	public String getSenderAdcode() {
+		return senderAdcode;
+	}
+
+	public void setSenderAdcode(String senderAdcode) {
+		this.senderAdcode = senderAdcode;
 	}
 
 	@Override
