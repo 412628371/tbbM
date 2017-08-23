@@ -1,7 +1,6 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.alibaba.fastjson.JSON;
-import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.alipush.NoticeParamVo;
 import com.xinguang.tubobo.impl.merchant.alipush.NoticePushVo;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -36,7 +35,7 @@ public class MerchantPushService {
     @Autowired
     MerchantSettingsService settingsService;
     private final String androidActivity="com.toobob.test.PopupPushActivity";
-    private  static final String andriodMusicName="OrderExpired";
+    //String andriodMusicName=config.getIosMusic();
     private static final String andriodMusicBar="0";  //安卓端开启声音样式 0开启 1关闭
 
 
@@ -185,7 +184,7 @@ public class MerchantPushService {
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
-    private static String  generateOrderPushParam(String userId,
+    private  String  generateOrderPushParam(String userId,
                                                   Long id,String orderType,String orderNo){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setId(String.valueOf(id));
@@ -202,7 +201,7 @@ public class MerchantPushService {
     /**
     * 推送订单 (带声音适配安卓)
     * */
-    private static String  generateOrderPushParamWithSound(String userId,
+    private  String  generateOrderPushParamWithSound(String userId,
                                                   Long id,String orderType,String orderNo){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setId(String.valueOf(id));
@@ -214,7 +213,7 @@ public class MerchantPushService {
         noticePushVo.setUserId(userId);
         noticePushVo.setType(MerchantConstants.getPushParamByOrderType(orderType));
         //noticePushVo.set_NOTIFICATION_BAR_STYLE(andriodMusicBar);
-        noticePushVo.setAndroidMusicName(andriodMusicName);
+        noticePushVo.setAndroidMusicName(config.getIosMusic());
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
@@ -281,9 +280,9 @@ public class MerchantPushService {
             pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
         }
     }
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
 //        String s = generateCommonPushParam("30126",EnumNoticeType.AUDIT,12L);
         String s = generateOrderPushParam("30126",13L,"smallOrder","20140000001");
         System.out.println(s);
-    }
+    }*/
 }
