@@ -157,6 +157,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         shopUrls[0] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));
         shopUrls[1] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl2()));
         merchantOrderDTO.setSenderShopUrls(shopUrls);
+        merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;
     }
