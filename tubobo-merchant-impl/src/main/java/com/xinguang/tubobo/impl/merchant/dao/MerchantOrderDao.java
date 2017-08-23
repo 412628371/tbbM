@@ -286,16 +286,16 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("order_type", entity.getOrderType());
         }
         if (StringUtils.isNotBlank(entity.getOrderNo())){
-            sb.append("and order_no like :order_no ");
-            parameter.put("order_no", "%"+entity.getOrderNo()+"%");
+            sb.append("and order_no = :order_no ");
+            parameter.put("order_no", entity.getOrderNo());
         }
         if (StringUtils.isNotBlank(entity.getRiderPhone())){
             sb.append("and rider_phone like :rider_phone ");
-            parameter.put("rider_phone", "%"+entity.getRiderPhone()+"%");
+            parameter.put("rider_phone", entity.getRiderPhone()+"%");
         }
         if (StringUtils.isNotBlank(entity.getReceiverPhone())){
             sb.append("and receiver_phone like :receiver_phone ");
-            parameter.put("receiver_phone", "%"+entity.getReceiverPhone()+"%");
+            parameter.put("receiver_phone", entity.getReceiverPhone()+"%");
         }
         if (StringUtils.isNotBlank(entity.getSenderName())){
             sb.append("and sender_name like :sender_name ");
@@ -309,9 +309,9 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append("and order_time <= :update_date ");
             parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
         }
-        if (StringUtils.isNotBlank(entity.getSenderAddressCity())){
-            sb.append("and sender_address_city = :sender_address_city ");
-            parameter.put("sender_address_city", entity.getSenderAddressCity());
+        if (StringUtils.isNotBlank(entity.getSenderAdcode())){
+            sb.append("and sender_address_city like :sender_address_city ");
+            parameter.put("sender_adcode", entity.getSenderAdcode()+"%");
         }
         sb.append(" order by create_date desc ");
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);

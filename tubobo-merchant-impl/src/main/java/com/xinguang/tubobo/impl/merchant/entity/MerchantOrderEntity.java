@@ -59,6 +59,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String senderAddressRoomNo;//寄货人地址名称
 	private Double senderLongitude;
 	private Double senderLatitude;
+	private String senderAdcode;
 
 	private String receiverId;//收货人id
 	private String receiverName;//收货人姓名
@@ -74,7 +75,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private Double receiverLatitude;
 	private Double deliveryDistance;
 
-	private Double dispatchRadius;//分派半径，单位：米
+//	private Double dispatchRadius;//分派半径，单位：米
 
 	private String riderId;
 	private String riderName;
@@ -469,14 +470,6 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 		this.receiverLatitude = receiverLatitude;
 	}
 
-	public Double getDispatchRadius() {
-		return dispatchRadius;
-	}
-
-	public void setDispatchRadius(Double dispatchRadius) {
-		this.dispatchRadius = dispatchRadius;
-	}
-
 	public String getRiderId() {
 		return riderId;
 	}
@@ -595,5 +588,13 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	public void setOriginOrderId(String originOrderId) {
 		this.originOrderId = originOrderId;
+	}
+
+	public String getSenderAdcode() {
+		return senderAdcode;
+	}
+
+	public void setSenderAdcode(String senderAdcode) {
+		this.senderAdcode = senderAdcode;
 	}
 }

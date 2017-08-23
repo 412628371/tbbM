@@ -143,15 +143,15 @@ public class MerchantInfoService extends BaseService {
 		}
 		if (StringUtils.isNotBlank(entity.getPhone())){
 			sb.append("and phone like :phone ");
-			parameter.put("phone", "%"+entity.getPhone()+"%");
+			parameter.put("phone", entity.getPhone()+"%");
 		}
 		if (StringUtils.isNotBlank(entity.getMerchantName())){
 			sb.append("and merchant_name like :merchant_name ");
-			parameter.put("merchant_name", "%"+entity.getMerchantName()+"%");
+			parameter.put("merchant_name", entity.getMerchantName()+"%");
 		}
 		if (StringUtils.isNotBlank(entity.getBdCode())){
-			sb.append("and bd_code like :bd_code ");
-			parameter.put("bd_code", "%"+entity.getBdCode()+"%");
+			sb.append("and bd_code = :bd_code ");
+			parameter.put("bd_code", entity.getBdCode());
 		}
 		if (StringUtils.isNotBlank(entity.getIdCardNo())){
 			sb.append("and id_card_no = :id_card_no ");
@@ -166,12 +166,12 @@ public class MerchantInfoService extends BaseService {
 			parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
 		}
 		if (StringUtils.isNotBlank(entity.getUserId())){
-			sb.append("and user_id like :user_id ");
-			parameter.put("user_id", "%"+entity.getUserId()+"%");
+			sb.append("and user_id = :user_id ");
+			parameter.put("user_id", entity.getUserId());
 		}
 		if (StringUtils.isNotBlank(entity.getAddressAdCode())){
 			sb.append("and address_ad_code like :address_ad_code ");
-			parameter.put("address_ad_code", entity.getAddressAdCode());
+			parameter.put("address_ad_code", entity.getAddressAdCode()+"%");
 		}
 		sb.append(" order by create_date desc ");
 		return merchantInfoDao.findPage(sb.toString(), parameter, MerchantInfoEntity.class,pageNo,pageSize);
