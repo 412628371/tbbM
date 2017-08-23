@@ -143,6 +143,12 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             entity.setPlatformCode(thirdInfo.getPlatformCode());
             entity.setOriginOrderId(thirdInfo.getOriginOrderId());
             entity.setOriginOrderViewId(thirdInfo.getOriginOrderViewId());
+            if(StringUtils.isNotBlank(thirdInfo.getOriginOrderId())&&
+                    StringUtils.isNotBlank(thirdInfo.getPlatformCode())){
+                //TODO 根据第三方平台编号查找订单是否重复
+
+            }
+
         }
         //把收货人地址信息设置到实体
         AddressInfoToOrderBeanHelper.putReceiverAddressInfo(entity,receiverAddressInfo);
