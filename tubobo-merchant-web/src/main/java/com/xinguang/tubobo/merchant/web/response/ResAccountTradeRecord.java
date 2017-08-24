@@ -11,6 +11,15 @@ public class ResAccountTradeRecord {
     private String currentFrozen;
     private String currentDeposit;
     private Date createTime;
+    private String  orderNo;
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
 
     public String getRecordId() {
         return recordId;
