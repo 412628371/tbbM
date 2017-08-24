@@ -288,9 +288,17 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		return date;
 	}
 	/**
-	 * @param args
-	 * @throws ParseException
+	 * 获取俩个date之间的分钟数 向上取整,小于0返回0
 	 */
+	public  static double getMinuteBetweenTwoDate(Date afterDate,Date beforeDate){
+		if (afterDate.before(beforeDate)){
+			return 0.0;
+		}
+		double minute=(afterDate.getTime()-beforeDate.getTime())/(1000*60.0);
+		System.out.println(minute);
+		double ceil = Math.ceil(minute);
+		return ceil;
+	}
 	public static void main(String[] args) throws ParseException {
 //		System.out.println(formatDate(parseDate("2010/3/6")));
 //		System.out.println(getDate("yyyy年MM月dd日 E"));
@@ -308,6 +316,16 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 //		Date date = calendar.getTime();
 //		Date date1 = date;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String  adate="2017-08-24 16:31:02";
+		String  bdate="2017-08-24 16:31:03";
+		Date parse = simpleDateFormat.parse(adate);
+		Date parse1 = simpleDateFormat.parse(bdate);
+		double minuteBetweenTwoDate = getMinuteBetweenTwoDate(parse1, parse);
+		System.out.println(minuteBetweenTwoDate);
+
+
+
+
 //		date = simpleDateFormat.parse(formatDate(date, "yyyy-MM-dd") +" 23:59:59");
 //		date1 = simpleDateFormat.parse(formatDate(date1, "yyyy-MM-dd") +" 00:00:00");
 ////		System.out.println(simpleDateFormat.format(date));

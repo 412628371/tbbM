@@ -76,18 +76,18 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
             if (operInfo.getAmount() > 0){
                 // 成功
                 if (TbbConstants.OperationStatus.SUCCEED== operInfo.getStatus()){
-                    amount = "-"+amount+"元";
-                    record.setType("订单支付");
+                    amount = "-"+amount;
+                    record.setType("订单已完成");
                 }
                 //失败 退回
                 if (TbbConstants.OperationStatus.CLOSE== operInfo.getStatus()){
-                    amount = " 解冻金额"+amount+"元";
-                    record.setType("订单取消");
+                    amount = " 解冻"+amount;
+                    record.setType("订单已取消");
                 }
                 //交易中
                 if (TbbConstants.OperationStatus.INIT== operInfo.getStatus()){
-                    amount = "冻结金额"+amount+"元";
-                    record.setType("订单支付");
+                    amount = "冻结"+amount;
+                    record.setType("订单进行中");
                 }
 
             }
