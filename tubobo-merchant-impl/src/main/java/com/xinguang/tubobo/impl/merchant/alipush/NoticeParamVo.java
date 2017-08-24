@@ -11,6 +11,15 @@ public class NoticeParamVo implements Serializable{
     private String orderType;
     private String reason;
     private String verifyResult;
+    private String orderStatus;
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 
     public String getVerifyResult() {
         return verifyResult;
