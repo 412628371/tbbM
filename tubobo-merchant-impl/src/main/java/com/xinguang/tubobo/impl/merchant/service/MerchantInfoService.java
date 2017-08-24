@@ -49,6 +49,7 @@ public class MerchantInfoService extends BaseService {
 		entity.setUserId(userId);
 		entity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
 		entity.setCreateDate(new Date());
+		entity.setUpdateDate(new Date());
 		entity.setUserId(userId);
 		entity.setApplyDate(new Date());
 //		entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
