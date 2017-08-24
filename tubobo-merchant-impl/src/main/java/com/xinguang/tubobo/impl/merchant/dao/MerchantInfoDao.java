@@ -54,8 +54,8 @@ public class MerchantInfoDao extends BaseDao<MerchantInfoEntity> {
     }
 
     public int updateDBCode(String userId, String bdCode){
-        String sqlString = "update MerchantInfoEntity set bdCode=:p1 ,bdUpdateDate=:p2 where userId = :p3 and delFlag = '0' ";
-        int count = createQuery(sqlString, new Parameter(bdCode, new Date(),userId)).executeUpdate();
+        String sqlString = "update MerchantInfoEntity set bdCode=:p1 ,bdUpdateDate=:p2,updateDate = :p3 where userId = :p4 and delFlag = '0' ";
+        int count = createQuery(sqlString, new Parameter(bdCode, new Date(), new Date(),userId)).executeUpdate();
         return count;
     }
 }
