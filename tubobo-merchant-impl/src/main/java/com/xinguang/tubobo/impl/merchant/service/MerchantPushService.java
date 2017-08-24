@@ -185,11 +185,12 @@ public class MerchantPushService {
         return s;
     }
     private  String  generateOrderPushParam(String userId,
-                                                  Long id,String orderType,String orderNo){
+                                                  Long id,String orderType,String orderNo,String orderStatus){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setId(String.valueOf(id));
         paramVo.setOrderNo(orderNo);
         paramVo.setOrderType(orderType);
+        paramVo.setOrderStatus(orderStatus);
         NoticePushVo noticePushVo = new NoticePushVo();
         noticePushVo.setNoticeType(EnumNoticeType.ORDER.getValue());
         noticePushVo.setParams(paramVo);
@@ -202,11 +203,12 @@ public class MerchantPushService {
     * 推送订单 (带声音适配安卓)
     * */
     private  String  generateOrderPushParamWithSound(String userId,
-                                                  Long id,String orderType,String orderNo){
+                                                  Long id,String orderType,String orderNo,String orderStatus){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setId(String.valueOf(id));
         paramVo.setOrderNo(orderNo);
         paramVo.setOrderType(orderType);
+        paramVo.setOrderStatus(orderStatus);
         NoticePushVo noticePushVo = new NoticePushVo();
         noticePushVo.setNoticeType(EnumNoticeType.ORDER.getValue());
         noticePushVo.setParams(paramVo);
@@ -259,7 +261,7 @@ public class MerchantPushService {
                 if (settingsEntity.getPushMsgVoiceOpen()){
                     //订单超时 语音提醒 TODO param 修改适配andriod
                     String data = generateOrderPushParamWithSound(entity.getUserId(),
-                            entity.getId(),entity.getOrderType(),entity.getOrderNo());
+                            entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType());
                     pushToUserWithSound(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
                     return;
                 }
@@ -276,7 +278,7 @@ public class MerchantPushService {
         }
         if (isOpen){
             String data = generateOrderPushParam(entity.getUserId(),
-                    entity.getId(),entity.getOrderType(),entity.getOrderNo());
+                    entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType());
             pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
         }
     }
