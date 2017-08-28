@@ -51,8 +51,10 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
         List<ResAccountTradeRecord> voList = new ArrayList<>();
         if (response != null && response.isSucceeded() && response.getData() != null && response.getData().getList() != null && response.getData().getList().size() > 0){
             for(AccountOperationInfo recordInfo :response.getData().getList()){
-
-                voList.add(convertToShow(recordInfo));
+                ResAccountTradeRecord resAccountTradeRecord = convertToShow(recordInfo);
+                if (resAccountTradeRecord!=null){
+                    voList.add(resAccountTradeRecord);
+                }
             }
             page = new PageDTO<>(response.getData().getPageNo(),response.getData().getPageSize(),response.getData().getTotal(),voList);
         }else {
@@ -65,6 +67,10 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
 
     public ResAccountTradeRecord convertToShow(AccountOperationInfo operInfo){
         ResAccountTradeRecord record = new ResAccountTradeRecord();
+        if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.INIT.equals(operInfo.getStatus())){
+           //商家取消充值,不展示
+            return null;
+        }
         String amount = ConvertUtil.formatMoneyToString(operInfo.getAmount());
         record.setType(operInfo.getType().getLabel());
         if (TbbConstants.OperationType.FINE == operInfo.getType()){
