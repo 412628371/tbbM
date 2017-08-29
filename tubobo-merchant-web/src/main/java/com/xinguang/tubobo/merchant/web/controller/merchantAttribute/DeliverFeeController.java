@@ -1,7 +1,9 @@
 package com.xinguang.tubobo.merchant.web.controller.merchantAttribute;
 
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantDeliverFeeConfigServiceImpl;
+import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.impl.merchant.service.RateService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -33,10 +35,15 @@ public class DeliverFeeController extends MerchantBaseController<String,RespDeli
     MerchantDeliverFeeConfigServiceImpl merchantDeliverFeeConfigService;
     @Autowired
     OrderService orderService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
     @Override
     protected RespDeliverFeeRuleQuery doService(String userId, String req) throws MerchantClientException {
-        List<MerchantDeliverFeeConfigDTO> list = merchantDeliverFeeConfigService.findAll();
+        MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
+        if (null == entity)
+            throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+        List<MerchantDeliverFeeConfigDTO> list = merchantDeliverFeeConfigService.findFeeByAreaCode(entity.getAddressAdCode());
         RespDeliverFeeRuleQuery respDeliverFeeRuleQuery = new RespDeliverFeeRuleQuery();
         List<RespDeliverFeeDetailRuleQuery> listDto = new ArrayList<RespDeliverFeeDetailRuleQuery>();
         if (null!=list&&list.size()>0){

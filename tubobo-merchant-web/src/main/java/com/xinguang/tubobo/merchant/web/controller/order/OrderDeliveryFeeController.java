@@ -39,7 +39,7 @@ public class OrderDeliveryFeeController extends MerchantBaseController<OrderDeli
         if (EnumOrderType.BIGORDER.getValue().equals(req.getOrderType())){
             //获取实际距离
             distance = routePlanning.getDistanceWithWalkFirst(req.getReceiverLongitude(),req.getReceiverLatitude(),
-                    req.getReceiverLongitude(),req.getReceiverLatitude());
+                    req.getSenderLongitude(),req.getSenderLatitude());
             fee = deliveryFeeService.sumChepeiFee(req.getCarType(), distance);
         }else {
             //获取商家信息
