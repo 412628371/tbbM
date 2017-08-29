@@ -82,7 +82,7 @@ public class CodeGenerator {
             code = BusinessTypeEnum.MERCHANT_BIG_ORDER.getCode();
         }
         String date = DateUtils.getDate("yyMMdd");
-        Long seq = getCurrentSequenceValue(ORDER_CODE_NAME , date, 10);
+        Long seq = getCurrentSequenceValue(ORDER_CODE_NAME , date, 100);
 
         return code+date + StringUtils.leftPad(String.valueOf(seq), 7, '0');
     }

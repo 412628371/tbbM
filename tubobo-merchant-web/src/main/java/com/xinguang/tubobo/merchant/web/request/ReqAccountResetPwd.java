@@ -11,6 +11,7 @@ public class ReqAccountResetPwd {
     @NotBlank(message = "请输入支付密码")
     private String payPassword;
 
+
     public String getCredential() {
         return credential;
     }

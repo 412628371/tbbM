@@ -143,6 +143,12 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             entity.setPlatformCode(thirdInfo.getPlatformCode());
             entity.setOriginOrderId(thirdInfo.getOriginOrderId());
             entity.setOriginOrderViewId(thirdInfo.getOriginOrderViewId());
+            if(StringUtils.isNotBlank(thirdInfo.getOriginOrderId())&&
+                    StringUtils.isNotBlank(thirdInfo.getPlatformCode())){
+                //TODO 根据第三方平台编号查找订单是否重复
+
+            }
+
         }
         //把收货人地址信息设置到实体
         AddressInfoToOrderBeanHelper.putReceiverAddressInfo(entity,receiverAddressInfo);
@@ -153,7 +159,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         entity.setOrderTime(new Date());
         entity.setPayStatus(EnumPayStatus.UNPAY.getValue());
-        entity.setDispatchRadius(config.getDispatchRadiusKiloMiles());
+//        entity.setDispatchRadius(config.getDispatchRadiusKiloMiles());
         entity.setOrderRemark(ConvertUtil.handleNullString(req.getOrderRemarks()));
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
         entity.setWeatherOverFee(weatherOverFee);

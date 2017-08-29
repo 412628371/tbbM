@@ -10,6 +10,16 @@ public class NoticePushVo implements Serializable{
     private String noticeType;
     private String userId;
     private NoticeParamVo params;
+    private String androidMusicName;            //指定音乐样式
+
+
+    public String getAndroidMusicName() {
+        return androidMusicName;
+    }
+
+    public void setAndroidMusicName(String androidMusicName) {
+        this.androidMusicName = androidMusicName;
+    }
 
     public String getType() {
         return type;

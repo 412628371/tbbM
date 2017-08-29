@@ -38,9 +38,9 @@ public class AccountFirstCreatePwdController extends MerchantBaseController<ReqA
 		String password = AESUtils.decrypt(req.getPassword());
 		boolean flag=entity.getHasSetPayPwd();
 		if (flag){
-			logger.info("设置支付密码失败,该账户已经完成第一次密码设置：userID：{}",
+			logger.info("该账户已经完成第一次密码设置,1.42 permit：userID：{}",
 					userId);
-			throw new MerchantClientException(EnumRespCode.PASSWORD_FIRSTCREATE_FAIL);
+			//throw new MerchantClientException(EnumRespCode.PASSWORD_FIRSTCREATE_FAIL);
 		}
 		TbbAccountResponse<Boolean> response = tbbAccountService.resetPayPassword(entity.getAccountId(),password);
 		if(response != null && response.isSucceeded() && response.getData()){

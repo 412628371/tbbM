@@ -7,7 +7,6 @@ import com.xinguang.tubobo.account.api.request.AccountRecordsQueryCondition;
 import com.xinguang.tubobo.account.api.response.AccountRecordInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountTradeRecordList;
 import com.xinguang.tubobo.merchant.web.response.ResAccountTradeRecord;
@@ -46,7 +45,7 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 		List<ResAccountTradeRecord> voList = new ArrayList<>();
 		if (response != null && response.isSucceeded() && response.getData() != null && response.getData().getList() != null && response.getData().getList().size() > 0){
 			for(AccountRecordInfo recordInfo :response.getData().getList()){
-//				BeanUtils.copyProperties(recordInfo,vo);
+//          BeanUtils.copyProperties(recordInfo,vo);
 				voList.add(convertToShow(recordInfo));
 			}
 			page = new PageDTO<>(response.getData().getPageNo(),response.getData().getPageSize(),response.getData().getTotal(),voList);

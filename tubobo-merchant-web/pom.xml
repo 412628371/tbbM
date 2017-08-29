@@ -15,6 +15,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.xinguang.xinchen</groupId>
+            <artifactId>SMSApi</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

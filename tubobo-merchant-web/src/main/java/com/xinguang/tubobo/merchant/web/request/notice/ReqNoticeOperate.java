@@ -28,4 +28,12 @@ public class ReqNoticeOperate implements Serializable {
     public void setOperate(String operate) {
         this.operate = operate;
     }
+
+    @Override
+    public String toString() {
+        return "ReqNoticeOperate{" +
+                "ids=" + ids +
+                ", operate='" + operate + '\'' +
+                '}';
+    }
 }

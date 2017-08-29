@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
+import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.taskcenter.api.OverTimeRuleInterface;
 import com.xinguang.taskcenter.api.dto.OverTimeRuleDto;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
@@ -12,6 +13,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -250,38 +252,11 @@ public class OrderService extends BaseService {
      * @param compareDate 传入时间, DeliverDistance 传入
      * @param orderNo     订单编号(用于获取配送距离)
      */
-    public double getOrderOverTime(Date compareDate, String orderNo) {
-        List<OverTimeRuleDto> list = overTimeRuleService.findAllOverTimeRule();
+    public double getOrderOverTime(Date compareDate, String orderNo)  {
         double returnOverMinute = 0.0;
-        if (list != null && list.size() > 0) {
-            double initDistance = 10000;
-            double initMinute = 10000;
-            double raiseMinute = 10000;
-            for (OverTimeRuleDto overTimeRuleDto : list) {
-                initDistance = Double.parseDouble(overTimeRuleDto.getInitDistance());
-                initMinute = Double.parseDouble(overTimeRuleDto.getInitMinute());
-                raiseMinute = Double.parseDouble(overTimeRuleDto.getRaiseMinute());
-            }
-            MerchantOrderEntity order = findByOrderNo(orderNo);
-            double deliveryDistance = order.getDeliveryDistance() / 1000;
-            Date payTime = order.getGrabOrderTime();
-            long timeSub = compareDate.getTime() - payTime.getTime();
-            double spendMinute = CalCulateUtil.div(timeSub, 60000, 2);
-            //获得送达花费时间
-            spendMinute = Math.ceil(spendMinute);
-            //计算规则内允许送达最长时间分钟
-            double maxAllowMinute;
-            if (deliveryDistance <= initDistance) {
-                maxAllowMinute = initMinute;
-            } else {
-                double subDistance = Math.ceil(deliveryDistance - initDistance);
-                double etraMinute = CalCulateUtil.mul(subDistance, raiseMinute);
-                maxAllowMinute = initMinute + etraMinute;
-            }
-            if (maxAllowMinute < spendMinute) {
-                returnOverMinute = CalCulateUtil.sub(spendMinute, maxAllowMinute);
-            }
-        }
+        MerchantOrderEntity order = findByOrderNo(orderNo);
+        Date expectFinishTime = order.getExpectFinishTime();
+        returnOverMinute = DateUtils.getMinuteBetweenTwoDate(compareDate, expectFinishTime);
         logger.info("订单超时:{}订单编号,{}超时时间", orderNo, returnOverMinute);
         return returnOverMinute;
 
