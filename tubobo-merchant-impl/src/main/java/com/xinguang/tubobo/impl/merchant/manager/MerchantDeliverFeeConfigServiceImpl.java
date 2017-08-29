@@ -32,10 +32,20 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
     @Override
     public List<MerchantDeliverFeeConfigDTO> findAll() {
         List<MerchantDeliverFeeConfigEntity> all = merchantDeliverFeeConfigDao.findAllFee();
+        return copyFeeEntityToDto(all);
+    }
+    /**
+     * 根据区code查询具体区的费用
+     */
+    @Override
+    public List<MerchantDeliverFeeConfigDTO> findFeeByAreaCode(String areaCode) {
+        List<MerchantDeliverFeeConfigEntity> list = merchantDeliverFeeConfigDao.findFeeByAreaCode(areaCode);
+        return copyFeeEntityToDto(list);
+    }
+    private List<MerchantDeliverFeeConfigDTO> copyFeeEntityToDto(List<MerchantDeliverFeeConfigEntity> list){
         ArrayList<MerchantDeliverFeeConfigDTO> returnList = new ArrayList<>();
-
-        if (null!=all&&all.size()>0){
-            for (MerchantDeliverFeeConfigEntity entity : all) {
+        if (null!=list&&list.size()>0){
+            for (MerchantDeliverFeeConfigEntity entity : list) {
                 MerchantDeliverFeeConfigDTO dto = new MerchantDeliverFeeConfigDTO();
                 BeanUtils.copyProperties(entity,dto);
                 returnList.add(dto);

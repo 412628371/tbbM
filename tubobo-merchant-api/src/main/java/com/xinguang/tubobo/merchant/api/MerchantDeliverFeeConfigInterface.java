@@ -17,6 +17,12 @@ public interface MerchantDeliverFeeConfigInterface {
     public List<MerchantDeliverFeeConfigDTO> findAll( );
 
     /**
+     * 根据区code查询具体区的费用
+     * @return
+     */
+    List<MerchantDeliverFeeConfigDTO> findFeeByAreaCode(String areaCode);
+
+    /**
      * 保存商家起送费全部信息
      * @param list 保存的列表
      * @return

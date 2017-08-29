@@ -1,6 +1,10 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.request.order.OrderDeliveryFeeRequest;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.impl.merchant.service.DeliveryFeeService;
@@ -19,34 +23,42 @@ import java.util.Map;
 @Controller
 @RequestMapping("/order/calculateDeliveryFee")
 public class OrderDeliveryFeeController extends MerchantBaseController<OrderDeliveryFeeRequest,OrderDeliveryFeeResponse>{
+    @Autowired
+    private DeliveryFeeService deliveryFeeService;
 
     @Autowired
-    DeliveryFeeService deliveryFeeService;
+    private MerchantInfoService merchantInfoService;
+
+    @Autowired
+    private RoutePlanning routePlanning;
     @Override
     protected OrderDeliveryFeeResponse doService(String userId, OrderDeliveryFeeRequest req) throws MerchantClientException {
         logger.info("计算配送费请求, userId:{}, OrderDeliveryFeeRequest:{}",userId,req.toString());
-
+        Double distance;
         Double fee;
-        HashMap<Double, Double> map;
         if (EnumOrderType.BIGORDER.getValue().equals(req.getOrderType())){
-            map= deliveryFeeService.sumChepeiFee(req.getCarType(),req.getSenderLongitude(),
-                    req.getSenderLatitude(),req.getReceiverLongitude(),req.getReceiverLatitude());
+            //获取实际距离
+            distance = routePlanning.getDistanceWithWalkFirst(req.getReceiverLongitude(),req.getReceiverLatitude(),
+                    req.getReceiverLongitude(),req.getReceiverLatitude());
+            fee = deliveryFeeService.sumChepeiFee(req.getCarType(), distance);
         }else {
-            map = deliveryFeeService.sumDeliveryFeeByLocation(userId, req.getReceiverLatitude(),
-                    req.getReceiverLongitude(), null);
+            //获取商家信息
+            MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
+            if (null == entity)
+                throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+            if (req.getReceiverLatitude()==null || req.getReceiverLongitude() == null){
+                throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
+            }
+            //获取实际距离
+            distance = routePlanning.getDistanceWithWalkFirst(req.getReceiverLongitude(),req.getReceiverLatitude(),
+                    entity.getLongitude(),entity.getLatitude());
+            fee = deliveryFeeService.sumDeliveryFeeByLocation(distance, entity.getAddressAdCode(),null);
         }
 
         OrderDeliveryFeeResponse response = new OrderDeliveryFeeResponse();
-        if (map==null||map.size()!=1){
-            logger.info("获取配送费配送距离失败");
-        }else{
-            for (Map.Entry<Double, Double> entry : map.entrySet()) {
-                response.setDeliveryDistance(entry.getKey());
-                response.setDeliveryFee(entry.getValue());
-                logger.info("计算配送费相应, userId:{}, deliveryFee:{},deliverDistance:{}",userId,entry.getValue(),entry.getKey());
-            }
-        }
-
+        response.setDeliveryDistance(distance);
+        response.setDeliveryFee(fee);
+        logger.info("计算配送费相应, userId:{}, deliveryFee:{},deliverDistance:{}",userId,fee,distance);
         return response;
     }
 }

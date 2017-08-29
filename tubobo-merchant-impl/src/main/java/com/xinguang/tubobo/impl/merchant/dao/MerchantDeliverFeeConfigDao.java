@@ -25,6 +25,17 @@ public class MerchantDeliverFeeConfigDao extends BaseDao<MerchantDeliverFeeConfi
         return list;
     }
 
+    /**
+     * 根据区查具体区的定价
+     * @param areaCode
+     * @return
+     */
+    public List<MerchantDeliverFeeConfigEntity> findFeeByAreaCode(String areaCode){
+        String sqlString = "select * from tubobo_merchant_deliver_fee_config where del_flag = '0' and area_code = :p1 order by begin_distance ";
+        List<MerchantDeliverFeeConfigEntity> list = findBySql(sqlString, new Parameter(areaCode), MerchantDeliverFeeConfigEntity.class);
+        return list;
+    }
+
 
     public boolean saveList(List<MerchantDeliverFeeConfigEntity> list){
         save(list);
