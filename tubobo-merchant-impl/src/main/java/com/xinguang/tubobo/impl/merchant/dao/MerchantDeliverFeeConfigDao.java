@@ -47,4 +47,12 @@ public class MerchantDeliverFeeConfigDao extends BaseDao<MerchantDeliverFeeConfi
         //int update = update(sqlString);
         return  i;
     }
+
+    public int deleteFeeByAreaCode(String areaCode){
+        String sqlString = "update tubobo_merchant_deliver_fee_config set del_flag = '1' where area_code = :p1";
+        //String sqlString = "delete from tubobo_merchant_deliver_fee_config where area_code = :p1";
+        int i = updateBySql(sqlString, new Parameter(areaCode));
+        getSession().clear();
+        return i;
+    }
 }

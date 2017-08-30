@@ -36,6 +36,9 @@ public interface MerchantDeliverFeeConfigInterface {
      */
     public void clearAndSaveList(List<MerchantDeliverFeeConfigDTO> list);
 
-
-
+    /**
+     * 根据areaCode先清除然后保存指定区域商家起送费全部信息
+     * @param list
+     */
+    void clearAndSaveListByAreaCode(List<MerchantDeliverFeeConfigDTO> list);
 }

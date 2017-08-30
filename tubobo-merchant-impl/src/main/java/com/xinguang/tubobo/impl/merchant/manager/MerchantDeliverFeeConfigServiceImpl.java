@@ -74,4 +74,19 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
         }
         merchantDeliverFeeConfigDao.saveList(saveList);
     }
+
+    @Override
+    public void clearAndSaveListByAreaCode(List<MerchantDeliverFeeConfigDTO> list) {
+        ArrayList<MerchantDeliverFeeConfigEntity> saveList = new ArrayList<>();
+        if(null!=list&&list.size()>0){
+            MerchantDeliverFeeConfigDTO deliverFeeConfigDTO = list.get(0);
+            merchantDeliverFeeConfigDao.deleteFeeByAreaCode(deliverFeeConfigDTO.getAreaCode());
+            for (MerchantDeliverFeeConfigDTO dto : list) {
+                MerchantDeliverFeeConfigEntity merchantDeliverFeeConfigEntity = new MerchantDeliverFeeConfigEntity();
+                BeanUtils.copyProperties(dto,merchantDeliverFeeConfigEntity);
+                saveList.add(merchantDeliverFeeConfigEntity);
+            }
+        }
+        merchantDeliverFeeConfigDao.saveList(saveList);
+    }
 }
