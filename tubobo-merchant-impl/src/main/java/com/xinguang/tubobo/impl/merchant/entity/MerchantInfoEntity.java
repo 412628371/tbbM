@@ -58,6 +58,16 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private String reason;              //申请失败原因
 	private Date bdUpdateDate;			 //bd邀请码绑定时间
 
+	private String hygieneLicense;		//卫生许可证
+
+	public String getHygieneLicense() {
+		return hygieneLicense;
+	}
+
+	public void setHygieneLicense(String hygieneLicense) {
+		this.hygieneLicense = hygieneLicense;
+	}
+
 	public Date getBdUpdateDate() {
 		return bdUpdateDate;
 	}

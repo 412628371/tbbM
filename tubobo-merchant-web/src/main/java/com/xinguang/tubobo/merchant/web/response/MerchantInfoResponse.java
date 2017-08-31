@@ -33,6 +33,7 @@ public class MerchantInfoResponse implements Serializable{
     private String shopImageUrl;
     private String shopImageUrl2;
     private String shopLicencesImgUrl;  //营业执照
+    private String hygieneLicense;//卫生许可证
 
     private String identifyType;
     private Boolean enablePwdFree;
@@ -43,6 +44,14 @@ public class MerchantInfoResponse implements Serializable{
     private String bdCode;					//bd邀请码
     private String addressAdCode;			//高德区域编码
     private String reason;                  //店铺审核失败原因
+
+    public String getHygieneLicense() {
+        return hygieneLicense;
+    }
+
+    public void setHygieneLicense(String hygieneLicense) {
+        this.hygieneLicense = hygieneLicense;
+    }
 
     public String getReason() {
         return reason;
