@@ -1,8 +1,11 @@
 package com.xinguang.tubobo.merchant.api;
 
+import com.xinguang.tubobo.merchant.api.dto.MerchantCompensateFeeConfigDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
+
+import java.util.List;
 
 /**
  * 商家端提供给后台的dubbo接口
@@ -50,4 +53,15 @@ public interface MerchantToAdminServiceInterface {
      * @return
      */
     public MerchantOrderDTO findMerchantOrderDetail(String orderNo);
+
+    /**
+     * 返回商家补偿定价列表
+     * @return
+     */
+    List<MerchantCompensateFeeConfigDTO> findAllCompensateFee();
+
+    /**
+     * 删除原有补偿定价列表并保存新列表
+     */
+    void deleteAllAndSave(List<MerchantCompensateFeeConfigDTO> list);
 }
