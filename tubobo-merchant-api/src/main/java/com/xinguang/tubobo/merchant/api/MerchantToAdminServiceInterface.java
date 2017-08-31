@@ -61,16 +61,4 @@ public interface MerchantToAdminServiceInterface {
      * 删除原有补偿定价列表并保存新列表
      */
     void deleteAllAndSave(List<MerchantCompensateFeeConfigDTO> list);
-
-    /**
-     * 返回超时赔付列表
-     * @return
-     */
-    List<MerchantOvertimeFeeConfigDTO> findAllOvertimeFee();
-
-    /**
-     * 删除原有超时赔付列表并新增
-     * @param list
-     */
-    void deleteOvertimeFeeAndSave(List<MerchantOvertimeFeeConfigDTO> list);
 }
