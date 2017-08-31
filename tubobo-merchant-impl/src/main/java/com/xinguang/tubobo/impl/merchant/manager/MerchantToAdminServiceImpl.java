@@ -5,19 +5,18 @@ import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantCompensateFeeConfigDao;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantCompensateFeeConfigEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOvertimeFeeConfigEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantCompensateFeeConfigService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantOvertimeFeeConfigService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface;
-import com.xinguang.tubobo.merchant.api.dto.MerchantCompensateFeeConfigDTO;
-import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
+import com.xinguang.tubobo.merchant.api.dto.*;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
-import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +42,8 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
 
     @Autowired
     private MerchantCompensateFeeConfigService compensateFeeConfigService;
+    @Autowired
+    private MerchantOvertimeFeeConfigService overtimeFeeConfigService;
     /**
      * 查询商家详细信息
      * @param userId
@@ -195,6 +196,34 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
                 entityList.add(compensateFeeConfigEntity);
             }
             compensateFeeConfigService.saveAll(entityList);
+        }
+    }
+
+    @Override
+    public List<MerchantOvertimeFeeConfigDTO> findAllOvertimeFee() {
+        List<MerchantOvertimeFeeConfigDTO> list = new ArrayList<>();
+        List<MerchantOvertimeFeeConfigEntity> entityList = overtimeFeeConfigService.findAll();
+        if(null!=entityList && entityList.size()>0){
+            for(MerchantOvertimeFeeConfigEntity entity : entityList){
+                MerchantOvertimeFeeConfigDTO dto = new MerchantOvertimeFeeConfigDTO();
+                BeanUtils.copyProperties(entity, dto);
+                list.add(dto);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public void deleteOvertimeFeeAndSave(List<MerchantOvertimeFeeConfigDTO> list) {
+        int result = overtimeFeeConfigService.deleteAll();
+        List<MerchantOvertimeFeeConfigEntity> entityList = new ArrayList<>();
+        if(result>=0 && null!=list && list.size()>0){
+            for(MerchantOvertimeFeeConfigDTO dto : list){
+                MerchantOvertimeFeeConfigEntity entity = new MerchantOvertimeFeeConfigEntity();
+                BeanUtils.copyProperties(dto, entity);
+                entityList.add(entity);
+            }
+            overtimeFeeConfigService.saveAll(entityList);
         }
     }
 }

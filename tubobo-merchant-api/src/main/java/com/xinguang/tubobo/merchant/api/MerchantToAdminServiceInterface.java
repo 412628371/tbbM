@@ -1,9 +1,6 @@
 package com.xinguang.tubobo.merchant.api;
 
-import com.xinguang.tubobo.merchant.api.dto.MerchantCompensateFeeConfigDTO;
-import com.xinguang.tubobo.merchant.api.dto.PageDTO;
-import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
-import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
+import com.xinguang.tubobo.merchant.api.dto.*;
 
 import java.util.List;
 
@@ -64,4 +61,16 @@ public interface MerchantToAdminServiceInterface {
      * 删除原有补偿定价列表并保存新列表
      */
     void deleteAllAndSave(List<MerchantCompensateFeeConfigDTO> list);
+
+    /**
+     * 返回超时赔付列表
+     * @return
+     */
+    List<MerchantOvertimeFeeConfigDTO> findAllOvertimeFee();
+
+    /**
+     * 删除原有超时赔付列表并新增
+     * @param list
+     */
+    void deleteOvertimeFeeAndSave(List<MerchantOvertimeFeeConfigDTO> list);
 }
