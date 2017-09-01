@@ -47,6 +47,15 @@ public class MerchantInfoDTO implements Serializable{
 	private Date updateDate;
 
 	private String cityCode;
+	private String hygieneLicense;		//卫生许可证
+
+	public String getHygieneLicense() {
+		return hygieneLicense;
+	}
+
+	public void setHygieneLicense(String hygieneLicense) {
+		this.hygieneLicense = hygieneLicense;
+	}
 
 	public String getCityCode() {
 		return cityCode;

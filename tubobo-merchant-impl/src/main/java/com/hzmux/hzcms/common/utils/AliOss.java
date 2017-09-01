@@ -101,5 +101,8 @@ public class AliOss {
         if (StringUtils.isNotBlank(info.getShopLicencesImgUrl())){
             info.setShopLicencesImgUrl(generateSignedUrl(info.getShopLicencesImgUrl(),AliOss.BUCKETNAME_PRIVATE));
         }
+        if (StringUtils.isNotBlank(info.getHygieneLicense())){
+            info.setHygieneLicense(generateSignedUrl(info.getHygieneLicense(), AliOss.BUCKETNAME_PRIVATE));
+        }
     }
 }

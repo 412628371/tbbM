@@ -58,8 +58,15 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private String reason;              //申请失败原因
 	private Date bdUpdateDate;			 //bd邀请码绑定时间
 
-	private Date enterTime;			 //入住驿站时间
-	private Long providerId;			 //服务商ID
+	private String hygieneLicense;		//卫生许可证
+
+	public String getHygieneLicense() {
+		return hygieneLicense;
+	}
+
+	public void setHygieneLicense(String hygieneLicense) {
+		this.hygieneLicense = hygieneLicense;
+	}
 
 	public Date getBdUpdateDate() {
 		return bdUpdateDate;
@@ -320,22 +327,6 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	public void setConsignorStatus(String consignorStatus) {
 		this.consignorStatus = consignorStatus;
-	}
-
-	public Date getEnterTime() {
-		return enterTime;
-	}
-
-	public void setEnterTime(Date enterTime) {
-		this.enterTime = enterTime;
-	}
-
-	public Long getProviderId() {
-		return providerId;
-	}
-
-	public void setProviderId(Long providerId) {
-		this.providerId = providerId;
 	}
 
 	@Override
