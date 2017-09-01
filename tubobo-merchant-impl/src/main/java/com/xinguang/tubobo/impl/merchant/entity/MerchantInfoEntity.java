@@ -59,6 +59,24 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Date bdUpdateDate;			 //bd邀请码绑定时间
 
 	private String hygieneLicense;		//卫生许可证
+	private Date enterTime;			 //入住驿站时间
+	private Long providerId;			 //服务商ID
+
+	public Date getEnterTime() {
+		return enterTime;
+	}
+
+	public void setEnterTime(Date enterTime) {
+		this.enterTime = enterTime;
+	}
+
+	public Long getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(Long providerId) {
+		this.providerId = providerId;
+	}
 
 	public String getHygieneLicense() {
 		return hygieneLicense;
