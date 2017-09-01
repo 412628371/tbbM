@@ -212,4 +212,10 @@ public class MerchantInfoService extends BaseService {
 		int count = merchantInfoDao.updateDBCode(userId, bdCode);
 		return count;
 	}
+
+	@Transactional
+	public boolean bindProvider(String userId,Long providerId,String providerName){
+		int count = merchantInfoDao.bindProvider(userId,providerId,providerName);
+		return count == 1;
+	}
 }
