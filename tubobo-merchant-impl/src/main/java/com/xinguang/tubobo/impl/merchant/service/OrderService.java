@@ -155,15 +155,15 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int riderFinishOrder(String merchantId, String orderNo, Date finishOrderTime) {
+    public int riderFinishOrder(String merchantId, String orderNo, Date finishOrderTime, Double expiredMinute, Double expiredCompensation) {
 
-        double orderOverTime = getOrderOverTime(finishOrderTime, orderNo);
-        if (0.0 == orderOverTime) {
+        //double orderOverTime = getOrderOverTime(finishOrderTime, orderNo);
+        if (0.0 == expiredMinute) {
             //订单未超时
             return merchantOrderDao.riderFinishOrder(orderNo, finishOrderTime);
         } else {
             //订单超时
-            return merchantOrderDao.riderFinishExpiredOrder(orderNo, finishOrderTime, orderOverTime);
+            return merchantOrderDao.riderFinishExpiredOrder(orderNo, finishOrderTime, expiredMinute, expiredCompensation);
         }
     }
 

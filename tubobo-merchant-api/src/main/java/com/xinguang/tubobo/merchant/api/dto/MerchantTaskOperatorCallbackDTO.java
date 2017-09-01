@@ -9,6 +9,8 @@ import java.util.Date;
  */
 public class MerchantTaskOperatorCallbackDTO implements Serializable {
     private String taskNo;
+    private Double expiredMinute;
+    private Double expiredCompensation;
     private Date operateTime;
 
     public MerchantTaskOperatorCallbackDTO(){}
@@ -16,6 +18,22 @@ public class MerchantTaskOperatorCallbackDTO implements Serializable {
     public MerchantTaskOperatorCallbackDTO(String taskNo, Date operateTime){
         this.taskNo = taskNo;
         this.operateTime = operateTime;
+    }
+
+    public Double getExpiredMinute() {
+        return expiredMinute;
+    }
+
+    public void setExpiredMinute(Double expiredMinute) {
+        this.expiredMinute = expiredMinute;
+    }
+
+    public Double getExpiredCompensation() {
+        return expiredCompensation;
+    }
+
+    public void setExpiredCompensation(Double expiredCompensation) {
+        this.expiredCompensation = expiredCompensation;
     }
 
     public String getTaskNo() {

@@ -283,14 +283,14 @@ public class MerchantOrderManager extends BaseService {
 	/**
 	 * 骑手完成订单
 	 */
-	public boolean riderFinishOrder(String orderNo, Date finishOrderTime,boolean enableNotice){
+	public boolean riderFinishOrder(String orderNo, Date finishOrderTime, Double expiredMinute, Double expiredCompensation,boolean enableNotice){
 		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
 		if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
 			logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
 			return false;
 		}
 		logger.info("处理骑手送达完成：orderNo:{}",orderNo);
-		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime)==1;
+		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation)==1;
 		if (result){
 			if (enableNotice){
 				//发送骑手完成送货通知

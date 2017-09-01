@@ -169,10 +169,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param finishOrderTime
      * @return
      */
-    public int riderFinishExpiredOrder(String orderNo, Date finishOrderTime,double expiredMinute){
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, finish_order_time = :p2,expired_minute =:p3 where order_no = :p4 and order_status = :p5 and del_flag = '0' ";
+    public int riderFinishExpiredOrder(String orderNo, Date finishOrderTime,double expiredMinute, double expiredCompensation){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, finish_order_time = :p2,expired_minute =:p3, expired_compensation =:p4 where order_no = :p5 and order_status = :p6 and del_flag = '0' ";
         int count =  updateBySql(sqlString,
-                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,expiredMinute,orderNo,
+                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,expiredMinute,expiredCompensation,orderNo,
                         EnumMerchantOrderStatus.DELIVERYING.getValue()));
         getSession().clear();
         return count;

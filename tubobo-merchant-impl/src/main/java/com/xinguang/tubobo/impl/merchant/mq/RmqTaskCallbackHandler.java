@@ -47,7 +47,8 @@ public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
                 case FINISH:
                     MerchantTaskOperatorCallbackDTO dtoFinish =
                             JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
-                    merchantOrderManager.riderFinishOrder(dtoFinish.getTaskNo(),dtoFinish.getOperateTime(),true);
+                    merchantOrderManager.riderFinishOrder(dtoFinish.getTaskNo(),dtoFinish.getOperateTime(),
+                            dtoFinish.getExpiredMinute(), dtoFinish.getExpiredCompensation(),true);
                     break;
                 case EXPIRED:
                     MerchantTaskOperatorCallbackDTO dtoExpire =

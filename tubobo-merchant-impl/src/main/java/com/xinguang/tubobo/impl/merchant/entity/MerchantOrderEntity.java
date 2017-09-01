@@ -97,7 +97,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private Double weatherOverFee; //天气溢价费用
 
 	private Double expiredMinute; //超时分钟数
-	private Double expiredCompensation;//超时赔付
+	private Double expiredCompensation;//超时赔付expiredCompensation
 
 	public Double getExpiredCompensation() {
 		return expiredCompensation;
