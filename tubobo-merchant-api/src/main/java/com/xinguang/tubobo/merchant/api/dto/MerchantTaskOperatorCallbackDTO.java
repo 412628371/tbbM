@@ -15,6 +15,11 @@ public class MerchantTaskOperatorCallbackDTO implements Serializable {
 
     public MerchantTaskOperatorCallbackDTO(){}
 
+    public MerchantTaskOperatorCallbackDTO(String taskNo, Date operateTime){
+        this.taskNo = taskNo;
+        this.operateTime = operateTime;
+    }
+
     public MerchantTaskOperatorCallbackDTO(String taskNo, Date operateTime, Double expiredMinute, Double expiredCompensation){
         this.taskNo = taskNo;
         this.expiredMinute = expiredMinute;
