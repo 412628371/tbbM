@@ -58,4 +58,15 @@ public class MerchantInfoDao extends BaseDao<MerchantInfoEntity> {
         int count = createQuery(sqlString, new Parameter(bdCode, new Date(), new Date(),userId)).executeUpdate();
         return count;
     }
+
+    public int bindProvider(String userId,Long providerId,String providerName){
+        String sqlString = "update MerchantInfoEntity set providerId=:providerId ,enterTime=:enterTime where userId = :userId and delFlag = '0' ";
+        Parameter parameter = new Parameter();
+        parameter.put("providerId",providerId);
+        parameter.put("enterTime",new Date());
+        parameter.put("userId",userId);
+//        parameter.put("providerName",providerName);
+        int count = createQuery(sqlString, parameter).executeUpdate();
+        return count;
+    }
 }
