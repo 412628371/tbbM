@@ -68,6 +68,7 @@ public class MerchantInfoManager {
         entity.setShopImageUrl(AliOss.subAliossUrl(entity.getShopImageUrl()));
         entity.setShopImageUrl2(AliOss.subAliossUrl(entity.getShopImageUrl2()));
         entity.setShopLicencesImgUrl(AliOss.subAliossUrl(entity.getShopLicencesImgUrl()));
+        entity.setHygieneLicense(AliOss.subAliossUrl(entity.getHygieneLicense()));//卫生许可证
         entity.setIdentifyType(identifyType);
         entity.setEnablePwdFree(false);
         //高德区域编码

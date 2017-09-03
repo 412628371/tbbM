@@ -69,8 +69,19 @@ public class ShopIdentifyRequest implements Serializable {
 //    @NotBlank(message = "请上传营业执照照片")
     private String shopLicencesImgUrl;
 
+    @Size(min = 1, max = 255,message = "卫生许可证照片地址过长")
+    private String hygieneLicense;
+
     //@NotBlank(message = "区域编码不能为空")
     private String addressAdCode;//高德区域编码
+
+    public String getHygieneLicense() {
+        return hygieneLicense;
+    }
+
+    public void setHygieneLicense(String hygieneLicense) {
+        this.hygieneLicense = hygieneLicense;
+    }
 
     public String getAddressAdCode() {
         return addressAdCode;
