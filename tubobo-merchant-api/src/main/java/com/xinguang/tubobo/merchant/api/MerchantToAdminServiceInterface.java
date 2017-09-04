@@ -50,15 +50,4 @@ public interface MerchantToAdminServiceInterface {
      * @return
      */
     public MerchantOrderDTO findMerchantOrderDetail(String orderNo);
-
-    /**
-     * 返回商家补偿定价列表
-     * @return
-     */
-    List<MerchantCompensateFeeConfigDTO> findAllCompensateFee();
-
-    /**
-     * 删除原有补偿定价列表并保存新列表
-     */
-    void deleteAllAndSave(List<MerchantCompensateFeeConfigDTO> list);
 }
