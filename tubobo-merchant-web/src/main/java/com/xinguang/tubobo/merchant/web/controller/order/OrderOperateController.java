@@ -26,8 +26,17 @@ public class OrderOperateController extends MerchantBaseController<ReqOrderOpera
             logger.error("订单操作(删除，取消)，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
-        if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())){
-            boolean count = merchantOrderManager.cancelOrder(userId,req.getOrderNo(),false);
+        if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())&&null==req.getWaitPickCancelType()){
+            //待接单之前取消订单
+            boolean count = merchantOrderManager.cancelOrder(userId,req.getOrderNo(),false,null);
+            if (!count){
+                logger.error("订单操作(删除，取消)，订单不允许取消。orderNo:{}",req.getOrderNo());
+                throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_CANCEL);
+            }
+        }
+        if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())&&null!=req.getWaitPickCancelType()){
+            // 已接单取消订单
+            boolean count = merchantOrderManager.cancelOrder(userId,req.getOrderNo(),false,req.getWaitPickCancelType());
             if (!count){
                 logger.error("订单操作(删除，取消)，订单不允许取消。orderNo:{}",req.getOrderNo());
                 throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_CANCEL);
