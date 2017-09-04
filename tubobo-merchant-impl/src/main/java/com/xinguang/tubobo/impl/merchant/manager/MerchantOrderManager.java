@@ -140,7 +140,7 @@ public class MerchantOrderManager extends BaseService {
 	/**
 	 * 商家取消订单
 	 */
-	public boolean cancelOrder(String merchantId,String orderNo,boolean isAdminCancel){
+	public boolean cancelOrder(String merchantId,String orderNo,boolean isAdminCancel,String waitPickCancelType){
 		MerchantOrderEntity entity = orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
 		if (null == entity || EnumMerchantOrderStatus.CANCEL.getValue().equals(entity.getOrderStatus())||
 				EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus()))
@@ -150,28 +150,28 @@ public class MerchantOrderManager extends BaseService {
 			String cancelReason = EnumCancelReason.ADMIN_CANCEL.getValue();
 			boolean result ;
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
-				result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true);
+				result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType);
 			}else {
 				result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 				if (result){
 					//TODO
 					rmqNoticeProducer.sendOrderCancelNotice(entity.getUserId(),entity.getOrderNo(),
 							entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
-					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true);
+					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType);
 				}
 			}
 			return result;
 		}else {
 			boolean result = false;
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
-				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false);
+				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType);
 			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
 				TbbTaskResponse<Boolean> taskResp = taskDispatchService.cancelTask(orderNo);
 				if (taskResp.isSucceeded()){
 					if (taskResp.getData()){
 						result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 						if (result){
-							result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false);
+							result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false,waitPickCancelType);
 						}
 					}else {
 						logger.error("商家取消订单，任务平台取消失败。userId:{},orderNo:{}",merchantId,orderNo);
@@ -215,12 +215,12 @@ public class MerchantOrderManager extends BaseService {
 	 * @param isAdminCancel
 	 * @return
 	 */
-	private boolean dealCancel(String userId,String orderNo,String cancelReason,boolean isAdminCancel){
+	private boolean dealCancel(String userId,String orderNo,String cancelReason,boolean isAdminCancel,String waitPickCancelType){
 		boolean cancelResult;
 		if (isAdminCancel){
 			cancelResult = orderService.adminCancel(userId,orderNo,cancelReason);
 		}else {
-			cancelResult = orderService.merchantCancel(userId, orderNo,cancelReason);
+			cancelResult = orderService.merchantCancel(userId, orderNo,cancelReason,waitPickCancelType);
 		}
 		if (!cancelResult) {
 			logger.error("取消订单，更改订单状态出错，userId:{} ,orderNo:{},cancelReason:{}" ,userId,orderNo,cancelReason);

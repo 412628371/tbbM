@@ -183,11 +183,16 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param orderNo
      * @return
      */
-    public boolean merchantCancel(String merchantId,String orderNo,String cancelReason){
-        String[] orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 where sender_id = :p4 and order_no = :p5 and order_status in (:p6) and del_flag = '0' ";
+    public boolean merchantCancel(String merchantId,String orderNo,String cancelReason,String waitPickCancelType){
+        String[] orderStatusArr;
+        if (StringUtils.isNotBlank(waitPickCancelType)){
+             orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
+        }else{
+            orderStatusArr = new String[]{EnumMerchantOrderStatus.WAITING_PICK.getValue()};
+        }
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3, wait_pick_cancel_type =:p4 where sender_id = :p5 and order_no = :p6 and order_status in (:p7) and del_flag = '0' ";
         int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
-                new Date(),cancelReason,merchantId,
+                new Date(),cancelReason,waitPickCancelType,merchantId,
                 orderNo,orderStatusArr));
         getSession().clear();
         return count == 1;
