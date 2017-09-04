@@ -199,9 +199,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      */
     public boolean merchantCancel(String merchantId,String orderNo,String cancelReason,String waitPickCancelType){
         String[] orderStatusArr;
-        if (StringUtils.isNotBlank(waitPickCancelType)){
-             orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
+        if (StringUtils.isBlank(waitPickCancelType)){
+            orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
         }else{
+            //不为空说明 处于带取货状态
             orderStatusArr = new String[]{EnumMerchantOrderStatus.WAITING_PICK.getValue()};
         }
         String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3, wait_pick_cancel_type =:p4 where sender_id = :p5 and order_no = :p6 and order_status in (:p7) and del_flag = '0' ";
