@@ -72,6 +72,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     }
 
     /**
+     * 重新发单
+     * @param originOrderNo
+     * @return
+     */
+    public int orderResend(String originOrderNo){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1," +
+                " update_date = :p2 where order_no = :p3 and " +
+                " order_status = :p4 and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.RESEND.getValue(), new Date(), originOrderNo, EnumMerchantOrderStatus.CANCEL.getValue()));
+        getSession().clear();
+        return count;
+    }
+
+    /**
      * 超时未支付
      * @param orderNo
      * @return

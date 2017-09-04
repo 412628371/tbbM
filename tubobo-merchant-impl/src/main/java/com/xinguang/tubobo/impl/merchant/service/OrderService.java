@@ -187,6 +187,16 @@ public class OrderService extends BaseService {
     }
 
     /**
+     * 重新发单
+     */
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public int orderResend(String merchantId, String originOrderNo){
+        int count = merchantOrderDao.orderResend(originOrderNo);
+        return count;
+    }
+
+    /**
      * 商家查询订单分页（缓存）
      */
     @Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#entity.getUserId()+'_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")

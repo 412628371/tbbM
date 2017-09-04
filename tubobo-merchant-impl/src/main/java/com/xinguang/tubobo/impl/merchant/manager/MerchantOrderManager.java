@@ -319,6 +319,14 @@ public class MerchantOrderManager extends BaseService {
 	}
 
 	/**
+	 * 重新发单
+	 */
+	public int orderResend(String merchantId, String originOrderNo){
+		int count = orderService.orderResend(merchantId, originOrderNo);
+		return count;
+	}
+
+	/**
 	 * 商家查询订单分页（缓存）
 	 */
 	public Page<MerchantOrderEntity> merchantQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
