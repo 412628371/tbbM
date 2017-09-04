@@ -166,9 +166,16 @@ public class MerchantOrderManager extends BaseService {
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
 				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType);
 			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
-				TbbTaskResponse<Boolean> taskResp = taskDispatchService.cancelTask(orderNo);
+				TbbTaskResponse<Double> taskResp = taskDispatchService.cancelTask(orderNo);
 				if (taskResp.isSucceeded()){
-					if (taskResp.getData()){
+					result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
+					if (result){
+						result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false,waitPickCancelType);
+					}
+					//TODO  进行扣款
+					Double punishFee = taskResp.getData();
+
+					/*if (taskResp.getData()){
 						result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 						if (result){
 							result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false,waitPickCancelType);
@@ -176,7 +183,7 @@ public class MerchantOrderManager extends BaseService {
 					}else {
 						logger.error("商家取消订单，任务平台取消失败。userId:{},orderNo:{}",merchantId,orderNo);
 						return false;
-					}
+					}*/
 				}else {
 					logger.error("商家取消订单，任务平台出错。userId:{},orderNo:{},errorCode:{},errorMsg:{}",
 							merchantId,orderNo,taskResp.getErrorCode(),taskResp.getMessage());
