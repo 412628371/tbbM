@@ -9,7 +9,11 @@ public enum  EnumTaskCallbackType {
     EXPIRED("过期未接单", "EXPIRED"),
     ADMIN_CANCEL("系统取消", "ADMIN_CANCEL"),
     CANCEL("订单取消","CANCEL" ),
-    FINISH("送达", "FINISH");
+    FINISH("送达", "FINISH"),
+    RIDER_CANCEL("骑手主动取消","RIDER_CANCEL"),
+    SPONSOR_CANCEL("发起者取消","SPONSOR_CANCEL");
+
+
 
 
     EnumTaskCallbackType(String name, String value){
