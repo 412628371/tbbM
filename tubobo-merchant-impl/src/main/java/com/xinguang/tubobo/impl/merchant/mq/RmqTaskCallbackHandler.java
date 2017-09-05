@@ -57,6 +57,11 @@ public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
                     break;
                 case ADMIN_CANCEL:
                     break;
+                case RIDER_CANCEL:
+                    MerchantTaskOperatorCallbackDTO dtoCancel =
+                            JSON.parseObject(json,MerchantTaskOperatorCallbackDTO.class);
+                    merchantOrderManager.dealFromRiderCancelOrders(dtoCancel);
+                    break;
             }
         }catch (Exception e){
             logger.error("mq处理任务回调异常",e);

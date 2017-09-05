@@ -32,6 +32,7 @@ import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTaskOperatorCallbackDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
@@ -395,5 +396,23 @@ public class MerchantOrderManager extends BaseService {
 		dto.setLongitude(entity.getReceiverLongitude());
 		dto.setLatitude(entity.getReceiverLatitude());
 		return dto;
+	}
+
+	public void dealFromRiderCancelOrders(MerchantTaskOperatorCallbackDTO dtoCancel) {
+		String orderNo = dtoCancel.getTaskNo();
+		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+		if (null == entity || !EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+			logger.info("骑手取消配送，未找到订单或订单状态异常。orderNo:{} orderStatus:{}",entity.getOrderStatus());
+		}
+		// TODO 退款 +补贴
+		boolean result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy());
+		if (result) {
+			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+		}else{
+			logger.error("骑手取消订单，更改订单状态出错 ,orderNo:{}" ,orderNo);
+
+		}
+
+		logger.info("骑手取消配送：orderNo:{}",orderNo);
 	}
 }

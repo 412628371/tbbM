@@ -9,7 +9,9 @@ public enum EnumOrderNoticeType {
     ACCEPTED("已接单", "ACCEPTED"),
     PICKED("已取货", "PICKED"),
     ADMIN_CANCEL("后台取消", "ADMIN_CANCEL"),
+    RIDER_CANCEL("骑手主动取消","RIDER_CANCEL"),
     FINISH("完成", "FINISH");
+
 
     private String name;
     private String value;

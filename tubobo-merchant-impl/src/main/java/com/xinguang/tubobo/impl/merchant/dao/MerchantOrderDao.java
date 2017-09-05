@@ -226,6 +226,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         getSession().clear();
         return count == 1;
     }
+    /**
+     * 骑手取消订单（待取货状态下）
+     * @param orderNo
+     * @param cancelReason
+     * @param subsidy
+     * @return
+     */
+    public boolean riderCancel(String orderNo, String cancelReason, Date date, Double subsidy){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 ,cancel_compensation=:p4 where order_no = :p5  and order_status=:p6  and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
+                date,cancelReason,subsidy,orderNo,EnumMerchantOrderStatus.WAITING_PICK.getValue()));
+        getSession().clear();
+        return count == 1;
+    }
     public int deleteOrder(String merchantId,String orderNo){
         String[] orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(),
                 EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),

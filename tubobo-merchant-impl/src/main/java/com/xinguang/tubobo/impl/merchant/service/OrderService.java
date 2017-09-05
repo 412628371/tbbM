@@ -118,6 +118,11 @@ public class OrderService extends BaseService {
     public boolean adminCancel(String merchantId, String orderNo, String cancelReason) {
         return merchantOrderDao.adminCancel(orderNo, cancelReason);
     }
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public boolean riderCancel(String orderNo, String cancelReason, Date now, Double subsidy) {
+        return merchantOrderDao.riderCancel(orderNo, cancelReason,now,subsidy);
+    }
 
     /**
      * 商家删除订单

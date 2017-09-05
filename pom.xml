@@ -27,7 +27,7 @@
         <tubobo.lbs.version>1.0-SNAPSHOT</tubobo.lbs.version>
         <tubobo.merchant.api.version>1.4.3-SNAPSHOT</tubobo.merchant.api.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
-        <tubobo-account-api-version>1.3-SNAPSHOT</tubobo-account-api-version>
+        <tubobo-account-api-version>1.3.0-SNAPSHOT</tubobo-account-api-version>
         <tubobo-push-api-version>1.3-SNAPSHOT</tubobo-push-api-version>
         <tubobo-rate-version>1.1-SNAPSHOT</tubobo-rate-version>
         <tubobo-riddr-api-version>0.0.1-SNAPSHOT</tubobo-riddr-api-version>

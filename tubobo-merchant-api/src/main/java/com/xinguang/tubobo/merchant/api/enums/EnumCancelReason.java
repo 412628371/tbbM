@@ -8,7 +8,9 @@ public enum EnumCancelReason {
     GRAB_MERCHANT("商家取消", "GRAB_MERCHANT"),
     PAY_OVERTIME("支付超时取消", "PAY_OVERTIME"),
     ADMIN_CANCEL("后台取消", "ADMIN_CANCEL"),
+    RIDER_CANCEL("骑手主动取消","RIDER_CANCEL"),
     PAY_MERCHANT("未支付商家取消", "PAY_MERCHANT");
+
 
     private String name;
     private String value;
