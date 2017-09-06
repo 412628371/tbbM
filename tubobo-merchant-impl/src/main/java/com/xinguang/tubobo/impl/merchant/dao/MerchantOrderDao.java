@@ -266,7 +266,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
                  MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
              sb.append("and (order_status = 'CANCEL' or order_status='INIT') ");
         }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
-                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_FINISH.equals(entity.getOrderStatus())){
+                 MerchantConstants.ORDER_LIST_QUERY_CONDITION_FINISH.equals(entity.getOrderStatus())){
              sb.append("and (order_status = 'RESEND' or order_status='FINISH') ");
         }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
