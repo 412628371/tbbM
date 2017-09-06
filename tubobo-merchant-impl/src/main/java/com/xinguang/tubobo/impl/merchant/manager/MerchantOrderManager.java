@@ -302,6 +302,7 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public boolean riderFinishOrder(String orderNo, Date finishOrderTime, Double expiredMinute, Double expiredCompensation,boolean enableNotice){
 		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+		MerchantInfoEntity merchant = merchantInfoService.findByUserId(entity.getUserId());
 		if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
 			logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
 			return false;
@@ -314,6 +315,17 @@ public class MerchantOrderManager extends BaseService {
 				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 				//推送到报表mq
 				tuboboReportDateMqHelp.orderFinish(entity,finishOrderTime);
+			}
+		}
+		if (expiredCompensation!=null&&expiredCompensation>0.0){
+			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue()*100,merchant.getAccountId(),entity.getOrderNo(),"超时送达商家赔付");
+			TbbAccountResponse<SubsidyInfo> subResponse = tbbAccountService.subsidize(subsidyRequest);
+			if (subResponse.isSucceeded()){
+				logger.info("骑手超时送达任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
+						entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),expiredCompensation);
+			}else {
+				logger.error("商家取消任务罚款 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
+						entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),expiredCompensation,subResponse.getErrorCode(),subResponse.getMessage());
 			}
 		}
 		return result;
