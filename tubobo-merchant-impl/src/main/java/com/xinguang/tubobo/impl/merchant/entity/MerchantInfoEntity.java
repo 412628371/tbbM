@@ -61,6 +61,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private String hygieneLicense;		//卫生许可证
 	private Date enterTime;			 //入住驿站时间
 	private Long providerId;			 //服务商ID
+	private String providerName;			 //服务商名称
 
 	public Date getEnterTime() {
 		return enterTime;
@@ -345,6 +346,14 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	public void setConsignorStatus(String consignorStatus) {
 		this.consignorStatus = consignorStatus;
+	}
+
+	public String getProviderName() {
+		return providerName;
+	}
+
+	public void setProviderName(String providerName) {
+		this.providerName = providerName;
 	}
 
 	@Override
