@@ -8,7 +8,6 @@ import com.xinguang.tubobo.account.api.response.AccountInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
-import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.lbs.api.GdDistanceService;
 import com.xinguang.tubobo.lbs.api.dto.InverseGeocodeDto;
@@ -39,9 +38,6 @@ public class MerchantInfoManager {
 
     @Autowired
     TbbAccountService tbbAccountService;
-
-    @Autowired
-    private TuboboReportDateMqHelp tuboboReportDateMqHelp;
 
     @Autowired
     GdDistanceService gdDistanceService;
@@ -141,9 +137,6 @@ public class MerchantInfoManager {
 
         MerchantInfoEntity entityResp = merchantInfoService.findByUserId(userId);
         AliOss.generateMerchantSignedUrl(entityResp);
-
-        //消息放入报表mq
-        tuboboReportDateMqHelp.merchantRegister(entityResp);
 
         return entityResp;
     }

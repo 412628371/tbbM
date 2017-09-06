@@ -25,7 +25,6 @@ import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
-import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.BaseService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -67,7 +66,6 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired private MerchantPushService pushService;
 
 	@Autowired private AdminToMerchantService adminToMerchantService;
-	@Autowired private TuboboReportDateMqHelp tuboboReportDateMqHelp;
 	@Autowired private RmqNoticeProducer rmqNoticeProducer;
 	@Autowired private RmqTakeoutAnswerProducer rmqTakeoutAnswerProducer;
 	@Resource private Config config;
@@ -128,9 +126,6 @@ public class MerchantOrderManager extends BaseService {
 			if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
 				adminToMerchantService.sendDistributeTaskSmsAlert();
 			}
-
-			//推送消息到报表mq
-			tuboboReportDateMqHelp.merchantOrder(taskCreateDTO);
 		}else {
 			logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
 		}
@@ -225,8 +220,6 @@ public class MerchantOrderManager extends BaseService {
 		if (!cancelResult) {
 			logger.error("取消订单，更改订单状态出错，userId:{} ,orderNo:{},cancelReason:{}" ,userId,orderNo,cancelReason);
 		}else{
-			//推送消息到报表mq
-			tuboboReportDateMqHelp.orderCancel(orderNo,"",cancelReason);
 		}
 		return cancelResult;
 	}
@@ -295,8 +288,6 @@ public class MerchantOrderManager extends BaseService {
 			if (enableNotice){
 				//发送骑手完成送货通知
 				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
-				//推送到报表mq
-				tuboboReportDateMqHelp.orderFinish(entity,finishOrderTime);
 			}
 		}
 		return result;
@@ -349,8 +340,6 @@ public class MerchantOrderManager extends BaseService {
 			orderExpire(entity.getUserId(),orderNo,expireTime);
 			if (enablePushNotice){
 				rmqNoticeProducer.sendGrabTimeoutNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
-				//推送消息到报表mq
-				tuboboReportDateMqHelp.orderCancel(orderNo,"system",EnumCancelReason.GRAB_OVERTIME.getValue());
 			}
 			return true;
 		}else {
