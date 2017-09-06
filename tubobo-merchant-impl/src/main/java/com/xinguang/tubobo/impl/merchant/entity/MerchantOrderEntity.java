@@ -103,6 +103,16 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	private Double cancelCompensation; //订单取消赔付
 	private Double cancelFine;         //订单取消罚款
+	private Double pickupDistance;	  //取货距离
+
+
+	public Double getPickupDistance() {
+		return pickupDistance;
+	}
+
+	public void setPickupDistance(Double pickupDistance) {
+		this.pickupDistance = pickupDistance;
+	}
 
 	public Double getCancelCompensation() {
 		return cancelCompensation;
