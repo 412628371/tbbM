@@ -270,7 +270,11 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", entity.getOrderStatus());
-        }
+        }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_FINISH.equals(entity.getOrderStatus())){
+             sb.append("and (order_status = 'RESEND' or order_status='FINISH') ");
+
+         }
         if (StringUtils.isNotBlank(entity.getOrderType())){
             sb.append("and order_type = :order_type ");
             parameter.put("order_type", entity.getOrderType());

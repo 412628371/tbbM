@@ -14,6 +14,8 @@ public class MerchantConstants {
 
     public static final String ORDER_LIST_QUERY_CONDITION_ALL= "all";
     public static final String ORDER_LIST_QUERY_CONDITION_UNHANDLE= "UNHANDLE";
+    public static final String ORDER_LIST_QUERY_CONDITION_FINISH= "FINISH";
+
 
 
 
