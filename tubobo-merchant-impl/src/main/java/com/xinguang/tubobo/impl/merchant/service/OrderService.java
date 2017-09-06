@@ -109,8 +109,8 @@ public class OrderService extends BaseService {
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public boolean merchantCancel(String merchantId, String orderNo, String cancelReason,String waitPickCancelType) {
-        return merchantOrderDao.merchantCancel(merchantId, orderNo, cancelReason,waitPickCancelType);
+    public boolean merchantCancel(String merchantId, String orderNo, String cancelReason,String waitPickCancelType,Double punishFee,Double subsidyFee) {
+        return merchantOrderDao.merchantCancel(merchantId, orderNo, cancelReason,waitPickCancelType,punishFee,subsidyFee);
     }
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")

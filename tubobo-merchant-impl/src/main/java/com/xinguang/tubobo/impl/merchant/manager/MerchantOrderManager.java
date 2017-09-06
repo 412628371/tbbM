@@ -152,31 +152,28 @@ public class MerchantOrderManager extends BaseService {
 			String cancelReason = EnumCancelReason.ADMIN_CANCEL.getValue();
 			boolean result ;
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
-				result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType);
+				result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType,null,null);
 			}else {
 				result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 				if (result){
 					//TODO
 					rmqNoticeProducer.sendOrderCancelNotice(entity.getUserId(),entity.getOrderNo(),
 							entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
-					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType);
+					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType,null,null);
 				}
 			}
 			return result;
 		}else {
 			boolean result = false;
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
-				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType);
+				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType,null,null);
 			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())||EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
 				TbbTaskResponse<Double> taskResp = taskDispatchService.cancelTask(orderNo);
 				if (taskResp.isSucceeded()){
 					result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 					if (result){
-						result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false,waitPickCancelType);
-					}
-
-					Double punishFee = taskResp.getData();
-					if (punishFee!=null&&punishFee>0.0){
+						Double punishFee = taskResp.getData();
+						if (punishFee!=null&&punishFee>0.0){
 							//	 进行扣款
 							double punishd=punishFee.doubleValue();
 							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)punishd*100,merchant.getAccountId(),"取消订单罚款");
@@ -188,7 +185,14 @@ public class MerchantOrderManager extends BaseService {
 								logger.error("商家取消任务罚款 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
 										entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),punishd,fineResponse.getErrorCode(),fineResponse.getMessage());
 							}
-											}
+						}
+						result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false,waitPickCancelType,punishFee,null);
+
+
+					}
+
+
+
 				}else {
 					logger.error("商家取消订单，任务平台出错。userId:{},orderNo:{},errorCode:{},errorMsg:{}",
 							merchantId,orderNo,taskResp.getErrorCode(),taskResp.getMessage());
@@ -227,12 +231,12 @@ public class MerchantOrderManager extends BaseService {
 	 * @param isAdminCancel
 	 * @return
 	 */
-	private boolean dealCancel(String userId,String orderNo,String cancelReason,boolean isAdminCancel,String waitPickCancelType){
+	private boolean dealCancel(String userId,String orderNo,String cancelReason,boolean isAdminCancel,String waitPickCancelType,Double punishFee,Double subsidyFee){
 		boolean cancelResult;
 		if (isAdminCancel){
 			cancelResult = orderService.adminCancel(userId,orderNo,cancelReason);
 		}else {
-			cancelResult = orderService.merchantCancel(userId, orderNo,cancelReason,waitPickCancelType);
+			cancelResult = orderService.merchantCancel(userId, orderNo,cancelReason,waitPickCancelType,punishFee,subsidyFee);
 		}
 		if (!cancelResult) {
 			logger.error("取消订单，更改订单状态出错，userId:{} ,orderNo:{},cancelReason:{}" ,userId,orderNo,cancelReason);
@@ -421,11 +425,12 @@ public class MerchantOrderManager extends BaseService {
 			return;
 		}
 		Long accountId= Long.valueOf(merchant.getAccountId());
-		boolean result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy());
+		boolean result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
+
 		if (result) {
 			//订单返还
-			result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 			// 被取消任务补贴
+			result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy());
 			if (dtoCancel.getSubsidy() != null && dtoCancel.getSubsidy() > 0){
 				double subsidy=dtoCancel.getSubsidy();
 				SubsidyRequest subsidyRequest = new SubsidyRequest((int)subsidy*100,accountId,orderNo,"骑手取消赔付");
@@ -433,6 +438,7 @@ public class MerchantOrderManager extends BaseService {
 				if (subsidyResponse.isSucceeded()){
 					logger.info("骑手任务被取消 骑手赔付 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
 							entity.getOrderNo(),entity.getRiderId(),accountId,subsidy);
+
 				}else {
 					logger.error("骑手任务被取消 骑手赔付 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
 							entity.getOrderNo(),entity.getRiderId(),accountId,subsidy,subsidyResponse.getErrorCode(),subsidyResponse.getMessage());
@@ -441,7 +447,7 @@ public class MerchantOrderManager extends BaseService {
 
 			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 		}else{
-			logger.error("骑手取消订单，更改订单状态出错 ,orderNo:{}" ,orderNo);
+			logger.error("骑手取消订单，更改订单状态出错,退款失败 ,orderNo:{}" ,orderNo);
 		}
 
 		logger.info("骑手取消配送：orderNo:{}",orderNo);
