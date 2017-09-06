@@ -12,6 +12,24 @@ public class MerchantTaskOperatorCallbackDTO implements Serializable {
     private Double expiredMinute;
     private Double expiredCompensation;
     private Date operateTime;
+    private Double fine;
+    private Double subsidy;
+
+    public Double getFine() {
+        return fine;
+    }
+
+    public void setFine(Double fine) {
+        this.fine = fine;
+    }
+
+    public Double getSubsidy() {
+        return subsidy;
+    }
+
+    public void setSubsidy(Double subsidy) {
+        this.subsidy = subsidy;
+    }
 
     public MerchantTaskOperatorCallbackDTO(){}
 
@@ -63,7 +81,11 @@ public class MerchantTaskOperatorCallbackDTO implements Serializable {
     public String toString() {
         return "MerchantTaskOperatorCallbackDTO{" +
                 "taskNo='" + taskNo + '\'' +
+                ", expiredMinute=" + expiredMinute +
+                ", expiredCompensation=" + expiredCompensation +
                 ", operateTime=" + operateTime +
+                ", fine=" + fine +
+                ", subsidy=" + subsidy +
                 '}';
     }
 }

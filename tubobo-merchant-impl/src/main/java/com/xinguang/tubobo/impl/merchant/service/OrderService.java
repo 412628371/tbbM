@@ -118,6 +118,11 @@ public class OrderService extends BaseService {
     public boolean adminCancel(String merchantId, String orderNo, String cancelReason) {
         return merchantOrderDao.adminCancel(orderNo, cancelReason);
     }
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public boolean riderCancel(String orderNo, String cancelReason, Date now, Double subsidy) {
+        return merchantOrderDao.riderCancel(orderNo, cancelReason,now,subsidy);
+    }
 
     /**
      * 商家删除订单
@@ -183,6 +188,16 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int orderExpire(String merchantId, String orderNo, Date expireTime) {
         int count = merchantOrderDao.orderExpire(orderNo, expireTime);
+        return count;
+    }
+
+    /**
+     * 重新发单
+     */
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public int orderResend(String merchantId, String originOrderNo){
+        int count = merchantOrderDao.orderResend(originOrderNo);
         return count;
     }
 

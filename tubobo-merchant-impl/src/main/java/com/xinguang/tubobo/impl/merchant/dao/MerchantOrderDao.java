@@ -72,6 +72,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     }
 
     /**
+     * 重新发单
+     * @param originOrderNo
+     * @return
+     */
+    public int orderResend(String originOrderNo){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1," +
+                " update_date = :p2 where order_no = :p3 and " +
+                " order_status = :p4 and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.RESEND.getValue(), new Date(), originOrderNo, EnumMerchantOrderStatus.CANCEL.getValue()));
+        getSession().clear();
+        return count;
+    }
+
+    /**
      * 超时未支付
      * @param orderNo
      * @return
@@ -185,9 +199,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      */
     public boolean merchantCancel(String merchantId,String orderNo,String cancelReason,String waitPickCancelType){
         String[] orderStatusArr;
-        if (StringUtils.isNotBlank(waitPickCancelType)){
-             orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
+        if (StringUtils.isBlank(waitPickCancelType)){
+            orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
         }else{
+            //不为空说明 处于带取货状态
             orderStatusArr = new String[]{EnumMerchantOrderStatus.WAITING_PICK.getValue()};
         }
         String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3, wait_pick_cancel_type =:p4 where sender_id = :p5 and order_no = :p6 and order_status in (:p7) and del_flag = '0' ";
@@ -208,6 +223,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 where order_no = :p4  and del_flag = '0' ";
         int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
                 new Date(),cancelReason,orderNo));
+        getSession().clear();
+        return count == 1;
+    }
+    /**
+     * 骑手取消订单（待取货状态下）
+     * @param orderNo
+     * @param cancelReason
+     * @param subsidy
+     * @return
+     */
+    public boolean riderCancel(String orderNo, String cancelReason, Date date, Double subsidy){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 ,cancel_compensation=:p4 where order_no = :p5  and order_status=:p6  and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
+                date,cancelReason,subsidy,orderNo,EnumMerchantOrderStatus.WAITING_PICK.getValue()));
         getSession().clear();
         return count == 1;
     }

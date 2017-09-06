@@ -13,24 +13,27 @@ import com.xinguang.taskcenter.api.TbbTaskResponse;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
+import com.xinguang.tubobo.account.api.request.FineRequest;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
+import com.xinguang.tubobo.account.api.request.SubsidyRequest;
+import com.xinguang.tubobo.account.api.response.FineInfo;
 import com.xinguang.tubobo.account.api.response.PayInfo;
+import com.xinguang.tubobo.account.api.response.SubsidyInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
-import com.xinguang.tubobo.impl.merchant.service.BaseService;
-import com.xinguang.tubobo.impl.merchant.service.MerchantPushService;
-import com.xinguang.tubobo.impl.merchant.service.OrderService;
-import com.xinguang.tubobo.impl.merchant.service.ThirdOrderService;
+import com.xinguang.tubobo.impl.merchant.service.*;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTaskOperatorCallbackDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
@@ -69,6 +72,8 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired private RmqNoticeProducer rmqNoticeProducer;
 	@Autowired private RmqTakeoutAnswerProducer rmqTakeoutAnswerProducer;
 	@Resource private Config config;
+
+	@Autowired private MerchantInfoService merchantInfoService;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -137,6 +142,8 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public boolean cancelOrder(String merchantId,String orderNo,boolean isAdminCancel,String waitPickCancelType){
 		MerchantOrderEntity entity = orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
+		MerchantInfoEntity merchant = merchantInfoService.findByUserId(merchantId);
+
 		if (null == entity || EnumMerchantOrderStatus.CANCEL.getValue().equals(entity.getOrderStatus())||
 				EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus()))
 			return false;
@@ -160,18 +167,28 @@ public class MerchantOrderManager extends BaseService {
 			boolean result = false;
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
 				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType);
-			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
-				TbbTaskResponse<Boolean> taskResp = taskDispatchService.cancelTask(orderNo);
+			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())||EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+				TbbTaskResponse<Double> taskResp = taskDispatchService.cancelTask(orderNo);
 				if (taskResp.isSucceeded()){
-					if (taskResp.getData()){
-						result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
-						if (result){
-							result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false,waitPickCancelType);
-						}
-					}else {
-						logger.error("商家取消订单，任务平台取消失败。userId:{},orderNo:{}",merchantId,orderNo);
-						return false;
+					result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
+					if (result){
+						result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false,waitPickCancelType);
 					}
+
+					Double punishFee = taskResp.getData();
+					if (punishFee!=null&&punishFee>0.0){
+							//	 进行扣款
+							double punishd=punishFee.doubleValue();
+							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)punishd*100,merchant.getAccountId(),"取消订单罚款");
+							TbbAccountResponse<FineInfo> fineResponse = tbbAccountService.fine(fineRequest);
+							if (fineResponse.isSucceeded()){
+								logger.info("商家取消任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
+										entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),punishd);
+							}else {
+								logger.error("商家取消任务罚款 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
+										entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),punishd,fineResponse.getErrorCode(),fineResponse.getMessage());
+							}
+											}
 				}else {
 					logger.error("商家取消订单，任务平台出错。userId:{},orderNo:{},errorCode:{},errorMsg:{}",
 							merchantId,orderNo,taskResp.getErrorCode(),taskResp.getMessage());
@@ -278,6 +295,7 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public boolean riderFinishOrder(String orderNo, Date finishOrderTime, Double expiredMinute, Double expiredCompensation,boolean enableNotice){
 		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+		MerchantInfoEntity merchant = merchantInfoService.findByUserId(entity.getUserId());
 		if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
 			logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
 			return false;
@@ -290,6 +308,17 @@ public class MerchantOrderManager extends BaseService {
 				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 			}
 		}
+		if (expiredCompensation!=null&&expiredCompensation>0.0){
+			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue()*100,merchant.getAccountId(),entity.getOrderNo(),"超时送达商家赔付");
+			TbbAccountResponse<SubsidyInfo> subResponse = tbbAccountService.subsidize(subsidyRequest);
+			if (subResponse.isSucceeded()){
+				logger.info("骑手超时送达任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
+						entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),expiredCompensation);
+			}else {
+				logger.error("商家取消任务罚款 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
+						entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),expiredCompensation,subResponse.getErrorCode(),subResponse.getMessage());
+			}
+		}
 		return result;
 	}
 
@@ -299,6 +328,14 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public int orderExpire(String merchantId,String orderNo,Date expireTime){
 		int count =orderService.orderExpire(merchantId,orderNo,expireTime);
+		return count;
+	}
+
+	/**
+	 * 重新发单
+	 */
+	public int orderResend(String merchantId, String originOrderNo){
+		int count = orderService.orderResend(merchantId, originOrderNo);
 		return count;
 	}
 
@@ -369,5 +406,44 @@ public class MerchantOrderManager extends BaseService {
 		dto.setLongitude(entity.getReceiverLongitude());
 		dto.setLatitude(entity.getReceiverLatitude());
 		return dto;
+	}
+
+	public void dealFromRiderCancelOrders(MerchantTaskOperatorCallbackDTO dtoCancel) {
+		String orderNo = dtoCancel.getTaskNo();
+		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+		if (null == entity || !EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+			logger.info("骑手取消配送，未找到订单或订单状态异常。orderNo:{} orderStatus:{}",entity.getOrderStatus());
+			return;
+		}
+		MerchantInfoEntity merchant = merchantInfoService.findByUserId(entity.getUserId());
+		if (null == merchant){
+			logger.info("商家不存在。userId:{} ",entity.getUserId());
+			return;
+		}
+		Long accountId= Long.valueOf(merchant.getAccountId());
+		boolean result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy());
+		if (result) {
+			//订单返还
+			result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
+			// 被取消任务补贴
+			if (dtoCancel.getSubsidy() != null && dtoCancel.getSubsidy() > 0){
+				double subsidy=dtoCancel.getSubsidy();
+				SubsidyRequest subsidyRequest = new SubsidyRequest((int)subsidy*100,accountId,orderNo,"骑手取消赔付");
+				TbbAccountResponse<SubsidyInfo> subsidyResponse = tbbAccountService.subsidize(subsidyRequest);
+				if (subsidyResponse.isSucceeded()){
+					logger.info("骑手任务被取消 骑手赔付 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
+							entity.getOrderNo(),entity.getRiderId(),accountId,subsidy);
+				}else {
+					logger.error("骑手任务被取消 骑手赔付 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
+							entity.getOrderNo(),entity.getRiderId(),accountId,subsidy,subsidyResponse.getErrorCode(),subsidyResponse.getMessage());
+				}
+			}
+
+			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+		}else{
+			logger.error("骑手取消订单，更改订单状态出错 ,orderNo:{}" ,orderNo);
+		}
+
+		logger.info("骑手取消配送：orderNo:{}",orderNo);
 	}
 }
