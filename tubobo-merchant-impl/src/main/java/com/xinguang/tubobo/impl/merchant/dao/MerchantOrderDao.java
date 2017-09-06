@@ -260,26 +260,23 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         if (StringUtils.isNotBlank(entity.getUserId())){
             sb.append("and user_id = :user_id  ");
             parameter.put("user_id", entity.getUserId());
-         }
+        }
          //1.41版本增添待处理字段(已取消、待付款合并为待处理)
-         if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+        if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                  MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
              sb.append("and (order_status = 'CANCEL' or order_status='INIT') ");
-            // parameter.put("order_status", entity.getOrderStatus());
-         }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
-                !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
-            sb.append("and order_status = :order_status ");
-            parameter.put("order_status", entity.getOrderStatus());
         }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                  !MerchantConstants.ORDER_LIST_QUERY_CONDITION_FINISH.equals(entity.getOrderStatus())){
              sb.append("and (order_status = 'RESEND' or order_status='FINISH') ");
-
-         }
+        }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+                !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
+             sb.append("and order_status = :order_status ");
+             parameter.put("order_status", entity.getOrderStatus());
+        }
         if (StringUtils.isNotBlank(entity.getOrderType())){
             sb.append("and order_type = :order_type ");
             parameter.put("order_type", entity.getOrderType());
         }
-
         sb.append(" order by create_date desc ");
 
 //        sb.append("select new com.xinguang.tubobo.impl.merchant.entity.OrderPojo(id,platformCode, userId, orderNo, orderType, ratedFlag, orderStatus, payAmount, deliveryFee,  tipFee,  orderTime,  grabOrderTime,  grabItemTime,  finishOrderTime,  receiverName,  receiverPhone,  receiverAddressProvince,  receiverAddressCity,  receiverAddressDistrict,  receiverAddressStreet,  receiverAddressDetail, receiverAddressRoomNo) from MerchantOrderEntity where delFlag = '0' ");
