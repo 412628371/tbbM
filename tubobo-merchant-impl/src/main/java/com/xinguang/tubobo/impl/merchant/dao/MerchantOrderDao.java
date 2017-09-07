@@ -129,7 +129,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     public int riderGrabOrder(String riderId, String riderName, String riderPhone, String orderNo, Date grabOrderTime,
                               Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance){
         String updateQuery = "update "+MerchantOrderEntity.class.getSimpleName()+" set orderStatus = :orderStatus , riderId = :riderId ,riderPhone = :riderPhone,riderName=:riderName ,grabOrderTime = :grabOrderTime ," +
-                " expectFinishTime=:expectFinishTime, riderCarNo=:riderCarNo, riderCarType=:riderCarType" +
+                " expectFinishTime=:expectFinishTime, riderCarNo=:riderCarNo, riderCarType=:riderCarType,pickupDistance=:pickupDistance" +
                 " where orderNo = :orderNo and delFlag='0'";
         Parameter parameter = new Parameter();
         parameter.put("orderStatus",EnumMerchantOrderStatus.WAITING_PICK.getValue());
