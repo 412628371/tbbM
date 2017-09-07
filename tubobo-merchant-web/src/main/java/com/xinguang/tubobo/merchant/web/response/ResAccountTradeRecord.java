@@ -6,12 +6,21 @@ public class ResAccountTradeRecord {
 
     private String recordId;
     private String amount;
-    private String type;
+    private String type;  //对应UI订单状态，例如订单已完成
     private String currentBalance;
     private String currentFrozen;
     private String currentDeposit;
     private Date createTime;
     private String  orderNo;
+    private String   tradeStatus; //v1.4.3添加，对应UI订单类型，例如骑手超时赔付
+
+    public String getTradeStatus() {
+        return tradeStatus;
+    }
+
+    public void setTradeStatus(String tradeStatus) {
+        this.tradeStatus = tradeStatus;
+    }
 
     public String getOrderNo() {
         return orderNo;

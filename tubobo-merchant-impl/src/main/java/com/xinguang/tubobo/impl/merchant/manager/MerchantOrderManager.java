@@ -176,7 +176,7 @@ public class MerchantOrderManager extends BaseService {
 						if (punishFee!=null&&punishFee>0.0){
 							//	 进行扣款
 							double punishd=punishFee.doubleValue();
-							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)punishd*100,merchant.getAccountId(),"取消订单罚款");
+							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)punishd*100,merchant.getAccountId(),MerchantConstants.MERCHANT_CANCEL_FINE);
 							TbbAccountResponse<FineInfo> fineResponse = tbbAccountService.fine(fineRequest);
 							if (fineResponse.isSucceeded()){
 								logger.info("商家取消任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
@@ -313,7 +313,7 @@ public class MerchantOrderManager extends BaseService {
 			}
 		}
 		if (expiredCompensation!=null&&expiredCompensation>0.0){
-			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue()*100,merchant.getAccountId(),entity.getOrderNo(),"超时送达商家赔付");
+			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue()*100,merchant.getAccountId(),entity.getOrderNo(),MerchantConstants.OVERTIME_DELIVERY);
 			TbbAccountResponse<SubsidyInfo> subResponse = tbbAccountService.subsidize(subsidyRequest);
 			if (subResponse.isSucceeded()){
 				logger.info("骑手超时送达任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
@@ -433,7 +433,7 @@ public class MerchantOrderManager extends BaseService {
 			result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy());
 			if (dtoCancel.getSubsidy() != null && dtoCancel.getSubsidy() > 0){
 				double subsidy=dtoCancel.getSubsidy();
-				SubsidyRequest subsidyRequest = new SubsidyRequest((int)subsidy*100,accountId,orderNo,"骑手取消赔付");
+				SubsidyRequest subsidyRequest = new SubsidyRequest((int)subsidy*100,accountId,orderNo,MerchantConstants.MERCHANT_CANCEL_BY_RIDER_SUBSIDY);
 				TbbAccountResponse<SubsidyInfo> subsidyResponse = tbbAccountService.subsidize(subsidyRequest);
 				if (subsidyResponse.isSucceeded()){
 					logger.info("骑手任务被取消 骑手赔付 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
