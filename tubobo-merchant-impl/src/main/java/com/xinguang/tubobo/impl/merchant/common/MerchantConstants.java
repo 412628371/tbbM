@@ -42,6 +42,10 @@ public class MerchantConstants {
     public static final String MERCHANT_RECHARGE_TITLE = "商家充值";
     public static final String PAY_REJECT_REMARKS_OVERTIME = "暂无人接单，订单已取消";
     public static final String PAY_REJECT_REMARKS_CANCEL = "订单已取消  ";
+    public static final String MERCHANT_CANCEL_FINE = "罚款: 骑手接单后取消订单";
+    public static final String MERCHANT_CANCEL_BY_RIDER_SUBSIDY = "罚款: 骑手接单后取消订单";
+    public static final String OVERTIME_DELIVERY = "赔付: 订单超时送达";
+
 
 
 

@@ -140,10 +140,10 @@ public class OrderService extends BaseService {
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public int riderGrabOrder(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
-                              Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType) {
+                              Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance) {
         //v1.41预计送达时间改为从规则表中获得
         //Date expectFinishTimeDueRule = getExpectFinishTimeDueRule(orderNo,grabOrderTime);
-        return merchantOrderDao.riderGrabOrder(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, riderCarNo, riderCarType);
+        return merchantOrderDao.riderGrabOrder(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, riderCarNo, riderCarType,pickupDistance);
     }
 
     /**
