@@ -141,7 +141,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         parameter.put("grabOrderTime",grabOrderTime);
         parameter.put("expectFinishTime",expectFinishTime);
         parameter.put("orderNo",orderNo);
-        parameter.put("pickup_distance",pickupDistance);
+        parameter.put("pickupDistance",pickupDistance);
         int count =  update(updateQuery,parameter);
 //        String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_order_time = :p2, rider_id = :p3, rider_name = :p4, rider_phone = :p5 " +
 //                " , expect_finish_time=:p6 where order_no = :p7 and order_status = :p8 and del_flag = '0' ";
