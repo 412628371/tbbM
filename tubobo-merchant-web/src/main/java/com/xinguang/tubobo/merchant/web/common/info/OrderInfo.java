@@ -27,6 +27,23 @@ public class OrderInfo implements Serializable {
     private Long grabRemainMillSeconds;
     private Double deliveryDistance; //配送距离 1.41 版本加入
 
+    private  String waitPickCancelType; //带接单状态下商家取消订单原因
+
+
+
+
+    public String getWaitPickCancelType() {
+        return waitPickCancelType;
+    }
+
+    public void setWaitPickCancelType(String waitPickCancelType) {
+        this.waitPickCancelType = waitPickCancelType;
+    }
+
+
+
+
+
     public Double getExpiredMinute() {
         return expiredMinute;
     }

@@ -49,6 +49,11 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
     private OverFeeService overFeeService;
     @Override
     protected CreateOrderResponse doService(String userId, ReqOrderCreateV2 req) throws MerchantClientException {
+        String originOrderNo = req.getOriginOrderNo();
+        //重新发单将旧订单状态更新为已重发状态（RESEND）
+        if(StringUtils.isNotBlank(originOrderNo)){
+            merchantOrderManager.orderResend(userId, originOrderNo);
+        }
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
         if (null == infoEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);

@@ -32,10 +32,20 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
     @Override
     public List<MerchantDeliverFeeConfigDTO> findAll() {
         List<MerchantDeliverFeeConfigEntity> all = merchantDeliverFeeConfigDao.findAllFee();
+        return copyFeeEntityToDto(all);
+    }
+    /**
+     * 根据区code查询具体区的费用
+     */
+    @Override
+    public List<MerchantDeliverFeeConfigDTO> findFeeByAreaCode(String areaCode) {
+        List<MerchantDeliverFeeConfigEntity> list = merchantDeliverFeeConfigDao.findFeeByAreaCode(areaCode);
+        return copyFeeEntityToDto(list);
+    }
+    private List<MerchantDeliverFeeConfigDTO> copyFeeEntityToDto(List<MerchantDeliverFeeConfigEntity> list){
         ArrayList<MerchantDeliverFeeConfigDTO> returnList = new ArrayList<>();
-
-        if (null!=all&&all.size()>0){
-            for (MerchantDeliverFeeConfigEntity entity : all) {
+        if (null!=list&&list.size()>0){
+            for (MerchantDeliverFeeConfigEntity entity : list) {
                 MerchantDeliverFeeConfigDTO dto = new MerchantDeliverFeeConfigDTO();
                 BeanUtils.copyProperties(entity,dto);
                 returnList.add(dto);
@@ -56,6 +66,21 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
         merchantDeliverFeeConfigDao.deleteAllData();
         ArrayList<MerchantDeliverFeeConfigEntity> saveList = new ArrayList<>();
         if (null!=list&&list.size()>0){
+            for (MerchantDeliverFeeConfigDTO dto : list) {
+                MerchantDeliverFeeConfigEntity merchantDeliverFeeConfigEntity = new MerchantDeliverFeeConfigEntity();
+                BeanUtils.copyProperties(dto,merchantDeliverFeeConfigEntity);
+                saveList.add(merchantDeliverFeeConfigEntity);
+            }
+        }
+        merchantDeliverFeeConfigDao.saveList(saveList);
+    }
+
+    @Override
+    public void clearAndSaveListByAreaCode(List<MerchantDeliverFeeConfigDTO> list) {
+        ArrayList<MerchantDeliverFeeConfigEntity> saveList = new ArrayList<>();
+        if(null!=list&&list.size()>0){
+            MerchantDeliverFeeConfigDTO deliverFeeConfigDTO = list.get(0);
+            merchantDeliverFeeConfigDao.deleteFeeByAreaCode(deliverFeeConfigDTO.getAreaCode());
             for (MerchantDeliverFeeConfigDTO dto : list) {
                 MerchantDeliverFeeConfigEntity merchantDeliverFeeConfigEntity = new MerchantDeliverFeeConfigEntity();
                 BeanUtils.copyProperties(dto,merchantDeliverFeeConfigEntity);

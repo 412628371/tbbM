@@ -18,6 +18,7 @@ public class ReqOrderCreateV2 implements Serializable {
     private AddressInfo receiver;
     @Size(max = 255,message = "备注长度过大")
     private String orderRemarks;
+    private String originOrderNo;	//重发单的原始单号 v1.4.3
     @Range(min = 1,max = 100000,message = "配送费错误")
     private Double deliveryFee;
     private Double tipFee;
@@ -29,6 +30,14 @@ public class ReqOrderCreateV2 implements Serializable {
     private OverFeeInfo overFeeInfo;
     private ThirdInfo thirdInfo;
     private Double deliveryDistance;  //配送距离, 客户端传回我们之前计算配送费时所提供的距离值 v1.41
+
+    public String getOriginOrderNo() {
+        return originOrderNo;
+    }
+
+    public void setOriginOrderNo(String originOrderNo) {
+        this.originOrderNo = originOrderNo;
+    }
 
     public Double getDeliveryDistance() {
         return deliveryDistance;

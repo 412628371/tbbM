@@ -72,6 +72,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     }
 
     /**
+     * 重新发单
+     * @param originOrderNo
+     * @return
+     */
+    public int orderResend(String originOrderNo){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1," +
+                " update_date = :p2 where order_no = :p3 and " +
+                " order_status = :p4 and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.RESEND.getValue(), new Date(), originOrderNo, EnumMerchantOrderStatus.CANCEL.getValue()));
+        getSession().clear();
+        return count;
+    }
+
+    /**
      * 超时未支付
      * @param orderNo
      * @return
@@ -109,10 +123,11 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param riderPhone
      * @param orderNo
      * @param grabOrderTime
+     * @param pickupDistance
      * @return
      */
-    public int riderGrabOrder(String riderId,String riderName,String riderPhone,String orderNo, Date grabOrderTime,
-                              Date expectFinishTime,String riderCarNo,String riderCarType){
+    public int riderGrabOrder(String riderId, String riderName, String riderPhone, String orderNo, Date grabOrderTime,
+                              Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance){
         String updateQuery = "update "+MerchantOrderEntity.class.getSimpleName()+" set orderStatus = :orderStatus , riderId = :riderId ,riderPhone = :riderPhone,riderName=:riderName ,grabOrderTime = :grabOrderTime ," +
                 " expectFinishTime=:expectFinishTime, riderCarNo=:riderCarNo, riderCarType=:riderCarType" +
                 " where orderNo = :orderNo and delFlag='0'";
@@ -126,6 +141,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         parameter.put("grabOrderTime",grabOrderTime);
         parameter.put("expectFinishTime",expectFinishTime);
         parameter.put("orderNo",orderNo);
+        parameter.put("pickup_distance",pickupDistance);
         int count =  update(updateQuery,parameter);
 //        String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_order_time = :p2, rider_id = :p3, rider_name = :p4, rider_phone = :p5 " +
 //                " , expect_finish_time=:p6 where order_no = :p7 and order_status = :p8 and del_flag = '0' ";
@@ -169,10 +185,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param finishOrderTime
      * @return
      */
-    public int riderFinishExpiredOrder(String orderNo, Date finishOrderTime,double expiredMinute){
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, finish_order_time = :p2,expired_minute =:p3 where order_no = :p4 and order_status = :p5 and del_flag = '0' ";
+    public int riderFinishExpiredOrder(String orderNo, Date finishOrderTime,double expiredMinute, double expiredCompensation){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, finish_order_time = :p2,expired_minute =:p3, expired_compensation =:p4 where order_no = :p5 and order_status = :p6 and del_flag = '0' ";
         int count =  updateBySql(sqlString,
-                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,expiredMinute,orderNo,
+                new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,expiredMinute,expiredCompensation,orderNo,
                         EnumMerchantOrderStatus.DELIVERYING.getValue()));
         getSession().clear();
         return count;
@@ -183,11 +199,18 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param orderNo
      * @return
      */
-    public boolean merchantCancel(String merchantId,String orderNo,String cancelReason){
-        String[] orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
-        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 where sender_id = :p4 and order_no = :p5 and order_status in (:p6) and del_flag = '0' ";
+    public boolean merchantCancel(String merchantId,String orderNo,String cancelReason,String waitPickCancelType,Double punishFee,Double subsidyFee){
+        String[] orderStatusArr;
+        if (StringUtils.isBlank(waitPickCancelType)){
+            orderStatusArr = new String[]{EnumMerchantOrderStatus.INIT.getValue(), EnumMerchantOrderStatus.WAITING_GRAB.getValue()};
+        }else{
+            //不为空说明 处于带取货状态
+            orderStatusArr = new String[]{EnumMerchantOrderStatus.WAITING_PICK.getValue()};
+        }
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3, wait_pick_cancel_type =:p4  ," +
+                "cancel_fine=:p5 ,cancel_compensation=:p6 where sender_id = :p7 and order_no = :p8 and order_status in (:p9) and del_flag = '0' ";
         int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
-                new Date(),cancelReason,merchantId,
+                new Date(),cancelReason,waitPickCancelType,punishFee,subsidyFee,merchantId,
                 orderNo,orderStatusArr));
         getSession().clear();
         return count == 1;
@@ -203,6 +226,20 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 where order_no = :p4  and del_flag = '0' ";
         int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
                 new Date(),cancelReason,orderNo));
+        getSession().clear();
+        return count == 1;
+    }
+    /**
+     * 骑手取消订单（待取货状态下）
+     * @param orderNo
+     * @param cancelReason
+     * @param subsidy
+     * @return
+     */
+    public boolean riderCancel(String orderNo, String cancelReason, Date date, Double subsidy){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, cancel_time = :p2 , cancel_reason=:p3 ,cancel_compensation=:p4 where order_no = :p5  and order_status=:p6  and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.CANCEL.getValue(),
+                date,cancelReason,subsidy,orderNo,EnumMerchantOrderStatus.WAITING_PICK.getValue()));
         getSession().clear();
         return count == 1;
     }
@@ -226,22 +263,23 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         if (StringUtils.isNotBlank(entity.getUserId())){
             sb.append("and user_id = :user_id  ");
             parameter.put("user_id", entity.getUserId());
-         }
+        }
          //1.41版本增添待处理字段(已取消、待付款合并为待处理)
-         if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+        if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                  MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
              sb.append("and (order_status = 'CANCEL' or order_status='INIT') ");
-            // parameter.put("order_status", entity.getOrderStatus());
-         }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+        }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+                 MerchantConstants.ORDER_LIST_QUERY_CONDITION_FINISH.equals(entity.getOrderStatus())){
+             sb.append("and (order_status = 'RESEND' or order_status='FINISH') ");
+        }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
-            sb.append("and order_status = :order_status ");
-            parameter.put("order_status", entity.getOrderStatus());
+             sb.append("and order_status = :order_status ");
+             parameter.put("order_status", entity.getOrderStatus());
         }
         if (StringUtils.isNotBlank(entity.getOrderType())){
             sb.append("and order_type = :order_type ");
             parameter.put("order_type", entity.getOrderType());
         }
-
         sb.append(" order by create_date desc ");
 
 //        sb.append("select new com.xinguang.tubobo.impl.merchant.entity.OrderPojo(id,platformCode, userId, orderNo, orderType, ratedFlag, orderStatus, payAmount, deliveryFee,  tipFee,  orderTime,  grabOrderTime,  grabItemTime,  finishOrderTime,  receiverName,  receiverPhone,  receiverAddressProvince,  receiverAddressCity,  receiverAddressDistrict,  receiverAddressStreet,  receiverAddressDetail, receiverAddressRoomNo) from MerchantOrderEntity where delFlag = '0' ");

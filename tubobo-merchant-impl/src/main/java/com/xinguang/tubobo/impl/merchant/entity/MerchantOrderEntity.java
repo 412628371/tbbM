@@ -96,7 +96,57 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	private Double weatherOverFee; //天气溢价费用
 
-	private  Double expiredMinute; //超时分钟数
+
+	private Double expiredMinute; //超时分钟数
+	private Double expiredCompensation;//超时赔付expiredCompensation
+	private  String waitPickCancelType; //带接单状态下商家取消订单原因
+
+	private Double cancelCompensation; //订单取消赔付
+	private Double cancelFine;         //订单取消罚款
+	private Double pickupDistance;	  //取货距离
+
+
+	public Double getPickupDistance() {
+		return pickupDistance;
+	}
+
+	public void setPickupDistance(Double pickupDistance) {
+		this.pickupDistance = pickupDistance;
+	}
+
+	public Double getCancelCompensation() {
+		return cancelCompensation;
+	}
+
+	public void setCancelCompensation(Double cancelCompensation) {
+		this.cancelCompensation = cancelCompensation;
+	}
+
+	public Double getCancelFine() {
+		return cancelFine;
+	}
+
+	public void setCancelFine(Double cancelFine) {
+		this.cancelFine = cancelFine;
+	}
+
+	public Double getExpiredCompensation() {
+		return expiredCompensation;
+	}
+
+	public void setExpiredCompensation(Double expiredCompensation) {
+		this.expiredCompensation = expiredCompensation;
+	}
+
+
+	public String getWaitPickCancelType() {
+		return waitPickCancelType;
+	}
+
+
+	public void setWaitPickCancelType(String waitPickCancelType) {
+		this.waitPickCancelType = waitPickCancelType;
+	}
 
 	public Double getExpiredMinute() {
 		return expiredMinute;

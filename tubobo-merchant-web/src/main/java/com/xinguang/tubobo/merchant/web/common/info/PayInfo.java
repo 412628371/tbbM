@@ -15,6 +15,33 @@ public class PayInfo implements Serializable {
     private String payStatus;//支付状态
     private String payMethod;//支付方式
     private Date payTime;//付款时间
+    private Double expiredCompensation;//超时赔付expiredCompensation
+    private Double cancelCompensation; //订单取消赔付
+    private Double cancelFine;         //订单取消罚款
+
+    public Double getExpiredCompensation() {
+        return expiredCompensation;
+    }
+
+    public void setExpiredCompensation(Double expiredCompensation) {
+        this.expiredCompensation = expiredCompensation;
+    }
+
+    public Double getCancelCompensation() {
+        return cancelCompensation;
+    }
+
+    public void setCancelCompensation(Double cancelCompensation) {
+        this.cancelCompensation = cancelCompensation;
+    }
+
+    public Double getCancelFine() {
+        return cancelFine;
+    }
+
+    public void setCancelFine(Double cancelFine) {
+        this.cancelFine = cancelFine;
+    }
 
     public Long getPayRemainMillSeconds() {
         return payRemainMillSeconds;

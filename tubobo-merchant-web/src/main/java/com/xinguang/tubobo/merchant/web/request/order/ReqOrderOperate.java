@@ -10,6 +10,15 @@ public class ReqOrderOperate {
     private String orderNo;
     @NotBlank(message = "操作类型不能为空")
     private String command;
+    private String waitPickCancelType; //已接单状态下取消原因,为null时说明是待接单状态下取消
+
+    public String getWaitPickCancelType() {
+        return waitPickCancelType;
+    }
+
+    public void setWaitPickCancelType(String waitPickCancelType) {
+        this.waitPickCancelType = waitPickCancelType;
+    }
 
     public String getCommand() {
         return command;

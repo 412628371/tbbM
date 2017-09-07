@@ -15,6 +15,33 @@ public class MerchantDeliverFeeConfigDTO implements Serializable{
 	private Double beginDistance;
 	private Double endDistance;
 	private Double perFee;
+	private String areaCode;
+	private String cityCode;
+	private String provinceCode;
+
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
+
+	public String getCityCode() {
+		return cityCode;
+	}
+
+	public void setCityCode(String cityCode) {
+		this.cityCode = cityCode;
+	}
+
+	public String getProvinceCode() {
+		return provinceCode;
+	}
+
+	public void setProvinceCode(String provinceCode) {
+		this.provinceCode = provinceCode;
+	}
 
 	public Double getInitDistance() {
 		return initDistance;

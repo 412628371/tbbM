@@ -3,15 +3,13 @@ package com.xinguang.tubobo.impl.merchant.manager;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.StringUtils;
-import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
-import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantToAdminServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
@@ -33,9 +31,8 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
     @Autowired
     private OrderService orderService;
     @Autowired
-    private TuboboReportDateMqHelp tuboboReportDateMqHelp;
-    @Autowired
     RmqNoticeProducer rmqNoticeProducer;
+
     /**
      * 查询商家详细信息
      * @param userId
@@ -98,7 +95,6 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
             if("CONSIGNOR".equals(identifyType)){
 //                tuboboReportDateMqHelp.goodOwnerStatusVerify(userId,merchantStatus);
             }else{
-                tuboboReportDateMqHelp.merchantStatusVerify(userId,merchantStatus);
                 if (EnumAuthentication.FAIL.getValue().equals(merchantStatus)){
                     rmqNoticeProducer.sendAuditNotice(userId,false,reason);
                 }else if (EnumAuthentication.SUCCESS.getValue().equals(merchantStatus)){
