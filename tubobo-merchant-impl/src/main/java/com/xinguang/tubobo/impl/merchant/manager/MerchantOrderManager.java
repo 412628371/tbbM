@@ -313,7 +313,7 @@ public class MerchantOrderManager extends BaseService {
 			}
 		}
 		if (expiredCompensation!=null&&expiredCompensation>0.0){
-			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue()*100,merchant.getAccountId(),entity.getOrderNo(),MerchantConstants.OVERTIME_DELIVERY);
+			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue(), merchant.getAccountId(),entity.getOrderNo(),MerchantConstants.OVERTIME_DELIVERY);
 			TbbAccountResponse<SubsidyInfo> subResponse = tbbAccountService.subsidize(subsidyRequest);
 			if (subResponse.isSucceeded()){
 				logger.info("骑手超时送达任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
