@@ -74,6 +74,15 @@ public class ShopIdentifyRequest implements Serializable {
 
     //@NotBlank(message = "区域编码不能为空")
     private String addressAdCode;//高德区域编码
+    private String bdCode;					//bd邀请码
+
+    public String getBdCode() {
+        return bdCode;
+    }
+
+    public void setBdCode(String bdCode) {
+        this.bdCode = bdCode;
+    }
 
     public String getHygieneLicense() {
         return hygieneLicense;
