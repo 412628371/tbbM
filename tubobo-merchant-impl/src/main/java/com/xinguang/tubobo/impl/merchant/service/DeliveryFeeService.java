@@ -158,7 +158,7 @@ public class DeliveryFeeService  {
      * @param distance 单位km
      * @return
      */
-    public Double sumDeliveryFeeByDistance(Double distance, String areaCode){
+    public Double sumDeliveryFeeByDistance(Double distance, String areaCode) throws MerchantClientException {
         List<MerchantDeliverFeeConfigDTO> all = merchantDeliverFeeConfigService.findFeeByAreaCode(areaCode);
         //double distanceInKm = Math.ceil((distance/1000));
         double distanceInKm = (distance/1000);
@@ -208,7 +208,7 @@ public class DeliveryFeeService  {
                 fee  = CalCulateUtil.add(fee, initFee);
         }else{
             //出现异常,后台数据中无数据时采用此套代码
-            fee = 2.5;
+           /* fee = 2.5;
             double firstLevelPricePerKM = 1.0;
             double secondLevelDistance = 3.0;
             double secondLevelPricePerKM = 2.0;
@@ -222,8 +222,10 @@ public class DeliveryFeeService  {
                     fee+= (distanceInKm-secondLevelDistance)*secondLevelPricePerKM;
                 }
 
-            }
+            }*/
             logger.info("数据库无数据,计算配送费失效,请检查配送费阶梯价设置,现已采取后台默认配价");
+            throw new MerchantClientException(EnumRespCode.CANT_FIND_DELIVERY_RULE);
+
         }
         return fee;
 
