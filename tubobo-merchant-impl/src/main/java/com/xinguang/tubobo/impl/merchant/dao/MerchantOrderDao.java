@@ -129,7 +129,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     public int riderGrabOrder(String riderId, String riderName, String riderPhone, String orderNo, Date grabOrderTime,
                               Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance){
         String updateQuery = "update "+MerchantOrderEntity.class.getSimpleName()+" set orderStatus = :orderStatus , riderId = :riderId ,riderPhone = :riderPhone,riderName=:riderName ,grabOrderTime = :grabOrderTime ," +
-                " expectFinishTime=:expectFinishTime, riderCarNo=:riderCarNo, riderCarType=:riderCarType" +
+                " expectFinishTime=:expectFinishTime, riderCarNo=:riderCarNo, riderCarType=:riderCarType,pickupDistance=:pickupDistance" +
                 " where orderNo = :orderNo and delFlag='0'";
         Parameter parameter = new Parameter();
         parameter.put("orderStatus",EnumMerchantOrderStatus.WAITING_PICK.getValue());
@@ -141,7 +141,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         parameter.put("grabOrderTime",grabOrderTime);
         parameter.put("expectFinishTime",expectFinishTime);
         parameter.put("orderNo",orderNo);
-        parameter.put("pickup_distance",pickupDistance);
+        parameter.put("pickupDistance",pickupDistance);
         int count =  update(updateQuery,parameter);
 //        String sqlString = "update tubobo_merchant_order set order_status = :p1, grab_order_time = :p2, rider_id = :p3, rider_name = :p4, rider_phone = :p5 " +
 //                " , expect_finish_time=:p6 where order_no = :p7 and order_status = :p8 and del_flag = '0' ";

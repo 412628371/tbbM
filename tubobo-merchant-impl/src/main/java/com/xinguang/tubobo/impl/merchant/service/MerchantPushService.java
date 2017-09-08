@@ -37,7 +37,7 @@ public class MerchantPushService {
     private final String androidActivity="com.toobob.test.PopupPushActivity";
     //String andriodMusicName=config.getIosMusic();
     private static final String andriodMusicBar="0";  //安卓端开启声音样式 0开启 1关闭
-    private static final String iosMusicRiderCancelName="RiderCancelSound.wav ";
+    private static final String iosMusicRiderCancelName="RiderCancelSound.wav";
 
 
 
