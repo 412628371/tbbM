@@ -23,6 +23,8 @@ public class MerchantInfoDTO implements Serializable{
 	private String addressDistrict;//地址名称
 	private String addressDetail;//地址详情
 	private String addressStreet;//地址名称
+	private String addressRoomNo;			//门牌号
+
 	private String avatarUrl;
 	private String idCardFrontImageUrl;
 	private String idCardBackImageUrl;
@@ -323,6 +325,14 @@ public class MerchantInfoDTO implements Serializable{
 
 	public void setProviderName(String providerName) {
 		this.providerName = providerName;
+	}
+
+	public String getAddressRoomNo() {
+		return addressRoomNo;
+	}
+
+	public void setAddressRoomNo(String addressRoomNo) {
+		this.addressRoomNo = addressRoomNo;
 	}
 
 	@Override
