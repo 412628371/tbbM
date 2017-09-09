@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -297,7 +298,7 @@ public class MerchantOrderManager extends BaseService {
 	/**
 	 * 骑手完成订单
 	 */
-	public boolean riderFinishOrder(String orderNo, Date finishOrderTime, Double expiredMinute, Double expiredCompensation,boolean enableNotice){
+	public boolean riderFinishOrder(String orderNo, Date finishOrderTime, Double expiredMinute,  Double expiredCompensation, boolean enableNotice){
 		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
 		MerchantInfoEntity merchant = merchantInfoService.findByUserId(entity.getUserId());
 		if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
@@ -305,7 +306,8 @@ public class MerchantOrderManager extends BaseService {
 			return false;
 		}
 		logger.info("处理骑手送达完成：orderNo:{}",orderNo);
-		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation)==1;
+		expiredCompensation=expiredMinute==null?expiredCompensation:0.0;
+		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation/100)==1;
 		if (result){
 			if (enableNotice){
 				//发送骑手完成送货通知
@@ -316,10 +318,10 @@ public class MerchantOrderManager extends BaseService {
 			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue(), merchant.getAccountId(),entity.getOrderNo(),MerchantConstants.OVERTIME_DELIVERY);
 			TbbAccountResponse<SubsidyInfo> subResponse = tbbAccountService.subsidize(subsidyRequest);
 			if (subResponse.isSucceeded()){
-				logger.info("骑手超时送达任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
+				logger.info("骑手超时送达任务您获得补贴 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
 						entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),expiredCompensation);
 			}else {
-				logger.error("商家取消任务罚款 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
+				logger.error("骑手超时送达任务您获得补贴 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
 						entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),expiredCompensation,subResponse.getErrorCode(),subResponse.getMessage());
 			}
 		}
