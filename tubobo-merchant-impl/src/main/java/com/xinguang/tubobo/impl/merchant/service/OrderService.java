@@ -14,6 +14,8 @@ import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,6 +31,9 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class OrderService extends BaseService {
+    private Logger logger = LoggerFactory.getLogger(OrderService.class);
+
+
     @Autowired
     private MerchantOrderDao merchantOrderDao;
     @Autowired
@@ -165,9 +170,12 @@ public class OrderService extends BaseService {
         //double orderOverTime = getOrderOverTime(finishOrderTime, orderNo);
         if (0.0 == expiredMinute) {
             //订单未超时
+            logger.info("保存未超时订单：orderNo:{},expiredMinute:{}",orderNo,expiredMinute);
             return merchantOrderDao.riderFinishOrder(orderNo, finishOrderTime);
+
         } else {
             //订单超时
+            logger.info("保存超时订单：orderNo:{},expiredMinute:{},,赔付金额:{}",orderNo,expiredMinute,expiredCompensation);
             return merchantOrderDao.riderFinishExpiredOrder(orderNo, finishOrderTime, expiredMinute, expiredCompensation);
         }
     }

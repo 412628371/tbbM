@@ -305,7 +305,7 @@ public class MerchantOrderManager extends BaseService {
 			logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
 			return false;
 		}
-		logger.info("处理骑手送达完成：orderNo:{}",orderNo);
+		logger.info("处理骑手送达完成：orderNo:{},expiredCompensation:{}",orderNo,expiredCompensation);
 		expiredCompensation=expiredMinute==null?0.0:expiredCompensation;
 		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation/100)==1;
 		if (result){
