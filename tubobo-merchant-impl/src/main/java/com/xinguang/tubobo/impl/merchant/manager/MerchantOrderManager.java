@@ -178,7 +178,7 @@ public class MerchantOrderManager extends BaseService {
 							//	 进行扣款
 							double punishd=punishFee.doubleValue();
 							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)punishd*100,merchant.getAccountId(),MerchantConstants.MERCHANT_CANCEL_FINE);
-							TbbAccountResponse<FineInfo> fineResponse = tbbAccountService.fine(fineRequest);
+							TbbAccountResponse<FineInfo> fineResponse = tbbAccountService.fineAny(fineRequest);
 							if (fineResponse.isSucceeded()){
 								logger.info("商家取消任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
 										entity.getOrderNo(),entity.getRiderId(),merchant.getAccountId(),punishd);
