@@ -138,6 +138,10 @@ public class MerchantInfoService extends BaseService {
 		Parameter parameter = new Parameter();
 		StringBuffer sb = new StringBuffer();
 		sb.append("select * from tubobo_merchant_info where del_flag = '0' ");
+		if (null != entity.getProviderId()){
+			sb.append("and provider_id = :provider_id ");
+			parameter.put("provider_id", entity.getProviderId());
+		}
 		if (StringUtils.isNotBlank(entity.getMerchantStatus())){
 			sb.append("and merchant_status = :merchant_status ");
 			parameter.put("merchant_status", entity.getMerchantStatus());
