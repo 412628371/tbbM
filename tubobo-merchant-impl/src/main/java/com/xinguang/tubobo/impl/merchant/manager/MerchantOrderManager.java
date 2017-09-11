@@ -177,7 +177,8 @@ public class MerchantOrderManager extends BaseService {
 						if (punishFee!=null&&punishFee>0.0){
 							//	 进行扣款
 							double punishd=punishFee.doubleValue();
-							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)punishd*100,merchant.getAccountId(),MerchantConstants.MERCHANT_CANCEL_FINE);
+
+							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)punishd*100,merchant.getAccountId(),MerchantConstants.MERCHANT_CANCEL_FINE,null);
 							TbbAccountResponse<FineInfo> fineResponse = tbbAccountService.fineAny(fineRequest);
 							if (fineResponse.isSucceeded()){
 								logger.info("商家取消任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
@@ -315,7 +316,7 @@ public class MerchantOrderManager extends BaseService {
 			}
 		}
 		if (expiredCompensation!=null&&expiredCompensation>0.0){
-			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue(), merchant.getAccountId(),entity.getOrderNo(),MerchantConstants.OVERTIME_DELIVERY);
+			SubsidyRequest subsidyRequest = new SubsidyRequest(expiredCompensation.intValue(), merchant.getAccountId(),entity.getOrderNo(),MerchantConstants.OVERTIME_DELIVERY,null);
 			TbbAccountResponse<SubsidyInfo> subResponse = tbbAccountService.subsidize(subsidyRequest);
 			if (subResponse.isSucceeded()){
 				logger.info("骑手超时送达任务您获得补贴 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
@@ -435,7 +436,7 @@ public class MerchantOrderManager extends BaseService {
 			result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy());
 			if (dtoCancel.getSubsidy() != null && dtoCancel.getSubsidy() > 0){
 				double subsidy=dtoCancel.getSubsidy();
-				SubsidyRequest subsidyRequest = new SubsidyRequest((int)subsidy*100,accountId,orderNo,MerchantConstants.MERCHANT_CANCEL_BY_RIDER_SUBSIDY);
+				SubsidyRequest subsidyRequest = new SubsidyRequest((int)subsidy*100,accountId,orderNo,MerchantConstants.MERCHANT_CANCEL_BY_RIDER_SUBSIDY,null);
 				TbbAccountResponse<SubsidyInfo> subsidyResponse = tbbAccountService.subsidize(subsidyRequest);
 				if (subsidyResponse.isSucceeded()){
 					logger.info("骑手任务被取消 骑手赔付 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
