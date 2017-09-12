@@ -7,6 +7,7 @@ package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.alibaba.fastjson.JSON;
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
@@ -179,8 +180,8 @@ public class MerchantOrderManager extends BaseService {
 						if (punishFee!=null&&punishFee>0.0){
 							//	 进行扣款
 							double punishd=punishFee.doubleValue();
-
-							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)(punishd*100),merchant.getAccountId(),MerchantConstants.MERCHANT_CANCEL_FINE,null);
+							double punishFen=CalCulateUtil.mul(punishd,100);
+							FineRequest fineRequest = new FineRequest(entity.getOrderNo(),(int)(punishFen),merchant.getAccountId(),MerchantConstants.MERCHANT_CANCEL_FINE,null);
 							TbbAccountResponse<FineInfo> fineResponse = tbbAccountService.fineAny(fineRequest);
 							if (fineResponse.isSucceeded()){
 								logger.info("商家取消任务罚款 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
@@ -430,7 +431,9 @@ public class MerchantOrderManager extends BaseService {
 		dto.setLatitude(entity.getReceiverLatitude());
 		return dto;
 	}
-
+    /**
+     * 骑手取消订单
+    * */
 	public void dealFromRiderCancelOrders(MerchantTaskOperatorCallbackDTO dtoCancel) {
 		String orderNo = dtoCancel.getTaskNo();
 		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
@@ -452,7 +455,8 @@ public class MerchantOrderManager extends BaseService {
 			result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy());
 			if (dtoCancel.getSubsidy() != null && dtoCancel.getSubsidy() > 0){
 				double subsidy=dtoCancel.getSubsidy();
-				SubsidyRequest subsidyRequest = new SubsidyRequest((int)(subsidy*100),accountId,orderNo,MerchantConstants.MERCHANT_CANCEL_BY_RIDER_SUBSIDY,null);
+				double subsidyFen=CalCulateUtil.mul(subsidy,100);
+				SubsidyRequest subsidyRequest = new SubsidyRequest((int)(subsidyFen),accountId,orderNo,MerchantConstants.MERCHANT_CANCEL_BY_RIDER_SUBSIDY,null);
 				TbbAccountResponse<SubsidyInfo> subsidyResponse = tbbAccountService.subsidize(subsidyRequest);
 				if (subsidyResponse.isSucceeded()){
 					logger.info("骑手任务被取消 骑手赔付 成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
@@ -471,6 +475,7 @@ public class MerchantOrderManager extends BaseService {
 
 		logger.info("骑手取消配送：orderNo:{}",orderNo);
 	}
+
 
 
 }
