@@ -174,7 +174,7 @@ public class MerchantInfoManager {
             existEntity.setShopImageUrl2(infoEntity.getShopImageUrl2());
             existEntity.setShopLicencesImgUrl(infoEntity.getShopLicencesImgUrl());//营业执照
             existEntity.setHygieneLicense(infoEntity.getHygieneLicense());//卫生许可证
-            existEntity.setBdCode(infoEntity.getBdCode());//bd邀请码
+            //existEntity.setBdCode(infoEntity.getBdCode());//bd邀请码
             existEntity.setMerchantName(infoEntity.getMerchantName());
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());
