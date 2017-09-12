@@ -16,10 +16,7 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.FineRequest;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.request.SubsidyRequest;
-import com.xinguang.tubobo.account.api.response.FineInfo;
-import com.xinguang.tubobo.account.api.response.PayInfo;
-import com.xinguang.tubobo.account.api.response.SubsidyInfo;
-import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.account.api.response.*;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -43,9 +40,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+
+import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.CANT_CANCEL_DUE_BALANCE;
 
 
 @Service
@@ -138,10 +136,12 @@ public class MerchantOrderManager extends BaseService {
 
 	}
 
+
+
 	/**
 	 * 商家取消订单
 	 */
-	public boolean cancelOrder(String merchantId,String orderNo,boolean isAdminCancel,String waitPickCancelType){
+	public boolean cancelOrder(String merchantId,String orderNo,boolean isAdminCancel,String waitPickCancelType) throws MerchantClientException {
 		MerchantOrderEntity entity = orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
 		MerchantInfoEntity merchant = merchantInfoService.findByUserId(merchantId);
 
@@ -169,6 +169,8 @@ public class MerchantOrderManager extends BaseService {
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
 				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType,null,null);
 			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())||EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+				//判断余额是否可以支付
+				judgeBalanceForCancel(merchant);
 				TbbTaskResponse<Double> taskResp = taskDispatchService.cancelTask(orderNo);
 				if (taskResp.isSucceeded()){
 					result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
@@ -203,6 +205,20 @@ public class MerchantOrderManager extends BaseService {
 			return result;
 		}
 
+	}
+	/**
+	 * 	判断余额是否允许取消订单
+	 */
+	private void judgeBalanceForCancel(MerchantInfoEntity merchant) throws MerchantClientException {
+		TbbAccountResponse<AccountInfo> accountInfo = tbbAccountService.getAccountInfo(merchant.getAccountId());
+		long balance = accountInfo.getData().getBalance();
+		Double punishDouble = taskDispatchService.getCancelPrice().getData();
+		if (null!=punishDouble){
+            long punishLong=(long)(punishDouble*100);
+            if (balance<punishLong){
+                throw new MerchantClientException(CANT_CANCEL_DUE_BALANCE.FAIL);
+            }
+        }
 	}
 
 	/**
