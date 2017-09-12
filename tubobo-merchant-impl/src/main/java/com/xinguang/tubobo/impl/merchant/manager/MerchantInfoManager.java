@@ -109,8 +109,9 @@ public class MerchantInfoManager {
                 entity.setAccountId(existEntity.getAccountId());
                 entity.setId(existEntity.getId());
                 entity.setCreateDate(existEntity.getCreateDate());
-                entity.setAvatarUrl(existEntity.getAvatarUrl());            //头像
+                entity.setAvatarUrl(existEntity.getAvatarUrl());        //头像
                 entity.setApplyDate(new Date());
+                entity.setBdCode(existEntity.getBdCode());              //bdCode
                 boolean result = false;
                 //v1.41支付密码单独设置  此处向下兼容
                 if (null!=payPassword){
