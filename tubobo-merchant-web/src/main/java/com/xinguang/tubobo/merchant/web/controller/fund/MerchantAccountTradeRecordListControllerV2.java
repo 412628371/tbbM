@@ -82,7 +82,8 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
         if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.SUCCEED.equals(operInfo.getStatus())){
             //商家充值,
             record.setType(null);
-            amount = "+"+amount;
+            amount = amount;
+            record.setType("账户充值");
             record.setTradeStatus("账户充值");
         }
         if (TbbConstants.OperationType.PAY == operInfo.getType()){
