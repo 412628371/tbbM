@@ -452,7 +452,7 @@ public class MerchantOrderManager extends BaseService {
 		if (result) {
 			//订单返还
 			// 被取消任务补贴
-			result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy());
+			result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy(),entity.getUserId());
 			if (dtoCancel.getSubsidy() != null && dtoCancel.getSubsidy() > 0){
 				double subsidy=dtoCancel.getSubsidy();
 				double subsidyFen=CalCulateUtil.mul(subsidy,100);

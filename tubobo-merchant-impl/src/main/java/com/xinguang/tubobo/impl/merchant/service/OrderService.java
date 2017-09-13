@@ -125,7 +125,7 @@ public class OrderService extends BaseService {
     }
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public boolean riderCancel(String orderNo, String cancelReason, Date now, Double subsidy) {
+    public boolean riderCancel(String orderNo, String cancelReason, Date now, Double subsidy,String merchantId) {
         return merchantOrderDao.riderCancel(orderNo, cancelReason,now,subsidy);
     }
 
