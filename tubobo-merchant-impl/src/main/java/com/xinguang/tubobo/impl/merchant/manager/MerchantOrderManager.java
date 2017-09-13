@@ -170,8 +170,10 @@ public class MerchantOrderManager extends BaseService {
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
 				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType,null,null);
 			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())||EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
-				//判断余额是否可以支付
-				judgeBalanceForCancel(merchant);
+				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+					//waitgrab时因为要判断余额是否可以支付
+					judgeBalanceForCancel(merchant);
+				}
 				TbbTaskResponse<Double> taskResp = taskDispatchService.cancelTask(orderNo);
 				if (taskResp.isSucceeded()){
 					result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
