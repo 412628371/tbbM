@@ -42,7 +42,7 @@ public abstract class MerchantBaseController <P, R>{
     @RequestMapping(method = RequestMethod.POST, value = "", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ClientResp<R> request(@RequestBody(required = false) P req,
-                                 @RequestHeader(MerchantConstants.TOKEN_HEADER) String token,@RequestHeader(MerchantConstants.REQUESTID_HEADER) String requestID) {
+                                 @RequestHeader(MerchantConstants.TOKEN_HEADER) String token,@RequestHeader(value="MerchantConstants.REQUESTID_HEADER",required = false) String requestID) {
         logger.info("controller accept request -reqID:{}",requestID);
         // 验证请求参数
         try {
