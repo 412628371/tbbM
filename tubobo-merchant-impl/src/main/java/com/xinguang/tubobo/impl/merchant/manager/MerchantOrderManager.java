@@ -217,7 +217,7 @@ public class MerchantOrderManager extends BaseService {
 		if (null!=punishDouble){
             long punishLong=(long)(punishDouble*100);
             if (balance<punishLong){
-                throw new MerchantClientException(CANT_CANCEL_DUE_BALANCE.FAIL);
+                throw new MerchantClientException(CANT_CANCEL_DUE_BALANCE);
             }
         }
 	}
