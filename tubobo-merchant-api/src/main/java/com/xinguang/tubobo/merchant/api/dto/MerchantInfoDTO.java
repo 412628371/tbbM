@@ -23,6 +23,8 @@ public class MerchantInfoDTO implements Serializable{
 	private String addressDistrict;//地址名称
 	private String addressDetail;//地址详情
 	private String addressStreet;//地址名称
+	private String addressRoomNo;			//门牌号
+
 	private String avatarUrl;
 	private String idCardFrontImageUrl;
 	private String idCardBackImageUrl;
@@ -47,6 +49,19 @@ public class MerchantInfoDTO implements Serializable{
 	private Date updateDate;
 
 	private String cityCode;
+	private String hygieneLicense;		//卫生许可证
+
+	private Date enterTime;			 //入住驿站时间
+	private Long providerId;			 //服务商ID
+	private String providerName;			 //服务商名称
+
+	public String getHygieneLicense() {
+		return hygieneLicense;
+	}
+
+	public void setHygieneLicense(String hygieneLicense) {
+		this.hygieneLicense = hygieneLicense;
+	}
 
 	public String getCityCode() {
 		return cityCode;
@@ -286,6 +301,38 @@ public class MerchantInfoDTO implements Serializable{
 
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
+	}
+
+	public Date getEnterTime() {
+		return enterTime;
+	}
+
+	public void setEnterTime(Date enterTime) {
+		this.enterTime = enterTime;
+	}
+
+	public Long getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(Long providerId) {
+		this.providerId = providerId;
+	}
+
+	public String getProviderName() {
+		return providerName;
+	}
+
+	public void setProviderName(String providerName) {
+		this.providerName = providerName;
+	}
+
+	public String getAddressRoomNo() {
+		return addressRoomNo;
+	}
+
+	public void setAddressRoomNo(String addressRoomNo) {
+		this.addressRoomNo = addressRoomNo;
 	}
 
 	@Override

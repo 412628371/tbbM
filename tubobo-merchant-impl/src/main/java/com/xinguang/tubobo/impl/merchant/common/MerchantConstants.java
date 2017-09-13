@@ -14,6 +14,8 @@ public class MerchantConstants {
 
     public static final String ORDER_LIST_QUERY_CONDITION_ALL= "all";
     public static final String ORDER_LIST_QUERY_CONDITION_UNHANDLE= "UNHANDLE";
+    public static final String ORDER_LIST_QUERY_CONDITION_FINISH= "FINISH";
+
 
 
 
@@ -31,6 +33,8 @@ public class MerchantConstants {
 
     //    public static final String DEFAULT_PAY_PASSWORD = "111111";
     public static final String TOKEN_HEADER = "Authorization";
+    public static final String REQUESTID_HEADER = "requestID";
+;
     public static final Double DISPATCH_RADIUS_BY_KiloMILLS = 3.00;
     public static final int PAY_EXPIRED_TIME_BY_MilSECONDS = 1800000;
     public static final int GRAB_EXPIRED_TIME_BY_MilSECONDS = 300000;
@@ -40,6 +44,10 @@ public class MerchantConstants {
     public static final String MERCHANT_RECHARGE_TITLE = "商家充值";
     public static final String PAY_REJECT_REMARKS_OVERTIME = "暂无人接单，订单已取消";
     public static final String PAY_REJECT_REMARKS_CANCEL = "订单已取消  ";
+    public static final String MERCHANT_CANCEL_FINE = "罚款: 骑手接单后取消订单";
+    public static final String MERCHANT_CANCEL_BY_RIDER_SUBSIDY = "赔付: 骑手取消订单";
+    public static final String OVERTIME_DELIVERY = "赔付: 订单超时送达";
+
 
 
 

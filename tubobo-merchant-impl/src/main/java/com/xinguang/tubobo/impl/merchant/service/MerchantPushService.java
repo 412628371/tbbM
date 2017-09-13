@@ -37,6 +37,7 @@ public class MerchantPushService {
     private final String androidActivity="com.toobob.test.PopupPushActivity";
     //String andriodMusicName=config.getIosMusic();
     private static final String andriodMusicBar="0";  //安卓端开启声音样式 0开启 1关闭
+    private static final String iosMusicRiderCancelName="RiderCancelSound.wav";
 
 
 
@@ -61,7 +62,7 @@ public class MerchantPushService {
             logger.error("push to userId:{},content:{},title:{}.异常：",userId,content,title,e);
         }
     }
-    public void pushToUserWithSound(String userId,String content,String title,String extraJson){
+    public void pushToUserWithSound(String userId,String content,String title,String extraJson,String musicName){
         List<String> list = new ArrayList<>(1);
         list.add(userId);
         Options options = Options.builder()
@@ -71,7 +72,7 @@ public class MerchantPushService {
                 .setiOSBadge(0)
                 .setAndroidOpenType(Constance.AndroidOpenType.NONE)
                 .setExtParameters(extraJson)
-                .setiOSMusic(config.getIosMusic())
+                .setiOSMusic(musicName)
                 .setAndroidPopupActivity(androidActivity)
                 .setAndroidNotificationBarType("2")  //与客户端约定超时声音提示的样式为2 默认为1
                 .build();
@@ -203,7 +204,7 @@ public class MerchantPushService {
     * 推送订单 (带声音适配安卓)
     * */
     private  String  generateOrderPushParamWithSound(String userId,
-                                                  Long id,String orderType,String orderNo,String orderStatus){
+                                                  Long id,String orderType,String orderNo,String orderStatus,String musicName){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setId(String.valueOf(id));
         paramVo.setOrderNo(orderNo);
@@ -215,7 +216,7 @@ public class MerchantPushService {
         noticePushVo.setUserId(userId);
         noticePushVo.setType(MerchantConstants.getPushParamByOrderType(orderType));
         //noticePushVo.set_NOTIFICATION_BAR_STYLE(andriodMusicBar);
-        noticePushVo.setAndroidMusicName(config.getIosMusic());
+        noticePushVo.setAndroidMusicName(musicName);
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
@@ -246,6 +247,7 @@ public class MerchantPushService {
      * @param entity
      */
     public void pushOrderNotice(PushNoticeEntity entity){
+        String musicName;
         if (entity == null)
             return;
         boolean isOpen = false;
@@ -257,12 +259,22 @@ public class MerchantPushService {
                 return;
             if (settingsEntity.getPushMsgOrderExpired() &&
                     EnumOrderNoticeType.GRAB_EXPIRED.getValue().equals(entity.getOrderOperateType())){
+                //订单超时
                 isOpen = true;
                 if (settingsEntity.getPushMsgVoiceOpen()){
-                    //订单超时 语音提醒 TODO param 修改适配andriod
-                    String data = generateOrderPushParamWithSound(entity.getUserId(),
-                            entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType());
-                    pushToUserWithSound(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
+                    //语音提醒 TODO param 修改适配andriod
+                    musicName=config.getIosMusic();
+                    pushWithSound(entity, musicName);
+                    return;
+                }
+            }
+            if (EnumOrderNoticeType.RIDER_CANCEL.getValue().equals(entity.getOrderOperateType())){
+                //骑手取消订单推送
+                isOpen = true;
+                if (settingsEntity.getPushMsgVoiceOpen()){
+                    //语音提醒
+                    musicName=iosMusicRiderCancelName;
+                    pushWithSound(entity, musicName);
                     return;
                 }
             }
@@ -281,6 +293,12 @@ public class MerchantPushService {
                     entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType());
             pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
         }
+    }
+
+    private void pushWithSound(PushNoticeEntity entity, String musicName) {
+        String data = generateOrderPushParamWithSound(entity.getUserId(),
+                entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType(),musicName);
+        pushToUserWithSound(entity.getUserId(),entity.getContent(),entity.getTitle(), data,musicName);
     }
    /* public static void main(String[] args) {
 //        String s = generateCommonPushParam("30126",EnumNoticeType.AUDIT,12L);

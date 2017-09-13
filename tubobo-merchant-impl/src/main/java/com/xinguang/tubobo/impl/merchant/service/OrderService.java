@@ -14,6 +14,8 @@ import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,6 +31,9 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class OrderService extends BaseService {
+    private Logger logger = LoggerFactory.getLogger(OrderService.class);
+
+
     @Autowired
     private MerchantOrderDao merchantOrderDao;
     @Autowired
@@ -109,14 +114,19 @@ public class OrderService extends BaseService {
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public boolean merchantCancel(String merchantId, String orderNo, String cancelReason) {
-        return merchantOrderDao.merchantCancel(merchantId, orderNo, cancelReason);
+    public boolean merchantCancel(String merchantId, String orderNo, String cancelReason,String waitPickCancelType,Double punishFee,Double subsidyFee) {
+        return merchantOrderDao.merchantCancel(merchantId, orderNo, cancelReason,waitPickCancelType,punishFee,subsidyFee);
     }
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public boolean adminCancel(String merchantId, String orderNo, String cancelReason) {
         return merchantOrderDao.adminCancel(orderNo, cancelReason);
+    }
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public boolean riderCancel(String orderNo, String cancelReason, Date now, Double subsidy,String merchantId) {
+        return merchantOrderDao.riderCancel(orderNo, cancelReason,now,subsidy);
     }
 
     /**
@@ -135,10 +145,10 @@ public class OrderService extends BaseService {
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public int riderGrabOrder(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
-                              Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType) {
+                              Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance) {
         //v1.41预计送达时间改为从规则表中获得
         //Date expectFinishTimeDueRule = getExpectFinishTimeDueRule(orderNo,grabOrderTime);
-        return merchantOrderDao.riderGrabOrder(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, riderCarNo, riderCarType);
+        return merchantOrderDao.riderGrabOrder(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, riderCarNo, riderCarType,pickupDistance);
     }
 
     /**
@@ -155,15 +165,18 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int riderFinishOrder(String merchantId, String orderNo, Date finishOrderTime) {
+    public int riderFinishOrder(String merchantId, String orderNo, Date finishOrderTime, Double expiredMinute, Double expiredCompensation) {
 
-        double orderOverTime = getOrderOverTime(finishOrderTime, orderNo);
-        if (0.0 == orderOverTime) {
+        //double orderOverTime = getOrderOverTime(finishOrderTime, orderNo);
+        if (0.0 == expiredMinute) {
             //订单未超时
+            logger.info("保存未超时订单：orderNo:{},expiredMinute:{}",orderNo,expiredMinute);
             return merchantOrderDao.riderFinishOrder(orderNo, finishOrderTime);
+
         } else {
             //订单超时
-            return merchantOrderDao.riderFinishExpiredOrder(orderNo, finishOrderTime, orderOverTime);
+            logger.info("保存超时订单：orderNo:{},expiredMinute:{},,赔付金额:{}",orderNo,expiredMinute,expiredCompensation);
+            return merchantOrderDao.riderFinishExpiredOrder(orderNo, finishOrderTime, expiredMinute, expiredCompensation);
         }
     }
 
@@ -183,6 +196,16 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int orderExpire(String merchantId, String orderNo, Date expireTime) {
         int count = merchantOrderDao.orderExpire(orderNo, expireTime);
+        return count;
+    }
+
+    /**
+     * 重新发单
+     */
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public int orderResend(String merchantId, String originOrderNo){
+        int count = merchantOrderDao.orderResend(originOrderNo);
         return count;
     }
 

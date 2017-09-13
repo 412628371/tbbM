@@ -70,14 +70,16 @@ public class DeliveryFeeService  {
     }
 */
 
-    public HashMap<Double, Double>  sumDeliveryFeeByLocation(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
-        double distance = sumDeliveryDistanceMerchant(userId,lat,lng);
-        HashMap<Double, Double> map = new HashMap<>();
-        map.put(distance,sumDeliveryFeeByDistance(distance));
-        return map;
+//    public HashMap<Double, Double>  sumDeliveryFeeByLocation(String userId,Double lat,Double lng,String goodsType) throws MerchantClientException {
+//        double distance = sumDeliveryDistanceMerchant(userId,lat,lng);
+//        HashMap<Double, Double> map = new HashMap<>();
+//        map.put(distance,sumDeliveryFeeByDistance(distance));
+//        return map;
+//    }
+    public Double sumDeliveryFeeByLocation(Double distance,String areaCode,String goodsType) throws MerchantClientException {
+        return sumDeliveryFeeByDistance(distance, areaCode);
     }
-    public  HashMap<Double, Double> sumChepeiFee(String carType,double lng1,double lat1,double lng2,double lat2) throws MerchantClientException {
-        double distance = routePlanning.getDistanceWithCar(lng1,lat1,lng2,lat2);
+    public Double sumChepeiFee(String carType, Double distance) throws MerchantClientException {
         Double distanceByKm = Math.ceil(distance/1000);
         CarTypeDTO carTypeDTO ;
         carTypeDTO =  adminToMerchantService.queryCarTypeInfo(carType);
@@ -91,15 +93,11 @@ public class DeliveryFeeService  {
         if (distanceByKm>startDistance){
             distanceByKm-=startDistance;
         }else {
-            HashMap<Double, Double> map = new HashMap<>();
-            map.put(distance,fee);
-            return map;
+            return fee;
         }
         double overDistanceFee = distanceByKm*beyondPrice;
         fee+=overDistanceFee;
-        HashMap<Double, Double> map = new HashMap<>();
-        map.put(distance,fee);
-        return map;
+        return fee;
     }
     public double sumDeliveryDistanceMerchant(String userId,Double lat,Double lng) throws MerchantClientException {
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
@@ -160,8 +158,8 @@ public class DeliveryFeeService  {
      * @param distance 单位km
      * @return
      */
-    public Double sumDeliveryFeeByDistance(Double distance){
-        List<MerchantDeliverFeeConfigDTO> all = merchantDeliverFeeConfigService.findAll();
+    public Double sumDeliveryFeeByDistance(Double distance, String areaCode) throws MerchantClientException {
+        List<MerchantDeliverFeeConfigDTO> all = merchantDeliverFeeConfigService.findFeeByAreaCode(areaCode);
         //double distanceInKm = Math.ceil((distance/1000));
         double distanceInKm = (distance/1000);
 
@@ -210,7 +208,7 @@ public class DeliveryFeeService  {
                 fee  = CalCulateUtil.add(fee, initFee);
         }else{
             //出现异常,后台数据中无数据时采用此套代码
-            fee = 2.5;
+           /* fee = 2.5;
             double firstLevelPricePerKM = 1.0;
             double secondLevelDistance = 3.0;
             double secondLevelPricePerKM = 2.0;
@@ -224,8 +222,10 @@ public class DeliveryFeeService  {
                     fee+= (distanceInKm-secondLevelDistance)*secondLevelPricePerKM;
                 }
 
-            }
+            }*/
             logger.info("数据库无数据,计算配送费失效,请检查配送费阶梯价设置,现已采取后台默认配价");
+            throw new MerchantClientException(EnumRespCode.CANT_FIND_DELIVERY_RULE);
+
         }
         return fee;
 

@@ -1,8 +1,8 @@
 package com.xinguang.tubobo.merchant.api;
 
-import com.xinguang.tubobo.merchant.api.dto.PageDTO;
-import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
-import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
+import com.xinguang.tubobo.merchant.api.dto.*;
+
+import java.util.List;
 
 /**
  * 商家端提供给后台的dubbo接口

@@ -34,6 +34,9 @@ public class Config {
 
     private String noticeOrderCanceledTemplate;
     private String noticeOrderCanceledTitle;
+    private String noticeRiderOrderCanceledTitle;
+    private String noticeRiderOrderCanceledTemplate;
+
 
     private String noticeAuditSuccessTitle;
     private String noticeAuditSuccessTemplate;
@@ -61,6 +64,24 @@ public class Config {
     private String transportType;
     private int thirdOrderRemainHours;
     private String iosMusic;
+
+    @DisconfFileItem(name = "merchant.notice.riderCancel.title", associateField = "noticeRiderOrderCanceledTitle")
+    public String getNoticeRiderOrderCanceledTitle() {
+        return noticeRiderOrderCanceledTitle;
+    }
+
+    public void setNoticeRiderOrderCanceledTitle(String noticeRiderOrderCanceledTitle) {
+        this.noticeRiderOrderCanceledTitle = noticeRiderOrderCanceledTitle;
+    }
+    @DisconfFileItem(name = "merchant.notice.riderCancel.template", associateField = "noticeRiderOrderCanceledTemplate")
+    public String getNoticeRiderOrderCanceledTemplate() {
+        return noticeRiderOrderCanceledTemplate;
+    }
+
+    public void setNoticeRiderOrderCanceledTemplate(String noticeRiderOrderCanceledTemplate) {
+        this.noticeRiderOrderCanceledTemplate = noticeRiderOrderCanceledTemplate;
+    }
+
 
     @DisconfFileItem(name = "iosMusic", associateField = "iosMusic")
     public String getIosMusic() {

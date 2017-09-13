@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
+import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
@@ -43,14 +44,14 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     }
 
     /**
-     * 骑手完成任务
+     * 骑手完成任务(废弃 由消息通知)
      * @param orderNo
      * @param finishOrderTime
      */
     @Override
     public boolean riderFinishOrder(String orderNo, Date finishOrderTime) {
 
-        return   merchantOrderManager.riderFinishOrder(orderNo,finishOrderTime,true);
+         return   merchantOrderManager.riderFinishOrder(orderNo,finishOrderTime,null,null,true);
 
     }
 
@@ -60,13 +61,13 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     }
 
     @Override
-    public boolean adminCancel(String orderNo, Date cancelTime) {
+    public boolean adminCancel(String orderNo, Date cancelTime) throws MerchantClientException {
         MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
         if (null == entity ){
             logger.warn("后台取消订单，订单不存在。orderNo:{}",orderNo);
             return false;
         }
-        return merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true);
+        return merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true,null);
     }
 
 

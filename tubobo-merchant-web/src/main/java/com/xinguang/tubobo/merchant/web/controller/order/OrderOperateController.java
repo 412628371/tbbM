@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
+import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
@@ -26,8 +27,17 @@ public class OrderOperateController extends MerchantBaseController<ReqOrderOpera
             logger.error("订单操作(删除，取消)，订单不存在。orderNo:{}",req.getOrderNo());
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_NOT_EXIST);
         }
-        if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())){
-            boolean count = merchantOrderManager.cancelOrder(userId,req.getOrderNo(),false);
+        if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())&&StringUtils.isBlank(req.getWaitPickCancelType())){
+            //待接单之前取消订单 根据WaitPickCancelType为null判断
+            boolean count = merchantOrderManager.cancelOrder(userId,req.getOrderNo(),false,null);
+            if (!count){
+                logger.error("订单操作(删除，取消)，订单不允许取消。orderNo:{}",req.getOrderNo());
+                throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_CANCEL);
+            }
+        }
+        if (MerchantConstants.REQ_ORDER_CANCEL.equals(req.getCommand())&& StringUtils.isNotBlank(req.getWaitPickCancelType())){
+            // 已接单取消订单 根据WaitPickCancelType不为null判断
+            boolean count = merchantOrderManager.cancelOrder(userId,req.getOrderNo(),false,req.getWaitPickCancelType());
             if (!count){
                 logger.error("订单操作(删除，取消)，订单不允许取消。orderNo:{}",req.getOrderNo());
                 throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_CANCEL);

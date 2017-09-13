@@ -8,7 +8,6 @@ import com.xinguang.tubobo.account.api.response.AccountInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
-import com.xinguang.tubobo.impl.merchant.mq.TuboboReportDateMqHelp;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.lbs.api.GdDistanceService;
 import com.xinguang.tubobo.lbs.api.dto.InverseGeocodeDto;
@@ -41,9 +40,6 @@ public class MerchantInfoManager {
     TbbAccountService tbbAccountService;
 
     @Autowired
-    private TuboboReportDateMqHelp tuboboReportDateMqHelp;
-
-    @Autowired
     GdDistanceService gdDistanceService;
     private final String defaultPwd="112233";
 
@@ -68,6 +64,7 @@ public class MerchantInfoManager {
         entity.setShopImageUrl(AliOss.subAliossUrl(entity.getShopImageUrl()));
         entity.setShopImageUrl2(AliOss.subAliossUrl(entity.getShopImageUrl2()));
         entity.setShopLicencesImgUrl(AliOss.subAliossUrl(entity.getShopLicencesImgUrl()));
+        entity.setHygieneLicense(AliOss.subAliossUrl(entity.getHygieneLicense()));//卫生许可证
         entity.setIdentifyType(identifyType);
         entity.setEnablePwdFree(false);
         //高德区域编码
@@ -112,8 +109,9 @@ public class MerchantInfoManager {
                 entity.setAccountId(existEntity.getAccountId());
                 entity.setId(existEntity.getId());
                 entity.setCreateDate(existEntity.getCreateDate());
-                entity.setAvatarUrl(existEntity.getAvatarUrl());            //头像
+                entity.setAvatarUrl(existEntity.getAvatarUrl());        //头像
                 entity.setApplyDate(new Date());
+                entity.setBdCode(existEntity.getBdCode());              //bdCode
                 boolean result = false;
                 //v1.41支付密码单独设置  此处向下兼容
                 if (null!=payPassword){
@@ -140,9 +138,6 @@ public class MerchantInfoManager {
 
         MerchantInfoEntity entityResp = merchantInfoService.findByUserId(userId);
         AliOss.generateMerchantSignedUrl(entityResp);
-
-        //消息放入报表mq
-        tuboboReportDateMqHelp.merchantRegister(entityResp);
 
         return entityResp;
     }
@@ -178,7 +173,8 @@ public class MerchantInfoManager {
             existEntity.setShopImageUrl(infoEntity.getShopImageUrl());
             existEntity.setShopImageUrl2(infoEntity.getShopImageUrl2());
             existEntity.setShopLicencesImgUrl(infoEntity.getShopLicencesImgUrl());//营业执照
-            existEntity.setBdCode(infoEntity.getBdCode());//bd邀请码
+            existEntity.setHygieneLicense(infoEntity.getHygieneLicense());//卫生许可证
+            //existEntity.setBdCode(infoEntity.getBdCode());//bd邀请码
             existEntity.setMerchantName(infoEntity.getMerchantName());
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());

@@ -82,7 +82,21 @@ public class RmqNoticeProducer {
         noticeDTO.setOrderOperateType(EnumOrderNoticeType.ADMIN_CANCEL.getValue());
         sendNotice(noticeDTO);
     }
-
+    /**
+     * 发送订单被请骑手取消通知
+     * @param userId
+     * @param orderNo
+     * @param orderType
+     * @param platformCode
+     * @param originOrderViewId
+     */
+    public void sendOrderCancelByRiderNotice(String userId, String orderNo, String orderType,String platformCode,String originOrderViewId){
+        NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
+        noticeDTO.setTitle(config.getNoticeRiderOrderCanceledTitle());
+        noticeDTO.setContent(config.getNoticeRiderOrderCanceledTemplate());
+        noticeDTO.setOrderOperateType(EnumOrderNoticeType.RIDER_CANCEL.getValue());
+        sendNotice(noticeDTO);
+    }
     /**
      * 发送审核结果通知
      * @param userId

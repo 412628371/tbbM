@@ -73,10 +73,18 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
         }
         String amount = ConvertUtil.formatMoneyToString(operInfo.getAmount());
         record.setType(operInfo.getType().getLabel());
+        record.setTradeStatus(operInfo.getRemarks());
         if (TbbConstants.OperationType.FINE == operInfo.getType()){
             if (operInfo.getAmount() > 0){
                 amount = "-"+amount;
             }
+        }
+        if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.SUCCEED.equals(operInfo.getStatus())){
+            //商家充值,
+            record.setType(null);
+            amount = amount;
+            record.setType("账户充值");
+            record.setTradeStatus("账户充值");
         }
         if (TbbConstants.OperationType.PAY == operInfo.getType()){
             if (operInfo.getAmount() > 0){
@@ -84,16 +92,22 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
                 if (TbbConstants.OperationStatus.SUCCEED== operInfo.getStatus()){
                     amount = "-"+amount;
                     record.setType("订单已完成");
+                    record.setTradeStatus("订单支付");
+
                 }
                 //失败 退回
                 if (TbbConstants.OperationStatus.CLOSE== operInfo.getStatus()){
                     amount = " 解冻"+amount;
                     record.setType("订单已取消");
+                    record.setTradeStatus("订单支付");
+
                 }
                 //交易中
                 if (TbbConstants.OperationStatus.INIT== operInfo.getStatus()){
                     amount = "冻结"+amount;
                     record.setType("订单进行中");
+                    record.setTradeStatus("订单支付");
+
                 }
 
             }
