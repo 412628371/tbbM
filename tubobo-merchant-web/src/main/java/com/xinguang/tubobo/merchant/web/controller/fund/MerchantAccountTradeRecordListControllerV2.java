@@ -74,7 +74,6 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
 
         if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.INIT.equals(operInfo.getStatus())){
             //商家取消充值 允许展示
-            amount = " 充值"+amount;
             record.setType("未付款");
             record.setTradeStatus("充值取消");
 
