@@ -67,13 +67,19 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
 
     public ResAccountTradeRecord convertToShow(AccountOperationInfo operInfo){
         ResAccountTradeRecord record = new ResAccountTradeRecord();
-        if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.INIT.equals(operInfo.getStatus())){
-           //商家取消充值,不展示
-            return null;
-        }
+
         String amount = ConvertUtil.formatMoneyToString(operInfo.getAmount());
         record.setType(operInfo.getType().getLabel());
         record.setTradeStatus(operInfo.getRemarks());
+
+        if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.INIT.equals(operInfo.getStatus())){
+            //商家取消充值 允许展示
+            amount = " 充值"+amount;
+            record.setType("未付款");
+            record.setTradeStatus("充值取消");
+
+            //return null;
+        }
         if (TbbConstants.OperationType.FINE == operInfo.getType()){
             if (operInfo.getAmount() > 0){
                 amount = "-"+amount;
