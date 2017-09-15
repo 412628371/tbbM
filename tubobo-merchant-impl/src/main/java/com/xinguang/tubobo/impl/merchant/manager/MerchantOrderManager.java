@@ -170,6 +170,11 @@ public class MerchantOrderManager extends BaseService {
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
 				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType,null,null);
 			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())||EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())&&null==waitPickCancelType){
+					//历史状态拦截 骑手已取货 商家端仍停留在带接单取消页面
+					return false;
+				}
+
 				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
 					//waitgrab时因为要判断余额是否可以支付
 					judgeBalanceForCancel(merchant);
