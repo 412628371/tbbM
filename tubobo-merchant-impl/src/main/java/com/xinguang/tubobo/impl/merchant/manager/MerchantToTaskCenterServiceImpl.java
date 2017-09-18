@@ -70,6 +70,10 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         return merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true,null);
     }
 
+    @Override
+    public boolean riderUnsettledOrder(String orderNo,String reason) {
+        return merchantOrderManager.riderUnsettledOrder(orderNo,reason);
+    }
 
 
 }

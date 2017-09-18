@@ -105,6 +105,8 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private Double cancelFine;         //订单取消罚款
 	private Double pickupDistance;	  //取货距离
 
+    private String unsettledStatus;         //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理
+    private String unsettledReason;         //驿站订单 未妥投原因
 
 	public Double getPickupDistance() {
 		return pickupDistance;
@@ -647,4 +649,20 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	public void setSenderAdcode(String senderAdcode) {
 		this.senderAdcode = senderAdcode;
 	}
+
+    public String getUnsettledStatus() {
+        return unsettledStatus;
+    }
+
+    public void setUnsettledStatus(String unsettledStatus) {
+        this.unsettledStatus = unsettledStatus;
+    }
+
+    public String getUnsettledReason() {
+        return unsettledReason;
+    }
+
+    public void setUnsettledReason(String unsettledReason) {
+        this.unsettledReason = unsettledReason;
+    }
 }

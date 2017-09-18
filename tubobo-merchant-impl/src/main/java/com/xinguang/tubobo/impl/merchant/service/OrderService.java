@@ -285,5 +285,15 @@ public class OrderService extends BaseService {
 
     }
 
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public int riderUnsettledOrder(String merchantId, String orderNo,String reason) {
+        return merchantOrderDao.riderUnsettledOrder(merchantId,orderNo,reason);
+    }
 
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public int merchantHandlerUnsettledOrder(String merchantId, String orderNo) {
+        return merchantOrderDao.merchantHandlerUnsettledOrder(merchantId,orderNo);
+    }
 }

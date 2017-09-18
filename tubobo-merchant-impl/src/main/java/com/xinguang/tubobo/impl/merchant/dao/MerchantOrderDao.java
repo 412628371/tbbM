@@ -9,6 +9,7 @@ import com.hzmux.hzcms.common.persistence.BaseDao;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -400,5 +401,15 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         List<String> orderList = createQuery(sqlString,
                 new Parameter(EnumMerchantOrderStatus.FINISH.getValue(),false,begin,end)).list();
         return orderList;
+    }
+
+    public int riderUnsettledOrder(String merchantId, String orderNo,String reason) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2 where senderId=:p3 and orderNo =:p4 and unsettledStatus=:p5 and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,merchantId,orderNo,PostOrderUnsettledStatusEnum.INIT.getValue()));
+    }
+
+    public int merchantHandlerUnsettledOrder(String merchantId, String orderNo) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1 where senderId=:p2 and orderNo = :p3 and unsettledStatus=:p4 and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(),merchantId,orderNo,PostOrderUnsettledStatusEnum.ING.getValue()));
     }
 }

@@ -35,11 +35,10 @@ public interface MerchantToTaskCenterServiceInterface {
      boolean orderExpire(String orderNo,Date expireTime);
 
     boolean adminCancel(String orderNo,Date expireTime) throws MerchantClientException;
-    /**
-     * 骑手完成任务
-     * @param orderNo
-     * @param date 传入时间
-     */
 
+    /**
+     * 驿站订单 未妥投
+     */
+    boolean riderUnsettledOrder(String orderNo,String reason);
 
 }

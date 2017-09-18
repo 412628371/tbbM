@@ -484,5 +484,41 @@ public class MerchantOrderManager extends BaseService {
 	}
 
 
+    /**
+     * 骑手提交未妥投请求
+     * @param orderNo
+     * @return
+     */
+    public boolean riderUnsettledOrder(String orderNo,String reason){
+        MerchantOrderEntity order = orderService.findByOrderNo(orderNo);
+        if (order != null){
+            int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),reason);
+            if (result > 0){
+                //TODO 通知食集
+
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 商家处理 未妥投订单
+     * @param orderNo
+     * @return
+     */
+	public boolean merchantHandlerUnsettledOrder(String merchantId,String orderNo){
+        TbbTaskResponse<Boolean> result = taskDispatchService.merchantHandlerUnsettledTask(orderNo);
+        if (result != null && result.getData()){
+            orderService.merchantHandlerUnsettledOrder(merchantId,orderNo);
+            // TODO 通知食集
+
+
+
+            return true;
+        }
+	    return false;
+    }
 
 }
