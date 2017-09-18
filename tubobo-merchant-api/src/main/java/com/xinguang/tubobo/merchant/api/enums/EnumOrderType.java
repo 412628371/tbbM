@@ -5,6 +5,7 @@ package com.xinguang.tubobo.merchant.api.enums;
  */
 public enum  EnumOrderType {
     SMALLORDER("小件订单", "smallOrder"),
+    POSTORDER("驿站订单", "postOrder"),
     BIGORDER("大件订单", "bigOrder");
 
     EnumOrderType(String name, String value){
