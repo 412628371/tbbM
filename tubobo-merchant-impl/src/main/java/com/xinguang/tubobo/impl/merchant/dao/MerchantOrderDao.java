@@ -405,12 +405,14 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     }
 
     public int riderUnsettledOrder(String orderNo,String reason) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, where orderNo =:p3 and unsettledStatus=:p4 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,orderNo,PostOrderUnsettledStatusEnum.INIT.getValue()));
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2 where orderNo =:p3 and orderStatus=:p4 and unsettledStatus=:p5 and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.INIT.getValue()));
     }
 
     public int merchantHandlerUnsettledOrder(String orderNo,Date finishOrderTime) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, orderStatus=:p2, finishOrderTime=:p3 where orderNo = :p4 and unsettledStatus=:p5 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), TaskStatusEnum.FINISHED.getValue(),finishOrderTime,orderNo,PostOrderUnsettledStatusEnum.ING.getValue()));
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, orderStatus=:p2, finishOrderTime=:p3 " +
+                "where orderNo = :p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,
+                orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(),PostOrderUnsettledStatusEnum.ING.getValue()));
     }
 }
