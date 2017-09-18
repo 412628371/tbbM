@@ -25,7 +25,7 @@ public class MerchantMessageSettingsService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantMessageSettings_'+#userId")
     public boolean updateSettings(String userId,MerchantMessageSettingsEntity entity){
-        int count = messageDao.updatePushSettings(entity);
+        int count = messageDao.updateSettings(entity);
         return count == 1;
     }
     /**

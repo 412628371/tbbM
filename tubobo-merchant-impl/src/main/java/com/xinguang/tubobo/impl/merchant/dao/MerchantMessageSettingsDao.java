@@ -25,13 +25,14 @@ public class MerchantMessageSettingsDao extends BaseDao<MerchantMessageSettingsE
      * @return
      */
     @Transactional(readOnly = false)
-    public int updatePushSettings(MerchantMessageSettingsEntity entity){
+    public int updateSettings(MerchantMessageSettingsEntity entity){
         MerchantMessageSettingsEntity existEntity = findByUserId(entity.getUserId());
         if (existEntity == null){
             existEntity = new MerchantMessageSettingsEntity();
-            existEntity.setMessageOpen(false);
+            existEntity.setMessageOpen(entity.getMessageOpen());
             entity.setUserId(entity.getUserId());
             save(entity);
+            return 1;
         }
         Map<String,Object> map = new HashMap<>();
         map.put("updateDate",new Date());

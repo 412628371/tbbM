@@ -21,8 +21,10 @@ public class OrderTodayOrderNumController extends MerchantBaseController<ReqToda
     @Override
     protected RespTodayOrderNum doService(String userId, ReqTodayOrderNum req) throws MerchantClientException {
         Long finishTodayNum = orderService.getTodayFinishOrderNum(userId);
+        Long finishTodayNumWithText = orderService.getTodayFinishOrderWithShortTextNum(userId);
         RespTodayOrderNum respTodayOrderNum = new RespTodayOrderNum();
         respTodayOrderNum.setFinishOrders(finishTodayNum);
+        respTodayOrderNum.setSendMessages(finishTodayNumWithText);
         return respTodayOrderNum;
     }
 }
