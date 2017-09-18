@@ -36,6 +36,9 @@ public class RmqNoticeHandler implements ChannelAwareMessageListener {
             if (EnumNoticeType.SYSTEM.getValue().equals(dto.getNoticeType())){
                 noticeService.pushSystem(dto);
             }
+            if (EnumNoticeType.MONEY.getValue().equals(dto.getNoticeType())){
+                noticeService.pushMoney(dto);
+            }
         }catch (Exception e){
             logger.error("mq处理通知数据，异常：",e);
             return;
