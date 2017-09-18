@@ -44,6 +44,15 @@ public class MerchantInfoResponse implements Serializable{
     private String bdCode;					//bd邀请码
     private String addressAdCode;			//高德区域编码
     private String reason;                  //店铺审核失败原因
+    private Boolean messageOpen;            //短信开关
+
+    public Boolean getMessageOpen() {
+        return messageOpen;
+    }
+
+    public void setMessageOpen(Boolean messageOpen) {
+        this.messageOpen = messageOpen;
+    }
 
     public String getHygieneLicense() {
         return hygieneLicense;

@@ -7,6 +7,7 @@ import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantOrderDao;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
@@ -41,6 +42,8 @@ public class OrderService extends BaseService {
     RoutePlanning routePlanning;
     @Autowired
     OverTimeRuleInterface overTimeRuleService;
+    @Autowired
+    MerchantMessageSettingsService merchantMessageSettingsService;
 
 //    public MerchantOrderEntity get(String id) {
 //        return merchantOrderDao.get(id);
@@ -96,6 +99,8 @@ public class OrderService extends BaseService {
         if (entity.getWeatherOverFee() != null) {
             entity.setPayAmount(entity.getPayAmount() + entity.getWeatherOverFee());
         }
+        MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findBuUserId(userId);
+        entity.setShortMessage(setting.getMessageOpen());
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         merchantOrderDao.save(entity);
         //将订单加入支付超时队列
@@ -242,6 +247,17 @@ public class OrderService extends BaseService {
     public Long getTodayFinishOrderNum(String userId) {
         return merchantOrderDao.getTodayFinishOrderNum(userId);
     }
+    /**
+     * 计算当天已完成的订单(带有短信通知)
+     *
+     * @param userId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Long getTodayFinishOrderWithShortTextNum(String userId) {
+        return merchantOrderDao.getTodayFinishOrderWithShortTextNum(userId);
+    }
+
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)

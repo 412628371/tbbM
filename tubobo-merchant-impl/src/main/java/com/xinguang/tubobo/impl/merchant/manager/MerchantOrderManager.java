@@ -23,6 +23,7 @@ import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
@@ -74,6 +75,8 @@ public class MerchantOrderManager extends BaseService {
 	@Resource private Config config;
 
 	@Autowired private MerchantInfoService merchantInfoService;
+
+
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -317,7 +320,15 @@ public class MerchantOrderManager extends BaseService {
 			return false;
 		}
 		logger.info("处理骑手取货：orderNo:{}",orderNo);
-		return orderService.riderGrabItem(entity.getUserId(),orderNo,grabItemTime)>0;
+		boolean flag=orderService.riderGrabItem(entity.getUserId(),orderNo,grabItemTime)>0;
+		if (flag){
+			//短信通知骑手
+			if (entity.getShortMessage()){
+				adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
+			}
+
+		}
+		return flag;
 	}
 
 	/**

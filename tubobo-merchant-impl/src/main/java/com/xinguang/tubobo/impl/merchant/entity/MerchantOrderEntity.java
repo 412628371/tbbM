@@ -107,6 +107,16 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
     private String unsettledStatus;         //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理
     private String unsettledReason;         //驿站订单 未妥投原因
+	private Boolean  shortMessage;			//订单是否发送短信通知收件人
+
+
+	public Boolean getShortMessage() {
+		return shortMessage;
+	}
+
+	public void setShortMessage(Boolean shortMessage) {
+		this.shortMessage = shortMessage;
+	}
 
 	public Double getPickupDistance() {
 		return pickupDistance;
