@@ -509,9 +509,10 @@ public class MerchantOrderManager extends BaseService {
      * @return
      */
 	public boolean merchantHandlerUnsettledOrder(String merchantId,String orderNo){
-        TbbTaskResponse<Boolean> result = taskDispatchService.merchantHandlerUnsettledTask(orderNo);
+        Date finishOrderTime = new Date();
+        TbbTaskResponse<Boolean> result = taskDispatchService.merchantHandlerUnsettledTask(orderNo,finishOrderTime);
         if (result != null && result.getData()){
-            orderService.merchantHandlerUnsettledOrder(merchantId,orderNo);
+            orderService.merchantHandlerUnsettledOrder(merchantId,orderNo,finishOrderTime);
             // TODO 通知食集
 
 

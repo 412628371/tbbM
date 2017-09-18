@@ -10,10 +10,11 @@ import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
+import com.xinguang.taskcenter.api.common.enums.TaskStatusEnum;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -403,13 +404,13 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         return orderList;
     }
 
-    public int riderUnsettledOrder(String merchantId, String orderNo,String reason) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2 where senderId=:p3 and orderNo =:p4 and unsettledStatus=:p5 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,merchantId,orderNo,PostOrderUnsettledStatusEnum.INIT.getValue()));
+    public int riderUnsettledOrder(String orderNo,String reason) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, where orderNo =:p3 and unsettledStatus=:p4 and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,orderNo,PostOrderUnsettledStatusEnum.INIT.getValue()));
     }
 
-    public int merchantHandlerUnsettledOrder(String merchantId, String orderNo) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1 where senderId=:p2 and orderNo = :p3 and unsettledStatus=:p4 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(),merchantId,orderNo,PostOrderUnsettledStatusEnum.ING.getValue()));
+    public int merchantHandlerUnsettledOrder(String orderNo,Date finishOrderTime) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, orderStatus=:p2, finishOrderTime=:p3 where orderNo = :p4 and unsettledStatus=:p5 and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), TaskStatusEnum.FINISHED.getValue(),finishOrderTime,orderNo,PostOrderUnsettledStatusEnum.ING.getValue()));
     }
 }

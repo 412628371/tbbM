@@ -1,10 +1,8 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
-import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.taskcenter.api.OverTimeRuleInterface;
-import com.xinguang.taskcenter.api.dto.OverTimeRuleDto;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
@@ -13,7 +11,6 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
-import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -288,12 +285,12 @@ public class OrderService extends BaseService {
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public int riderUnsettledOrder(String merchantId, String orderNo,String reason) {
-        return merchantOrderDao.riderUnsettledOrder(merchantId,orderNo,reason);
+        return merchantOrderDao.riderUnsettledOrder(orderNo,reason);
     }
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int merchantHandlerUnsettledOrder(String merchantId, String orderNo) {
-        return merchantOrderDao.merchantHandlerUnsettledOrder(merchantId,orderNo);
+    public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date finishOrderTime) {
+        return merchantOrderDao.merchantHandlerUnsettledOrder(orderNo,finishOrderTime);
     }
 }
