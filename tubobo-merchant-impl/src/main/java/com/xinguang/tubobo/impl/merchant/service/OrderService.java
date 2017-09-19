@@ -91,6 +91,10 @@ public class OrderService extends BaseService {
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         //设置该单是否付短信通知收货人
         MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findBuUserId(userId);
+        if (setting == null){
+            setting = new MerchantMessageSettingsEntity();
+            setting.setMessageOpen(false);
+        }
         entity.setShortMessage(setting.getMessageOpen());
         entity.setOrderNo(orderNo);
         Double textMesssgaeFee=setting.getMessageOpen()? MerchantConstants.MESSAGE_FEE:0.0;
