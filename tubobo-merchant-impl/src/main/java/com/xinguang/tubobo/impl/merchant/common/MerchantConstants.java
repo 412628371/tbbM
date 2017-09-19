@@ -50,7 +50,7 @@ public class MerchantConstants {
 
     public static final String ORDER_MESSAGE_OPEN = "1";
     public static final String ORDER_MESSAGE_CLOSE = "0";
-
+    public static final Double MESSAGE_FEE=0.1;
 
 
     public static final String  PATTERN_PHONE= "^1\\d{10}?$";

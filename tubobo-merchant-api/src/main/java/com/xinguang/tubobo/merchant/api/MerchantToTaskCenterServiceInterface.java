@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.api;
 
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 
 import java.util.Date;
 
@@ -34,11 +35,11 @@ public interface MerchantToTaskCenterServiceInterface {
      */
      boolean orderExpire(String orderNo,Date expireTime);
 
-    boolean adminCancel(String orderNo,Date expireTime) throws MerchantClientException;
+    boolean adminCancel(String orderNo,Date expireTime) ;
 
     /**
      * 驿站订单 未妥投
      */
-    boolean riderUnsettledOrder(String orderNo,String reason);
+    boolean riderUnsettledOrder(MerchantUnsettledDTO dto);
 
 }

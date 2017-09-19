@@ -1,11 +1,13 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.persistence.Page;
+import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.taskcenter.api.OverTimeRuleInterface;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantOrderDao;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
@@ -87,23 +89,26 @@ public class OrderService extends BaseService {
         distance = deliveryDistance == null ? distance : deliveryDistance;
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
+        //设置该单是否付短信通知收货人
+        MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findBuUserId(userId);
+        entity.setShortMessage(setting.getMessageOpen());
         entity.setOrderNo(orderNo);
+        Double textMesssgaeFee=setting.getMessageOpen()? MerchantConstants.MESSAGE_FEE:0.0;
 
         if (entity.getDeliveryFee() != null) {
             if (entity.getTipFee() == null) {
-                entity.setPayAmount(entity.getDeliveryFee());
+                entity.setPayAmount(CalCulateUtil.add(entity.getDeliveryFee(),textMesssgaeFee));
             } else {
-                entity.setPayAmount(entity.getDeliveryFee() + entity.getTipFee());
+                entity.setPayAmount(CalCulateUtil.add(CalCulateUtil.add(entity.getDeliveryFee(),entity.getTipFee()),textMesssgaeFee) );
             }
         }
         if (entity.getPeekOverFee() != null) {
-            entity.setPayAmount(entity.getPayAmount() + entity.getPeekOverFee());
+            entity.setPayAmount(CalCulateUtil.add(entity.getPayAmount(),entity.getPeekOverFee()) );
         }
         if (entity.getWeatherOverFee() != null) {
-            entity.setPayAmount(entity.getPayAmount() + entity.getWeatherOverFee());
+            entity.setPayAmount(CalCulateUtil.add(entity.getPayAmount(),entity.getWeatherOverFee()) );
         }
-        MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findBuUserId(userId);
-        entity.setShortMessage(setting.getMessageOpen());
+
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         merchantOrderDao.save(entity);
         //将订单加入支付超时队列
