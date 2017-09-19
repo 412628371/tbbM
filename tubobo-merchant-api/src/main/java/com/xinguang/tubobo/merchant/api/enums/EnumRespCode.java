@@ -37,7 +37,7 @@ public enum EnumRespCode {
 	PASSWORD_DECRYPT_FAIL("10002", "密码解密失败"),
 	PASSWORD_FIRSTCREATE_FAIL("10003", "该账户已设置密码,首次创建密码失败"),
 	MERCHANT_MESSAGE_PUSH_SETTINGS_FAILURE("10004", "短信推送设置失败"),
-
+	POST_ORDER_STATUS_PUSH_FAILURE("10005", "驿站订单状态推送失败"),
 
 
 	MERCHANT_DELIVERY_DISTANCE_TOO_FAR("10301", "超过配送范围 请重新输入地址"),
