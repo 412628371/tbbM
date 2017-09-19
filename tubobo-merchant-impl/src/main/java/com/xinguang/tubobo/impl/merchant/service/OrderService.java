@@ -117,8 +117,8 @@ public class OrderService extends BaseService {
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int merchantPay(String merchantId, String orderNo, long payId, Date payDate) {
-        int count = merchantOrderDao.merchantPay(merchantId, orderNo, payId, payDate);
+    public int merchantPay(String merchantId, String orderNo, long payId, Date payDate,String orderStatus) {
+        int count = merchantOrderDao.merchantPay(merchantId, orderNo, payId, payDate,orderStatus);
         return count;
     }
 

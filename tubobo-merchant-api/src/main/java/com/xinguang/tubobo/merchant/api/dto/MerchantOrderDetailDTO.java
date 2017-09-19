@@ -11,7 +11,7 @@ public class MerchantOrderDetailDTO implements Serializable {
     private AddressInfoDTO consignor;
     private RiderInfo riderInfo;
     private OrderInfo orderInfo;
-    private PayInfo payInfo;
+    private PayInfoDto payInfoDto;
     private AddressInfoDTO receiver;
     private OverFeeInfo  overFeeInfo;
 
@@ -47,12 +47,12 @@ public class MerchantOrderDetailDTO implements Serializable {
         this.orderInfo = orderInfo;
     }
 
-    public PayInfo getPayInfo() {
-        return payInfo;
+    public PayInfoDto getPayInfoDto() {
+        return payInfoDto;
     }
 
-    public void setPayInfo(PayInfo payInfo) {
-        this.payInfo = payInfo;
+    public void setPayInfoDto(PayInfoDto payInfoDto) {
+        this.payInfoDto = payInfoDto;
     }
 
     public AddressInfoDTO getReceiver() {

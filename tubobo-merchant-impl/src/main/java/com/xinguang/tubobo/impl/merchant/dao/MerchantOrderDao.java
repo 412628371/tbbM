@@ -137,9 +137,25 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param payId
      * @return
      */
-    public int merchantPay(String merchantId,String orderNo,long payId,Date payDate){
+    public int merchantPay(String merchantId,String orderNo,long payId,Date payDate,String orderStatus){
         String sqlString = "update tubobo_merchant_order set order_status = :p1, pay_status = :p2, pay_time = :p3 ,pay_id = :p4 where sender_id = :p5 and order_no = :p6 and order_status = :p7 and del_flag = '0' ";
-        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_GRAB.getValue(),
+        int count = updateBySql(sqlString, new Parameter(orderStatus,
+                EnumPayStatus.PAID.getValue(),payDate,payId,
+                merchantId,orderNo, EnumMerchantOrderStatus.INIT.getValue()));
+        logger.info("支付操作数据库：count:{},merchantId:{},orderNo:{},payId:{},payDate:{}",count,merchantId,orderNo,payId,payDate);
+        getSession().clear();
+        return count;
+    }
+    /***
+     * 订单支付
+     * @param merchantId
+     * @param orderNo
+     * @param payId
+     * @return
+     */
+    public int postOrderMerchantPay(String merchantId,String orderNo,long payId,Date payDate){
+        String sqlString = "update tubobo_merchant_order set order_status = :p1, pay_status = :p2, pay_time = :p3 ,pay_id = :p4 where sender_id = :p5 and order_no = :p6 and order_status = :p7 and del_flag = '0' ";
+        int count = updateBySql(sqlString, new Parameter(EnumMerchantOrderStatus.WAITING_PICK.getValue(),
                 EnumPayStatus.PAID.getValue(),payDate,payId,
                 merchantId,orderNo, EnumMerchantOrderStatus.INIT.getValue()));
         logger.info("支付操作数据库：count:{},merchantId:{},orderNo:{},payId:{},payDate:{}",count,merchantId,orderNo,payId,payDate);

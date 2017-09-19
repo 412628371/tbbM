@@ -7,6 +7,7 @@ import com.xinguang.tubobo.api.OverFeeService;
 import com.xinguang.tubobo.api.dto.CarTypeDTO;
 import com.xinguang.tubobo.api.dto.OverFeeDTO;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
+import com.xinguang.tubobo.impl.merchant.common.OrderUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
@@ -66,7 +67,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
                 status = infoEntity.getConsignorStatus();
             }
-            judgeOrderCondition(status,config.getConsignorBeginWorkTime(),config.getConsignorEndWorkTime(),true);
+            OrderUtil.judgeOrderCondition(status,config.getConsignorBeginWorkTime(),config.getConsignorEndWorkTime(),true);
             AddressInfo senderAddressInfo = req.getConsignor();
             //大件订单，把发货人地址信息设置到实体
             AddressInfoToOrderBeanHelper.putSenderFromAddressInfo(entity,senderAddressInfo);
@@ -110,7 +111,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
         }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
-            judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
+            OrderUtil.judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
 
         }else {
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_TYPE_NOT_SUPPORT);
@@ -184,7 +185,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
      * @param endWorkTime 结束工作时间
      * @throws MerchantClientException
      */
-    private void judgeOrderCondition(String status,String beginWorkTime,String endWorkTime,boolean isBigOrder) throws MerchantClientException {
+/*    private void judgeOrderCondition(String status,String beginWorkTime,String endWorkTime,boolean isBigOrder) throws MerchantClientException {
         if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
             throw new MerchantClientException(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE);
         }
@@ -200,7 +201,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             }
         }
 
-    }
+    }*/
 
    /* public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
         OverFeeDTO overFee = overFeeService.findOverFee(AreaCode);

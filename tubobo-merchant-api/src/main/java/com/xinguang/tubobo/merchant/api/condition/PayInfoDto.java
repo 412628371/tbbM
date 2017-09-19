@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by yangxb on 2017/9/11.
  */
-public class PayInfo implements Serializable {
+public class PayInfoDto implements Serializable {
     private Double deliveryFee;//	配送费	number	　
     private Double payAmount;//	支付金额	number	　
     private String payStatus;//	支付状态	string	UNPAY-未支付；PAID-已支付
