@@ -125,7 +125,7 @@ public class MerchantOrderManager extends BaseService {
 		}
 		taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
 		Date payDate = new Date();
-		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate);
+		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate,EnumMerchantOrderStatus.WAITING_GRAB.getValue());
 		if (count != 1){
 			logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",merchantId,orderNo);
 			throw new MerchantClientException(EnumRespCode.FAIL);
