@@ -23,6 +23,8 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.DeliveryFeeService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
+import com.xinguang.tubobo.launcher.inner.api.TbbOrderServiceInterface;
+import com.xinguang.tubobo.launcher.inner.api.entity.OrderStatusInfoDTO;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.MerchantToThirdPartyServiceInterface;
 import com.xinguang.tubobo.merchant.api.TbbMerchantResponse;
@@ -39,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -46,6 +49,7 @@ import java.util.Date;
 /**
  * Created by yangxb on 2017/9/11.
  */
+@Service
 public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServiceInterface {
     @Autowired
     Config config;
@@ -65,6 +69,8 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
     @Autowired
     private TaskDispatchService taskDispatchService;
     @Autowired private AdminToMerchantService adminToMerchantService;
+    @Autowired private TbbOrderServiceInterface launcherInnerTbbOrderService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(MerchantToThirdPartyServiceImpl.class);
 
@@ -98,7 +104,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
                 MerchantInfoEntity merchantInfoEntity = merchantInfoService.findByUserId(req.getUserId());
 
                 if (merchantInfoEntity!=null){
-                    userId = merchantInfoEntity.getId();
+                    userId = merchantInfoEntity.getUserId();
                     // 计算各种费用
                     // 计算配送费
                     logger.info("计算配送费请求, userId:{}",req.getUserId());
@@ -127,63 +133,16 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
                             weatherOverFee=weatherOverFeeRemote;
                         }
                     }
-                    entity = translateRequestToEntity(merchantInfoEntity,req,peekOverFee,weatherOverFee,distance,fee);
-                    //TODO 执行创建订单
-                    try {
-                        OrderUtil.judgeOrderCondition(merchantInfoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
-                        // orderNo = merchantOrderManager.order(req.getUserId(),entity);  不需要支付隊列
-                        orderNo = orderService.order(req.getUserId(),entity);
-                        MerchantOrderEntity orderEntity = orderService.findByOrderNo(orderNo);
-                        //TODO 商家扣款
-                        PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
-                        payWithOutPwdRequest.setOrderId(orderNo);
-                        payWithOutPwdRequest.setAccountId(merchantInfoEntity.getAccountId());
-                        long amount = ConvertUtil.convertYuanToFen(orderEntity.getPayAmount());
-                        payWithOutPwdRequest.setAmount(amount);
-                        logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",req.getUserId(),orderNo,payWithOutPwdRequest.getAmount());
-                        TbbAccountResponse<PayInfo> response;
-                        response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
-                        if (response != null && response.isSucceeded()){
-                            long payId = response.getData().getId();
-                            orderEntity.setPayId(payId);
-                            TaskCreateDTO orderDTO = buildMerchantOrderDTO(orderEntity,merchantInfoEntity);
-                            orderDTO.setPayId(payId);
-                            logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",orderNo
-                                    ,merchantInfoEntity.getAccountId(),response.getData().getId(),amount);
-                            orderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
-                            Date payDate = new Date();
-                            int count = orderService.merchantPay(userId,orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
-                            if (count != 1){
-                                logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",userId,orderNo);
-                                throw new MerchantClientException(EnumRespCode.FAIL);
-                            }
-                            TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(orderDTO);
-                            if (taskResponse.isSucceeded() && taskResponse.getData()){
-                                if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(orderDTO.getTaskType().getValue())){
-                                    adminToMerchantService.sendDistributeTaskSmsAlert();
-                                }
-                            }else {
-                                logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
-                            }
-                        }else {
-                            if (response == null){
-                                logger.error("pay  FAIL.orderNo:{}, accountId:{}}",
-                                        orderNo,merchantInfoEntity.getAccountId());
-                            }else {
-                                if (response.getErrorCode().equals(TbbAccountResponse.ErrorCode.ERROR_AMOUNT_NOT_ENOUGH.getCode())){
-                                    logger.error("pay  FAIL.,余额不足。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
-                                            orderNo,merchantInfoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
-                                    throw  new MerchantClientException(EnumRespCode.ACCOUNT_NOT_ENOUGH);
-                                }
-                            }
-                            throw  new MerchantClientException(EnumRespCode.ACCOUNT_PAY_FAIL);
-                        }
-                    } catch (MerchantClientException e) {
-                        e.printStackTrace();
-                    }
+                    //封装数据
+                    entity = translateRequestToEntity(merchantInfoEntity,req,peekOverFee,weatherOverFee,distance,fee,userId);
+                    entity.setOrderType(EnumOrderType.POSTORDER.getValue());
+                    entity.setSenderId(userId);
+                    //执行创建订单
+                    orderPost(merchantInfoEntity,config,entity);
                 }
             }
         }
+        //封装返回值
         merchantOrderCreateResultDto.setOrderNo(orderNo);
         merchantOrderCreateResultDto.setDeliverDistance(distance);//配送距离
         merchantOrderCreateResultDto.setDeliveryFee(fee);//配送费 　
@@ -296,9 +255,11 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
     }
 
 
-    private MerchantOrderEntity translateRequestToEntity(MerchantInfoEntity merchantInfoEntity,MerchantOrderCreateDto req,Double peekOverFee,Double weatherOverFee,Double distance,Double fee){
+    private MerchantOrderEntity translateRequestToEntity(MerchantInfoEntity merchantInfoEntity,MerchantOrderCreateDto req,Double peekOverFee,Double weatherOverFee,Double distance,Double fee,String userId){
         MerchantOrderEntity entity;
         entity = new MerchantOrderEntity();
+
+        entity.setUserId(userId);
         //插入发货方
         entity.setSenderAddressCity(req.getConsignor().getAddressCity());
         entity.setSenderAddressDetail(req.getConsignor().getAddressDetail());
@@ -346,10 +307,14 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
     private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
         TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
         BeanUtils.copyProperties(entity,merchantOrderDTO);
+        merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
             merchantOrderDTO.setTaskType(TaskTypeEnum.M_BIG_ORDER);
         }else if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
             merchantOrderDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
+        }else if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
+            merchantOrderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
+            merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
         }
         if (entity.getPayAmount() != null){
             merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
@@ -372,10 +337,77 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         shopUrls[1] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl2()));
         merchantOrderDTO.setSenderShopUrls(shopUrls);
         merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
-        merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;
     }
 
+    public String orderPost(MerchantInfoEntity merchantInfoEntity,Config config,MerchantOrderEntity entity){
+        String orderNo = null;
+        try {
+            OrderUtil.judgeOrderCondition(merchantInfoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
+            orderNo = orderService.order(entity.getUserId(),entity);
+            MerchantOrderEntity orderEntity = orderService.findByOrderNo(orderNo);
+            //TODO 商家扣款 并修改数据   扣款封装小方法
+            PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
+            payWithOutPwdRequest.setOrderId(orderNo);
+            payWithOutPwdRequest.setAccountId(merchantInfoEntity.getAccountId());
+            long amount = ConvertUtil.convertYuanToFen(orderEntity.getPayAmount());
+            payWithOutPwdRequest.setAmount(amount);
+            logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),orderNo,payWithOutPwdRequest.getAmount());
+            TbbAccountResponse<PayInfo> response;
+            response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+            if (response != null && response.isSucceeded()){
+                long payId = response.getData().getId();
+                orderEntity.setPayId(payId);
+                TaskCreateDTO orderDTO = buildMerchantOrderDTO(orderEntity,merchantInfoEntity);
+                orderDTO.setPayId(payId);
+                logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",orderNo
+                        ,merchantInfoEntity.getAccountId(),response.getData().getId(),amount);
+                orderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
+                Date payDate = new Date();
+                System.out.println("orderNo:"+orderNo);
+                int count = orderService.merchantPay(entity.getUserId(),orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
+                if (count != 1){
+                    logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",entity.getUserId(),orderNo);
+                    throw new MerchantClientException(EnumRespCode.FAIL);
+                }
+                TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(orderDTO);
+                if (taskResponse.isSucceeded() && taskResponse.getData()){
+                    if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(orderDTO.getTaskType().getValue())){
+                        adminToMerchantService.sendDistributeTaskSmsAlert();
+                    }
+                }else {
+                    logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
+                }
 
+                //TODO 推送数据给天下食集
+                OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+                orderStatusInfoDTO.setOrderNo(orderNo);
+                orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.WAITING_PICK.getValue());
+                boolean result = launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
+                if (!result){
+                    logger.error("驿站推送订单状态失败 orderNo:{},userId:{}",
+                            orderNo,entity.getUserId());
+                    throw  new MerchantClientException(EnumRespCode.POST_ORDER_STATUS_PUSH_FAILURE);
+                }
+
+            }else {
+                if (response == null){
+                    logger.error("pay  FAIL.orderNo:{}, accountId:{}}",
+                            orderNo,merchantInfoEntity.getAccountId());
+                }else {
+                    if (response.getErrorCode().equals(TbbAccountResponse.ErrorCode.ERROR_AMOUNT_NOT_ENOUGH.getCode())){
+                        logger.error("pay  FAIL.,余额不足。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
+                                orderNo,merchantInfoEntity.getAccountId(),response.getErrorCode(),response.getMessage());
+                        throw  new MerchantClientException(EnumRespCode.ACCOUNT_NOT_ENOUGH);
+                    }
+                }
+                throw  new MerchantClientException(EnumRespCode.ACCOUNT_PAY_FAIL);
+            }
+        } catch (MerchantClientException e) {
+            e.printStackTrace();
+            //TODO 根据异常类型  回滚数据
+        }
+        return orderNo;
+    }
 }
 
