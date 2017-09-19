@@ -62,13 +62,20 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     }
 
     @Override
-    public boolean adminCancel(String orderNo, Date cancelTime) throws MerchantClientException {
+    public boolean adminCancel(String orderNo, Date cancelTime)  {
+        boolean flag=true;
         MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
         if (null == entity ){
             logger.warn("后台取消订单，订单不存在。orderNo:{}",orderNo);
-            return false;
+            flag= false;
         }
-        return merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true,null);
+        try {
+            flag=merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true,null);
+        } catch (MerchantClientException e) {
+            logger.error(e.getMessage());
+            flag= false;
+        }
+        return flag;
     }
 
     @Override
