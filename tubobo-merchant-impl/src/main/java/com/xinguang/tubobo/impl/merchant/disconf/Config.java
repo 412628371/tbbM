@@ -21,6 +21,7 @@ public class Config {
     private Integer taskGrabExpiredMilSeconds;//过期毫秒数
     private Integer taskPostOrderMilSeconds;//驿站订单过期毫秒数
     private Integer payExpiredMilSeconds;//过期毫秒数
+
     private Integer consignorPayExpiredMilliSeconds;//货主支付超时过期毫秒数
     private Integer consignorTaskExpiredMilliSeconds;//货主接单超时过期毫秒数
     private Integer maxDeliveryMills;
@@ -248,6 +249,9 @@ public class Config {
         }
         logger.info("dispatchRadiusKiloMiles:{}",dispatchRadiusKiloMiles);
         return dispatchRadiusKiloMiles;
+    }
+    public void setTaskPostOrderMilSeconds(Integer taskPostOrderMilSeconds) {
+        this.taskPostOrderMilSeconds = taskPostOrderMilSeconds;
     }
     @DisconfFileItem(name = "task.post.order.milseconds", associateField = "getTaskPostOrderMilSeconds")
     public Integer getTaskPostOrderGrabExpiredMilSeconds() {

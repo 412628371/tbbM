@@ -19,7 +19,7 @@ public class RespAccountRecharge {
     @Override
     public String toString() {
         return "RespAccountRecharge{" +
-                "PayInfo='" + payInfo + '\'' +
+                "PayInfoDto='" + payInfo + '\'' +
                 '}';
     }
 }
