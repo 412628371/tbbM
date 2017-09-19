@@ -23,7 +23,6 @@ import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
@@ -35,6 +34,7 @@ import com.xinguang.tubobo.launcher.inner.api.entity.OrderStatusInfoDTO;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTaskOperatorCallbackDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
@@ -62,9 +62,9 @@ public class MerchantOrderManager extends BaseService {
 	private TimeoutTaskProducer timeoutTaskProducer;
 
 	@Autowired
-	ThirdOrderService thirdOrderService;
+    private ThirdOrderService thirdOrderService;
 	@Autowired
-	TaskDispatchService taskDispatchService;
+    private TaskDispatchService taskDispatchService;
 
 	@Autowired
 	private TbbAccountService tbbAccountService;
@@ -498,18 +498,17 @@ public class MerchantOrderManager extends BaseService {
 
     /**
      * 骑手提交未妥投请求
-     * @param orderNo
      * @return
      */
-    public boolean riderUnsettledOrder(String orderNo,String reason){
-        MerchantOrderEntity order = orderService.findByOrderNo(orderNo);
+    public boolean riderUnsettledOrder(MerchantUnsettledDTO dto){
+        MerchantOrderEntity order = orderService.findByOrderNo(dto.getOrderNo());
         if (order != null){
-            int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),reason);
+            int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),dto.getUnsettledReason());
             if (result > 0){
                 //TODO 通知食集
 				OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
 				orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
-				orderStatusInfoDTO.setOrderNo(orderNo);
+				orderStatusInfoDTO.setOrderNo(dto.getOrderNo());
 				launcherInnerTbbOrderService.statusChange(order.getUserId(),orderStatusInfoDTO);
 
                 return true;

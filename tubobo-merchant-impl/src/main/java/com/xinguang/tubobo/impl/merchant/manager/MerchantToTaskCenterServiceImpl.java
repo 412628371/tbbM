@@ -1,10 +1,11 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,8 +72,8 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     }
 
     @Override
-    public boolean riderUnsettledOrder(String orderNo,String reason) {
-        return merchantOrderManager.riderUnsettledOrder(orderNo,reason);
+    public boolean riderUnsettledOrder(MerchantUnsettledDTO dto) {
+        return merchantOrderManager.riderUnsettledOrder(dto);
     }
 
 
