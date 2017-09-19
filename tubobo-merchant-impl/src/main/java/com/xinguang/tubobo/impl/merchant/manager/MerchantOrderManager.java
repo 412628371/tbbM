@@ -30,6 +30,8 @@ import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
 import com.xinguang.tubobo.impl.merchant.service.*;
+import com.xinguang.tubobo.launcher.inner.api.TbbOrderServiceInterface;
+import com.xinguang.tubobo.launcher.inner.api.entity.OrderStatusInfoDTO;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTaskOperatorCallbackDTO;
@@ -75,8 +77,7 @@ public class MerchantOrderManager extends BaseService {
 	@Resource private Config config;
 
 	@Autowired private MerchantInfoService merchantInfoService;
-
-
+	@Autowired private TbbOrderServiceInterface launcherInnerTbbOrderService;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -506,7 +507,10 @@ public class MerchantOrderManager extends BaseService {
             int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),reason);
             if (result > 0){
                 //TODO 通知食集
-
+				OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+				orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
+				orderStatusInfoDTO.setOrderNo(orderNo);
+				launcherInnerTbbOrderService.statusChange(order.getUserId(),orderStatusInfoDTO);
 
                 return true;
             }
@@ -525,8 +529,10 @@ public class MerchantOrderManager extends BaseService {
         if (result != null && result.getData()){
             orderService.merchantHandlerUnsettledOrder(merchantId,orderNo,finishOrderTime);
             // TODO 通知食集
-
-
+			OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+			orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
+			orderStatusInfoDTO.setOrderNo(orderNo);
+			launcherInnerTbbOrderService.statusChange(merchantId,orderStatusInfoDTO);
 
             return true;
         }

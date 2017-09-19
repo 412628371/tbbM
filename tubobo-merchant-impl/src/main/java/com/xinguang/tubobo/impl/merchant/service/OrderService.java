@@ -64,6 +64,9 @@ public class OrderService extends BaseService {
         return merchantOrderDao.findByMerchantIdAndOrderNo(merchantId, orderNo);
     }
 
+/*    public int abortConfirm(String orderNo,Boolean confirm,String message,String userId){
+        return merchantOrderDao.abortConfirm(orderNo,confirm,message,userId);
+    }*/
     /**
      * 商家提交订单
      */

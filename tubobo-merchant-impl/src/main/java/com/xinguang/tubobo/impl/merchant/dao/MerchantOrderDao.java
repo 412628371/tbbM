@@ -10,7 +10,6 @@ import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
-import com.xinguang.taskcenter.api.common.enums.TaskStatusEnum;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
@@ -37,6 +36,15 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             return null;
         }
     }
+    public MerchantOrderEntity findByOrderNoAndUserId(String orderNo,String userId){
+        String sqlString = "select * from tubobo_merchant_order where order_no = :p1 and del_flag = '0' and user_id = :p2";
+        List<MerchantOrderEntity> list = findBySql(sqlString, new Parameter(orderNo,userId), MerchantOrderEntity.class);
+        if (list != null && list.size() > 0){
+            return list.get(0);
+        }else {
+            return null;
+        }
+    }
     public MerchantOrderEntity findByOrderNoAndStatus(String orderNo,String orderStatus){
         String sqlString = "select * from tubobo_merchant_order where order_no = :p1 and order_status=:p2 and del_flag = '0' ";
         List<MerchantOrderEntity> list = findBySql(sqlString, new Parameter(orderNo,orderStatus), MerchantOrderEntity.class);
@@ -54,6 +62,27 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }else {
             return null;
         }
+    }
+
+    /**
+     * 商家确认未妥投
+     * @param orderNo
+     * @return
+     */
+    public int abortConfirm(String orderNo,Boolean confirm,String message,String userId){
+        String sqlString = "update tubobo_merchant_order set  mer_vote_status= :p1," +
+                " update_date = :p2 , mer_message = :p3  where order_no = :p4 and " +
+                "user_id = :p5 and del_flag = '0' ";
+        Integer confirmInt;
+        if (confirm){
+            confirmInt = 1;
+        }else {
+            confirmInt = 2;
+        }
+        int count =  updateBySql(sqlString,
+                new Parameter(confirmInt,new Date(),message,orderNo,userId));
+        getSession().clear();
+        return count;
     }
 
     /**
@@ -426,7 +455,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     public int merchantHandlerUnsettledOrder(String orderNo,Date finishOrderTime) {
         String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, orderStatus=:p2, finishOrderTime=:p3 " +
                 "where orderNo = :p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue(),finishOrderTime,
-                orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(),PostOrderUnsettledStatusEnum.ING.getValue()));
+        return update(sqlString, new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue(), finishOrderTime,
+                orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.ING.getValue()));
     }
 }
