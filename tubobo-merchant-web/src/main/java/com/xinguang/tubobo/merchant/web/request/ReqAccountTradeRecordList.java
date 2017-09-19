@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.Date;
 
 public class ReqAccountTradeRecordList {
 
@@ -19,7 +20,24 @@ public class ReqAccountTradeRecordList {
 //    RECIEVE("221"),
 //    FINE("230");
     private String type;
+    private Date startTime;
+    private Date endTime;
 
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 
     public int getPageNo() {
         return pageNo;
