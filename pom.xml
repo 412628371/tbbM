@@ -115,17 +115,28 @@
         <gson.version>2.8.0</gson.version>
         <junit.version>4.12</junit.version>
         <SMSApi.version>1.0-SNAPSHOT</SMSApi.version>
+        <tubobo-launcher-inner-api.version>1.0-SNAPSHOT</tubobo-launcher-inner-api.version>
+        <validation.api.version>1.1.0.Final</validation.api.version>
     </properties>
 
 
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.xinguang</groupId>
+                <artifactId>tubobo-launcher-inner-api</artifactId>
+                <version>${tubobo-launcher-inner-api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.xinguang.xinchen</groupId>
                 <artifactId>SMSApi</artifactId>
                 <version>${SMSApi.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${validation.api.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.xinguang.tubobo</groupId>

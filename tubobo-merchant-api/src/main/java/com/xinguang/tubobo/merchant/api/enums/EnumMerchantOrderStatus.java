@@ -14,7 +14,8 @@ public enum EnumMerchantOrderStatus {
 	CANCEL_GRAB_OVERTIME("取消，超时未接单", "CANCEL"),
 	WAITING_PICK("待取货", "WAITING_PICK"),
 	DELIVERYING("配送中", "DELIVERYING"),
-	FINISH("完成", "FINISH");
+	FINISH("完成", "FINISH"),
+	UNDELIVERED("未妥投", "UNDELIVERED");
 
     private String name;
     private String value;

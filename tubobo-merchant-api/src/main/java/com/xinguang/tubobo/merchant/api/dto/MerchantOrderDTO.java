@@ -81,6 +81,61 @@ public class MerchantOrderDTO implements Serializable{
 
 	private Integer peekOverFee;  //高峰溢价费用
 	private Integer weatherOverFee; //天气溢价费用
+	private String unsettledStatus;         //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理
+	private String unsettledReason;         //驿站订单 未妥投原因
+	private Boolean  shortMessage;			//订单是否发送短信通知收件人
+
+	private Long providerId;//所属服务商ID
+	private String providerName;//所属服务商名称
+	private String merMessage; //未妥投确认消息
+
+	public Boolean getShortMessage() {
+		return shortMessage;
+	}
+
+	public void setShortMessage(Boolean shortMessage) {
+		this.shortMessage = shortMessage;
+	}
+
+	public String getUnsettledStatus() {
+		return unsettledStatus;
+	}
+
+	public void setUnsettledStatus(String unsettledStatus) {
+		this.unsettledStatus = unsettledStatus;
+	}
+
+	public String getUnsettledReason() {
+		return unsettledReason;
+	}
+
+	public void setUnsettledReason(String unsettledReason) {
+		this.unsettledReason = unsettledReason;
+	}
+
+	public Long getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(Long providerId) {
+		this.providerId = providerId;
+	}
+
+	public String getProviderName() {
+		return providerName;
+	}
+
+	public void setProviderName(String providerName) {
+		this.providerName = providerName;
+	}
+
+	public String getMerMessage() {
+		return merMessage;
+	}
+
+	public void setMerMessage(String merMessage) {
+		this.merMessage = merMessage;
+	}
 
 	public Integer getPeekOverFee() {
 		return peekOverFee;

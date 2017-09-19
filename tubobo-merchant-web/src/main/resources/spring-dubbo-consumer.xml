@@ -27,6 +27,7 @@
 	<dubbo:reference id="tbbNotifyService" interface="com.xinguang.tubobo.notify.api.TbbNotifyService" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="overTimeRuleService" interface="com.xinguang.taskcenter.api.OverTimeRuleInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference version="0.0.1" check="false" group="${dubbo.group}" id="smsService" interface="com.xinguang.xingchen.SMSplatform.api.SMSServiceInterface" />
+	<dubbo:reference id="launcherInnerTbbOrderService" interface="com.xinguang.tubobo.launcher.inner.api.TbbOrderServiceInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
 
 
 
