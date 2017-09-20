@@ -4,6 +4,7 @@ import com.xinguang.tubobo.merchant.api.condition.MerchantInfoQueryCondition;
 import com.xinguang.tubobo.merchant.api.condition.MerchantOrderQueryCondition;
 import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
+import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;
 
@@ -26,4 +27,9 @@ public interface MerchantToPostHouseServiceInterface {
      */
     PageDTO<MerchantOrderDTO> findMerchantOrderList(MerchantOrderQueryCondition queryCondition);
 
+    /**
+     * 查询正在进行中，带取货， 待配送， 未妥投的订单数目
+     * @return
+     */
+    OrderStatusStatsDTO findMerchantOrderCounts(Long providerId);
 }

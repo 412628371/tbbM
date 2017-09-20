@@ -11,6 +11,7 @@ import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
+import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
@@ -35,6 +36,7 @@ import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTaskOperatorCallbackDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
+import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
@@ -392,6 +394,24 @@ public class MerchantOrderManager extends BaseService {
 	public Page<MerchantOrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
 														 String createTimeSort, MerchantOrderEntity entity){
 		return orderService.postHouseQueryOrderPage(pageNo, pageSize, expectFinishTimeSort, createTimeSort, entity);
+	}
+
+	public OrderStatusStatsDTO findMerchantOrderCounts(Long providerId){
+		OrderStatusStatsDTO statusStatsDTO = new OrderStatusStatsDTO();
+		Long deliveryingCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.DELIVERYING.getValue(), null);
+		Long waitingPickCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.WAITING_PICK.getValue(), null);
+		Long undeliveredCounts = orderService.getOrderWithProviderIdAndStatus(providerId, null, PostOrderUnsettledStatusEnum.ING.getValue());
+		if(null != deliveryingCounts){
+			statusStatsDTO.setDeliveryingCounts(deliveryingCounts);
+		}
+		if(null != waitingPickCounts){
+			statusStatsDTO.setWaitingPickCounts(waitingPickCounts);
+		}
+		if(null != undeliveredCounts){
+			statusStatsDTO.setUndeliveredCounts(undeliveredCounts);
+		}
+		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts());
+		return statusStatsDTO;
 	}
 
 	/**

@@ -565,6 +565,27 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         return count;
     }
 
+    public Long getOrderWithProviderIdAndStatus(Long providerId, String orderStatus, String unsettledStatus){
+        Parameter parameter = new Parameter();
+        StringBuffer sb = new StringBuffer();
+        sb.append("select count(orderNo) FROM MerchantOrderEntity WHERE delFlag= '0' ");
+        if (null!=providerId){
+            sb.append("and provider_id = : provider_id");
+            parameter.put("provider_id", providerId);
+        }
+        if (StringUtils.isNotBlank(orderStatus)){
+            sb.append("and order_status = :order_status  ");
+            parameter.put("order_status", orderStatus);
+        }
+        if (StringUtils.isNotBlank(unsettledStatus)){
+            sb.append("and unsettled_status = :unsettled_status  ");
+            parameter.put("unsettled_status", unsettledStatus);
+        }
+        Query query = createQuery(sb.toString(), new Parameter(providerId, orderStatus, MerchantOrderEntity.DEL_FLAG_NORMAL));
+        Long count = (Long) query.uniqueResult();
+        return count;
+    }
+
     public int rateOrder(String orderNo) {
         String sqlString = "update MerchantOrderEntity set ratedFlag=:p1 where orderNo = :p2 and  delFlag = '0' ";
         return update(sqlString,new Parameter(true,orderNo));

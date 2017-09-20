@@ -237,7 +237,7 @@ public class OrderService extends BaseService {
         return merchantOrderDao.findMerchantOrderPageToApp(pageNo, pageSize, entity);
     }
 
-    @Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")
+    //@Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")
     public Page<MerchantOrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
                                                          String createTimeSort, MerchantOrderEntity entity) {
         return merchantOrderDao.findMerchantOrderPageToPostHouse(pageNo, pageSize, expectFinishTimeSort, createTimeSort,entity);
@@ -282,6 +282,15 @@ public class OrderService extends BaseService {
         return merchantOrderDao.getTodayFinishOrderWithShortTextNum(userId);
     }
 
+    /**
+     * 获取指定providerId，和orderStatus\unsettledStatus的订单数目
+     * @return
+     */
+    //@Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#providerId+'_'")
+    @Transactional(readOnly = true)
+    public Long getOrderWithProviderIdAndStatus(Long providerId, String orderStatus, String unsettledStatus){
+        return merchantOrderDao.getOrderWithProviderIdAndStatus(providerId, orderStatus, unsettledStatus);
+    }
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)

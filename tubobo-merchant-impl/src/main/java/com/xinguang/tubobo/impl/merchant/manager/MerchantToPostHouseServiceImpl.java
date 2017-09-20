@@ -10,6 +10,7 @@ import com.xinguang.tubobo.merchant.api.condition.MerchantInfoQueryCondition;
 import com.xinguang.tubobo.merchant.api.condition.MerchantOrderQueryCondition;
 import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
+import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;
 import org.springframework.beans.BeanUtils;
@@ -90,5 +91,11 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         }
         PageDTO<MerchantOrderDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getCount(),list);
         return respPage;
+    }
+
+    @Override
+    public OrderStatusStatsDTO findMerchantOrderCounts(Long providerId) {
+        OrderStatusStatsDTO dto = merchantOrderManager.findMerchantOrderCounts(providerId);
+        return dto;
     }
 }
