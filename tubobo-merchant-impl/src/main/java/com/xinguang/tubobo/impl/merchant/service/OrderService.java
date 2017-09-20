@@ -283,7 +283,7 @@ public class OrderService extends BaseService {
     }
 
     /**
-     * 获取指定providerId，和orderStatus\unsettledStatus的订单数目
+     * 获取指定providerId，和orderStatus unsettledStatus的订单数目
      * @return
      */
     //@Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#providerId+'_'")
