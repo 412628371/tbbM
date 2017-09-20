@@ -328,8 +328,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("order_no", entity.getOrderNo());
         }
         if (StringUtils.isNotBlank(entity.getRiderPhone())){
-            sb.append("and rider_phone like :rider_phone ");
-            parameter.put("rider_phone", entity.getRiderPhone()+"%");
+            sb.append("and rider_phone = :rider_phone ");
+            parameter.put("rider_phone", entity.getRiderPhone());
         }
         if (StringUtils.isNotBlank(entity.getReceiverPhone())){
             sb.append("and receiver_phone like :receiver_phone ");
@@ -337,16 +337,12 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getSenderName())){
             sb.append("and sender_name like :sender_name ");
-            parameter.put("sender_name", "%"+entity.getSenderName()+"%");
+            parameter.put("sender_name", entity.getSenderName()+"%");
         }
-        if (null != entity.getCreateDate()){
-            sb.append("and order_time >= :create_date ");
-            parameter.put("create_date", DateUtils.getDateStart(entity.getCreateDate()));
-        }
-        if (null != entity.getUpdateDate()){
-            sb.append("and order_time <= :update_date ");
-            parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
-        }
+        sb.append("and order_time >= :create_date ");
+        parameter.put("create_date", DateUtils.getDateStart(DateUtils.getDaysBefore(new Date(),2)));
+        sb.append("and order_time <= :update_date ");
+        parameter.put("update_date", DateUtils.getDateEnd(new Date()));
         if (StringUtils.isNotBlank(entity.getSenderAdcode())){
             sb.append("and sender_adcode like :sender_adcode ");
             parameter.put("sender_adcode", entity.getSenderAdcode()+"%");
