@@ -528,7 +528,7 @@ public class MerchantOrderManager extends BaseService {
     public boolean riderUnsettledOrder(MerchantUnsettledDTO dto){
         MerchantOrderEntity order = orderService.findByOrderNo(dto.getOrderNo());
         if (order != null){
-            int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),dto.getUnsettledReason());
+            int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),dto.getUnsettledReason(),dto.getUnsettledTime());
             if (result > 0){
                 //TODO 通知食集
 				OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();

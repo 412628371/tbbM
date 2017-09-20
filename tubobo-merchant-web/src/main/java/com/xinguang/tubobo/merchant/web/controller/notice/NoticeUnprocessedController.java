@@ -23,15 +23,15 @@ public class NoticeUnprocessedController extends MerchantBaseController<Object,R
     protected RespNoticeUnprocessedCount doService(String userId, Object req) throws MerchantClientException {
         RespNoticeUnprocessedCount respNoticeUnprocessedCount = new RespNoticeUnprocessedCount();
         Long businessCount = noticeService.getUnProcessedCount(userId);
-        Integer systemCount = adminNotifyService.noReadNotifyCounts(userId, EnumNotifyType.NOTIFY_MERCHANT);
+//        Integer systemCount = adminNotifyService.noReadNotifyCounts(userId, EnumNotifyType.NOTIFY_MERCHANT);
         if (businessCount == null){
             businessCount = 0L;
         }
-        if (systemCount == null){
-            systemCount = 0;
-        }
+//        if (systemCount == null){
+//            systemCount = 0;
+//        }
         respNoticeUnprocessedCount.setBusinessNoticeCount(businessCount);
-        respNoticeUnprocessedCount.setSystemNoticeCount(systemCount.longValue());
+        respNoticeUnprocessedCount.setSystemNoticeCount(0l);
         return respNoticeUnprocessedCount;
     }
 }
