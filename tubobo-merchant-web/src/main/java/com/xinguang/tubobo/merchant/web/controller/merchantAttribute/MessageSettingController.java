@@ -36,6 +36,5 @@ public class MessageSettingController extends MerchantBaseController<ReqMessageO
                     );
         }
         return EnumRespCode.SUCCESS;
-
     }
 }

@@ -69,7 +69,6 @@ public class MerchantOrderManager extends BaseService {
 	@Autowired
 	private TbbAccountService tbbAccountService;
 
-	@Autowired private MerchantPushService pushService;
 
 	@Autowired private AdminToMerchantService adminToMerchantService;
 	@Autowired private RmqNoticeProducer rmqNoticeProducer;
@@ -298,14 +297,27 @@ public class MerchantOrderManager extends BaseService {
 			return false;
 		}
 		logger.info("处理骑手接单：orderNo:{}",orderNo);
-		boolean result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
-				orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType(),dto.getPickupDistance()) > 0;
-		if (enableNotice){
+		boolean result ;
+		//驿站订单回调后直接是已取货状态，短信发送给收货人 TODO 代码拆分与整合
+		if (TaskTypeEnum.POST_ORDER.getValue().equals(entity.getOrderType())){
+			result = orderService.riderGrabOrderOfPost(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
+					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),entity.getGrabOrderTime(),dto.getPickupDistance())>0;
 			if (result){
-				rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+				//短信通知骑手
+				if (entity.getShortMessage()){
+					adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
+				}
 			}
-			rmqTakeoutAnswerProducer.sendAccepted(entity.getPlatformCode(),entity.getUserId(),entity.getOrderNo(),
-					entity.getOriginOrderId(),new DispatcherInfoDTO(dto.getRiderName(),dto.getRiderPhone()));
+		}else {
+			result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
+					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType(),dto.getPickupDistance()) > 0;
+			if (enableNotice){
+				if (result){
+					rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+				}
+				rmqTakeoutAnswerProducer.sendAccepted(entity.getPlatformCode(),entity.getUserId(),entity.getOrderNo(),
+						entity.getOriginOrderId(),new DispatcherInfoDTO(dto.getRiderName(),dto.getRiderPhone()));
+			}
 		}
 		return result;
 	}
@@ -327,7 +339,6 @@ public class MerchantOrderManager extends BaseService {
 			if (entity.getShortMessage()){
 				adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
 			}
-
 		}
 		return flag;
 	}

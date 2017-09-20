@@ -160,11 +160,17 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int riderGrabOrder(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance) {
-        //v1.41预计送达时间改为从规则表中获得
-        //Date expectFinishTimeDueRule = getExpectFinishTimeDueRule(orderNo,grabOrderTime);
         return merchantOrderDao.riderGrabOrder(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, riderCarNo, riderCarType,pickupDistance);
     }
-
+    /**
+     * 骑手抢单
+     */
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional()
+    public int riderGrabOrderOfPost(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
+                              Date grabOrderTime, Date expectFinishTime, Date pickTime,  Double pickupDistance) {
+        return merchantOrderDao.riderGrabOrderOfPost(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, pickTime,pickupDistance);
+    }
     /**
      * 骑手取货
      */

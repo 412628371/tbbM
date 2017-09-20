@@ -361,34 +361,34 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
                 TaskCreateDTO orderDTO = buildMerchantOrderDTO(orderEntity,merchantInfoEntity);
                 orderDTO.setPayId(payId);
                 logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",orderNo
-                        ,merchantInfoEntity.getAccountId(),response.getData().getId(),amount);
-                orderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
-                Date payDate = new Date();
-                System.out.println("orderNo:"+orderNo);
-                int count = orderService.merchantPay(entity.getUserId(),orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
-                if (count != 1){
-                    logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",entity.getUserId(),orderNo);
-                    throw new MerchantClientException(EnumRespCode.FAIL);
-                }
-                TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(orderDTO);
-                if (taskResponse.isSucceeded() && taskResponse.getData()){
-                    if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(orderDTO.getTaskType().getValue())){
-                        adminToMerchantService.sendDistributeTaskSmsAlert();
+                                ,merchantInfoEntity.getAccountId(),response.getData().getId(),amount);
+                        orderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
+                        Date payDate = new Date();
+                        System.out.println("orderNo:"+orderNo);
+                        int count = orderService.merchantPay(entity.getUserId(),orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
+                        if (count != 1){
+                            logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",entity.getUserId(),orderNo);
+                            throw new MerchantClientException(EnumRespCode.FAIL);
+                        }
+                        TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(orderDTO);
+                        if (taskResponse.isSucceeded() && taskResponse.getData()){
+                            if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(orderDTO.getTaskType().getValue())){
+                                adminToMerchantService.sendDistributeTaskSmsAlert();
                     }
                 }else {
                     logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
                 }
 
-                //TODO 推送数据给天下食集
-                OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
-                orderStatusInfoDTO.setOrderNo(orderNo);
-                orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.WAITING_PICK.getValue());
-                boolean result = launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
-                if (!result){
-                    logger.error("驿站推送订单状态失败 orderNo:{},userId:{}",
-                            orderNo,entity.getUserId());
-                    throw  new MerchantClientException(EnumRespCode.POST_ORDER_STATUS_PUSH_FAILURE);
-                }
+//                //TODO 推送数据给天下食集
+//                OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+//                orderStatusInfoDTO.setOrderNo(orderNo);
+//                orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.WAITING_PICK.getValue());
+//                boolean result = launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
+//                if (!result){
+//                    logger.error("驿站推送订单状态失败 orderNo:{},userId:{}",
+//                            orderNo,entity.getUserId());
+//                    throw  new MerchantClientException(EnumRespCode.POST_ORDER_STATUS_PUSH_FAILURE);
+//                }
 
             }else {
                 if (response == null){
