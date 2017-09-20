@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class MerchantOrderQueryCondition implements Serializable{
     private String orderType;           //订单类型
-    private String userId;
+    private Long providerId;
     private Date createTimeEnd;	        //结束创建时间
     private Date createTimeStart;	    //开始创建时间
     private String orderNo;	            //订单编号
@@ -29,12 +29,12 @@ public class MerchantOrderQueryCondition implements Serializable{
         this.unsettledStatus = unsettledStatus;
     }
 
-    public String getUserId() {
-        return userId;
+    public Long getProviderId() {
+        return providerId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setProviderId(Long providerId) {
+        this.providerId = providerId;
     }
 
     public String getOrderType() {
