@@ -350,6 +350,72 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     }
 
     /**
+     * 驿站订单分页查询
+     * @return
+     */
+    public Page<MerchantOrderEntity> findMerchantOrderPageToPostHouse(int pageNo, int pageSize, String expectFinishTimeSort,
+                                                                      String createTimeSort, MerchantOrderEntity entity){
+        Parameter parameter = new Parameter();
+        StringBuffer sb = new StringBuffer();
+        sb.append("select * from tubobo_merchant_order where del_flag = '0' ");
+        if (StringUtils.isNotBlank(entity.getUserId())){
+            sb.append("and user_id = :user_id  ");
+            parameter.put("user_id", entity.getUserId());
+        }
+        if (StringUtils.isNotBlank(entity.getOrderType())){
+            sb.append("and order_type = :order_type ");
+            parameter.put("order_type", entity.getOrderType());
+        }
+        if (StringUtils.isNotBlank(entity.getOrderStatus())){
+            sb.append("and order_status = :order_status ");
+            parameter.put("order_status", entity.getOrderStatus());
+        }
+        if (StringUtils.isNotBlank(entity.getOrderNo())){
+            sb.append("and order_no = :order_no ");
+            parameter.put("order_no", entity.getOrderNo());
+        }
+        if (StringUtils.isNotBlank(entity.getUnsettledStatus())){
+            sb.append("and unsettled_status = :unsettled_status ");
+            parameter.put("unsettled_status", entity.getUnsettledStatus());
+        }
+        if (StringUtils.isNotBlank(entity.getReceiverPhone())){
+            sb.append("and receiver_phone like :receiver_phone ");
+            parameter.put("receiver_phone", entity.getReceiverPhone()+"%");
+        }
+        if (StringUtils.isNotBlank(entity.getRiderId())){
+            sb.append("and rider_id like :rider_id ");
+            parameter.put("rider_id", entity.getRiderId()+"%");
+        }
+        if (StringUtils.isNotBlank(entity.getRiderName())){
+            sb.append("and rider_name like :rider_name ");
+            parameter.put("rider_name", entity.getRiderName()+"%");
+        }
+        if (StringUtils.isNotBlank(entity.getSenderId())){
+            sb.append("and sender_id like :sender_id ");
+            parameter.put("sender_id", entity.getSenderId()+"%");
+        }
+        if (StringUtils.isNotBlank(entity.getSenderName())){
+            sb.append("and sender_name like :sender_name ");
+            parameter.put("sender_name", entity.getSenderName()+"%");
+        }
+        if (null != entity.getCreateDate()){
+            sb.append("and create_date >= :create_date ");
+            parameter.put("create_date", DateUtils.getDateStart(entity.getCreateDate()));
+        }
+        if (null != entity.getUpdateDate()){
+            sb.append("and create_date <= :update_date ");
+            parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
+        }
+        if(StringUtils.isNotBlank(expectFinishTimeSort)){
+            sb.append(" order by expect_finish_time " + expectFinishTimeSort);
+        }
+        if(StringUtils.isNotBlank(createTimeSort)){
+            sb.append(" order by create_date " + createTimeSort);
+        }
+        return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
+    }
+
+    /**
      * 后台查询商家订单，分页查询
      */
     public Page<MerchantOrderEntity> findMerchantOrderPageToAdmin(int pageNo, int pageSize, MerchantOrderEntity entity){

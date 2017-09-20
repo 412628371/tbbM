@@ -3,10 +3,13 @@ package com.xinguang.tubobo.impl.merchant.manager;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.xinguang.tubobo.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantToPostHouseServiceInterface;
 import com.xinguang.tubobo.merchant.api.condition.MerchantInfoQueryCondition;
+import com.xinguang.tubobo.merchant.api.condition.MerchantOrderQueryCondition;
 import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +24,8 @@ import java.util.List;
 public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServiceInterface {
 
     @Autowired private MerchantInfoService merchantInfoService;
+
+    @Autowired private MerchantOrderManager merchantOrderManager;
     @Override
     public EnumMerchantPostExceptionCode bindProvider(String userId, Long providerId, String providerName) {
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
@@ -56,6 +61,34 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
             }
         }
         PageDTO<MerchantInfoDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getCount(),list);
+        return respPage;
+    }
+
+    @Override
+    public PageDTO<MerchantOrderDTO> findMerchantOrderList(MerchantOrderQueryCondition queryCondition) {
+        MerchantOrderEntity orderEntity = new MerchantOrderEntity();
+        orderEntity.setCreateDate(queryCondition.getCreateTimeStart());
+        orderEntity.setUpdateDate(queryCondition.getCreateTimeEnd());
+        orderEntity.setOrderNo(queryCondition.getOrderNo());
+        orderEntity.setOrderStatus(queryCondition.getOrderStatus());
+        orderEntity.setOrderType(queryCondition.getOrderType());
+        orderEntity.setReceiverPhone(queryCondition.getReceiverPhone());
+        orderEntity.setRiderId(queryCondition.getRiderId());
+        orderEntity.setRiderName(queryCondition.getRiderName());
+        orderEntity.setSenderId(queryCondition.getShopId());
+        orderEntity.setSenderName(queryCondition.getShopName());
+        orderEntity.setUserId(queryCondition.getUserId());
+        Page<MerchantOrderEntity> page = merchantOrderManager.postHouseQueryOrderPage(queryCondition.getPageNo(), queryCondition.getPageSize(),
+                                            queryCondition.getExpectFinishTimeSort(), queryCondition.getCreateTimeSort(), orderEntity);
+        List<MerchantOrderDTO> list = new LinkedList<>();
+        if (null != page && page.getList()!=null&& page.getList().size()>0){
+            for (MerchantOrderEntity entity:page.getList()){
+                MerchantOrderDTO orderDTO = new MerchantOrderDTO();
+                BeanUtils.copyProperties(entity,orderDTO);
+                list.add(orderDTO);
+            }
+        }
+        PageDTO<MerchantOrderDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getCount(),list);
         return respPage;
     }
 }

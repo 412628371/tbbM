@@ -389,6 +389,11 @@ public class MerchantOrderManager extends BaseService {
 		return orderService.merchantQueryOrderPage(pageNo,pageSize,entity);
 	}
 
+	public Page<MerchantOrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
+														 String createTimeSort, MerchantOrderEntity entity){
+		return orderService.postHouseQueryOrderPage(pageNo, pageSize, expectFinishTimeSort, createTimeSort, entity);
+	}
+
 	/**
 	 * 后台查询分页（不缓存）
 	 */
