@@ -64,9 +64,10 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         //post订单
         if (null!=infoEntity.getProviderId()){
             orderType=EnumOrderType.POSTORDER.getValue();
+
         }
         MerchantOrderEntity entity = new MerchantOrderEntity();
-        if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
+      /*  if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
             String status = infoEntity.getMerchantStatus();
             if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
                 status = infoEntity.getConsignorStatus();
@@ -113,23 +114,21 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
                 entity.setAppointTime(new Date());
             }
 
-        }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POSTORDER.getValue().equals(orderType)){
+        }*/
+      if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POSTORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             OrderUtil.judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
-
         }else {
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_TYPE_NOT_SUPPORT);
         }
         entity.setOrderType(orderType);
         AddressInfo receiverAddressInfo = req.getReceiver();
         //封装溢价信息并校验
-
         OverFeeInfo overFeeInfo = req.getOverFeeInfo();
         if (overFeeInfo==null&&EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             //处理老版本,此时判断
             checkOverFeeForOldVersion(infoEntity.getAddressAdCode());
         }
-
         Double weatherOverFee = 0.0;
         Double peekOverFee = 0.0;
         if (overFeeInfo!=null){
@@ -146,8 +145,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         }
         entity.setWeatherOverFee(weatherOverFee);
         entity.setPeekOverFee(peekOverFee);
-
-
         ThirdInfo thirdInfo = req.getThirdInfo();
         if (null != thirdInfo){
             entity.setPlatformCode(thirdInfo.getPlatformCode());
@@ -156,9 +153,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             if(StringUtils.isNotBlank(thirdInfo.getOriginOrderId())&&
                     StringUtils.isNotBlank(thirdInfo.getPlatformCode())){
                 //TODO 根据第三方平台编号查找订单是否重复
-
             }
-
         }
         //把收货人地址信息设置到实体
         AddressInfoToOrderBeanHelper.putReceiverAddressInfo(entity,receiverAddressInfo);
@@ -175,6 +170,8 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setWeatherOverFee(weatherOverFee);
         entity.setPeekOverFee(peekOverFee);
         entity.setDeliveryDistance(req.getDeliveryDistance());
+        entity.setProviderId(infoEntity.getProviderId());
+        entity.setProviderName(infoEntity.getProviderName());
         String orderNo = merchantOrderManager.order(userId,entity);
         CreateOrderResponse response = new CreateOrderResponse();
         response.setOrderNo(orderNo);

@@ -115,13 +115,6 @@ public class MerchantOrderManager extends BaseService {
 	 */
 	public void merchantPay(TaskCreateDTO taskCreateDTO, String merchantId, String orderNo, long payId) throws MerchantClientException {
 		int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
-
-		if (TaskTypeEnum.M_SMALL_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
-			taskCreateDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
-		}else {
-			taskCreateDTO.setTaskType(TaskTypeEnum.M_BIG_ORDER);
-			grabExpiredMilliSeconds = config.getConsignorTaskExpiredMilliSeconds();
-		}
 		taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
 		Date payDate = new Date();
 		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate,EnumMerchantOrderStatus.WAITING_GRAB.getValue());
@@ -131,13 +124,9 @@ public class MerchantOrderManager extends BaseService {
 		}
 		TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(taskCreateDTO);
 		if (taskResponse.isSucceeded() && taskResponse.getData()){
-			if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
-				adminToMerchantService.sendDistributeTaskSmsAlert();
-			}
 		}else {
 			logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
 		}
-
 	}
 
 
