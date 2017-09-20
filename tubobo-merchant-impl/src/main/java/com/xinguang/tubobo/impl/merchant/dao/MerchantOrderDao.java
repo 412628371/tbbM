@@ -381,7 +381,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @return
      */
     public Page<MerchantOrderEntity> findMerchantOrderPageToPostHouse(int pageNo, int pageSize, String expectFinishTimeSort,
-                                                                      String createTimeSort, MerchantOrderEntity entity){
+                                                                      String orderTimeSort, MerchantOrderEntity entity){
         Parameter parameter = new Parameter();
         StringBuffer sb = new StringBuffer();
         sb.append("select * from tubobo_merchant_order where del_flag = '0' ");
@@ -426,18 +426,18 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("sender_name", entity.getSenderName()+"%");
         }
         if (null != entity.getCreateDate()){
-            sb.append("and create_date >= :create_date ");
+            sb.append("and order_time >= :create_date ");
             parameter.put("create_date", DateUtils.getDateStart(entity.getCreateDate()));
         }
         if (null != entity.getUpdateDate()){
-            sb.append("and create_date <= :update_date ");
+            sb.append("and order_time <= :update_date ");
             parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
         }
         if(StringUtils.isNotBlank(expectFinishTimeSort)){
             sb.append(" order by expect_finish_time " + expectFinishTimeSort);
         }
-        if(StringUtils.isNotBlank(createTimeSort)){
-            sb.append(" order by create_date " + createTimeSort);
+        if(StringUtils.isNotBlank(orderTimeSort)){
+            sb.append(" order by create_date " + orderTimeSort);
         }
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
     }

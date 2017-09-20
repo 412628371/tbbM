@@ -239,8 +239,8 @@ public class OrderService extends BaseService {
 
     //@Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")
     public Page<MerchantOrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
-                                                         String createTimeSort, MerchantOrderEntity entity) {
-        return merchantOrderDao.findMerchantOrderPageToPostHouse(pageNo, pageSize, expectFinishTimeSort, createTimeSort,entity);
+                                                         String orderTimeSort, MerchantOrderEntity entity) {
+        return merchantOrderDao.findMerchantOrderPageToPostHouse(pageNo, pageSize, expectFinishTimeSort, orderTimeSort,entity);
     }
 
     /**

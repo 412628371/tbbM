@@ -68,8 +68,8 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
     @Override
     public PageDTO<MerchantOrderDTO> findMerchantOrderList(MerchantOrderQueryCondition queryCondition) {
         MerchantOrderEntity orderEntity = new MerchantOrderEntity();
-        orderEntity.setCreateDate(queryCondition.getCreateTimeStart());
-        orderEntity.setUpdateDate(queryCondition.getCreateTimeEnd());
+        orderEntity.setCreateDate(queryCondition.getOrderTimeStart());
+        orderEntity.setUpdateDate(queryCondition.getOrderTimeEnd());
         orderEntity.setOrderNo(queryCondition.getOrderNo());
         orderEntity.setOrderStatus(queryCondition.getOrderStatus());
         orderEntity.setOrderType(queryCondition.getOrderType());
@@ -80,7 +80,7 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         orderEntity.setSenderName(queryCondition.getShopName());
         orderEntity.setProviderId(queryCondition.getProviderId());
         Page<MerchantOrderEntity> page = merchantOrderManager.postHouseQueryOrderPage(queryCondition.getPageNo(), queryCondition.getPageSize(),
-                                            queryCondition.getExpectFinishTimeSort(), queryCondition.getCreateTimeSort(), orderEntity);
+                                            queryCondition.getExpectFinishTimeSort(), queryCondition.getOrderTimeSort(), orderEntity);
         List<MerchantOrderDTO> list = new LinkedList<>();
         if (null != page && page.getList()!=null&& page.getList().size()>0){
             for (MerchantOrderEntity entity:page.getList()){

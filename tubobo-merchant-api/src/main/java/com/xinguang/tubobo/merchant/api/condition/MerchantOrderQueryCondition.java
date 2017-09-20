@@ -6,8 +6,8 @@ import java.util.Date;
 public class MerchantOrderQueryCondition implements Serializable{
     private String orderType;           //订单类型
     private Long providerId;
-    private Date createTimeEnd;	        //结束创建时间
-    private Date createTimeStart;	    //开始创建时间
+    private Date orderTimeEnd;	        //结束创建时间
+    private Date orderTimeStart;	    //开始创建时间
     private String orderNo;	            //订单编号
     private String orderStatus;	        //状态
     private String unsettledStatus;     //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理
@@ -17,7 +17,7 @@ public class MerchantOrderQueryCondition implements Serializable{
     private String shopId;	            //商家ID
     private String shopName;	        //商家名称
     private String expectFinishTimeSort;//按预计送达时间排序	asc按预计送达时间顺序；desc按预计送达时间倒序；空值按创建时间倒序排列
-    private String createTimeSort;
+    private String orderTimeSort;
     private Integer pageNo;
     private Integer pageSize;
 
@@ -43,22 +43,6 @@ public class MerchantOrderQueryCondition implements Serializable{
 
     public void setOrderType(String orderType) {
         this.orderType = orderType;
-    }
-
-    public Date getCreateTimeEnd() {
-        return createTimeEnd;
-    }
-
-    public void setCreateTimeEnd(Date createTimeEnd) {
-        this.createTimeEnd = createTimeEnd;
-    }
-
-    public Date getCreateTimeStart() {
-        return createTimeStart;
-    }
-
-    public void setCreateTimeStart(Date createTimeStart) {
-        this.createTimeStart = createTimeStart;
     }
 
     public String getOrderNo() {
@@ -125,12 +109,28 @@ public class MerchantOrderQueryCondition implements Serializable{
         this.expectFinishTimeSort = expectFinishTimeSort;
     }
 
-    public String getCreateTimeSort() {
-        return createTimeSort;
+    public Date getOrderTimeEnd() {
+        return orderTimeEnd;
     }
 
-    public void setCreateTimeSort(String createTimeSort) {
-        this.createTimeSort = createTimeSort;
+    public void setOrderTimeEnd(Date orderTimeEnd) {
+        this.orderTimeEnd = orderTimeEnd;
+    }
+
+    public Date getOrderTimeStart() {
+        return orderTimeStart;
+    }
+
+    public void setOrderTimeStart(Date orderTimeStart) {
+        this.orderTimeStart = orderTimeStart;
+    }
+
+    public String getOrderTimeSort() {
+        return orderTimeSort;
+    }
+
+    public void setOrderTimeSort(String orderTimeSort) {
+        this.orderTimeSort = orderTimeSort;
     }
 
     public Integer getPageNo() {

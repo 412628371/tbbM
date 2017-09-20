@@ -392,8 +392,8 @@ public class MerchantOrderManager extends BaseService {
 	}
 
 	public Page<MerchantOrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
-														 String createTimeSort, MerchantOrderEntity entity){
-		return orderService.postHouseQueryOrderPage(pageNo, pageSize, expectFinishTimeSort, createTimeSort, entity);
+														 String orderTimeSort, MerchantOrderEntity entity){
+		return orderService.postHouseQueryOrderPage(pageNo, pageSize, expectFinishTimeSort, orderTimeSort, entity);
 	}
 
 	public OrderStatusStatsDTO findMerchantOrderCounts(Long providerId){
