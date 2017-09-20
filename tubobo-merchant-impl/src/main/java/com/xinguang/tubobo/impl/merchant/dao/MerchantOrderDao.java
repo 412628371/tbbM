@@ -508,7 +508,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
 //        criteria.add(Restrictions.and(Restrictions.eq("delFlag",MerchantOrderEntity.DEL_FLAG_NORMAL)));
 //        criteria.add(Restrictions.and(Restrictions.gt("finishOrderTime",DateUtils.getDateStart(new Date()))));
 
-        String sqlString = "select count(orderNo) FROM MerchantOrderEntity WHERE  userId=:p1 and finishOrderTime > :p2 and delFlag=:p3 and shortMessage=:p4";
+        String sqlString = "select count(orderNo) FROM MerchantOrderEntity WHERE  userId=:p1 and grabItemTime > :p2 and delFlag=:p3 and shortMessage=:p4";
         Query query = createQuery(sqlString,new Parameter(userId,DateUtils.getDateStart(new Date()),MerchantOrderEntity.DEL_FLAG_NORMAL,MerchantConstants.ORDER_MESSAGE_OPEN));
         Long count = (Long) query.uniqueResult();
         return count;

@@ -61,6 +61,10 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         }
 
         String orderType = req.getType();
+        //post订单
+        if (null!=infoEntity.getProviderId()){
+            orderType=EnumOrderType.POSTORDER.getValue();
+        }
         MerchantOrderEntity entity = new MerchantOrderEntity();
         if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
             String status = infoEntity.getMerchantStatus();
@@ -109,7 +113,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
                 entity.setAppointTime(new Date());
             }
 
-        }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
+        }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POSTORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             OrderUtil.judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
 
@@ -180,9 +184,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
     /**
      * 根据审核状态和上下班时间判断是否有权限发单
-     * @param status 审核状态
-     * @param beginWorkTime 开始工作时间
-     * @param endWorkTime 结束工作时间
      * @throws MerchantClientException
      */
 /*    private void judgeOrderCondition(String status,String beginWorkTime,String endWorkTime,boolean isBigOrder) throws MerchantClientException {
@@ -203,43 +204,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
     }*/
 
-   /* public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
-        OverFeeDTO overFee = overFeeService.findOverFee(AreaCode);
-        if(null!=overFee){
-            Double peekOverFeeOld = overFeeInfo.getPeekOverFee();
-            Double weatherOverFeeOld = overFeeInfo.getWeatherOverFee();
-            Double weatherOverFeeNew = overFee.getWeatherOverFee();
-            Double peekOverFeeNew = overFee.getPeekOverFee();
-            if (!overFee.getPeekIsOpen()){
-                peekOverFeeNew=0.0;
-            }
-            if (weatherOverFeeNew!=null){
-                //该地区实时开启了天气溢价
-                if (!peekOverFeeNew.equals(peekOverFeeOld)&&!weatherOverFeeNew.equals(weatherOverFeeOld)){
-                    //天气溢价高峰溢价均发生改变抛出如下信息
-                    throw new MerchantClientException(EnumRespCode.ALL_OVER_FEE_CHANGE);
-                }
-                if (!weatherOverFeeNew.equals(weatherOverFeeOld)){
-                    //天气溢价发生改变抛出如下信息
-                    throw new MerchantClientException(EnumRespCode.WEATHER_OVER_FEE_CHANGE);
-                }
-            }else{
-                //该地区实时关闭了天气溢价
-                if (!weatherOverFeeOld.equals(0.0)&&peekOverFeeNew.equals(0.0)){
-                    //实际后台已经关闭该区域天气溢价和高峰溢价, 但是订单天气溢价不为零
-                    throw new MerchantClientException(EnumRespCode.OVER_FEE_CLOSE);
-                }
-                if (!weatherOverFeeOld.equals(0)){
-                    //原有天气溢价不为零 实时后台天气溢价已经关闭 发生改变抛出如下信息
-                    throw new MerchantClientException(EnumRespCode.WEATHER_OVER_FEE_CHANGE);
-                }
-            }
-            if (!peekOverFeeNew.equals(peekOverFeeOld)){
-                //高峰溢价均发生改变抛出如下信息
-                throw new MerchantClientException(EnumRespCode.PEEK_OVER_FEE_CHANGE);
-            }
-        }
-    }*/
+
 
 
     public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
@@ -299,7 +264,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             }
         }
     }
-
 
 
 
