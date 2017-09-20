@@ -328,8 +328,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("order_no", entity.getOrderNo());
         }
         if (StringUtils.isNotBlank(entity.getRiderPhone())){
-            sb.append("and rider_phone like :rider_phone ");
-            parameter.put("rider_phone", entity.getRiderPhone()+"%");
+            sb.append("and rider_phone = :rider_phone ");
+            parameter.put("rider_phone", entity.getRiderPhone());
         }
         if (StringUtils.isNotBlank(entity.getReceiverPhone())){
             sb.append("and receiver_phone like :receiver_phone ");
@@ -337,7 +337,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getSenderName())){
             sb.append("and sender_name like :sender_name ");
-            parameter.put("sender_name", "%"+entity.getSenderName()+"%");
+            parameter.put("sender_name", entity.getSenderName()+"%");
         }
         if (null != entity.getCreateDate()){
             sb.append("and order_time >= :create_date ");
