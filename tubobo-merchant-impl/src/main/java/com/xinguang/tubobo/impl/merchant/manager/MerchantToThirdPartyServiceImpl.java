@@ -49,7 +49,6 @@ import java.util.Date;
 /**
  * Created by yangxb on 2017/9/11.
  */
-@Service
 public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServiceInterface {
     @Autowired
     Config config;

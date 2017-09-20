@@ -15,7 +15,8 @@ public enum EnumMerchantOrderStatus {
 	WAITING_PICK("待取货", "WAITING_PICK"),
 	DELIVERYING("配送中", "DELIVERYING"),
 	FINISH("完成", "FINISH"),
-	UNDELIVERED("未妥投", "UNDELIVERED");
+	CONFIRM("已确认", "CONFIRM"), //驿站单   骑手未妥投  商家确认
+	UNDELIVERED("未妥投", "UNDELIVERED"); //驿站单  骑手未妥投
 
     private String name;
     private String value;
