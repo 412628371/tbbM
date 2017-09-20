@@ -456,8 +456,24 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
-            sb.append("and order_status = :order_status ");
-            parameter.put("order_status", entity.getOrderStatus());
+
+            if (EnumMerchantOrderStatus.UNDELIVERED.getValue().equals(entity.getOrderStatus())){
+                //未妥投
+                sb.append("and unsettled_status = :unsettled_status");
+                parameter.put("order_status",PostOrderUnsettledStatusEnum.ING.getName());
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", EnumMerchantOrderStatus.DELIVERYING.getValue());
+            }else if(EnumMerchantOrderStatus.CONFIRM.getValue().equals(entity.getOrderStatus())){
+                //已经确认
+                sb.append("and unsettled_status = :unsettled_status ");
+                parameter.put("order_status",PostOrderUnsettledStatusEnum.FINISH.getName());
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
+            }else {
+                //正常
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", entity.getOrderStatus());
+            }
         }
         if (StringUtils.isNotBlank(entity.getOrderType())){
             sb.append("and order_type = :order_type ");
@@ -490,6 +506,14 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         if (StringUtils.isNotBlank(entity.getSenderAdcode())){
             sb.append("and sender_adcode like :sender_adcode ");
             parameter.put("sender_adcode", entity.getSenderAdcode()+"%");
+        }
+        if (null!=entity.getProviderId()){
+            sb.append("and provider_id = : provider_id");
+            parameter.put("provider_id", entity.getProviderId());
+        }
+        if (StringUtils.isNotBlank(entity.getProviderName())){
+            sb.append("and provider_name = : provider_name");
+            parameter.put("provider_name", entity.getProviderName());
         }
         sb.append(" order by create_date desc ");
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
