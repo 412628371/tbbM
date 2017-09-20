@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web.response;
+package com.xinguang.tubobo.merchant.web.response.trade;
 
 /**
  * Created by Administrator on 2017/4/19.

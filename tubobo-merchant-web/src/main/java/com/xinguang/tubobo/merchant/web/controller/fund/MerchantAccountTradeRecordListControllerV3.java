@@ -1,5 +1,7 @@
+/*
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
+import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.TbbConstants;
 import com.xinguang.tubobo.account.api.TbbPage;
@@ -14,47 +16,65 @@ import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountTradeRecordList;
-import com.xinguang.tubobo.merchant.web.response.ResAccountTradeRecord;
+import com.xinguang.tubobo.merchant.web.response.trade.ResAccountTradeRecord;
+import com.xinguang.tubobo.merchant.web.response.trade.ResAccountTradeRecordV3;
+import com.xinguang.tubobo.merchant.web.response.trade.TradePerDayInfoRes;
+import com.xinguang.tubobo.merchant.web.response.trade.TradePerMonthInfoRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+*/
 /**
  * 查询交易记录 1.44 版本
- */
+ *//*
+
 @Controller
 @RequestMapping(value = "/account/tradeRecordListV3")
-public class MerchantAccountTradeRecordListControllerV3 extends MerchantBaseController<ReqAccountTradeRecordList,PageDTO<ResAccountTradeRecord>> {
+public class MerchantAccountTradeRecordListControllerV3 extends MerchantBaseController<ReqAccountTradeRecordList,ResAccountTradeRecordV3> {
 
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
     private TbbAccountService tbbAccountService;
 
+    public static void main(String[] args) {
+        Date now=new Date();
+        System.out.println(DateUtils.addMonths(now,-3));
+
+    }
     @Override
-    protected PageDTO<ResAccountTradeRecord> doService(String userId, ReqAccountTradeRecordList req) throws MerchantClientException {
+    protected ResAccountTradeRecordV3 doService(String userId, ReqAccountTradeRecordList req) throws MerchantClientException {
+        Date startTime = req.getStartTime();
+        Date endTime = req.getEndTime();
+        Date now=new Date();
+        TbbConstants.OperationType type=TbbConstants.OperationType.fromCode(req.getType());
+        //查询默认最近三个月的交易记录
+        if (ReqAccountTradeRecordList.QueryTypeEnum.INIT.getValue().equals(req.getType())){
+            startTime=new Date();
+            endTime= DateUtils.addMonths(now,-3);
+        }
+        //查找商家信息
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
         if (merchant == null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
-
-
         //v1.42后展示流水状态
-        AccountOperationsQueryCondition condition=new AccountOperationsQueryCondition(merchant.getAccountId(), TbbConstants.OperationType.fromCode(req.getType()),null,null,null);
+        AccountOperationsQueryCondition condition=new AccountOperationsQueryCondition(merchant.getAccountId(), type,null,startTime,endTime);
         TbbAccountResponse<TbbPage<AccountOperationInfo>> response = tbbAccountService.findAccountOperations(req.getPageSize(), req.getPageNo(), condition);
 
-
-        PageDTO<ResAccountTradeRecord> page;
-        List<ResAccountTradeRecord> voList = new ArrayList<>();
+        PageDTO<TradePerMonthInfoRes> page;
+        List<TradePerDayInfoRes> voList = new ArrayList<>();
         if (response != null && response.isSucceeded() && response.getData() != null && response.getData().getList() != null && response.getData().getList().size() > 0){
             for(AccountOperationInfo recordInfo :response.getData().getList()){
-                ResAccountTradeRecord resAccountTradeRecord = convertToShow(recordInfo);
-                if (resAccountTradeRecord!=null){
-                    voList.add(resAccountTradeRecord);
+                TradePerDayInfoRes tradeDayRecord = convertToShow(recordInfo);
+                if (tradeDayRecord!=null){
+                    voList.add(tradeDayRecord);
                 }
+
+
             }
             page = new PageDTO<>(response.getData().getPageNo(),response.getData().getPageSize(),response.getData().getTotal(),voList);
         }else {
@@ -63,10 +83,27 @@ public class MerchantAccountTradeRecordListControllerV3 extends MerchantBaseCont
         return page;
     }
 
+    public Map<String,List<TradePerDayInfoRes>> converToMonthList(TradePerDayInfoRes record){
+        LinkedHashMap<String, List<TradePerDayInfoRes>> map = new LinkedHashMap<>();
+        Date createTime = record.getCreateTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(createTime);
+        String month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+        String year = String.valueOf(calendar.get(Calendar.YEAR));
+        String monthAndYear = getMonthAndYear(year, month);
+        //获取该月份的交易列表
+        List<TradePerDayInfoRes> list = map.get(monthAndYear);
+        list.add(record);
+        if (null==list){
+            list=new ArrayList<TradePerDayInfoRes>();
+            list.add(record);
+        }
+        map.put(monthAndYear,list);
+        return  map;
+    }
 
-
-    public ResAccountTradeRecord convertToShow(AccountOperationInfo operInfo){
-        ResAccountTradeRecord record = new ResAccountTradeRecord();
+    public TradePerDayInfoRes convertToShow(AccountOperationInfo operInfo){
+        TradePerDayInfoRes record = new TradePerDayInfoRes();
 
         String amount = ConvertUtil.formatMoneyToString(operInfo.getAmount());
         record.setType(operInfo.getType().getLabel());
@@ -128,7 +165,13 @@ public class MerchantAccountTradeRecordListControllerV3 extends MerchantBaseCont
         record.setOrderNo(operInfo.getOrderId());
 
 
+
         return record;
+    }
+    public String getMonthAndYear(String year,String month){
+        StringBuilder sb = new StringBuilder();
+        sb = sb.append(year + "-" + month);
+        return sb.toString();
     }
 
     @Override
@@ -136,3 +179,4 @@ public class MerchantAccountTradeRecordListControllerV3 extends MerchantBaseCont
         return true;
     }
 }
+*/
