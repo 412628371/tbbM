@@ -134,13 +134,13 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
         merchantOrderDTO.setOrderRemark(entity.getOrderRemark());
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
-        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
-            merchantOrderDTO.setTaskType(TaskTypeEnum.M_BIG_ORDER);
-        }else if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
+        if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
             merchantOrderDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
         }else if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
             merchantOrderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
             merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
+            merchantOrderDTO.setProviderId(entity.getProviderId());
+            merchantOrderDTO.setProviderName(entity.getProviderName());
         }
         if (entity.getPayAmount() != null){
             merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
