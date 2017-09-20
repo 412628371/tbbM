@@ -339,10 +339,14 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append("and sender_name like :sender_name ");
             parameter.put("sender_name", entity.getSenderName()+"%");
         }
-        sb.append("and order_time >= :create_date ");
-        parameter.put("create_date", DateUtils.getDateStart(DateUtils.getDaysBefore(new Date(),2)));
-        sb.append("and order_time <= :update_date ");
-        parameter.put("update_date", DateUtils.getDateEnd(new Date()));
+        if (null != entity.getCreateDate()){
+            sb.append("and create_date >= :create_date ");
+            parameter.put("create_date", DateUtils.getDateStart(entity.getCreateDate()));
+        }
+        if (null != entity.getUpdateDate()){
+            sb.append("and create_date <= :update_date ");
+            parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
+        }
         if (StringUtils.isNotBlank(entity.getSenderAdcode())){
             sb.append("and sender_adcode like :sender_adcode ");
             parameter.put("sender_adcode", entity.getSenderAdcode()+"%");
