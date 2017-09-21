@@ -132,6 +132,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
 
     private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
         TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
+        BeanUtils.copyProperties(entity,merchantOrderDTO);
         merchantOrderDTO.setOrderRemark(entity.getOrderRemark());
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
