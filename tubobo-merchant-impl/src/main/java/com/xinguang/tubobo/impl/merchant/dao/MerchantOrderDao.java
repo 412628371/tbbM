@@ -357,7 +357,14 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("unsettled_status",PostOrderUnsettledStatusEnum.FINISH.getValue());
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
-        } else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+        } else if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(entity.getOrderStatus())){
+            //待配送
+            sb.append("and unsettled_status = :unsettled_status ");
+            parameter.put("unsettled_status",PostOrderUnsettledStatusEnum.INIT.getValue());
+            sb.append("and order_status = :order_status ");
+            parameter.put("order_status", entity.getOrderStatus());
+        }
+        else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", entity.getOrderStatus());
@@ -481,7 +488,13 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
                 parameter.put("unsettled_status",PostOrderUnsettledStatusEnum.FINISH.getValue());
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
-            }else {
+            } else if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(entity.getOrderStatus())){
+                //待配送
+                sb.append("and unsettled_status = :unsettled_status ");
+                parameter.put("unsettled_status",PostOrderUnsettledStatusEnum.INIT.getValue());
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", entity.getOrderStatus());
+            } else {
                 //正常
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", entity.getOrderStatus());
