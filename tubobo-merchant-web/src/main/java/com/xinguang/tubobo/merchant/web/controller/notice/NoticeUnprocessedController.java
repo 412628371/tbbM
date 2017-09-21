@@ -1,8 +1,5 @@
 package com.xinguang.tubobo.merchant.web.controller.notice;
 
-import com.xinguang.tubobo.api.AdminNotifyService;
-import com.xinguang.tubobo.api.AdminToMerchantService;
-import com.xinguang.tubobo.api.enums.EnumNotifyType;
 import com.xinguang.tubobo.impl.merchant.service.NoticeService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/notice/unProcessed/count")
 public class NoticeUnprocessedController extends MerchantBaseController<Object,RespNoticeUnprocessedCount> {
     @Autowired private NoticeService noticeService;
-    @Autowired private AdminNotifyService adminNotifyService;
     @Override
     protected RespNoticeUnprocessedCount doService(String userId, Object req) throws MerchantClientException {
         RespNoticeUnprocessedCount respNoticeUnprocessedCount = new RespNoticeUnprocessedCount();
