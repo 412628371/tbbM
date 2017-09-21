@@ -293,20 +293,19 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         String orderNo;
         OrderUtil.judgeOrderCondition(merchantInfoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
         orderNo = orderService.order(entity.getUserId(),entity);
-        MerchantOrderEntity orderEntity = orderService.findByOrderNo(orderNo);
         //TODO 商家扣款 并修改数据   扣款封装小方法
         PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
         payWithOutPwdRequest.setOrderId(orderNo);
         payWithOutPwdRequest.setAccountId(merchantInfoEntity.getAccountId());
-        long amount = ConvertUtil.convertYuanToFen(orderEntity.getPayAmount());
+        long amount = ConvertUtil.convertYuanToFen(entity.getPayAmount());
         payWithOutPwdRequest.setAmount(amount);
         logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),orderNo,payWithOutPwdRequest.getAmount());
         TbbAccountResponse<PayInfo> response;
         response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
         if (response != null && response.isSucceeded()){
             long payId = response.getData().getId();
-            orderEntity.setPayId(payId);
-            TaskCreateDTO orderDTO = buildMerchantOrderDTO(orderEntity,merchantInfoEntity);
+            entity.setPayId(payId);
+            TaskCreateDTO orderDTO = buildMerchantOrderDTO(entity,merchantInfoEntity);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",orderNo
                     ,merchantInfoEntity.getAccountId(),response.getData().getId(),amount);
