@@ -30,6 +30,7 @@ import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
 import com.xinguang.tubobo.impl.merchant.service.*;
+import com.xinguang.tubobo.impl.merchant.serviceInterface.OrderManagerBaseService;
 import com.xinguang.tubobo.launcher.inner.api.TbbOrderServiceInterface;
 import com.xinguang.tubobo.launcher.inner.api.entity.OrderStatusInfoDTO;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -53,9 +54,7 @@ import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.CANT_CANCEL_DU
 
 
 @Service
-public class MerchantOrderManager extends BaseService {
-	@Autowired
-	private OrderService orderService;
+public class MerchantOrderManager extends OrderManagerBaseService {
 
 	@Autowired
 	private RmqAddressInfoProducer rmqAddressInfoProducer;
