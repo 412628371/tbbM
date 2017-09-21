@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.api.dto;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -7,12 +8,16 @@ import java.io.Serializable;
  */
 public class AddressInfoDTO implements Serializable{
     private String addressCity;//地址缩略
+    @NotNull
     private String addressDetail;//Y
     private String addressDistrict;//地址名称
     private String addressProvince;
+    @NotNull
     private Double latitude;//Y
+    @NotNull
     private Double longitude;//Y
     private String name;
+    @NotNull
     private String telephone;  //Y
 
     public String getAddressDetail() {
