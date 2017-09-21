@@ -350,7 +350,7 @@ public class MerchantOrderManager extends BaseService {
 		if (result){
 			if (enableNotice){
 				//发送骑手完成送货通知
-				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId(),entity.getExpiredMinute(),entity.getCancelCompensation());
 			}
 		}
 		if (expiredCompensation!=null&&expiredCompensation>0.0){
