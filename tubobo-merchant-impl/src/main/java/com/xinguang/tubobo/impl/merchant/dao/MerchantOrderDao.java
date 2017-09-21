@@ -414,7 +414,9 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
+            sb.append("and unsettled_status = :unsettled_status ");
             parameter.put("order_status", entity.getOrderStatus());
+            parameter.put("unsettled_status", PostOrderUnsettledStatusEnum.INIT.getValue());
         }
         if (StringUtils.isNotBlank(entity.getOrderNo())){
             sb.append("and order_no = :order_no ");
