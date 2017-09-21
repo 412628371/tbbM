@@ -67,54 +67,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
         }
         MerchantOrderEntity entity = new MerchantOrderEntity();
-      /*  if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
-            String status = infoEntity.getMerchantStatus();
-            if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
-                status = infoEntity.getConsignorStatus();
-            }
-            OrderUtil.judgeOrderCondition(status,config.getConsignorBeginWorkTime(),config.getConsignorEndWorkTime(),true);
-            AddressInfo senderAddressInfo = req.getConsignor();
-            //大件订单，把发货人地址信息设置到实体
-            AddressInfoToOrderBeanHelper.putSenderFromAddressInfo(entity,senderAddressInfo);
-            CarTypeDTO carTypeDTO =  adminToMerchantService.queryCarTypeInfo(req.getCarType());
-            if (null == carTypeDTO){
-                throw new MerchantClientException(EnumRespCode.MERCHANT_CAR_TYPE_NOT_SUPPORT);
-            }
-            entity.setCarType(req.getCarType());
-            entity.setCarTypeName(carTypeDTO.getName());
-            if (req.getAppointTask() != null){
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String appointTime = req.getAppointTask().getAppointTime();
-                String appointType = req.getAppointTask().getAppointType();
-                Date appointDate,currentDate, tomorrowDate;
-                if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(appointType)){
-                    //获取当前可预约时间
-                    String currentTime = DateUtils.getHourAfter(new Date(), 1);
-                    String tomorrowTime = DateUtils.getDaysAfter(new Date(), 1, "23:59:59");//明日凌晨
-                    try{
-                        appointDate = dateFormat.parse(appointTime);
-                        currentDate = dateFormat.parse(currentTime);
-                        tomorrowDate = dateFormat.parse(tomorrowTime);
-                    }catch(ParseException e){
-                        throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
-                    }
-                    if(currentDate.getTime()<=appointDate.getTime()&&
-                            tomorrowDate.getTime()>=appointDate.getTime()){
-                        entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
-                        entity.setAppointTime(appointDate);
-                    }else{
-                        throw new MerchantClientException(EnumRespCode.MERCHANT_APPOINTTIME_ERROR);
-                    }
-                }else {
-                    entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
-                    entity.setAppointTime(new Date());
-                }
-            }else {
-                entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
-                entity.setAppointTime(new Date());
-            }
-
-        }*/
       if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POSTORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             OrderUtil.judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
