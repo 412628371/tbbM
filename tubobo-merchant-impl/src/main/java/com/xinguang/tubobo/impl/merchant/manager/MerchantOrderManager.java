@@ -78,6 +78,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 
 	@Autowired private MerchantInfoService merchantInfoService;
 	@Autowired private TbbOrderServiceInterface launcherInnerTbbOrderService;
+	@Autowired private OrderService orderService;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
