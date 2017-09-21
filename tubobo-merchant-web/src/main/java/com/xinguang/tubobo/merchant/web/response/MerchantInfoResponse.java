@@ -46,6 +46,25 @@ public class MerchantInfoResponse implements Serializable{
     private String reason;                  //店铺审核失败原因
     private Boolean messageOpen;            //短信开关
 
+    private Long providerId;			 //服务商ID
+    private String providerName;			 //服务商名称
+
+    public Long getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(Long providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
     public Boolean getMessageOpen() {
         return messageOpen;
     }
