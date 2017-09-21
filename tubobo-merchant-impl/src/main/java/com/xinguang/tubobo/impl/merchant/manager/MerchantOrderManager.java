@@ -119,7 +119,13 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
 		taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
 		Date payDate = new Date();
-		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate,EnumMerchantOrderStatus.WAITING_GRAB.getValue());
+		String status = EnumMerchantOrderStatus.WAITING_GRAB.getValue();
+		//TODO 分业务拆分处理，支持驿站订单的多种派发方式
+		//驿站订单，支付之后的状态变为待取货
+		if (TaskTypeEnum.POST_ORDER.getValue().equals(taskCreateDTO.getTaskType())){
+			status = EnumMerchantOrderStatus.WAITING_PICK.getValue();
+		}
+		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate,status);
 		if (count != 1){
 			logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",merchantId,orderNo);
 			throw new MerchantClientException(EnumRespCode.FAIL);
@@ -348,7 +354,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		expiredCompensation=expiredMinute==null?0.0:expiredCompensation;
 		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation/100)==1;
 		if (result){
-			if (enableNotice){
+			if (enableNotice && !EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
 				//发送骑手完成送货通知
 				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId(),entity.getExpiredMinute(),entity.getCancelCompensation());
 			}
