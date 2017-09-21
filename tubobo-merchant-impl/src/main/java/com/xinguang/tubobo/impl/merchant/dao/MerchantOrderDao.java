@@ -585,7 +585,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         StringBuffer sb = new StringBuffer();
         sb.append("select count(orderNo) FROM MerchantOrderEntity WHERE delFlag= '0' ");
         if (null!=providerId){
-            sb.append("and provider_id = : provider_id ");
+            sb.append("and provider_id = :provider_id  ");
             parameter.put("provider_id", providerId);
         }
         if (StringUtils.isNotBlank(orderStatus)){
