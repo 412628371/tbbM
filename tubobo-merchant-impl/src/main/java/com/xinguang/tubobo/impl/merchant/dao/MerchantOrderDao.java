@@ -585,18 +585,18 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         StringBuffer sb = new StringBuffer();
         sb.append("select count(orderNo) FROM MerchantOrderEntity WHERE delFlag= '0' ");
         if (null!=providerId){
-            sb.append("and provider_id = :provider_id  ");
-            parameter.put("provider_id", providerId);
+            sb.append("and providerId = :providerId  ");
+            parameter.put("providerId", providerId);
         }
         if (StringUtils.isNotBlank(orderStatus)){
-            sb.append("and order_status = :order_status  ");
-            parameter.put("order_status", orderStatus);
+            sb.append("and orderStatus = :orderStatus  ");
+            parameter.put("orderStatus", orderStatus);
         }
         if (StringUtils.isNotBlank(unsettledStatus)){
-            sb.append("and unsettled_status = :unsettled_status  ");
-            parameter.put("unsettled_status", unsettledStatus);
+            sb.append("and unsettledStatus = :unsettledStatus  ");
+            parameter.put("unsettledStatus", unsettledStatus);
         }
-        Query query = createQuery(sb.toString(), new Parameter(providerId, orderStatus, MerchantOrderEntity.DEL_FLAG_NORMAL));
+        Query query = createQuery(sb.toString(), parameter);
         Long count = (Long) query.uniqueResult();
         return count;
     }

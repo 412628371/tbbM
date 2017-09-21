@@ -1,9 +1,11 @@
 package com.xinguang.tubobo.merchant.api.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by lvhantai on 2017/9/20.
  */
-public class OrderStatusStatsDTO {
+public class OrderStatusStatsDTO implements Serializable{
     private long progressCounts;
     private long waitingPickCounts;
     private long deliveryingCounts;
