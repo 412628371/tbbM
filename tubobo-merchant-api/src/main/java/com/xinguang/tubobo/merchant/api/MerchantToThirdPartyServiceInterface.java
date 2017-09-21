@@ -17,7 +17,7 @@ public interface MerchantToThirdPartyServiceInterface {
     /**
      * 创建单一订单
      */
-    MerchantOrderCreateResultDto createOrder(MerchantOrderCreateDto req);
+    TbbMerchantResponse<MerchantOrderCreateResultDto> createOrder(MerchantOrderCreateDto req);
 
     /**
      * 查看订单详情
@@ -37,7 +37,7 @@ public interface MerchantToThirdPartyServiceInterface {
      * @param req
      * @return
      */
-    boolean abortConfirm(MerchantAbortConfirmDTO req);
+    TbbMerchantResponse<Boolean> abortConfirm(MerchantAbortConfirmDTO req);
 
 
 

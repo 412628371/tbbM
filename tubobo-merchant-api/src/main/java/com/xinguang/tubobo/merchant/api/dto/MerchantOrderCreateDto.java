@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.api.dto;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,11 +8,13 @@ import java.util.Date;
  * Created by yangxb on 2017/9/11.
  */
 public class MerchantOrderCreateDto implements Serializable {
-
+   @NotNull
    private String userId; //Y
    private Date userAppointTime;//用户预约时间
    private String  orderRemarks;//	备注	string	　	O
+   @NotNull
    private AddressInfoDTO consignor;//	发货人信息	object
+   @NotNull
    private AddressInfoDTO receiver;
 
    public Date getUserAppointTime() {

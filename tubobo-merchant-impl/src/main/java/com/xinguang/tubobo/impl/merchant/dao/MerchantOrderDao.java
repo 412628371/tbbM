@@ -347,8 +347,23 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
              sb.append("and (order_status = 'RESEND' or order_status='FINISH') ");
         }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                 !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
-             sb.append("and order_status = :order_status ");
-             parameter.put("order_status", entity.getOrderStatus());
+
+            if (EnumMerchantOrderStatus.UNDELIVERED.getValue().equals(entity.getOrderStatus())){
+                //未妥投
+                sb.append("and unsettled_status = :unsettled_status");
+                parameter.put("order_status",PostOrderUnsettledStatusEnum.ING.getName());
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", EnumMerchantOrderStatus.DELIVERYING.getValue());
+            }else if(EnumMerchantOrderStatus.CONFIRM.getValue().equals(entity.getOrderStatus())){
+                //已经确认
+                sb.append("and unsettled_status = :unsettled_status ");
+                parameter.put("order_status",PostOrderUnsettledStatusEnum.FINISH.getName());
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
+            }else {
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", entity.getOrderStatus());
+            }
         }
         if (StringUtils.isNotBlank(entity.getOrderType())){
             sb.append("and order_type = :order_type ");
