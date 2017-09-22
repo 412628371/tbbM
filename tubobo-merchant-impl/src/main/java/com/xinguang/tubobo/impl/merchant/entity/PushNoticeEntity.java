@@ -34,6 +34,15 @@ public class PushNoticeEntity {
     private boolean processed;
 
     private String reason;
+    private String recordId;
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
 
     public String getReason() {
         return reason;

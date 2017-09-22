@@ -53,6 +53,8 @@ public enum EnumRespCode {
 	ACCOUNT_PWD_RESET_CREDENTIAL_INVALID("30054", "重置密码，令牌已无效"),
 
 	ACCOUNT_PWD_ERROR_TOO_MUCH("30055", "支付密码输错%s次，请找回密码"),
+	TRADE_RECORD_NOT_EXSIT("30056","流水信息不存在"),
+
 	ACCOUNT_RECHARGE_FAIL("30060", "充值操作失败"),
 
 	PEEK_OVER_FEE_CHANGE("30070","高峰溢价费已发生变化,请重新提交订单"),
