@@ -235,7 +235,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         }catch (Exception e){
             return wrapErrorCodeResponse(e);
         }
-        result =  merchantOrderManager.merchantHandlerUnsettledOrder(req.getUserId(),req.getOrderNo());
+        result =  merchantOrderManager.merchantHandlerUnsettledOrder(req.getUserId(),req.getOrderNo(),req.getMessage());
         return new TbbMerchantResponse(result);
     }
 

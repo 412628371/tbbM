@@ -339,7 +339,7 @@ public class OrderService extends BaseService {
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date unsettledTime) {
-        return merchantOrderDao.merchantHandlerUnsettledOrder(orderNo,unsettledTime);
+    public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date unsettledTime,String message) {
+        return merchantOrderDao.merchantHandlerUnsettledOrder(orderNo,unsettledTime,message);
     }
 }
