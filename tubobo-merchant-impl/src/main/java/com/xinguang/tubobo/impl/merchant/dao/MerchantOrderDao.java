@@ -628,16 +628,16 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         return orderList;
     }
 
-    public int riderUnsettledOrder(String orderNo,String reason,Date unsettledTime) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, unsettledTime=:p3 " +
+    public int riderUnsettledOrder(String orderNo,String reason,Date finishOrderTime) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, finishOrderTime =:p3 " +
                 "where orderNo =:p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,unsettledTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.INIT.getValue()));
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,finishOrderTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.INIT.getValue()));
     }
 
-    public int merchantHandlerUnsettledOrder(String orderNo,Date finishOrderTime) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, orderStatus=:p2, finishOrderTime=:p3 " +
+    public int merchantHandlerUnsettledOrder(String orderNo,Date unsettledTime) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, orderStatus=:p2, unsettledTime =:p3 " +
                 "where orderNo = :p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0' ";
-        return update(sqlString, new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue(), finishOrderTime,
+        return update(sqlString, new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue(), unsettledTime,
                 orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.ING.getValue()));
     }
 }

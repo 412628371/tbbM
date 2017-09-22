@@ -13,7 +13,8 @@ public class MerchantUnsettledDTO implements Serializable{
 	private String orderNo;//订单No
 	private String unsettledStatus;         //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理
 	private String unsettledReason;         //驿站订单 未妥投原因
-	private Date   unsettledTime;
+	private Date  unsettledTime;       //商家确认未妥投时间
+	private Date  deliveryTime;        //骑手提交未妥投申请时间
 
     public String getOrderNo() {
         return orderNo;
@@ -45,5 +46,13 @@ public class MerchantUnsettledDTO implements Serializable{
 
     public void setUnsettledTime(Date unsettledTime) {
         this.unsettledTime = unsettledTime;
+    }
+
+    public Date getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(Date deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 }
