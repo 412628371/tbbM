@@ -44,8 +44,9 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
         TbbConstants.OperationType type=TbbConstants.OperationType.fromCode(req.getType());
         //查询默认最近三个月的交易记录
         if (ReqAccountTradeRecordList.QueryTypeEnum.INIT.getValue().equals(req.getType())){
-            startTime=new Date();
-            endTime= DateUtils.addMonths(now,-3);
+            endTime=new Date();
+            startTime= DateUtils.addMonths(now,-3);
+
         }
 
 
