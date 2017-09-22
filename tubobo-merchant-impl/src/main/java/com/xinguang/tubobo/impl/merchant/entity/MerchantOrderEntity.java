@@ -107,7 +107,7 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
     private String unsettledStatus;         //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理
     private String unsettledReason;         //驿站订单 未妥投原因
-    private Date unsettledTime;             //驿站订单 未妥投时间
+    private Date unsettledTime;             //驿站订单 商家确认未妥投时间
 	private Boolean  shortMessage;			//订单是否发送短信通知收件人
 
 	private Long providerId;//所属服务商ID

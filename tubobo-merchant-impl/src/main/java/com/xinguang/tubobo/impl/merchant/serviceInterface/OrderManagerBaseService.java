@@ -546,7 +546,7 @@ public abstract class OrderManagerBaseService {
     public boolean riderUnsettledOrder(MerchantUnsettledDTO dto) {
         MerchantOrderEntity order = orderService.findByOrderNo(dto.getOrderNo());
         if (order != null) {
-            int result = orderService.riderUnsettledOrder(order.getSenderId(), order.getOrderNo(), dto.getUnsettledReason(), dto.getUnsettledTime());
+            int result = orderService.riderUnsettledOrder(order.getSenderId(), order.getOrderNo(), dto.getUnsettledReason(), dto.getDeliveryTime());
             if (result > 0) {
                 //TODO 通知食集
                 OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
@@ -567,10 +567,10 @@ public abstract class OrderManagerBaseService {
      * @return
      */
     public boolean merchantHandlerUnsettledOrder(String merchantId, String orderNo) {
-        Date finishOrderTime = new Date();
-        TbbTaskResponse<Boolean> result = taskDispatchService.merchantHandlerUnsettledTask(orderNo, finishOrderTime);
+        Date unsettledTime = new Date();
+        TbbTaskResponse<Boolean> result = taskDispatchService.merchantHandlerUnsettledTask(orderNo, unsettledTime);
         if (result != null && result.getData()) {
-            orderService.merchantHandlerUnsettledOrder(merchantId, orderNo, finishOrderTime);
+            orderService.merchantHandlerUnsettledOrder(merchantId, orderNo, unsettledTime);
             // TODO 通知食集
             OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
             orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
