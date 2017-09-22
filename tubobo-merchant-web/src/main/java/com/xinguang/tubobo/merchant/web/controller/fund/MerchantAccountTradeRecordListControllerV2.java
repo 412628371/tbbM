@@ -46,7 +46,7 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
         if (ReqAccountTradeRecordList.QueryTypeEnum.INIT.getValue().equals(req.getType())){
             endTime=new Date();
             startTime= DateUtils.addMonths(now,-3);
-
+            startTime=DateUtils.getMinMonthDate(startTime);
         }
 
 
