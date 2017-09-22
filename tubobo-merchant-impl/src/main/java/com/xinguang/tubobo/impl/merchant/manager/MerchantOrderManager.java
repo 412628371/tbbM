@@ -21,6 +21,7 @@ import com.xinguang.tubobo.account.api.request.SubsidyRequest;
 import com.xinguang.tubobo.account.api.response.*;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
+import com.xinguang.tubobo.api.enums.EnumOrderStatus;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
@@ -287,16 +288,15 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		logger.info("抢单回调：dto:{}",dto.toString());
 
 		String orderNo = dto.getTaskNo();
-		MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
-				EnumMerchantOrderStatus.WAITING_GRAB.getValue());
+		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
 		if (null == entity){
 			logger.error("骑手已接单通知，未找到订单或已处理接单。orderNo:{}",orderNo);
 			return false;
 		}
 		logger.info("处理骑手接单：orderNo:{}",orderNo);
-		boolean result ;
+		boolean result =false ;
 		//驿站订单回调后直接是已取货状态，短信发送给收货人 TODO 代码拆分与整合
-		if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
+		if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())&& EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrderOfPost(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
 					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),entity.getGrabOrderTime(),dto.getPickupDistance())>0;
 			if (result){
@@ -305,7 +305,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 					adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
 				}
 			}
-		}else {
+		}else if ( EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
 					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType(),dto.getPickupDistance()) > 0;
 			if (enableNotice){

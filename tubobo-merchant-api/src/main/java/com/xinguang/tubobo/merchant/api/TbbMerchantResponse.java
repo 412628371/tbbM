@@ -63,8 +63,12 @@ public class TbbMerchantResponse<D> implements Serializable{
         ERROR_PARAM_ILLEGAL("T0002", "参数不合法"),
         ERROR_TASK_NOT_EXIST("T0010", "任务单不存在"),
         ERROR_TASK_CANT_CANCEL("T0012", "任务不能取消"),
-        ERROR_TASK_CANT_OPERATE("T0013", "任务状态不允许操作");
-
+        ERROR_TASK_CANT_OPERATE("T0013", "任务状态不允许操作"),
+        ERROR_TASK_ORDER_CANCEL("T0014", "取消订单失败"),
+        ERROR_TASK_ORDER_CREATE("T0015", "创建订单失败"),
+        ERROR_TASK_ABORT_CONFIRM("T0016", "确认失败"),
+        ERROR_TASK("T0017","任务失败"),
+        ;
         ErrorCode(String code, String message) {
             this.code = code;
             this.message = message;
