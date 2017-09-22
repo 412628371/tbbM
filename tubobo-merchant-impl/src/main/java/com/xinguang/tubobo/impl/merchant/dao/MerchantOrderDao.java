@@ -431,16 +431,16 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("receiver_phone", entity.getReceiverPhone()+"%");
         }
         if (StringUtils.isNotBlank(entity.getRiderId())){
-            sb.append("and rider_id like :rider_id ");
-            parameter.put("rider_id", entity.getRiderId()+"%");
+            sb.append("and rider_id = :rider_id ");
+            parameter.put("rider_id", entity.getRiderId());
         }
         if (StringUtils.isNotBlank(entity.getRiderName())){
             sb.append("and rider_name like :rider_name ");
             parameter.put("rider_name", entity.getRiderName()+"%");
         }
         if (StringUtils.isNotBlank(entity.getSenderId())){
-            sb.append("and sender_id like :sender_id ");
-            parameter.put("sender_id", entity.getSenderId()+"%");
+            sb.append("and sender_id = :sender_id ");
+            parameter.put("sender_id", entity.getSenderId());
         }
         if (StringUtils.isNotBlank(entity.getSenderName())){
             sb.append("and sender_name like :sender_name ");
@@ -458,7 +458,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append(" order by expect_finish_time " + expectFinishTimeSort);
         }
         if(StringUtils.isNotBlank(orderTimeSort)){
-            sb.append(" order by create_date " + orderTimeSort);
+            sb.append(" order by order_time " + orderTimeSort);
         }
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
     }
