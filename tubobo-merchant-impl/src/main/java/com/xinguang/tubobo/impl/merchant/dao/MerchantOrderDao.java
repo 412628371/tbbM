@@ -359,8 +359,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
         } else if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(entity.getOrderStatus())){
             //待配送
-            sb.append("and unsettled_status = :unsettled_status ");
-            parameter.put("unsettled_status",null);
+            sb.append("and unsettled_status is null ");
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", entity.getOrderStatus());
         }
@@ -414,9 +413,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
-            sb.append("and unsettled_status = :unsettled_status ");
+            sb.append("and unsettled_status is null ");
             parameter.put("order_status", entity.getOrderStatus());
-            parameter.put("unsettled_status", null);
         }
         if (StringUtils.isNotBlank(entity.getOrderNo())){
             sb.append("and order_no = :order_no ");
@@ -492,8 +490,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
                 parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
             } else if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(entity.getOrderStatus())){
                 //待配送
-                sb.append("and unsettled_status = :unsettled_status ");
-                parameter.put("unsettled_status",null);
+                sb.append("and unsettled_status is  null ");
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", entity.getOrderStatus());
             } else {
