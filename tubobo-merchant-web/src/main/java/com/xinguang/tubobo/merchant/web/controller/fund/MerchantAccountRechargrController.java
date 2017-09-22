@@ -13,7 +13,7 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountRecharge;
-import com.xinguang.tubobo.merchant.web.response.RespAccountRecharge;
+import com.xinguang.tubobo.merchant.web.response.trade.RespAccountRecharge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -5,6 +5,15 @@ package com.xinguang.tubobo.merchant.web.response.order;
  */
 public class RespTodayOrderNum {
     private Long finishOrders;
+    private Long sendMessages;
+
+    public Long getSendMessages() {
+        return sendMessages;
+    }
+
+    public void setSendMessages(Long sendMessages) {
+        this.sendMessages = sendMessages;
+    }
 
     public Long getFinishOrders() {
         return finishOrders;

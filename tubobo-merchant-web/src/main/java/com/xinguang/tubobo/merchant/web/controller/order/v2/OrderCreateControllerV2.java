@@ -7,6 +7,7 @@ import com.xinguang.tubobo.api.OverFeeService;
 import com.xinguang.tubobo.api.dto.CarTypeDTO;
 import com.xinguang.tubobo.api.dto.OverFeeDTO;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
+import com.xinguang.tubobo.impl.merchant.common.OrderUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
@@ -60,71 +61,26 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         }
 
         String orderType = req.getType();
+        //post订单
+        if (null!=infoEntity.getProviderId()){
+            orderType=EnumOrderType.POSTORDER.getValue();
+
+        }
         MerchantOrderEntity entity = new MerchantOrderEntity();
-        if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
-            String status = infoEntity.getMerchantStatus();
-            if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
-                status = infoEntity.getConsignorStatus();
-            }
-            judgeOrderCondition(status,config.getConsignorBeginWorkTime(),config.getConsignorEndWorkTime(),true);
-            AddressInfo senderAddressInfo = req.getConsignor();
-            //大件订单，把发货人地址信息设置到实体
-            AddressInfoToOrderBeanHelper.putSenderFromAddressInfo(entity,senderAddressInfo);
-            CarTypeDTO carTypeDTO =  adminToMerchantService.queryCarTypeInfo(req.getCarType());
-            if (null == carTypeDTO){
-                throw new MerchantClientException(EnumRespCode.MERCHANT_CAR_TYPE_NOT_SUPPORT);
-            }
-            entity.setCarType(req.getCarType());
-            entity.setCarTypeName(carTypeDTO.getName());
-            if (req.getAppointTask() != null){
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String appointTime = req.getAppointTask().getAppointTime();
-                String appointType = req.getAppointTask().getAppointType();
-                Date appointDate,currentDate, tomorrowDate;
-                if(EnumAppointType.DELIVERY_APPOINT.getValue().equals(appointType)){
-                    //获取当前可预约时间
-                    String currentTime = DateUtils.getHourAfter(new Date(), 1);
-                    String tomorrowTime = DateUtils.getDaysAfter(new Date(), 1, "23:59:59");//明日凌晨
-                    try{
-                        appointDate = dateFormat.parse(appointTime);
-                        currentDate = dateFormat.parse(currentTime);
-                        tomorrowDate = dateFormat.parse(tomorrowTime);
-                    }catch(ParseException e){
-                        throw new MerchantClientException(EnumRespCode.PARAMS_ERROR);
-                    }
-                    if(currentDate.getTime()<=appointDate.getTime()&&
-                            tomorrowDate.getTime()>=appointDate.getTime()){
-                        entity.setAppointType(EnumAppointType.DELIVERY_APPOINT.getValue());
-                        entity.setAppointTime(appointDate);
-                    }else{
-                        throw new MerchantClientException(EnumRespCode.MERCHANT_APPOINTTIME_ERROR);
-                    }
-                }else {
-                    entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
-                    entity.setAppointTime(new Date());
-                }
-            }else {
-                entity.setAppointType(EnumAppointType.DELIVERY_IMMED.getValue());
-                entity.setAppointTime(new Date());
-            }
-
-        }else if (EnumOrderType.SMALLORDER.getValue().equals(orderType)){
+      if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POSTORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
-            judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
-
+            OrderUtil.judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
         }else {
             throw new MerchantClientException(EnumRespCode.MERCHANT_ORDER_TYPE_NOT_SUPPORT);
         }
         entity.setOrderType(orderType);
         AddressInfo receiverAddressInfo = req.getReceiver();
         //封装溢价信息并校验
-
         OverFeeInfo overFeeInfo = req.getOverFeeInfo();
         if (overFeeInfo==null&&EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             //处理老版本,此时判断
             checkOverFeeForOldVersion(infoEntity.getAddressAdCode());
         }
-
         Double weatherOverFee = 0.0;
         Double peekOverFee = 0.0;
         if (overFeeInfo!=null){
@@ -141,8 +97,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         }
         entity.setWeatherOverFee(weatherOverFee);
         entity.setPeekOverFee(peekOverFee);
-
-
         ThirdInfo thirdInfo = req.getThirdInfo();
         if (null != thirdInfo){
             entity.setPlatformCode(thirdInfo.getPlatformCode());
@@ -151,9 +105,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             if(StringUtils.isNotBlank(thirdInfo.getOriginOrderId())&&
                     StringUtils.isNotBlank(thirdInfo.getPlatformCode())){
                 //TODO 根据第三方平台编号查找订单是否重复
-
             }
-
         }
         //把收货人地址信息设置到实体
         AddressInfoToOrderBeanHelper.putReceiverAddressInfo(entity,receiverAddressInfo);
@@ -164,12 +116,13 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         entity.setOrderTime(new Date());
         entity.setPayStatus(EnumPayStatus.UNPAY.getValue());
-//        entity.setDispatchRadius(config.getDispatchRadiusKiloMiles());
         entity.setOrderRemark(ConvertUtil.handleNullString(req.getOrderRemarks()));
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
         entity.setWeatherOverFee(weatherOverFee);
         entity.setPeekOverFee(peekOverFee);
         entity.setDeliveryDistance(req.getDeliveryDistance());
+        entity.setProviderId(infoEntity.getProviderId());
+        entity.setProviderName(infoEntity.getProviderName());
         String orderNo = merchantOrderManager.order(userId,entity);
         CreateOrderResponse response = new CreateOrderResponse();
         response.setOrderNo(orderNo);
@@ -179,12 +132,9 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
     /**
      * 根据审核状态和上下班时间判断是否有权限发单
-     * @param status 审核状态
-     * @param beginWorkTime 开始工作时间
-     * @param endWorkTime 结束工作时间
      * @throws MerchantClientException
      */
-    private void judgeOrderCondition(String status,String beginWorkTime,String endWorkTime,boolean isBigOrder) throws MerchantClientException {
+/*    private void judgeOrderCondition(String status,String beginWorkTime,String endWorkTime,boolean isBigOrder) throws MerchantClientException {
         if (!EnumAuthentication.SUCCESS.getValue().equals(status)){
             throw new MerchantClientException(EnumRespCode.MERCHANT_STATUS_CANT_OPERATE);
         }
@@ -200,45 +150,9 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             }
         }
 
-    }
-
-   /* public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
-        OverFeeDTO overFee = overFeeService.findOverFee(AreaCode);
-        if(null!=overFee){
-            Double peekOverFeeOld = overFeeInfo.getPeekOverFee();
-            Double weatherOverFeeOld = overFeeInfo.getWeatherOverFee();
-            Double weatherOverFeeNew = overFee.getWeatherOverFee();
-            Double peekOverFeeNew = overFee.getPeekOverFee();
-            if (!overFee.getPeekIsOpen()){
-                peekOverFeeNew=0.0;
-            }
-            if (weatherOverFeeNew!=null){
-                //该地区实时开启了天气溢价
-                if (!peekOverFeeNew.equals(peekOverFeeOld)&&!weatherOverFeeNew.equals(weatherOverFeeOld)){
-                    //天气溢价高峰溢价均发生改变抛出如下信息
-                    throw new MerchantClientException(EnumRespCode.ALL_OVER_FEE_CHANGE);
-                }
-                if (!weatherOverFeeNew.equals(weatherOverFeeOld)){
-                    //天气溢价发生改变抛出如下信息
-                    throw new MerchantClientException(EnumRespCode.WEATHER_OVER_FEE_CHANGE);
-                }
-            }else{
-                //该地区实时关闭了天气溢价
-                if (!weatherOverFeeOld.equals(0.0)&&peekOverFeeNew.equals(0.0)){
-                    //实际后台已经关闭该区域天气溢价和高峰溢价, 但是订单天气溢价不为零
-                    throw new MerchantClientException(EnumRespCode.OVER_FEE_CLOSE);
-                }
-                if (!weatherOverFeeOld.equals(0)){
-                    //原有天气溢价不为零 实时后台天气溢价已经关闭 发生改变抛出如下信息
-                    throw new MerchantClientException(EnumRespCode.WEATHER_OVER_FEE_CHANGE);
-                }
-            }
-            if (!peekOverFeeNew.equals(peekOverFeeOld)){
-                //高峰溢价均发生改变抛出如下信息
-                throw new MerchantClientException(EnumRespCode.PEEK_OVER_FEE_CHANGE);
-            }
-        }
     }*/
+
+
 
 
     public void checkOverFee(OverFeeInfo overFeeInfo,String AreaCode) throws MerchantClientException {
@@ -298,7 +212,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
             }
         }
     }
-
 
 
 

@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
+import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.TbbConstants;
 import com.xinguang.tubobo.account.api.TbbPage;
@@ -14,12 +15,13 @@ import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountTradeRecordList;
-import com.xinguang.tubobo.merchant.web.response.ResAccountTradeRecord;
+import com.xinguang.tubobo.merchant.web.response.trade.ResAccountTradeRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,6 +38,17 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
 
     @Override
     protected PageDTO<ResAccountTradeRecord> doService(String userId, ReqAccountTradeRecordList req) throws MerchantClientException {
+        Date startTime = req.getStartTime();
+        Date endTime = req.getEndTime();
+        Date now=new Date();
+        TbbConstants.OperationType type=TbbConstants.OperationType.fromCode(req.getType());
+        //查询默认最近三个月的交易记录
+        if (ReqAccountTradeRecordList.QueryTypeEnum.INIT.getValue().equals(req.getType())){
+            startTime=new Date();
+            endTime= DateUtils.addMonths(now,-3);
+        }
+
+
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
         if (merchant == null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
@@ -43,7 +56,7 @@ public class MerchantAccountTradeRecordListControllerV2 extends MerchantBaseCont
 
 
         //v1.42后展示流水状态
-        AccountOperationsQueryCondition condition=new AccountOperationsQueryCondition(merchant.getAccountId(), TbbConstants.OperationType.fromCode(req.getType()),null,null,null);
+        AccountOperationsQueryCondition condition=new AccountOperationsQueryCondition(merchant.getAccountId(), type,null,startTime,endTime);
         TbbAccountResponse<TbbPage<AccountOperationInfo>> response = tbbAccountService.findAccountOperations(req.getPageSize(), req.getPageNo(), condition);
 
 

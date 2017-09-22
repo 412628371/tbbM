@@ -22,6 +22,7 @@ public class OrderInfo implements Serializable {
     private Date expectFinishTime;//预计送达时间
     private Double expiredMinute;//超时时间(min)
 
+    private String unsettledStatus;         //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理
 
 
     private Long grabRemainMillSeconds;
@@ -30,7 +31,13 @@ public class OrderInfo implements Serializable {
     private  String waitPickCancelType; //带接单状态下商家取消订单原因
 
 
+    public String getUnsettledStatus() {
+        return unsettledStatus;
+    }
 
+    public void setUnsettledStatus(String unsettledStatus) {
+        this.unsettledStatus = unsettledStatus;
+    }
 
     public String getWaitPickCancelType() {
         return waitPickCancelType;

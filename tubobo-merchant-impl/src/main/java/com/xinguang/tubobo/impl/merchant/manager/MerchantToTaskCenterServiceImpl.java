@@ -1,10 +1,11 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,15 +62,26 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     }
 
     @Override
-    public boolean adminCancel(String orderNo, Date cancelTime) throws MerchantClientException {
+    public boolean adminCancel(String orderNo, Date cancelTime)  {
+        boolean flag=true;
         MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
         if (null == entity ){
             logger.warn("后台取消订单，订单不存在。orderNo:{}",orderNo);
-            return false;
+            flag= false;
         }
-        return merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true,null);
+        try {
+            flag=merchantOrderManager.cancelOrder(entity.getUserId(),orderNo,true,null);
+        } catch (MerchantClientException e) {
+            logger.error(e.getMessage());
+            flag= false;
+        }
+        return flag;
     }
 
+    @Override
+    public boolean riderUnsettledOrder(MerchantUnsettledDTO dto) {
+        return merchantOrderManager.riderUnsettledOrder(dto);
+    }
 
 
 }
