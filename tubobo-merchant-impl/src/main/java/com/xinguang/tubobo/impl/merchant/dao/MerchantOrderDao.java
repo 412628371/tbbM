@@ -535,11 +535,11 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("sender_adcode", entity.getSenderAdcode()+"%");
         }
         if (null!=entity.getProviderId()){
-            sb.append("and provider_id = : provider_id");
+            sb.append("and provider_id = :provider_id");
             parameter.put("provider_id", entity.getProviderId());
         }
         if (StringUtils.isNotBlank(entity.getProviderName())){
-            sb.append("and provider_name = : provider_name");
+            sb.append("and provider_name = :provider_name");
             parameter.put("provider_name", entity.getProviderName());
         }
         sb.append(" order by create_date desc ");
