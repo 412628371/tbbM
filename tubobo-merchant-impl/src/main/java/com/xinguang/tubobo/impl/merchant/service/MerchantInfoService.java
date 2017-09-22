@@ -217,6 +217,7 @@ public class MerchantInfoService extends BaseService {
 		return count;
 	}
 
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional
 	public boolean bindProvider(String userId,Long providerId,String providerName){
 		int count = merchantInfoDao.bindProvider(userId,providerId,providerName);

@@ -566,17 +566,20 @@ public abstract class OrderManagerBaseService {
      * @param orderNo
      * @return
      */
-    public boolean merchantHandlerUnsettledOrder(String merchantId, String orderNo) {
+    public boolean merchantHandlerUnsettledOrder(String merchantId, String orderNo,String message) {
         Date unsettledTime = new Date();
         TbbTaskResponse<Boolean> result = taskDispatchService.merchantHandlerUnsettledTask(orderNo, unsettledTime);
         if (result != null && result.getData()) {
-            orderService.merchantHandlerUnsettledOrder(merchantId, orderNo, unsettledTime);
-            // TODO 通知食集
-            OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
-            orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
-            orderStatusInfoDTO.setOrderNo(orderNo);
-            launcherInnerTbbOrderService.statusChange(merchantId, orderStatusInfoDTO);
+            orderService.merchantHandlerUnsettledOrder(merchantId, orderNo, unsettledTime,message);
+           try {
+               // TODO 通知食集
+               OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+               orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
+               orderStatusInfoDTO.setOrderNo(orderNo);
+               launcherInnerTbbOrderService.statusChange(merchantId, orderStatusInfoDTO);
+           }catch (Exception e){
 
+           }
             return true;
         }
         return false;
