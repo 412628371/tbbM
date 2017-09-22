@@ -64,26 +64,26 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
     }
 
-    /**
-     * 商家确认未妥投
-     * @param orderNo
-     * @return
-     */
-    public int abortConfirm(String orderNo,Boolean confirm,String message,String userId){
-        String sqlString = "update tubobo_merchant_order set  mer_vote_status= :p1," +
-                " update_date = :p2 , mer_message = :p3  where order_no = :p4 and " +
-                "user_id = :p5 and del_flag = '0' ";
-        Integer confirmInt;
-        if (confirm){
-            confirmInt = 1;
-        }else {
-            confirmInt = 2;
-        }
-        int count =  updateBySql(sqlString,
-                new Parameter(confirmInt,new Date(),message,orderNo,userId));
-        getSession().clear();
-        return count;
-    }
+//    /**
+//     * 商家确认未妥投
+//     * @param orderNo
+//     * @return
+//     */
+//    public int abortConfirm(String orderNo,Boolean confirm,String message,String userId){
+//        String sqlString = "update tubobo_merchant_order set  mer_vote_status= :p1," +
+//                " update_date = :p2 , mer_message = :p3  where order_no = :p4 and " +
+//                "user_id = :p5 and del_flag = '0' ";
+//        Integer confirmInt;
+//        if (confirm){
+//            confirmInt = 1;
+//        }else {
+//            confirmInt = 2;
+//        }
+//        int count =  updateBySql(sqlString,
+//                new Parameter(confirmInt,new Date(),message,orderNo,userId));
+//        getSession().clear();
+//        return count;
+//    }
 
     /**
      * 超时未抢单
