@@ -5,6 +5,7 @@ import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.dao.PushNoticeDao;
 import com.xinguang.tubobo.impl.merchant.entity.PushNoticeEntity;
 import com.xinguang.tubobo.merchant.api.dto.NoticeDTO;
+import com.xinguang.tubobo.merchant.api.enums.EnumNoticeType;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderNoticeType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,13 @@ public class NoticeService {
     @Autowired
     PushNoticeDao pushNoticeDao;
     @Autowired MerchantPushService merchantPushService;
+
+    public void pushMoney(NoticeDTO dto) {
+        PushNoticeEntity entity = new PushNoticeEntity();
+        BeanUtils.copyProperties(dto,entity);
+        pushNoticeDao.saveEntity(entity);
+        merchantPushService.pushMoneyNotice(dto);
+    }
 
     public void pushAudit(NoticeDTO dto){
         PushNoticeEntity entity = new PushNoticeEntity();

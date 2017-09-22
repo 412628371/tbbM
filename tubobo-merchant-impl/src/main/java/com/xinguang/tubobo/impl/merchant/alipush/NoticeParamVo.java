@@ -12,6 +12,15 @@ public class NoticeParamVo implements Serializable{
     private String reason;
     private String verifyResult;
     private String orderStatus;
+    private String  recordId;
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
 
     public String getOrderStatus() {
         return orderStatus;

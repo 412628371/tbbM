@@ -95,6 +95,8 @@ public class DeliveryFeeService  {
         }else {
             return fee;
         }
+
+
         double overDistanceFee = distanceByKm*beyondPrice;
         fee+=overDistanceFee;
         return fee;

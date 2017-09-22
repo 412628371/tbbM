@@ -9,7 +9,7 @@ import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountTradeRecordList;
-import com.xinguang.tubobo.merchant.web.response.ResAccountTradeRecord;
+import com.xinguang.tubobo.merchant.web.response.trade.ResAccountTradeRecord;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;

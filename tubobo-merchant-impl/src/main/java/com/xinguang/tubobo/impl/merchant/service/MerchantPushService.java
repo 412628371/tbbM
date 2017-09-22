@@ -220,6 +220,26 @@ public class MerchantPushService {
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
+
+    public void pushMoneyNotice(NoticeDTO entity){
+        if (entity == null)
+            return;
+        String data = generateMoneyPushParam(entity.getUserId(), EnumNoticeType.MONEY, entity.getId(),entity.getRecordId());
+        pushToUser(entity.getUserId(), entity.getContent(), entity.getTitle(), data);
+    }
+
+    private static String generateMoneyPushParam(String userId, EnumNoticeType enumNoticeType, String id, String recordId){
+        NoticeParamVo paramVo = new NoticeParamVo();
+        paramVo.setId(id);
+        paramVo.setRecordId(recordId);
+        NoticePushVo noticePushVo = new NoticePushVo();
+        noticePushVo.setNoticeType(enumNoticeType.getValue());
+        noticePushVo.setParams(paramVo);
+        noticePushVo.setUserId(userId);
+        String s = JSON.toJSONString(noticePushVo);
+        return s;
+    }
+
     /**
      * 推送审核结果通知
      * @param entity

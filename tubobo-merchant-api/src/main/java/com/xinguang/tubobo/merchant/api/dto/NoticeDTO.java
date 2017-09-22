@@ -21,9 +21,16 @@ public class NoticeDTO implements Serializable {
 
     private String identifyStatus;
     private String identifyType;
-    private String reason;  //审核失败原因\
+    private String reason;  //审核失败原因
+    private String recordId; //订单流水id
 
+    public String getRecordId() {
+        return recordId;
+    }
 
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
 
     public String getReason() {
         return reason;

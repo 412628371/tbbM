@@ -3,11 +3,15 @@ package com.xinguang.tubobo.merchant.web.controller.account;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantMessageSettingsService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.response.MerchantInfoResponse;
+import com.xinguang.tubobo.merchant.web.response.RespSettingsQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,8 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
 
     @Autowired
     MerchantInfoService merchantInfoService;
+    @Autowired
+    MerchantMessageSettingsService settingsService;
     @Autowired
     Config config;
 
@@ -41,6 +47,13 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
         MerchantInfoResponse response= new MerchantInfoResponse();
         BeanUtils.copyProperties(merchantInfoEntity,response);
         response.setNonConfidentialPaymentLimit(config.getNonConfidentialPaymentLimit());
+        //查询商家短信开关
+        MerchantMessageSettingsEntity entity = settingsService.findBuUserId(merchantInfoEntity.getUserId());
+        if (entity == null){
+            entity = new MerchantMessageSettingsEntity();
+            entity.setMessageOpen(false);
+        }
+        response.setMessageOpen(entity.getMessageOpen());
         return response;
     }
 
@@ -48,5 +61,4 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
     protected boolean needIdentify() {
         return false;
     }
-
 }

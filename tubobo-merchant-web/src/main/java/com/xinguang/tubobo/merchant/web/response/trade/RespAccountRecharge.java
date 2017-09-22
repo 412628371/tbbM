@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web.response;
+package com.xinguang.tubobo.merchant.web.response.trade;
 
 /**
  * Created by Administrator on 2017/4/19.
@@ -19,7 +19,7 @@ public class RespAccountRecharge {
     @Override
     public String toString() {
         return "RespAccountRecharge{" +
-                "payInfo='" + payInfo + '\'' +
+                "PayInfoDto='" + payInfo + '\'' +
                 '}';
     }
 }
