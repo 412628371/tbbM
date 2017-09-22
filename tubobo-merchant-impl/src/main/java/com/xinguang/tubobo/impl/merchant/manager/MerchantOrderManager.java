@@ -125,6 +125,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		//驿站订单，支付之后的状态变为待取货
 		if (TaskTypeEnum.POST_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
 			status = EnumMerchantOrderStatus.WAITING_PICK.getValue();
+			taskCreateDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
 		}
 		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate,status);
 		if (count != 1){
