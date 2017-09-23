@@ -480,7 +480,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		}
 		String type=entity.getOrderType();
 		String orderStatus = entity.getOrderStatus();
-		if (!(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.equals(orderStatus))||!(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.equals(orderStatus))){
+		if (!(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.equals(orderStatus))&&!(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.equals(orderStatus))){
 			//取消 驿站单必须为待取货,众包单必须为带接单
 			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
 			return flag;
@@ -499,6 +499,13 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			if (enablePushNotice){
 				rmqNoticeProducer.sendGrabTimeoutNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 			}
+			if(EnumOrderType.POSTORDER.getValue().equals(type)){
+				// 通知食集 TODO?
+				OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+				orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue());
+				orderStatusInfoDTO.setOrderNo(orderNo);
+				launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
+			}
 			return true;
 		}else {
 			if (resp == null){
@@ -508,15 +515,15 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 						"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			}
 		}
-		try {
+		/*try {
 
         }catch (Exception e){
-            // 通知食集
+            // 通知食集 TODO?
             OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
             orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue());
             orderStatusInfoDTO.setOrderNo(orderNo);
             launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
-        }
+        }*/
 		return false;
 	}
 
