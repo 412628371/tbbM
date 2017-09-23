@@ -307,7 +307,11 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 				//短信通知骑手
 				if (entity.getShortMessage()){
-					adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
+					try {
+						adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
+					}catch (Exception e){
+						logger.error("短信通知骑手失败",e.getMessage());
+					}
 				}
 			}
 		}else if ( EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
@@ -339,7 +343,11 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if (flag){
 			//短信通知骑手
 			if (entity.getShortMessage()){
-				adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
+				try {
+					adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
+				}catch (Exception e){
+					logger.error("发送短信通知骑手失败",e.getMessage());
+				}
 			}
 			try {
                 //  通知食集
