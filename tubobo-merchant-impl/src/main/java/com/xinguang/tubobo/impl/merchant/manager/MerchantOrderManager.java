@@ -480,14 +480,14 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		}
 		String type=entity.getOrderType();
 		String orderStatus = entity.getOrderStatus();
-		if(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.equals(orderStatus)){
+		if(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(orderStatus)){
 			flag=true;
 		}
-		if(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.equals(orderStatus)){
+		if(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(orderStatus)){
 			flag=true;
 		}
 		if (!flag){
-			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo:{},orderType,orderStatus:{} "+orderNo,type,orderStatus);
+			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo:{},orderType:{},orderStatus:{} ",orderNo,type,orderStatus);
 			return false;
 		}
 		/*if (!(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.equals(orderStatus))&&!(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.equals(orderStatus))){
