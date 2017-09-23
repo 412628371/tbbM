@@ -480,7 +480,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		}
 		String type=entity.getOrderType();
 		String orderStatus = entity.getOrderStatus();
-		if (!(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.equals(orderNo))||!(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.equals(orderNo))){
+		if (!(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.equals(orderStatus))||!(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.equals(orderStatus))){
 			//取消 驿站单必须为待取货,众包单必须为带接单
 			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
 			return flag;
