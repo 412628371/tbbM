@@ -569,10 +569,12 @@ public class MerchantOrderManager extends OrderManagerBaseService {
      * @return
      */
     public boolean riderUnsettledOrder(MerchantUnsettledDTO dto){
+    	logger.info("商家处理骑手未妥投,dto:{}",dto.toString());
         MerchantOrderEntity order = orderService.findByOrderNo(dto.getOrderNo());
         if (order != null){
             int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),dto.getUnsettledReason(),dto.getDeliveryTime());
-            if (result > 0){
+			logger.info("商家处理骑手未妥投,result:{}",result);
+			if (result > 0){
                 try {
                     //通知食集
                     OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
