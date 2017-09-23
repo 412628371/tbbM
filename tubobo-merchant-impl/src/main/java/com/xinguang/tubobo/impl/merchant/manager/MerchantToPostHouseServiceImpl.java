@@ -49,7 +49,7 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
     public PageDTO<MerchantInfoDTO> findMerchantList(MerchantInfoQueryCondition queryCondition) {
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         infoEntity.setPhone(queryCondition.getShopPhone());
-        infoEntity.setRealName(queryCondition.getShopName());
+        infoEntity.setMerchantName(queryCondition.getShopName());
         infoEntity.setUserId(queryCondition.getShopId());
         infoEntity.setProviderId(queryCondition.getProviderId());
         Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(queryCondition.getPageNo(),queryCondition.getPageSize(),infoEntity);

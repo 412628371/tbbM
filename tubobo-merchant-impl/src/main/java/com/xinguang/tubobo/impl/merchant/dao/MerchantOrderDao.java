@@ -64,26 +64,26 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
     }
 
-    /**
-     * 商家确认未妥投
-     * @param orderNo
-     * @return
-     */
-    public int abortConfirm(String orderNo,Boolean confirm,String message,String userId){
-        String sqlString = "update tubobo_merchant_order set  mer_vote_status= :p1," +
-                " update_date = :p2 , mer_message = :p3  where order_no = :p4 and " +
-                "user_id = :p5 and del_flag = '0' ";
-        Integer confirmInt;
-        if (confirm){
-            confirmInt = 1;
-        }else {
-            confirmInt = 2;
-        }
-        int count =  updateBySql(sqlString,
-                new Parameter(confirmInt,new Date(),message,orderNo,userId));
-        getSession().clear();
-        return count;
-    }
+//    /**
+//     * 商家确认未妥投
+//     * @param orderNo
+//     * @return
+//     */
+//    public int abortConfirm(String orderNo,Boolean confirm,String message,String userId){
+//        String sqlString = "update tubobo_merchant_order set  mer_vote_status= :p1," +
+//                " update_date = :p2 , mer_message = :p3  where order_no = :p4 and " +
+//                "user_id = :p5 and del_flag = '0' ";
+//        Integer confirmInt;
+//        if (confirm){
+//            confirmInt = 1;
+//        }else {
+//            confirmInt = 2;
+//        }
+//        int count =  updateBySql(sqlString,
+//                new Parameter(confirmInt,new Date(),message,orderNo,userId));
+//        getSession().clear();
+//        return count;
+//    }
 
     /**
      * 超时未抢单
@@ -209,7 +209,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     public int riderGrabOrderOfPost(String riderId, String riderName, String riderPhone, String orderNo, Date grabOrderTime,
                               Date expectFinishTime, Date pickTime,  Double pickupDistance){
         String updateQuery = "update "+MerchantOrderEntity.class.getSimpleName()+" set orderStatus = :orderStatus , riderId = :riderId ,riderPhone = :riderPhone,riderName=:riderName ,grabOrderTime = :grabOrderTime ," +
-                " expectFinishTime=:expectFinishTime, pickTime=:pickTime, pickupDistance=:pickupDistance" +
+                " expectFinishTime=:expectFinishTime, grabItemTime=:pickTime,grabOrderTime=:pickTime, pickupDistance=:pickupDistance" +
                 " where orderNo = :orderNo and delFlag='0'";
         Parameter parameter = new Parameter();
         parameter.put("orderStatus",EnumMerchantOrderStatus.DELIVERYING.getValue());
@@ -359,8 +359,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
         } else if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(entity.getOrderStatus())){
             //待配送
-            sb.append("and unsettled_status = :unsettled_status ");
-            parameter.put("unsettled_status",PostOrderUnsettledStatusEnum.INIT.getValue());
+            sb.append("and unsettled_status is null ");
             sb.append("and order_status = :order_status ");
             parameter.put("order_status", entity.getOrderStatus());
         }
@@ -414,9 +413,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
-            sb.append("and unsettled_status = :unsettled_status ");
+            sb.append("and unsettled_status is null ");
             parameter.put("order_status", entity.getOrderStatus());
-            parameter.put("unsettled_status", PostOrderUnsettledStatusEnum.INIT.getValue());
         }
         if (StringUtils.isNotBlank(entity.getOrderNo())){
             sb.append("and order_no = :order_no ");
@@ -431,16 +429,16 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("receiver_phone", entity.getReceiverPhone()+"%");
         }
         if (StringUtils.isNotBlank(entity.getRiderId())){
-            sb.append("and rider_id like :rider_id ");
-            parameter.put("rider_id", entity.getRiderId()+"%");
+            sb.append("and rider_id = :rider_id ");
+            parameter.put("rider_id", entity.getRiderId());
         }
         if (StringUtils.isNotBlank(entity.getRiderName())){
             sb.append("and rider_name like :rider_name ");
             parameter.put("rider_name", entity.getRiderName()+"%");
         }
         if (StringUtils.isNotBlank(entity.getSenderId())){
-            sb.append("and sender_id like :sender_id ");
-            parameter.put("sender_id", entity.getSenderId()+"%");
+            sb.append("and sender_id = :sender_id ");
+            parameter.put("sender_id", entity.getSenderId());
         }
         if (StringUtils.isNotBlank(entity.getSenderName())){
             sb.append("and sender_name like :sender_name ");
@@ -458,7 +456,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             sb.append(" order by expect_finish_time " + expectFinishTimeSort);
         }
         if(StringUtils.isNotBlank(orderTimeSort)){
-            sb.append(" order by create_date " + orderTimeSort);
+            sb.append(" order by order_time " + orderTimeSort);
         }
         return findPage(sb.toString(), parameter, MerchantOrderEntity.class,pageNo,pageSize);
     }
@@ -492,8 +490,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
                 parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
             } else if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(entity.getOrderStatus())){
                 //待配送
-                sb.append("and unsettled_status = :unsettled_status ");
-                parameter.put("unsettled_status",PostOrderUnsettledStatusEnum.INIT.getValue());
+                sb.append("and unsettled_status is  null ");
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", entity.getOrderStatus());
             } else {
@@ -535,11 +532,11 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("sender_adcode", entity.getSenderAdcode()+"%");
         }
         if (null!=entity.getProviderId()){
-            sb.append("and provider_id = : provider_id");
+            sb.append("and provider_id = :provider_id");
             parameter.put("provider_id", entity.getProviderId());
         }
         if (StringUtils.isNotBlank(entity.getProviderName())){
-            sb.append("and provider_name = : provider_name");
+            sb.append("and provider_name = :provider_name");
             parameter.put("provider_name", entity.getProviderName());
         }
         sb.append(" order by create_date desc ");
@@ -628,16 +625,16 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         return orderList;
     }
 
-    public int riderUnsettledOrder(String orderNo,String reason,Date unsettledTime) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, unsettledTime=:p3 " +
+    public int riderUnsettledOrder(String orderNo,String reason,Date finishOrderTime) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, finishOrderTime =:p3 " +
                 "where orderNo =:p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,unsettledTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.INIT.getValue()));
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,finishOrderTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.INIT.getValue()));
     }
 
-    public int merchantHandlerUnsettledOrder(String orderNo,Date finishOrderTime) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, orderStatus=:p2, finishOrderTime=:p3 " +
-                "where orderNo = :p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0' ";
-        return update(sqlString, new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue(), finishOrderTime,
-                orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.ING.getValue()));
+    public int merchantHandlerUnsettledOrder(String orderNo,Date unsettledTime,String message) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, orderStatus=:p2, unsettledTime =:p3, merMessage =:p7 " +
+                "where orderNo = :p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0'";
+        return update(sqlString, new Parameter(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue(), unsettledTime,
+                orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.ING.getValue(),message));
     }
 }

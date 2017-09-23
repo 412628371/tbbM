@@ -78,7 +78,6 @@ public class MerchantOrderDTO implements Serializable{
 	protected Date updateDate;
 	protected String updateBy;
 	protected String senderAdcode;
-
 	private Integer peekOverFee;  //高峰溢价费用
 	private Integer weatherOverFee; //天气溢价费用
 	private String unsettledStatus;         //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理

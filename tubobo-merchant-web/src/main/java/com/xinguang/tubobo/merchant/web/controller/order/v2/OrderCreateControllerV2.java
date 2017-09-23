@@ -116,7 +116,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         entity.setOrderTime(new Date());
         entity.setPayStatus(EnumPayStatus.UNPAY.getValue());
-//        entity.setDispatchRadius(config.getDispatchRadiusKiloMiles());
         entity.setOrderRemark(ConvertUtil.handleNullString(req.getOrderRemarks()));
         entity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
         entity.setWeatherOverFee(weatherOverFee);

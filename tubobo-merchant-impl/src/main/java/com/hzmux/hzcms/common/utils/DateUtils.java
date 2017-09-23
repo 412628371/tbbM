@@ -239,6 +239,27 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 	}
 
 	/**
+	 * 获取月份起始日期
+	 * @param date
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date getMinMonthDate(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		//calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND,0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		Date sdate = calendar.getTime();
+		//calendar.set
+		return calendar.getTime();
+	}
+
+
+	/**
 	 * 判断当前时分秒是否在endTime的时分秒之前
 	 * @param endTime，格式如 08:00:00
 	 * @return
@@ -300,6 +321,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		return ceil;
 	}
 	public static void main(String[] args) throws ParseException {
+
+		Date minMonthDate = getMinMonthDate(DateUtils.addMonths(new Date(),-3));
+		System.out.println(minMonthDate);
 //		System.out.println(formatDate(parseDate("2010/3/6")));
 //		System.out.println(getDate("yyyy年MM月dd日 E"));
 //		long time = new Date().getTime()-parseDate("2012-11-19").getTime();

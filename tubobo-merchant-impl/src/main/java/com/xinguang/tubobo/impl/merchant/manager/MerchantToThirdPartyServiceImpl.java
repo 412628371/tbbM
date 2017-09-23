@@ -77,7 +77,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
     public  <D> TbbMerchantResponse<D> wrapErrorCodeResponse(Exception e) {
         if (e instanceof TbbTaskBaseException){
             logger.error("异常：code:{},message:{}",((TbbTaskBaseException) e).getErrorCode(),e.getMessage());
-        }else {
+        }else{
             logger.error("任务异常：",e);
         }
         return TbbMerchantBaseException.genErrorCodeResponse(e);
@@ -85,6 +85,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
 
     @Override
     public TbbMerchantResponse<MerchantOrderCreateResultDto> createOrder(MerchantOrderCreateDto req) {
+        TbbMerchantResponse<MerchantOrderCreateResultDto>   merchantOrderCreateResultDtoTbbMerchantResponse;
         MerchantOrderCreateResultDto merchantOrderCreateResultDto;
         OverFeeInfo overFeeInfo = new OverFeeInfo();
         String orderNo =null;
@@ -130,7 +131,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
             //执行创建订单
             orderNo = orderPost(merchantInfoEntity,config,entity);
         }catch (Exception e){
-            wrapErrorCodeResponse(e);
+            return wrapErrorCodeResponse(e);
         }
         //封装返回值
         merchantOrderCreateResultDto = new MerchantOrderCreateResultDto();
@@ -141,7 +142,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         overFeeInfo.setTotalOverFee(add(peekOverFee,weatherOverFee));//	总溢价
         overFeeInfo.setWeatherOverFee(weatherOverFee);//	天气溢价
         merchantOrderCreateResultDto.setOverFeeInfo(overFeeInfo);
-        return new TbbMerchantResponse(merchantOrderCreateResultDto);
+        return  new TbbMerchantResponse<>(merchantOrderCreateResultDto);
     }
 
     @Override
@@ -234,7 +235,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         }catch (Exception e){
             return wrapErrorCodeResponse(e);
         }
-        result =  merchantOrderManager.merchantHandlerUnsettledOrder(req.getUserId(),req.getOrderNo());
+        result =  merchantOrderManager.merchantHandlerUnsettledOrder(req.getUserId(),req.getOrderNo(),req.getMessage());
         return new TbbMerchantResponse(result);
     }
 
