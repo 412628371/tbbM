@@ -216,7 +216,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         parameter.put("riderId",riderId);
         parameter.put("riderPhone",riderPhone);
         parameter.put("riderName",riderName);
-        parameter.put("pickTime",pickTime);
+        parameter.put("pickTime",grabOrderTime);
         parameter.put("grabOrderTime",grabOrderTime);
         parameter.put("expectFinishTime",expectFinishTime);
         parameter.put("orderNo",orderNo);
