@@ -79,6 +79,7 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         orderEntity.setSenderId(queryCondition.getShopId());
         orderEntity.setSenderName(queryCondition.getShopName());
         orderEntity.setProviderId(queryCondition.getProviderId());
+        orderEntity.setUnsettledStatus(queryCondition.getUnsettledStatus());
         Page<MerchantOrderEntity> page = merchantOrderManager.postHouseQueryOrderPage(queryCondition.getPageNo(), queryCondition.getPageSize(),
                                             queryCondition.getExpectFinishTimeSort(), queryCondition.getOrderTimeSort(), orderEntity);
         List<MerchantOrderDTO> list = new LinkedList<>();
