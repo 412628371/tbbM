@@ -445,7 +445,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if(null != deliveryingCounts){
 			statusStatsDTO.setDeliveryingCounts(deliveryingCounts-statusStatsDTO.getUndeliveredCounts());
 		}
-		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts());
+		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts()+statusStatsDTO.getUndeliveredCounts());
 		return statusStatsDTO;
 	}
 
