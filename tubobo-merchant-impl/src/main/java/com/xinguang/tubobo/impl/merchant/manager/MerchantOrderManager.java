@@ -406,8 +406,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	/**
 	 * 订单超时
 	 */
-	public int orderExpire(String merchantId,String orderNo,Date expireTime){
-		int count =orderService.orderExpire(merchantId,orderNo,expireTime);
+	public int orderExpire(String merchantId,String orderNo,Date expireTime,String orderStatus){
+		int count =orderService.orderExpire(merchantId,orderNo,expireTime, orderStatus);
 		return count;
 	}
 
@@ -505,7 +505,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if (resp != null && resp.isSucceeded()){
 			logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
 					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-			orderExpire(entity.getUserId(),orderNo,expireTime);
+			orderExpire(entity.getUserId(),orderNo,expireTime,orderStatus);
 			if (enablePushNotice){
 				rmqNoticeProducer.sendGrabTimeoutNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 			}

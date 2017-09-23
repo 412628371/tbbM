@@ -90,14 +90,14 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param orderNo
      * @return
      */
-    public int orderExpire(String orderNo,Date expireTime){
+    public int orderExpire(String orderNo,Date expireTime,String orderStatus){
         String sqlString = "update tubobo_merchant_order set order_status = :p1," +
                 " update_date = :p2, cancel_time= :p3, cancel_reason= :p4  where order_no = :p5 and " +
                 "order_status = :p6 and del_flag = '0' ";
         int count =  updateBySql(sqlString,
                 new Parameter(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),new Date(),expireTime,
                         EnumCancelReason.GRAB_OVERTIME.getValue(),orderNo,
-                        EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
+                        orderStatus));
         getSession().clear();
         return count;
     }
