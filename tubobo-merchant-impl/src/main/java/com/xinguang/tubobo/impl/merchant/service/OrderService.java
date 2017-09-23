@@ -214,8 +214,8 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int orderExpire(String merchantId, String orderNo, Date expireTime) {
-        int count = merchantOrderDao.orderExpire(orderNo, expireTime);
+    public int orderExpire(String merchantId, String orderNo, Date expireTime,String orderStatus) {
+        int count = merchantOrderDao.orderExpire(orderNo, expireTime,orderStatus);
         return count;
     }
 

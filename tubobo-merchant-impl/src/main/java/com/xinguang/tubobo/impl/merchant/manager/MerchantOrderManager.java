@@ -406,8 +406,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	/**
 	 * 订单超时
 	 */
-	public int orderExpire(String merchantId,String orderNo,Date expireTime){
-		int count =orderService.orderExpire(merchantId,orderNo,expireTime);
+	public int orderExpire(String merchantId,String orderNo,Date expireTime,String orderStatus){
+		int count =orderService.orderExpire(merchantId,orderNo,expireTime, orderStatus);
 		return count;
 	}
 
@@ -470,11 +470,34 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		return orderService.getUnCanceledGrabOvertimeOrderNoList(overTimeMilSeconds);
 	}
 	public boolean dealGrabOvertimeOrders(String orderNo,Date expireTime,boolean enablePushNotice){
-		MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
-		if (null == entity ){
+
+		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+
+		boolean flag=false;
+		if (null == entity){
 			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
+			return flag;
+		}
+		String type=entity.getOrderType();
+		String orderStatus = entity.getOrderStatus();
+		if(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(orderStatus)){
+			flag=true;
+		}
+		if(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(orderStatus)){
+			flag=true;
+		}
+		if (!flag){
+			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo:{},orderType:{},orderStatus:{} ",orderNo,type,orderStatus);
 			return false;
 		}
+		/*if (!(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.equals(orderStatus))&&!(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.equals(orderStatus))){
+			//取消 驿站单必须为待取货,众包单必须为带接单
+			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo:{},orderType,orderStatus:{} "+orderNo,type,orderStatus);
+			return flag;
+		}*/
+
+
+
 		logger.info("处理超时无人接单：orderNo:{}",orderNo);
 		PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
 				MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
@@ -482,9 +505,16 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if (resp != null && resp.isSucceeded()){
 			logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
 					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-			orderExpire(entity.getUserId(),orderNo,expireTime);
+			orderExpire(entity.getUserId(),orderNo,expireTime,orderStatus);
 			if (enablePushNotice){
 				rmqNoticeProducer.sendGrabTimeoutNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+			}
+			if(EnumOrderType.POSTORDER.getValue().equals(type)){
+				// 通知食集 TODO?
+				OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+				orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue());
+				orderStatusInfoDTO.setOrderNo(orderNo);
+				launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
 			}
 			return true;
 		}else {
@@ -495,15 +525,15 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 						"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
 			}
 		}
-		try {
+		/*try {
 
         }catch (Exception e){
-            // 通知食集
+            // 通知食集 TODO?
             OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
             orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue());
             orderStatusInfoDTO.setOrderNo(orderNo);
             launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
-        }
+        }*/
 		return false;
 	}
 

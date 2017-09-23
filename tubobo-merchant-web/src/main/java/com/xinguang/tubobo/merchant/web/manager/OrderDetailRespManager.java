@@ -75,7 +75,7 @@ public class OrderDetailRespManager {
         BeanUtils.copyProperties(entity,respOrderDetail);
         respOrderDetail.setOrderRemarks(ConvertUtil.handleNullString(entity.getOrderRemark()));
         respOrderDetail.setPayRemainMillSeconds(payRemainMilSeconds);
-        respOrderDetail.setMessageAmout(String.valueOf(entity.getShortMessage()? MerchantConstants.MESSAGE_FEE:0.0));
+        respOrderDetail.setMessageAmout(entity.getShortMessage()? MerchantConstants.MESSAGE_FEE:0.0);
         respOrderDetail.setGrabRemainMillSeconds(grabRemainMilSeconds);
 
         //已评价的订单，获取评价内容

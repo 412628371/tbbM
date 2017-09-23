@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Scope;
 public class Config {
 
     private static  final Logger logger = LoggerFactory.getLogger(Config.class);
-        private Double dispatchRadiusKiloMiles;//派单半径,km
+    private Double dispatchRadiusKiloMiles;//派单半径,km
     private Integer taskGrabExpiredMilSeconds;//过期毫秒数
     private Integer taskPostOrderMilSeconds;//驿站订单过期毫秒数
     private Integer payExpiredMilSeconds;//过期毫秒数
@@ -65,7 +65,9 @@ public class Config {
     private Integer autoRateDays;
     private String transportType;
     private int thirdOrderRemainHours;
+    // private Integer taskPostOrderMilSeconds;
     private String iosMusic;
+
 
     @DisconfFileItem(name = "merchant.notice.riderCancel.title", associateField = "noticeRiderOrderCanceledTitle")
     public String getNoticeRiderOrderCanceledTitle() {
@@ -253,7 +255,7 @@ public class Config {
     public void setTaskPostOrderMilSeconds(Integer taskPostOrderMilSeconds) {
         this.taskPostOrderMilSeconds = taskPostOrderMilSeconds;
     }
-    @DisconfFileItem(name = "task.post.order.milseconds", associateField = "getTaskPostOrderMilSeconds")
+    @DisconfFileItem(name = "task.post.order.milseconds", associateField = "taskPostOrderMilSeconds")
     public Integer getTaskPostOrderGrabExpiredMilSeconds() {
         if (null == taskPostOrderMilSeconds){
             logger.info("getTaskPostOrderMilSeconds，使用默认值：{}",MerchantConstants.POST_ORDER_GRABEXPIRED_MilSECONDS);
@@ -262,6 +264,9 @@ public class Config {
         logger.info("taskPostOrderMilSeconds:{}",taskPostOrderMilSeconds);
         return taskPostOrderMilSeconds;
     }
+
+
+
     @DisconfFileItem(name = "task.grab.expires.milseconds", associateField = "taskGrabExpiredMilSeconds")
     public Integer getTaskGrabExpiredMilSeconds() {
         if (null == taskGrabExpiredMilSeconds){
