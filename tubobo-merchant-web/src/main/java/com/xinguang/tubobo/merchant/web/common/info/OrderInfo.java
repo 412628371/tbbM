@@ -29,7 +29,15 @@ public class OrderInfo implements Serializable {
     private Double deliveryDistance; //配送距离 1.41 版本加入
 
     private  String waitPickCancelType; //带接单状态下商家取消订单原因
+    private  String  unsettledReason;  //未妥投原因
 
+    public String getUnsettledReason() {
+        return unsettledReason;
+    }
+
+    public void setUnsettledReason(String unsettledReason) {
+        this.unsettledReason = unsettledReason;
+    }
 
     public String getUnsettledStatus() {
         return unsettledStatus;

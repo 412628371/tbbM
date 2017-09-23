@@ -68,6 +68,24 @@ public class RespOrderDetail implements Serializable{
 
     private Double cancelCompensation; //订单取消赔付
     private Double cancelFine;         //订单取消罚款
+    private String  unsettledReason;  //未妥投原因
+    private String   messageAmout;   //短信费用
+
+    public String getUnsettledReason() {
+        return unsettledReason;
+    }
+
+    public void setUnsettledReason(String unsettledReason) {
+        this.unsettledReason = unsettledReason;
+    }
+
+    public String getMessageAmout() {
+        return messageAmout;
+    }
+
+    public void setMessageAmout(String messageAmout) {
+        this.messageAmout = messageAmout;
+    }
 
     public Double getExpiredCompensation() {
         return expiredCompensation;

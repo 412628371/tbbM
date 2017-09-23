@@ -509,8 +509,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("order_no", entity.getOrderNo());
         }
         if (StringUtils.isNotBlank(entity.getRiderPhone())){
-            sb.append("and rider_phone like :rider_phone ");
-            parameter.put("rider_phone", entity.getRiderPhone()+"%");
+            sb.append("and rider_phone = :rider_phone ");
+            parameter.put("rider_phone", entity.getRiderPhone());
         }
         if (StringUtils.isNotBlank(entity.getReceiverPhone())){
             sb.append("and receiver_phone like :receiver_phone ");
@@ -518,7 +518,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getSenderName())){
             sb.append("and sender_name like :sender_name ");
-            parameter.put("sender_name", "%"+entity.getSenderName()+"%");
+            parameter.put("sender_name", entity.getSenderName()+"%");
         }
         if (null != entity.getCreateDate()){
             sb.append("and order_time >= :create_date ");
@@ -628,8 +628,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
 
     public int riderUnsettledOrder(String orderNo,String reason,Date finishOrderTime) {
         String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, finishOrderTime =:p3 " +
-                "where orderNo =:p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,finishOrderTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.INIT.getValue()));
+                "where orderNo =:p4 and orderStatus=:p5 and unsettledStatus is null and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,finishOrderTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue()));
     }
 
     public int merchantHandlerUnsettledOrder(String orderNo,Date unsettledTime,String message) {
