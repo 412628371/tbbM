@@ -216,7 +216,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         parameter.put("riderId",riderId);
         parameter.put("riderPhone",riderPhone);
         parameter.put("riderName",riderName);
-        parameter.put("pickTime",pickTime);
+        parameter.put("pickTime",grabOrderTime);
         parameter.put("grabOrderTime",grabOrderTime);
         parameter.put("expectFinishTime",expectFinishTime);
         parameter.put("orderNo",orderNo);
@@ -413,16 +413,17 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
-            sb.append("and unsettled_status is null ");
+            if (StringUtils.isNotBlank(entity.getUnsettledStatus())){
+                sb.append("and unsettled_status = :unsettled_status ");
+                parameter.put("unsettled_status", entity.getUnsettledStatus());
+            }else{
+                sb.append("and unsettled_status is null ");
+            }
             parameter.put("order_status", entity.getOrderStatus());
         }
         if (StringUtils.isNotBlank(entity.getOrderNo())){
             sb.append("and order_no = :order_no ");
             parameter.put("order_no", entity.getOrderNo());
-        }
-        if (StringUtils.isNotBlank(entity.getUnsettledStatus())){
-            sb.append("and unsettled_status = :unsettled_status ");
-            parameter.put("unsettled_status", entity.getUnsettledStatus());
         }
         if (StringUtils.isNotBlank(entity.getReceiverPhone())){
             sb.append("and receiver_phone like :receiver_phone ");

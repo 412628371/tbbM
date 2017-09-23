@@ -436,16 +436,16 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		Long deliveryingCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.DELIVERYING.getValue(), null);
 		Long waitingPickCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.WAITING_PICK.getValue(), null);
 		Long undeliveredCounts = orderService.getOrderWithProviderIdAndStatus(providerId, null, PostOrderUnsettledStatusEnum.ING.getValue());
-		if(null != deliveryingCounts){
-			statusStatsDTO.setDeliveryingCounts(deliveryingCounts);
+		if(null != undeliveredCounts){
+			statusStatsDTO.setUndeliveredCounts(undeliveredCounts);
 		}
 		if(null != waitingPickCounts){
 			statusStatsDTO.setWaitingPickCounts(waitingPickCounts);
 		}
-		if(null != undeliveredCounts){
-			statusStatsDTO.setUndeliveredCounts(undeliveredCounts);
+		if(null != deliveryingCounts){
+			statusStatsDTO.setDeliveryingCounts(deliveryingCounts-statusStatsDTO.getUndeliveredCounts());
 		}
-		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts());
+		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts()+statusStatsDTO.getUndeliveredCounts());
 		return statusStatsDTO;
 	}
 

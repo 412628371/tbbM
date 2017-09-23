@@ -79,7 +79,7 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 
 
 
-	public ResAccountTradeRecord convertToShow(AccountOperationInfo operInfo){
+	public static ResAccountTradeRecord convertToShow(AccountOperationInfo operInfo){
 		ResAccountTradeRecord record = new ResAccountTradeRecord();
 
 		String amount = ConvertUtil.formatMoneyToString(operInfo.getAmount());
@@ -88,8 +88,7 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 
 		if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.INIT.equals(operInfo.getStatus())){
 			//商家取消充值 允许展示
-			record.setType("充值未成功");
-			record.setTradeStatus("账户充值");
+			record.setTradeStatus("充值取消");
 
 			//return null;
 		}
@@ -110,22 +109,22 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 				// 成功
 				if (TbbConstants.OperationStatus.SUCCEED== operInfo.getStatus()){
 					amount = "-"+amount;
-					record.setType("订单支付");
-					record.setTradeStatus("订单已完成");
+					record.setType("订单已完成");
+					record.setTradeStatus("订单支付");
 
 				}
 				//失败 退回
 				if (TbbConstants.OperationStatus.CLOSE== operInfo.getStatus()){
 					amount = " 解冻"+amount;
-					record.setType("订单支付");
-					record.setTradeStatus("订单已取消");
+					record.setType("订单已取消");
+					record.setTradeStatus("订单支付");
 
 				}
 				//交易中
 				if (TbbConstants.OperationStatus.INIT== operInfo.getStatus()){
 					amount = "冻结"+amount;
-					record.setType("订单支付");
-					record.setTradeStatus("订单进行中");
+					record.setType("订单进行中");
+					record.setTradeStatus("订单支付");
 
 				}
 
