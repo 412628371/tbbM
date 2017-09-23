@@ -470,11 +470,24 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		return orderService.getUnCanceledGrabOvertimeOrderNoList(overTimeMilSeconds);
 	}
 	public boolean dealGrabOvertimeOrders(String orderNo,Date expireTime,boolean enablePushNotice){
-		MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
-		if (null == entity ){
+
+		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+
+		boolean flag=false;
+		if (null == entity){
 			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
-			return false;
+			return flag;
 		}
+		String type=entity.getOrderType();
+		String orderStatus = entity.getOrderStatus();
+		if (!(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.equals(orderNo))||!(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.equals(orderNo))){
+			//取消 驿站单必须为待取货,众包单必须为带接单
+			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo: "+orderNo);
+			return flag;
+		}
+
+
+
 		logger.info("处理超时无人接单：orderNo:{}",orderNo);
 		PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
 				MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
