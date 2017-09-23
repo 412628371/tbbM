@@ -24,7 +24,7 @@ public class NoticeDTO implements Serializable {
     private String reason;  //审核失败原因
     private String recordId; //订单流水id
 
-    private long fine;//罚款金额
+    private Double fine;//罚款金额
 
     public String getRecordId() {
         return recordId;
@@ -146,11 +146,11 @@ public class NoticeDTO implements Serializable {
         this.orderOperateType = orderOperateType;
     }
 
-    public long getFine() {
+    public Double getFine() {
         return fine;
     }
 
-    public void setFine(long fine) {
+    public void setFine(Double fine) {
         this.fine = fine;
     }
 }
