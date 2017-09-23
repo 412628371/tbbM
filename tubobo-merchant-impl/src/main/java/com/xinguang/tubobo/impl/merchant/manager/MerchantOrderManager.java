@@ -443,9 +443,14 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			statusStatsDTO.setWaitingPickCounts(waitingPickCounts);
 		}
 		if(null != deliveryingCounts){
-			statusStatsDTO.setDeliveryingCounts(deliveryingCounts-statusStatsDTO.getUndeliveredCounts());
+			statusStatsDTO.setDeliveryingCounts(deliveryingCounts);
+			if(null != undeliveredCounts){
+				statusStatsDTO.setDeliveryingCounts(deliveryingCounts-undeliveredCounts);
+			}
 		}
 		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts()+statusStatsDTO.getUndeliveredCounts());
+		logger.info("订单进行中：{}， 配送中：{}，待接单：{}，未妥投：{}", statusStatsDTO.getProgressCounts(), statusStatsDTO.getDeliveryingCounts(),
+				statusStatsDTO.getWaitingPickCounts(), statusStatsDTO.getUndeliveredCounts());
 		return statusStatsDTO;
 	}
 
