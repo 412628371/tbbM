@@ -89,6 +89,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
      */
     @Override
     public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType,String reason) {
+        MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
+        if (null == infoEntity )
+            return false;
         int i = merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy,identifyType,reason);
         if (i > 0){
             //消息放入报表mq
@@ -97,6 +100,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
             }else{
                 if (EnumAuthentication.FAIL.getValue().equals(merchantStatus)){
                     rmqNoticeProducer.sendAuditNotice(userId,false,reason);
+                    if (null != infoEntity.getProviderId()){
+                        merchantInfoService.unbindProvider(userId,infoEntity.getProviderId());
+                    }
                 }else if (EnumAuthentication.SUCCESS.getValue().equals(merchantStatus)){
                     rmqNoticeProducer.sendAuditNotice(userId,true,null);
                 }
