@@ -134,9 +134,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
                 infoDto.setDeliveryFee(order.getDeliveryFee()==null?0:(int)(order.getDeliveryFee()*100));
                 infoDto.setTipFee(order.getTipFee()==null?0:(int)(order.getTipFee()*100));
                 if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(order.getOrderStatus())&& PostOrderUnsettledStatusEnum.ING.getValue().equals(order.getUnsettledStatus())){
-                    order.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
+                    infoDto.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
                 }else if (EnumMerchantOrderStatus.FINISH.getValue().equals(order.getOrderStatus())&&PostOrderUnsettledStatusEnum.FINISH.getValue().equals(order.getUnsettledStatus())){
-                    order.setOrderStatus(EnumMerchantOrderStatus.CONFIRM.getValue());
+                    infoDto.setOrderStatus(EnumMerchantOrderStatus.CONFIRM.getValue());
                 }
                 dtoList.add(infoDto);
             }
