@@ -90,14 +90,14 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
      * @param orderNo
      * @return
      */
-    public int orderExpire(String orderNo,Date expireTime){
+    public int orderExpire(String orderNo,Date expireTime,String orderStatus){
         String sqlString = "update tubobo_merchant_order set order_status = :p1," +
                 " update_date = :p2, cancel_time= :p3, cancel_reason= :p4  where order_no = :p5 and " +
                 "order_status = :p6 and del_flag = '0' ";
         int count =  updateBySql(sqlString,
                 new Parameter(EnumMerchantOrderStatus.CANCEL_GRAB_OVERTIME.getValue(),new Date(),expireTime,
                         EnumCancelReason.GRAB_OVERTIME.getValue(),orderNo,
-                        EnumMerchantOrderStatus.WAITING_GRAB.getValue()));
+                        orderStatus));
         getSession().clear();
         return count;
     }
@@ -216,7 +216,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         parameter.put("riderId",riderId);
         parameter.put("riderPhone",riderPhone);
         parameter.put("riderName",riderName);
-        parameter.put("pickTime",pickTime);
+        parameter.put("pickTime",grabOrderTime);
         parameter.put("grabOrderTime",grabOrderTime);
         parameter.put("expectFinishTime",expectFinishTime);
         parameter.put("orderNo",orderNo);
@@ -413,16 +413,17 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getOrderStatus())){
             sb.append("and order_status = :order_status ");
-            sb.append("and unsettled_status is null ");
+            if (StringUtils.isNotBlank(entity.getUnsettledStatus())){
+                sb.append("and unsettled_status = :unsettled_status ");
+                parameter.put("unsettled_status", entity.getUnsettledStatus());
+            }else{
+                sb.append("and unsettled_status is null ");
+            }
             parameter.put("order_status", entity.getOrderStatus());
         }
         if (StringUtils.isNotBlank(entity.getOrderNo())){
             sb.append("and order_no = :order_no ");
             parameter.put("order_no", entity.getOrderNo());
-        }
-        if (StringUtils.isNotBlank(entity.getUnsettledStatus())){
-            sb.append("and unsettled_status = :unsettled_status ");
-            parameter.put("unsettled_status", entity.getUnsettledStatus());
         }
         if (StringUtils.isNotBlank(entity.getReceiverPhone())){
             sb.append("and receiver_phone like :receiver_phone ");
@@ -488,13 +489,11 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
                 parameter.put("unsettled_status",PostOrderUnsettledStatusEnum.FINISH.getValue());
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
-            } else if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(entity.getOrderStatus())){
-                //待配送
-                sb.append("and unsettled_status is  null ");
-                sb.append("and order_status = :order_status ");
-                parameter.put("order_status", entity.getOrderStatus());
             } else {
                 //正常
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", entity.getOrderStatus());
+                sb.append("and unsettled_status is  null ");
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", entity.getOrderStatus());
             }
@@ -508,8 +507,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
             parameter.put("order_no", entity.getOrderNo());
         }
         if (StringUtils.isNotBlank(entity.getRiderPhone())){
-            sb.append("and rider_phone like :rider_phone ");
-            parameter.put("rider_phone", entity.getRiderPhone()+"%");
+            sb.append("and rider_phone = :rider_phone ");
+            parameter.put("rider_phone", entity.getRiderPhone());
         }
         if (StringUtils.isNotBlank(entity.getReceiverPhone())){
             sb.append("and receiver_phone like :receiver_phone ");
@@ -517,7 +516,7 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         }
         if (StringUtils.isNotBlank(entity.getSenderName())){
             sb.append("and sender_name like :sender_name ");
-            parameter.put("sender_name", "%"+entity.getSenderName()+"%");
+            parameter.put("sender_name", entity.getSenderName()+"%");
         }
         if (null != entity.getCreateDate()){
             sb.append("and order_time >= :create_date ");
@@ -627,8 +626,8 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
 
     public int riderUnsettledOrder(String orderNo,String reason,Date finishOrderTime) {
         String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, finishOrderTime =:p3 " +
-                "where orderNo =:p4 and orderStatus=:p5 and unsettledStatus=:p6 and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,finishOrderTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.INIT.getValue()));
+                "where orderNo =:p4 and orderStatus=:p5 and unsettledStatus is null and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,finishOrderTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue()));
     }
 
     public int merchantHandlerUnsettledOrder(String orderNo,Date unsettledTime,String message) {

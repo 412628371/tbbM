@@ -58,8 +58,8 @@ import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.CANT_CANCEL_DU
 public abstract class OrderManagerBaseService {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private OrderService orderService;
+      /* @Autowired
+ private OrderService orderService;
 
     @Autowired
     private RmqAddressInfoProducer rmqAddressInfoProducer;
@@ -94,9 +94,9 @@ public abstract class OrderManagerBaseService {
         return orderService.findByMerchantIdAndOrderNo(merchantId, orderNo);
     }
 
-    /**
+    *//**
      * 商家提交订单
-     */
+     *//*
     public String order(String userId, MerchantOrderEntity entity) throws MerchantClientException {
         String orderNo = orderService.order(userId, entity);
         logger.info("创建订单, userId:{},orderNo:{}，orderType:{}", userId, orderNo, entity.getOrderType());
@@ -123,9 +123,9 @@ public abstract class OrderManagerBaseService {
     }
 
 
-    /**
+    *//**
      * 商家付款
-     */
+     *//*
     public void merchantPay(TaskCreateDTO taskCreateDTO, String merchantId, String orderNo, long payId) throws MerchantClientException {
         int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
         taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
@@ -143,9 +143,9 @@ public abstract class OrderManagerBaseService {
     }
 
 
-    /**
+    *//**
      * 商家取消订单
-     */
+     *//*
     public boolean cancelOrder(String merchantId, String orderNo, boolean isAdminCancel, String waitPickCancelType) throws MerchantClientException {
         MerchantOrderEntity entity = orderService.findByMerchantIdAndOrderNo(merchantId, orderNo);
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(merchantId);
@@ -218,9 +218,9 @@ public abstract class OrderManagerBaseService {
 
     }
 
-    /**
+    *//**
      * 判断余额是否允许取消订单
-     */
+     *//*
     private void judgeBalanceForCancel(MerchantInfoEntity merchant) throws MerchantClientException {
         TbbAccountResponse<AccountInfo> accountInfo = tbbAccountService.getAccountInfo(merchant.getAccountId());
         long balance = accountInfo.getData().getBalance();
@@ -233,14 +233,14 @@ public abstract class OrderManagerBaseService {
         }
     }
 
-    /**
+    *//**
      * 资金账户退款操作
      *
      * @param payId
      * @param userId
      * @param orderNo
      * @return
-     */
+     *//*
     private boolean rejectPayConfirm(Long payId, String userId, String orderNo) {
         PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(payId,
                 MerchantConstants.PAY_REJECT_REMARKS_CANCEL);
@@ -254,7 +254,7 @@ public abstract class OrderManagerBaseService {
         }
     }
 
-    /**
+    *//**
      * 将订单状态改为取消，取消原因为后台取消
      *
      * @param userId
@@ -262,7 +262,7 @@ public abstract class OrderManagerBaseService {
      * @param cancelReason
      * @param isAdminCancel
      * @return
-     */
+     *//*
     private boolean dealCancel(String userId, String orderNo, String cancelReason, boolean isAdminCancel, String waitPickCancelType, Double punishFee, Double subsidyFee) {
         boolean cancelResult;
         if (isAdminCancel) {
@@ -277,17 +277,17 @@ public abstract class OrderManagerBaseService {
         return cancelResult;
     }
 
-    /**
+    *//**
      * 商家删除订单
-     */
+     *//*
     public int deleteOrder(String merchantId, String orderNo) {
         int count = orderService.deleteOrder(merchantId, orderNo);
         return count;
     }
 
-    /**
+    *//**
      * 骑手抢单
-     */
+     *//*
     public boolean riderGrabOrder(MerchantGrabCallbackDTO dto, boolean enableNotice) {
         if (null == dto || StringUtils.isBlank(dto.getTaskNo())) {
             logger.error("抢单回调dto为空");
@@ -327,9 +327,9 @@ public abstract class OrderManagerBaseService {
         return result;
     }
 
-    /**
+    *//**
      * 骑手取货
-     */
+     *//*
     public boolean riderGrabItem(String orderNo, Date grabItemTime, boolean enableNotice) {
         MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
                 EnumMerchantOrderStatus.WAITING_PICK.getValue());
@@ -348,9 +348,9 @@ public abstract class OrderManagerBaseService {
         return flag;
     }
 
-    /**
+    *//**
      * 骑手完成订单
-     */
+     *//*
     public boolean riderFinishOrder(String orderNo, Date finishOrderTime, Double expiredMinute, Double expiredCompensation, boolean enableNotice) {
         MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(entity.getUserId());
@@ -382,25 +382,25 @@ public abstract class OrderManagerBaseService {
     }
 
 
-    /**
+    *//**
      * 订单超时
-     */
-    public int orderExpire(String merchantId, String orderNo, Date expireTime) {
-        int count = orderService.orderExpire(merchantId, orderNo, expireTime);
+     *//*
+    public int orderExpire(String merchantId, String orderNo, Date expireTime,String orderStatus) {
+        int count = orderService.orderExpire(merchantId, orderNo, expireTime,orderStatus);
         return count;
     }
 
-    /**
+    *//**
      * 重新发单
-     */
+     *//*
     public int orderResend(String merchantId, String originOrderNo) {
         int count = orderService.orderResend(merchantId, originOrderNo);
         return count;
     }
 
-    /**
+    *//**
      * 商家查询订单分页（缓存）
-     */
+     *//*
     public Page<MerchantOrderEntity> merchantQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity) {
         return orderService.merchantQueryOrderPage(pageNo, pageSize, entity);
     }
@@ -428,19 +428,19 @@ public abstract class OrderManagerBaseService {
         return statusStatsDTO;
     }
 
-    /**
+    *//**
      * 后台查询分页（不缓存）
-     */
+     *//*
     public Page<MerchantOrderEntity> adminQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity) {
         return orderService.adminQueryOrderPage(pageNo, pageSize, entity);
     }
 
-    /**
+    *//**
      * 获取
      *
      * @param overTimeMilSeconds
      * @return
-     */
+     *//*
     public List<String> getUnCanceledGrabOvertimeOrderNoList(Integer overTimeMilSeconds) {
         return orderService.getUnCanceledGrabOvertimeOrderNoList(overTimeMilSeconds);
     }
@@ -492,9 +492,9 @@ public abstract class OrderManagerBaseService {
         return dto;
     }
 
-    /**
+    *//**
      * 骑手取消订单
-     */
+     *//*
     public void dealFromRiderCancelOrders(MerchantTaskOperatorCallbackDTO dtoCancel) {
         String orderNo = dtoCancel.getTaskNo();
         MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
@@ -538,11 +538,11 @@ public abstract class OrderManagerBaseService {
     }
 
 
-    /**
+    *//**
      * 骑手提交未妥投请求
      *
      * @return
-     */
+     *//*
     public boolean riderUnsettledOrder(MerchantUnsettledDTO dto) {
         MerchantOrderEntity order = orderService.findByOrderNo(dto.getOrderNo());
         if (order != null) {
@@ -560,12 +560,12 @@ public abstract class OrderManagerBaseService {
         return false;
     }
 
-    /**
+    *//**
      * 商家处理 未妥投订单
      *
      * @param orderNo
      * @return
-     */
+     *//*
     public boolean merchantHandlerUnsettledOrder(String merchantId, String orderNo,String message) {
         Date unsettledTime = new Date();
         TbbTaskResponse<Boolean> result = taskDispatchService.merchantHandlerUnsettledTask(orderNo, unsettledTime);
@@ -583,5 +583,6 @@ public abstract class OrderManagerBaseService {
             return true;
         }
         return false;
-    }
+    }*/
+
 }

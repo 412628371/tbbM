@@ -3,6 +3,7 @@ package com.xinguang.tubobo.impl.merchant.manager;
 import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
@@ -13,6 +14,7 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
+import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -137,6 +139,11 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
                 infoDto.setPayAmount(order.getPayAmount()==null?0:(int)(order.getPayAmount()*100));
                 infoDto.setDeliveryFee(order.getDeliveryFee()==null?0:(int)(order.getDeliveryFee()*100));
                 infoDto.setTipFee(order.getTipFee()==null?0:(int)(order.getTipFee()*100));
+                if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(order.getOrderStatus())&& PostOrderUnsettledStatusEnum.ING.getValue().equals(order.getUnsettledStatus())){
+                    infoDto.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
+                }else if (EnumMerchantOrderStatus.FINISH.getValue().equals(order.getOrderStatus())&&PostOrderUnsettledStatusEnum.FINISH.getValue().equals(order.getUnsettledStatus())){
+                    infoDto.setOrderStatus(EnumMerchantOrderStatus.CONFIRM.getValue());
+                }
                 dtoList.add(infoDto);
             }
         }

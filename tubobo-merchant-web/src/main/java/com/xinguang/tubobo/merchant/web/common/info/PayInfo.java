@@ -18,6 +18,15 @@ public class PayInfo implements Serializable {
     private Double expiredCompensation;//超时赔付expiredCompensation
     private Double cancelCompensation; //订单取消赔付
     private Double cancelFine;         //订单取消罚款
+    private Double messageAmout;   //短信费用
+
+    public Double getMessageAmout() {
+        return messageAmout;
+    }
+
+    public void setMessageAmout(Double messageAmout) {
+        this.messageAmout = messageAmout;
+    }
 
     public Double getExpiredCompensation() {
         return expiredCompensation;

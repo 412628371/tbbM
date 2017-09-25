@@ -66,6 +66,7 @@ public class MerchantInfoDao extends BaseDao<MerchantInfoEntity> {
         parameter.put("enterTime",new Date());
         parameter.put("userId",userId);
         parameter.put("providerName",providerName);
+        parameter.put("updateDate",new Date());
         int count = createQuery(sqlString, parameter).executeUpdate();
         return count;
     }

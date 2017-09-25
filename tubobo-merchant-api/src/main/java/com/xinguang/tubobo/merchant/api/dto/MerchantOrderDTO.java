@@ -90,6 +90,7 @@ public class MerchantOrderDTO implements Serializable{
 	private String merMessage; //未妥投确认消息
 	private Date expectFinishTime;//预计送达时间
 	private Double expiredMinute; //超时分钟数
+	private Double amount;
 
 	public Date getUnsettledTime() {
 		return unsettledTime;
@@ -651,6 +652,14 @@ public class MerchantOrderDTO implements Serializable{
 
 	public void setSenderAdcode(String senderAdcode) {
 		this.senderAdcode = senderAdcode;
+	}
+
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 
 	@Override

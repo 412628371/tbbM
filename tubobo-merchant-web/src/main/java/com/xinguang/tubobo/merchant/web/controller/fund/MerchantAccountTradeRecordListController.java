@@ -79,7 +79,7 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 
 
 
-	public ResAccountTradeRecord convertToShow(AccountOperationInfo operInfo){
+	public static ResAccountTradeRecord convertToShow(AccountOperationInfo operInfo){
 		ResAccountTradeRecord record = new ResAccountTradeRecord();
 
 		String amount = ConvertUtil.formatMoneyToString(operInfo.getAmount());
@@ -88,8 +88,7 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 
 		if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.INIT.equals(operInfo.getStatus())){
 			//商家取消充值 允许展示
-			record.setType("充值未成功");
-			record.setTradeStatus("账户充值");
+			record.setTradeStatus("充值取消");
 
 			//return null;
 		}
