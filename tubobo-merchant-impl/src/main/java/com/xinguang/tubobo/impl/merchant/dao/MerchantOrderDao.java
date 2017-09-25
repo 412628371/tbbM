@@ -489,13 +489,11 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
                 parameter.put("unsettled_status",PostOrderUnsettledStatusEnum.FINISH.getValue());
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", EnumMerchantOrderStatus.FINISH.getValue());
-            } else if (EnumMerchantOrderStatus.DELIVERYING.getValue().equals(entity.getOrderStatus())){
-                //待配送
-                sb.append("and unsettled_status is  null ");
-                sb.append("and order_status = :order_status ");
-                parameter.put("order_status", entity.getOrderStatus());
             } else {
                 //正常
+                sb.append("and order_status = :order_status ");
+                parameter.put("order_status", entity.getOrderStatus());
+                sb.append("and unsettled_status is  null ");
                 sb.append("and order_status = :order_status ");
                 parameter.put("order_status", entity.getOrderStatus());
             }
