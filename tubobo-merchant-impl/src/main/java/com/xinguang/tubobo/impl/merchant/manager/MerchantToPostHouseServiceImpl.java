@@ -46,6 +46,26 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
     }
 
     @Override
+    public EnumMerchantPostExceptionCode unbindProvider(String userId, long providerId) {
+        MerchantInfoEntity riderInfoEntity = merchantInfoService.findByUserId(userId);
+        if (null == riderInfoEntity){
+            return EnumMerchantPostExceptionCode.SHOP_NOT_EXIST;
+        }
+        if (null == riderInfoEntity.getProviderId()){
+            return EnumMerchantPostExceptionCode.SHOP_ALREADY_UNBOUND;
+        }
+        if (providerId != riderInfoEntity.getProviderId()){
+            return EnumMerchantPostExceptionCode.SHOP_NO_PERMISSION;
+        }
+        boolean result = merchantInfoService.unbindProvider(userId,providerId);
+        if (result){
+            //TODO 通知
+            return EnumMerchantPostExceptionCode.SUCCESS;
+        }
+        return EnumMerchantPostExceptionCode.FAIL;
+    }
+
+    @Override
     public PageDTO<MerchantInfoDTO> findMerchantList(MerchantInfoQueryCondition queryCondition) {
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         infoEntity.setPhone(queryCondition.getShopPhone());
