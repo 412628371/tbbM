@@ -87,7 +87,7 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
             for (MerchantOrderEntity entity:page.getList()){
                 MerchantOrderDTO orderDTO = new MerchantOrderDTO();
                 BeanUtils.copyProperties(entity,orderDTO);
-                orderDTO.setPayAmount(entity.getPayAmount().intValue());
+                orderDTO.setAmount(entity.getPayAmount());
                 list.add(orderDTO);
             }
         }
