@@ -313,7 +313,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
             orderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
             Date payDate = new Date();
             System.out.println("orderNo:"+orderNo);
-            int count = orderService.merchantPay(entity.getUserId(),orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
+            int count = orderService.merchantPay(entity.getUserId(),orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
             if (count != 1){
                 logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",entity.getUserId(),orderNo);
                 throw new MerchantClientException(EnumRespCode.FAIL);
