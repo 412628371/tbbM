@@ -298,7 +298,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		logger.info("处理骑手接单：orderNo:{}",orderNo);
 		boolean result =false ;
 		//驿站订单回调后直接是已取货状态，短信发送给收货人 TODO 代码拆分与整合
-		if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())&& EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+		if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
 			result = orderService.riderGrabOrderOfPost(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
 					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),entity.getGrabOrderTime(),dto.getPickupDistance())>0;
 
@@ -308,7 +308,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				//短信通知骑手
 				if (entity.getShortMessage()){
 					try {
-						adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
+						adminToMerchantService.sendRiderMessageToReceiver(dto.getRiderName(), dto.getRiderPhone(), entity.getReceiverPhone());
 					}catch (Exception e){
 						logger.error("短信通知骑手失败",e.getMessage());
 					}
