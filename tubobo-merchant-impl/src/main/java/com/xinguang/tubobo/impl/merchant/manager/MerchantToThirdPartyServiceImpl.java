@@ -294,7 +294,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         String orderNo;
         OrderUtil.judgeOrderCondition(merchantInfoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
         orderNo = orderService.order(entity.getUserId(),entity);
-        //TODO 商家扣款 并修改数据   扣款封装小方法
+        //商家扣款 并修改数据   扣款封装小方法
         PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
         payWithOutPwdRequest.setOrderId(orderNo);
         payWithOutPwdRequest.setAccountId(merchantInfoEntity.getAccountId());
@@ -312,7 +312,6 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
                     ,merchantInfoEntity.getAccountId(),response.getData().getId(),amount);
             orderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
             Date payDate = new Date();
-            System.out.println("orderNo:"+orderNo);
             int count = orderService.merchantPay(entity.getUserId(),orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
             if (count != 1){
                 logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",entity.getUserId(),orderNo);
