@@ -23,7 +23,9 @@ public class CodeGenerator {
 
     public enum BusinessTypeEnum {
         MERCHANT_SMALL_ORDER("03","商家订单"),
+        POST_ORDER("06","驿站订单"),
         MERCHANT_BIG_ORDER("04","车配订单");
+
 
         BusinessTypeEnum(String code, String name) {
             this.code = code;
@@ -80,6 +82,9 @@ public class CodeGenerator {
         String code = BusinessTypeEnum.MERCHANT_SMALL_ORDER.getCode();
         if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
             code = BusinessTypeEnum.MERCHANT_BIG_ORDER.getCode();
+        }
+        if (EnumOrderType.POSTORDER.getValue().equals(orderType)){
+            code = BusinessTypeEnum.POST_ORDER.getCode();
         }
         String date = DateUtils.getDate("yyMMdd");
         Long seq = getCurrentSequenceValue(ORDER_CODE_NAME , date, 100);
