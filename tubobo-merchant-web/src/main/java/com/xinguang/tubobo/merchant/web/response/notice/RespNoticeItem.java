@@ -19,6 +19,15 @@ public class RespNoticeItem implements Serializable {
     private boolean processed;
     protected Date createTime;
     protected Long id;
+    private  String recordId;  //罚款交易编号Id
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
 
     public String getTitle() {
         return title;
