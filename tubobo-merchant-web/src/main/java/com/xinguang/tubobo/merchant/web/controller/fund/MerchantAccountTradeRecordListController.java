@@ -59,7 +59,9 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 
 		//v1.42后展示流水状态
 		List<TbbConstants.OperationType> types=new ArrayList<>();
-		types.add(type);
+		if(null!=type){
+			types.add(type);
+		}
 		if (TbbConstants.OperationType.RECHARGE.equals(type)){
 			//充值类型展示=充值+充送
 			types.add(TbbConstants.OperationType.GIFT);
