@@ -36,6 +36,8 @@ public enum EnumRespCode {
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
 	PASSWORD_DECRYPT_FAIL("10002", "密码解密失败"),
 	PASSWORD_FIRSTCREATE_FAIL("10003", "该账户已设置密码,首次创建密码失败"),
+	MERCHANT_MESSAGE_PUSH_SETTINGS_FAILURE("10004", "短信推送设置失败"),
+	POST_ORDER_STATUS_PUSH_FAILURE("10005", "驿站订单状态推送失败"),
 
 
 	MERCHANT_DELIVERY_DISTANCE_TOO_FAR("10301", "超过配送范围 请重新输入地址"),
@@ -51,6 +53,8 @@ public enum EnumRespCode {
 	ACCOUNT_PWD_RESET_CREDENTIAL_INVALID("30054", "重置密码，令牌已无效"),
 
 	ACCOUNT_PWD_ERROR_TOO_MUCH("30055", "支付密码输错%s次，请找回密码"),
+	TRADE_RECORD_NOT_EXSIT("30056","流水信息不存在"),
+
 	ACCOUNT_RECHARGE_FAIL("30060", "充值操作失败"),
 
 	PEEK_OVER_FEE_CHANGE("30070","高峰溢价费已发生变化,请重新提交订单"),

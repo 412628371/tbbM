@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2017/4/13.
  */
 public class MerchantConstants {
+    public static final String POSTORDER_WAITPICKCANCEL_TYPE= "POSTORDERWAITPICKCANCELTYPE";
+
     public static final String PUSH_ORDER_TYPE_BIG= "orderDetail-big";
     public static final String PUSH_ORDER_TYPE_SMALL= "orderDetail-small";
 
@@ -38,6 +40,7 @@ public class MerchantConstants {
     public static final Double DISPATCH_RADIUS_BY_KiloMILLS = 3.00;
     public static final int PAY_EXPIRED_TIME_BY_MilSECONDS = 1800000;
     public static final int GRAB_EXPIRED_TIME_BY_MilSECONDS = 300000;
+    public static final int POST_ORDER_GRABEXPIRED_MilSECONDS = 7200000;
 
     public static final String REQ_ORDER_CANCEL = "CANCEL";
     public static final String REQ_ORDER_DELETE = "DELETE";
@@ -48,7 +51,9 @@ public class MerchantConstants {
     public static final String MERCHANT_CANCEL_BY_RIDER_SUBSIDY = "赔付: 骑手取消订单";
     public static final String OVERTIME_DELIVERY = "赔付: 订单超时送达";
 
-
+    public static final boolean ORDER_MESSAGE_OPEN = true;
+    public static final boolean ORDER_MESSAGE_CLOSE = false;
+    public static final Double MESSAGE_FEE=0.1;
 
 
     public static final String  PATTERN_PHONE= "^1\\d{10}?$";

@@ -1,9 +1,11 @@
-package com.xinguang.tubobo.merchant.web.response;
+package com.xinguang.tubobo.merchant.web.response.trade;
 
 import java.util.Date;
 
-public class ResAccountTradeRecord {
-
+/**
+ * Created by yanxu on 2017/9/19.
+ */
+public class TradePerDayInfoRes {
     private String recordId;
     private String amount;
     private String type;  //对应UI订单状态，例如订单已完成

@@ -21,9 +21,18 @@ public class NoticeDTO implements Serializable {
 
     private String identifyStatus;
     private String identifyType;
-    private String reason;  //审核失败原因\
+    private String reason;  //审核失败原因
+    private String recordId; //订单流水id
 
+    private Double fine;//罚款金额
 
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
 
     public String getReason() {
         return reason;
@@ -135,5 +144,13 @@ public class NoticeDTO implements Serializable {
 
     public void setOrderOperateType(String orderOperateType) {
         this.orderOperateType = orderOperateType;
+    }
+
+    public Double getFine() {
+        return fine;
+    }
+
+    public void setFine(Double fine) {
+        this.fine = fine;
     }
 }

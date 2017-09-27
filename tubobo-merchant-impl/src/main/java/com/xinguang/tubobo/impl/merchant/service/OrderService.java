@@ -4,16 +4,16 @@ import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.taskcenter.api.OverTimeRuleInterface;
-import com.xinguang.taskcenter.api.dto.OverTimeRuleDto;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.common.CodeGenerator;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantOrderDao;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
-import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +44,8 @@ public class OrderService extends BaseService {
     RoutePlanning routePlanning;
     @Autowired
     OverTimeRuleInterface overTimeRuleService;
+    @Autowired
+    MerchantMessageSettingsService merchantMessageSettingsService;
 
 //    public MerchantOrderEntity get(String id) {
 //        return merchantOrderDao.get(id);
@@ -64,6 +66,9 @@ public class OrderService extends BaseService {
         return merchantOrderDao.findByMerchantIdAndOrderNo(merchantId, orderNo);
     }
 
+/*    public int abortConfirm(String orderNo,Boolean confirm,String message,String userId){
+        return merchantOrderDao.abortConfirm(orderNo,confirm,message,userId);
+    }*/
     /**
      * 商家提交订单
      */
@@ -84,21 +89,30 @@ public class OrderService extends BaseService {
         distance = deliveryDistance == null ? distance : deliveryDistance;
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
+        //设置该单是否付短信通知收货人
+        MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findBuUserId(userId);
+        if (setting == null){
+            setting = new MerchantMessageSettingsEntity();
+            setting.setMessageOpen(false);
+        }
+        entity.setShortMessage(setting.getMessageOpen());
         entity.setOrderNo(orderNo);
+        Double textMesssgaeFee=setting.getMessageOpen()? MerchantConstants.MESSAGE_FEE:0.0;
 
         if (entity.getDeliveryFee() != null) {
             if (entity.getTipFee() == null) {
-                entity.setPayAmount(entity.getDeliveryFee());
+                entity.setPayAmount(CalCulateUtil.add(entity.getDeliveryFee(),textMesssgaeFee));
             } else {
-                entity.setPayAmount(entity.getDeliveryFee() + entity.getTipFee());
+                entity.setPayAmount(CalCulateUtil.add(CalCulateUtil.add(entity.getDeliveryFee(),entity.getTipFee()),textMesssgaeFee) );
             }
         }
         if (entity.getPeekOverFee() != null) {
-            entity.setPayAmount(entity.getPayAmount() + entity.getPeekOverFee());
+            entity.setPayAmount(CalCulateUtil.add(entity.getPayAmount(),entity.getPeekOverFee()) );
         }
         if (entity.getWeatherOverFee() != null) {
-            entity.setPayAmount(entity.getPayAmount() + entity.getWeatherOverFee());
+            entity.setPayAmount(CalCulateUtil.add(entity.getPayAmount(),entity.getWeatherOverFee()) );
         }
+
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         merchantOrderDao.save(entity);
         //将订单加入支付超时队列
@@ -107,8 +121,8 @@ public class OrderService extends BaseService {
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int merchantPay(String merchantId, String orderNo, long payId, Date payDate) {
-        int count = merchantOrderDao.merchantPay(merchantId, orderNo, payId, payDate);
+    public int merchantPay(String merchantId, String orderNo, long payId, Date payDate,String orderStatus) {
+        int count = merchantOrderDao.merchantPay(merchantId, orderNo, payId, payDate,orderStatus);
         return count;
     }
 
@@ -146,11 +160,17 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int riderGrabOrder(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance) {
-        //v1.41预计送达时间改为从规则表中获得
-        //Date expectFinishTimeDueRule = getExpectFinishTimeDueRule(orderNo,grabOrderTime);
         return merchantOrderDao.riderGrabOrder(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, riderCarNo, riderCarType,pickupDistance);
     }
-
+    /**
+     * 骑手抢单
+     */
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional()
+    public int riderGrabOrderOfPost(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
+                              Date grabOrderTime, Date expectFinishTime, Date pickTime,  Double pickupDistance) {
+        return merchantOrderDao.riderGrabOrderOfPost(riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, pickTime,pickupDistance);
+    }
     /**
      * 骑手取货
      */
@@ -194,8 +214,8 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int orderExpire(String merchantId, String orderNo, Date expireTime) {
-        int count = merchantOrderDao.orderExpire(orderNo, expireTime);
+    public int orderExpire(String merchantId, String orderNo, Date expireTime,String orderStatus) {
+        int count = merchantOrderDao.orderExpire(orderNo, expireTime,orderStatus);
         return count;
     }
 
@@ -215,6 +235,12 @@ public class OrderService extends BaseService {
     @Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#entity.getUserId()+'_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")
     public Page<MerchantOrderEntity> merchantQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity) {
         return merchantOrderDao.findMerchantOrderPageToApp(pageNo, pageSize, entity);
+    }
+
+    //@Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")
+    public Page<MerchantOrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
+                                                         String orderTimeSort, MerchantOrderEntity entity) {
+        return merchantOrderDao.findMerchantOrderPageToPostHouse(pageNo, pageSize, expectFinishTimeSort, orderTimeSort,entity);
     }
 
     /**
@@ -244,6 +270,26 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = true)
     public Long getTodayFinishOrderNum(String userId) {
         return merchantOrderDao.getTodayFinishOrderNum(userId);
+    }
+    /**
+     * 计算当天已完成的订单(带有短信通知)
+     *
+     * @param userId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Long getTodayFinishOrderWithShortTextNum(String userId) {
+        return merchantOrderDao.getTodayFinishOrderWithShortTextNum(userId);
+    }
+
+    /**
+     * 获取指定providerId，和orderStatus unsettledStatus的订单数目
+     * @return
+     */
+    //@Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#providerId+'_'")
+    @Transactional(readOnly = true)
+    public Long getOrderWithProviderIdAndStatus(Long providerId, String orderStatus, String unsettledStatus){
+        return merchantOrderDao.getOrderWithProviderIdAndStatus(providerId, orderStatus, unsettledStatus);
     }
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
@@ -285,5 +331,15 @@ public class OrderService extends BaseService {
 
     }
 
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public int riderUnsettledOrder(String merchantId, String orderNo, String reason, Date finishOrderTime, Double expiredMinute) {
+        return merchantOrderDao.riderUnsettledOrder(orderNo,reason,finishOrderTime,expiredMinute);
+    }
 
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date unsettledTime,String message) {
+        return merchantOrderDao.merchantHandlerUnsettledOrder(orderNo,unsettledTime,message);
+    }
 }

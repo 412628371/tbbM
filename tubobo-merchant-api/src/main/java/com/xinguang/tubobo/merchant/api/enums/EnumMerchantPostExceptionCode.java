@@ -8,7 +8,9 @@ public enum EnumMerchantPostExceptionCode {
     FAIL(1),
     SHOP_NOT_EXIST(2),
     SHOP_NOT_AUTHED(3),
-    SHOP_ALREADY_BOUND(4);
+    SHOP_ALREADY_BOUND(4),
+    SHOP_ALREADY_UNBOUND(5),
+    SHOP_NO_PERMISSION(6);
     private int code;
 
     private EnumMerchantPostExceptionCode(int code){

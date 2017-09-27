@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.hzmux.hzcms.common.utils.AliOss;
+import com.sun.tools.classfile.Annotation;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
@@ -101,6 +102,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             merchantOrderManager.merchantPay(orderDTO,infoEntity.getUserId(),req.getOrderNo(),payId);
             RespOrderPay respOrderPay = new RespOrderPay();
             respOrderPay.setGrabExpiredStartTime(new Date());
+            //驿站订单不做倒计时 不处理
             respOrderPay.setGrabExpiredMilSeconds(config.getTaskGrabExpiredMilSeconds());
             return respOrderPay;
         }else {
@@ -132,10 +134,15 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
     private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
         TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
         BeanUtils.copyProperties(entity,merchantOrderDTO);
-        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
-            merchantOrderDTO.setTaskType(TaskTypeEnum.M_BIG_ORDER);
-        }else if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
+        merchantOrderDTO.setOrderRemark(entity.getOrderRemark());
+        merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
+        if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
             merchantOrderDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
+        }else if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
+            merchantOrderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
+            merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
+            merchantOrderDTO.setProviderId(entity.getProviderId());
+            merchantOrderDTO.setProviderName(entity.getProviderName());
         }
         if (entity.getPayAmount() != null){
             merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
@@ -158,7 +165,6 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         shopUrls[1] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl2()));
         merchantOrderDTO.setSenderShopUrls(shopUrls);
         merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
-        merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
         return merchantOrderDTO;
     }
     @Override

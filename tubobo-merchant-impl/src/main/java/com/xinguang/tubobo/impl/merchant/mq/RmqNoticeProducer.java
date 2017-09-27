@@ -58,11 +58,19 @@ public class RmqNoticeProducer {
      * @param orderType
      * @param platformCode
      * @param originOrderViewId
+     * @param expiredMinute
+     * @param cancelCompensation
      */
-    public void sendOrderFinishNotice(String userId, String orderNo, String orderType,String platformCode,String originOrderViewId){
+    public void sendOrderFinishNotice(String userId, String orderNo, String orderType, String platformCode, String originOrderViewId, Double expiredMinute, Double cancelCompensation){
         NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
-        noticeDTO.setTitle(config.getNoticeFinishedTitle());
-        noticeDTO.setContent(config.getNoticeFinishedTemplate());
+        String title=config.getNoticeFinishedTitle();
+        String content=config.getNoticeFinishedTemplate();
+        if (null!=expiredMinute&&expiredMinute>0.0&&cancelCompensation!=null&&cancelCompensation>0.0){
+            title="订单送达时间超过预计送达时间";
+            content="您的订单("+orderNo+"）配送超时"+expiredMinute+"分钟，获赔"+cancelCompensation+"元，已充入您的钱包";
+        }
+        noticeDTO.setTitle(title);
+        noticeDTO.setContent(content);
         noticeDTO.setOrderOperateType(EnumOrderNoticeType.FINISH.getValue());
         sendNotice(noticeDTO);
     }

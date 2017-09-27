@@ -217,9 +217,16 @@ public class MerchantInfoService extends BaseService {
 		return count;
 	}
 
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional
 	public boolean bindProvider(String userId,Long providerId,String providerName){
 		int count = merchantInfoDao.bindProvider(userId,providerId,providerName);
+		return count == 1;
+	}
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+	@Transactional
+	public boolean unbindProvider(String userId,long providerId){
+		int count = merchantInfoDao.unbindProvider(userId,providerId);
 		return count == 1;
 	}
 }

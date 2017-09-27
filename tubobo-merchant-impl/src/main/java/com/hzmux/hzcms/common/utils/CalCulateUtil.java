@@ -30,9 +30,15 @@ public class CalCulateUtil {
      * @return 两个参数的和
      */
     public static Double add(Number value1, Number value2) {
+        value1=value1==null?0.0:value1;
+        value2=value2==null?0.0:value2;
         BigDecimal b1 = new BigDecimal(Double.toString(value1.doubleValue()));
         BigDecimal b2 = new BigDecimal(Double.toString(value2.doubleValue()));
         return b1.add(b2).doubleValue();
+    }
+
+    public static void main(String[] args) {
+
     }
 
     /**
