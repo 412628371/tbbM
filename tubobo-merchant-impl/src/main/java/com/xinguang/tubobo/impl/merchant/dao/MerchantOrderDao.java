@@ -624,10 +624,10 @@ public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
         return orderList;
     }
 
-    public int riderUnsettledOrder(String orderNo,String reason,Date finishOrderTime) {
-        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, finishOrderTime =:p3 " +
-                "where orderNo =:p4 and orderStatus=:p5 and unsettledStatus is null and delFlag = '0' ";
-        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,finishOrderTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue()));
+    public int riderUnsettledOrder(String orderNo, String reason, Date finishOrderTime, Double expiredMinute) {
+        String sqlString = "update MerchantOrderEntity set unsettledStatus=:p1, unsettledReason =:p2, finishOrderTime =:p3 ,expired_minute =:p4" +
+                "where orderNo =:p5 and orderStatus=:p6 and unsettledStatus is null and delFlag = '0' ";
+        return update(sqlString,new Parameter(PostOrderUnsettledStatusEnum.ING.getValue(),reason,finishOrderTime,expiredMinute,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue()));
     }
 
     public int merchantHandlerUnsettledOrder(String orderNo,Date unsettledTime,String message) {

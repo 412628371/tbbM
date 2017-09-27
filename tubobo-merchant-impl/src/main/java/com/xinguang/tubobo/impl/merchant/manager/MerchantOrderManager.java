@@ -381,7 +381,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		expiredCompensation=expiredMinute==null?0.0:expiredCompensation;
 		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation/100)==1;
 		if (result){
-			if (enableNotice && !EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
+			if (enableNotice){
 				//发送骑手完成送货通知
 				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId(),entity.getExpiredMinute(),entity.getCancelCompensation());
 			}
@@ -624,7 +624,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
     	logger.info("商家处理骑手未妥投,dto:{}",dto.toString());
         MerchantOrderEntity order = orderService.findByOrderNo(dto.getOrderNo());
         if (order != null){
-            int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),dto.getUnsettledReason(),dto.getDeliveryTime());
+            int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),dto.getUnsettledReason(),dto.getDeliveryTime(),dto.getExpiredMinute());
 			logger.info("商家处理骑手未妥投,result:{}",result);
 			if (result > 0){
 				if(EnumOrderType.POSTORDER.getValue().equals(order.getOrderType())){

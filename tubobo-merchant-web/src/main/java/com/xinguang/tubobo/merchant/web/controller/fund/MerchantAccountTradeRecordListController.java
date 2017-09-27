@@ -5,6 +5,7 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.TbbConstants;
 import com.xinguang.tubobo.account.api.TbbPage;
 import com.xinguang.tubobo.account.api.request.AccountOperationsQueryCondition;
+import com.xinguang.tubobo.account.api.request.AccountOperationsQueryConditionMultiType;
 import com.xinguang.tubobo.account.api.request.AccountRecordsQueryCondition;
 import com.xinguang.tubobo.account.api.response.AccountOperationInfo;
 import com.xinguang.tubobo.account.api.response.AccountRecordInfo;
@@ -57,7 +58,13 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 
 
 		//v1.42后展示流水状态
-		AccountOperationsQueryCondition condition=new AccountOperationsQueryCondition(merchant.getAccountId(), type,null,startTime,endTime);
+		List<TbbConstants.OperationType> types=new ArrayList<>();
+		types.add(type);
+		if (TbbConstants.OperationType.RECHARGE.equals(type)){
+			//充值类型展示=充值+充送
+			types.add(TbbConstants.OperationType.GIFT);
+		}
+		AccountOperationsQueryConditionMultiType condition=new AccountOperationsQueryConditionMultiType(merchant.getAccountId(), types,null,startTime,endTime);
 		TbbAccountResponse<TbbPage<AccountOperationInfo>> response = tbbAccountService.findAccountOperations(req.getPageSize(), req.getPageNo(), condition);
 
 
