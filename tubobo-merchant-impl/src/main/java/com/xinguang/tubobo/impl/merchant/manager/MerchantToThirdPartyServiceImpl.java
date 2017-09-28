@@ -243,6 +243,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
     private MerchantOrderEntity translateRequestToEntity(MerchantInfoEntity merchantInfoEntity,MerchantOrderCreateDto req,Double peekOverFee,Double weatherOverFee,Double distance,Double fee,String userId){
         MerchantOrderEntity entity;
         entity = new MerchantOrderEntity();
+        Date sysTime = new Date();
 
         entity.setUserId(userId);
         //插入发货方
@@ -280,6 +281,9 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         //配送距离和费用
         entity.setDeliveryDistance(distance);
         entity.setDeliveryFee(fee);
+
+        entity.setOrderTime(sysTime);
+        entity.setCreateDate(sysTime);
 
         return  entity;
     }
