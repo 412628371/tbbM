@@ -1,7 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.hzmux.hzcms.common.utils.AliOss;
-import com.sun.tools.classfile.Annotation;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
@@ -13,7 +12,6 @@ import com.xinguang.tubobo.impl.merchant.cache.RedisOp;
 import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
-import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;

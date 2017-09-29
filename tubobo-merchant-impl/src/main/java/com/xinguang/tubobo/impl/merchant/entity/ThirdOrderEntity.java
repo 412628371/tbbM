@@ -16,7 +16,7 @@ import java.util.Date;
 @Table(name = "t_third_order")
 @DynamicInsert
 @DynamicUpdate
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ThirdOrderEntity implements Serializable {
 
     private String userId;

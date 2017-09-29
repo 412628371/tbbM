@@ -4,7 +4,6 @@ import com.hzmux.hzcms.common.persistence.Page;
 import com.xinguang.tubobo.impl.merchant.dao.ThirdOrderDao;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
-import com.xinguang.tubobo.takeout.TakeoutNotifyConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

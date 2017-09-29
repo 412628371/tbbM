@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity
 @Table(name = "tubobo_merchant_deliver_fee_config")
 @DynamicInsert @DynamicUpdate
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MerchantDeliverFeeConfigEntity extends BaseMerchantEntity {
 
 	private static final long serialVersionUID = 1L;

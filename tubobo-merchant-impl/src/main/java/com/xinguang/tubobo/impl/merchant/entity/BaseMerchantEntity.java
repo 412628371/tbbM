@@ -1,7 +1,6 @@
 package com.xinguang.tubobo.impl.merchant.entity;
 
 import com.hzmux.hzcms.common.utils.IdGen;
-import org.mongodb.morphia.annotations.Id;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;

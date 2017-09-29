@@ -19,7 +19,7 @@ import java.util.Date;
 @Table(name = "tubobo_merchant_info")
 @DynamicInsert
 @DynamicUpdate
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	private static final long serialVersionUID = 1L;

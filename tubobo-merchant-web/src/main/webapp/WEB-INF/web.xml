@@ -28,7 +28,7 @@
   </servlet-mapping>-->
 
   <!-- 加载Spring配置文件 -->
-  <context-param>
+ <!-- <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
       classpath*:/spring-context*.xml
@@ -40,7 +40,7 @@
   </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
+  </listener>-->
   <filter>
     <filter-name>encodingFilter</filter-name>
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -59,7 +59,7 @@
   </filter-mapping>
 
   <!-- Spring MVC -->
-  <servlet>
+ <!-- <servlet>
     <servlet-name>springServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <init-param>
@@ -80,7 +80,7 @@
   <servlet-mapping>
     <servlet-name>HystrixMetricsStreamServlet</servlet-name>
     <url-pattern>/hystrix.stream</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>-->
 
   <filter>
     <filter-name>XSSFilter</filter-name>

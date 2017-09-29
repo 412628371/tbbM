@@ -15,7 +15,7 @@ import java.util.Date;
 @Table(name = "t_notice_entity")
 @DynamicInsert
 @DynamicUpdate
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PushNoticeEntity {
 
     private String title;

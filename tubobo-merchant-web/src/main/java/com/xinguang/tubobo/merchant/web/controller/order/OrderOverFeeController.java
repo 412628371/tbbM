@@ -3,6 +3,7 @@ package com.xinguang.tubobo.merchant.web.controller.order;
 import com.xinguang.tubobo.api.OverFeeService;
 import com.xinguang.tubobo.api.dto.OverFeeDTO;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantInfoDao;
+import com.xinguang.tubobo.impl.merchant.dao.MerchantInfoRepository;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.DeliveryFeeService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
@@ -35,7 +36,7 @@ public class OrderOverFeeController extends MerchantBaseController<OverFeeInfoRe
     @Autowired
     private OverFeeService overFeeService;
     @Autowired
-    private MerchantInfoService merchantInfoService;
+    private MerchantInfoRepository merchantInfoService;
 
 
     @Override

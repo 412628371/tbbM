@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web;
+package com.xinguang.tubobo.merchant.web.test;
 
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.service.DeliveryFeeService;
