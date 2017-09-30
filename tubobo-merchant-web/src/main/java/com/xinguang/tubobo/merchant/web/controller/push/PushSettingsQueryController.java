@@ -21,7 +21,7 @@ public class PushSettingsQueryController extends MerchantBaseController<Object,R
     MerchantSettingsService settingsService;
     @Override
     protected RespSettingsQuery doService(String userId, Object req) throws MerchantClientException {
-        MerchantSettingsEntity entity = settingsService.findBuUserId(userId);
+        MerchantSettingsEntity entity = settingsService.findByUserId(userId);
         RespSettingsQuery respSettingsQuery = new RespSettingsQuery();
         if (entity == null){
             entity = new MerchantSettingsEntity();

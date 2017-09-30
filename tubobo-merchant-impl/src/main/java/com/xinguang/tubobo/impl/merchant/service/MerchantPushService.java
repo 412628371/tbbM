@@ -274,7 +274,7 @@ public class MerchantPushService {
         if (EnumOrderNoticeType.ADMIN_CANCEL.getValue().equals(entity.getOrderOperateType())){
             isOpen = true;
         }else {
-            MerchantSettingsEntity settingsEntity = settingsService.findBuUserId(entity.getUserId());
+            MerchantSettingsEntity settingsEntity = settingsService.findByUserId(entity.getUserId());
             if (null == settingsEntity)
                 return;
             if (settingsEntity.getPushMsgOrderExpired() &&
