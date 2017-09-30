@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by yanxu on 2017/9/29.
  */
-    public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity, String>, JpaSpecificationExecutor<MerchantInfoEntity> {
+
+public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity, String>, JpaSpecificationExecutor<MerchantInfoEntity> {
 
         MerchantInfoEntity  findByUserId(String userId);
 

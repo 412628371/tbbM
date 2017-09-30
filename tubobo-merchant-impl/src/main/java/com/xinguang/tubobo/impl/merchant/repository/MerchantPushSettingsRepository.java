@@ -15,8 +15,6 @@ import java.util.Date;
 /**
  * Created by Administrator on 2017/4/15.
  */
-@Repository
-@Transactional(readOnly = true)
 public interface MerchantPushSettingsRepository extends JpaRepository<MerchantSettingsEntity, String>, JpaSpecificationExecutor<MerchantSettingsEntity> {
     MerchantSettingsEntity findByUserIdAndDelFlag(String userId,String delFlag);
 

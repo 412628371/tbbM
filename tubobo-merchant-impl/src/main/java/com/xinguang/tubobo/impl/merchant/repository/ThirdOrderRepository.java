@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.impl.merchant.dao;
+package com.xinguang.tubobo.impl.merchant.repository;
 
 import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

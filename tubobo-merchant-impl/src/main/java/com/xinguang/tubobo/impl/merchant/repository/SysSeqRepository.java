@@ -1,7 +1,7 @@
 /**
  * There are <a href="http://www.hzmux.com">hzmux</a> code generation
  */
-package com.xinguang.tubobo.impl.merchant.dao;
+package com.xinguang.tubobo.impl.merchant.repository;
 
 import com.xinguang.tubobo.impl.merchant.entity.SysSeq;
 import org.springframework.data.jpa.repository.JpaRepository;

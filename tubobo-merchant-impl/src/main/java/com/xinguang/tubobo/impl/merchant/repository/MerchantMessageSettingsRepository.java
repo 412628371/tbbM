@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.impl.merchant.dao;
+package com.xinguang.tubobo.impl.merchant.repository;
 
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

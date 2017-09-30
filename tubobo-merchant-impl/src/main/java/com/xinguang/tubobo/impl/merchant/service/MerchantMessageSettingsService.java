@@ -1,7 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
-import com.xinguang.tubobo.impl.merchant.dao.MerchantMessageSettingsRepository;
+import com.xinguang.tubobo.impl.merchant.repository.MerchantMessageSettingsRepository;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,7 @@ package com.xinguang.tubobo.impl.merchant.service;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.condition.ProcessQueryCondition;
-import com.xinguang.tubobo.impl.merchant.dao.ThirdOrderRepository;
+import com.xinguang.tubobo.impl.merchant.repository.ThirdOrderRepository;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.ThirdOrderEntity;
 import org.slf4j.Logger;

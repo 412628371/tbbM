@@ -14,7 +14,6 @@ import java.util.Date;
 /**
  * Created by xuqinghua on 2017/6/29.
  */
-@Repository
 public interface MerchantThirdBindRepository extends JpaRepository<MerchantThirdBindEntity, String>, JpaSpecificationExecutor<MerchantThirdBindEntity> {
 
     MerchantThirdBindEntity findByUserIdAndDelFlag(String userId,String delFlag);
