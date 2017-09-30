@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
-import com.hzmux.hzcms.common.persistence.Page;
 import com.xinguang.tubobo.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
@@ -15,6 +14,7 @@ import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -74,8 +74,8 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         infoEntity.setProviderId(queryCondition.getProviderId());
         Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(queryCondition.getPageNo(),queryCondition.getPageSize(),infoEntity);
         List<MerchantInfoDTO> list = new LinkedList<>();
-        if (null != page && page.getList()!=null&& page.getList().size()>0){
-            for (MerchantInfoEntity entity:page.getList()){
+        if (page.hasContent()){
+            for (MerchantInfoEntity entity:page){
                 MerchantInfoDTO infoDTO = new MerchantInfoDTO();
                 BeanUtils.copyProperties(entity,infoDTO);
                 list.add(infoDTO);

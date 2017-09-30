@@ -30,7 +30,7 @@ public class OrderOverFeeController extends MerchantBaseController<OverFeeInfoRe
     @Override
     protected OrderOverFeeResponse doService(String userId, OverFeeInfoRequest req) throws MerchantClientException {
         //获得商户信息
-        MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
+        MerchantInfoEntity entity = merchantInfoService.findByUserIdAndDelFlag(userId, MerchantInfoEntity.DEL_FLAG_NORMAL);
         //获得本地区域码
         String nativeAreaCode = entity.getAddressAdCode();
 

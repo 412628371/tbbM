@@ -5,39 +5,49 @@
  */
 package com.xinguang.tubobo.impl.merchant.service;
 
-import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
+import com.xinguang.tubobo.impl.merchant.repository.MerchantInfoRepository;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
-import com.xinguang.tubobo.impl.merchant.dao.MerchantInfoDao;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class MerchantInfoService extends BaseService {
 
 	@Autowired
-	private MerchantInfoDao merchantInfoDao;
+	private MerchantInfoRepository merchantInfoRepository;
 
 	@Autowired
 	MerchantPushSettingsDao merchantPushSettingsDao;
 
 	@Cacheable(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	public MerchantInfoEntity findByUserId(String userId){
-		return merchantInfoDao.findByUserId(userId);
+		return merchantInfoRepository.findByUserIdAndDelFlag(userId, MerchantInfoEntity.DEL_FLAG_NORMAL);
 	}
 
 	/**
@@ -53,7 +63,7 @@ public class MerchantInfoService extends BaseService {
 		entity.setUserId(userId);
 		entity.setApplyDate(new Date());
 //		entity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
-		merchantInfoDao.save(entity);
+		merchantInfoRepository.save(entity);
 		MerchantSettingsEntity settingsEntity = new MerchantSettingsEntity();
 		settingsEntity.setUserId(userId);
 		merchantPushSettingsDao.save(settingsEntity);
@@ -65,7 +75,7 @@ public class MerchantInfoService extends BaseService {
 	public boolean merchantUpdate(MerchantInfoEntity entity){
 		entity.setUpdateDate(new Date());
 		entity.setDelFlag(MerchantInfoEntity.DEL_FLAG_NORMAL);
-		merchantInfoDao.save(entity);
+		merchantInfoRepository.save(entity);
 		return true;
 	}
 
@@ -82,7 +92,7 @@ public class MerchantInfoService extends BaseService {
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int merchantStatusVerify(String userId,String status,String updateBy,String identifyType,String reason) {
-		MerchantInfoEntity entity = merchantInfoDao.findByUserId(userId);
+		MerchantInfoEntity entity = merchantInfoRepository.findByUserIdAndDelFlag(userId, MerchantInfoEntity.DEL_FLAG_NORMAL);
 		if (entity == null)
 			return 0;
 		int result;
@@ -113,8 +123,8 @@ public class MerchantInfoService extends BaseService {
 			merchantStatus = status;
 		}
 
-		result = merchantInfoDao.updateVerifyStatus(merchantStatus,consignorStatus,updateBy,userId,reason);
-		merchantInfoDao.getSession().clear();
+		result = merchantInfoRepository.updateVerifyStatus(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, merchantStatus,consignorStatus,
+																								new Date(), new Date(), updateBy, reason);
 		return result;
 	}
 
@@ -124,10 +134,7 @@ public class MerchantInfoService extends BaseService {
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int updateHeadImage(String userId,String picUrl) {
-
-		String sqlString = "update tubobo_merchant_info set avatar_url = :p1, update_date = :p2 where user_id = :p3 and del_flag = '0' ";
-		int result = merchantInfoDao.updateBySql(sqlString, new Parameter(picUrl,new Date(),userId));
-		merchantInfoDao.getSession().flush();
+		int result = merchantInfoRepository.updateHeadImage(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, picUrl, new Date());
 		return result;
 	}
 
@@ -135,51 +142,50 @@ public class MerchantInfoService extends BaseService {
 	 * 商家信息分页查询
 	 */
 	public Page<MerchantInfoEntity> findMerchantInfoPage(int pageNo, int pageSize, MerchantInfoEntity entity){
-		Parameter parameter = new Parameter();
-		StringBuffer sb = new StringBuffer();
-		sb.append("select * from tubobo_merchant_info where del_flag = '0' ");
-		if (null != entity.getProviderId()){
-			sb.append("and provider_id = :provider_id ");
-			parameter.put("provider_id", entity.getProviderId());
-		}
-		if (StringUtils.isNotBlank(entity.getMerchantStatus())){
-			sb.append("and merchant_status = :merchant_status ");
-			parameter.put("merchant_status", entity.getMerchantStatus());
-		}
-		if (StringUtils.isNotBlank(entity.getPhone())){
-			sb.append("and phone like :phone ");
-			parameter.put("phone", entity.getPhone()+"%");
-		}
-		if (StringUtils.isNotBlank(entity.getMerchantName())){
-			sb.append("and merchant_name like :merchant_name ");
-			parameter.put("merchant_name", entity.getMerchantName()+"%");
-		}
-		if (StringUtils.isNotBlank(entity.getBdCode())){
-			sb.append("and bd_code = :bd_code ");
-			parameter.put("bd_code", entity.getBdCode());
-		}
-		if (StringUtils.isNotBlank(entity.getIdCardNo())){
-			sb.append("and id_card_no = :id_card_no ");
-			parameter.put("id_card_no", entity.getIdCardNo());
-		}
-		if (null != entity.getCreateDate()){
-			sb.append("and create_date >= :create_date ");
-			parameter.put("create_date", DateUtils.getDateStart(entity.getCreateDate()));
-		}
-		if (null != entity.getUpdateDate()){
-			sb.append("and create_date <= :update_date ");
-			parameter.put("update_date", DateUtils.getDateEnd(entity.getUpdateDate()));
-		}
-		if (StringUtils.isNotBlank(entity.getUserId())){
-			sb.append("and user_id = :user_id ");
-			parameter.put("user_id", entity.getUserId());
-		}
-		if (StringUtils.isNotBlank(entity.getAddressAdCode())){
-			sb.append("and address_ad_code like :address_ad_code ");
-			parameter.put("address_ad_code", entity.getAddressAdCode()+"%");
-		}
-		sb.append(" order by create_date desc ");
-		return merchantInfoDao.findPage(sb.toString(), parameter, MerchantInfoEntity.class,pageNo,pageSize);
+		PageRequest pageRequest = new PageRequest(pageNo-1, pageSize,  new Sort(Sort.Direction.DESC, "createDate"));
+		Page<MerchantInfoEntity> page = merchantInfoRepository.findAll(where(entity), pageRequest);
+		return page;
+	}
+
+	private Specification<MerchantInfoEntity> where(final MerchantInfoEntity entity){
+		return new Specification<MerchantInfoEntity>() {
+			@Override
+			public Predicate toPredicate(Root<MerchantInfoEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> list = new ArrayList<>();
+				list.add(criteriaBuilder.equal(root.get("delFlag").as(String.class), MerchantInfoEntity.DEL_FLAG_NORMAL));
+				if(null != entity.getProviderId()){
+					list.add(criteriaBuilder.equal(root.get("providerId").as(Long.class), entity.getProviderId()));
+				}
+				if (StringUtils.isNotBlank(entity.getMerchantStatus())){
+					list.add(criteriaBuilder.equal(root.get("merchantStatus").as(String.class), entity.getMerchantStatus()));
+				}
+				if (StringUtils.isNotBlank(entity.getPhone())){
+					list.add(criteriaBuilder.like(root.get("phone").as(String.class), entity.getPhone()));
+				}
+				if (StringUtils.isNotBlank(entity.getMerchantName())){
+					list.add(criteriaBuilder.like(root.get("merchantName").as(String.class), entity.getMerchantName()));
+				}
+				if (StringUtils.isNotBlank(entity.getBdCode())){
+					list.add(criteriaBuilder.equal(root.get("bdCode").as(String.class), entity.getBdCode()));
+				}
+				if (StringUtils.isNotBlank(entity.getIdCardNo())){
+					list.add(criteriaBuilder.equal(root.get("idCardNo").as(String.class), entity.getIdCardNo()));
+				}
+				if (null != entity.getCreateDate()){
+					list.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createDate").as(Date.class), DateUtils.getDateStart(entity.getCreateDate())));
+				}
+				if (null != entity.getUpdateDate()){
+					list.add(criteriaBuilder.lessThanOrEqualTo(root.get("createDate").as(Date.class), DateUtils.getDateEnd(entity.getUpdateDate())));
+				}
+				if (StringUtils.isNotBlank(entity.getUserId())){
+					list.add(criteriaBuilder.equal(root.get("userId").as(String.class), entity.getUserId()));
+				}
+				if (StringUtils.isNotBlank(entity.getAddressAdCode())){
+					list.add(criteriaBuilder.like(root.get("addressAdCode").as(String.class), entity.getAddressAdCode()));
+				}
+				return criteriaQuery.where(list.toArray(new Predicate[list.size()])).getRestriction();
+			}
+		};
 	}
 
 	/**
@@ -188,7 +194,7 @@ public class MerchantInfoService extends BaseService {
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int freePayPwdSet(String userId,boolean enable) {
-		return merchantInfoDao.freePayPwdSet(userId,enable);
+		return merchantInfoRepository.freePayPwdSet(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, enable);
 	}
 
 	/**
@@ -199,7 +205,7 @@ public class MerchantInfoService extends BaseService {
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int modifyPwdSetFlag(String userId) {
-		int count = merchantInfoDao.modifyPwdSetFlag(userId);
+		int count = merchantInfoRepository.modifyPwdSetFlag(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, true);
 		logger.info("修改是否支付密码标志位，userId:{}",userId);
 		return count;
 	}
@@ -213,20 +219,20 @@ public class MerchantInfoService extends BaseService {
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
 	public int updateDBCode(String userId, String bdCode){
-		int count = merchantInfoDao.updateDBCode(userId, bdCode);
+		int count = merchantInfoRepository.updateDBCode(userId, MerchantOrderEntity.DEL_FLAG_NORMAL,bdCode,new Date(), new Date());
 		return count;
 	}
 
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional
 	public boolean bindProvider(String userId,Long providerId,String providerName){
-		int count = merchantInfoDao.bindProvider(userId,providerId,providerName);
+		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId, new Date(), providerName, new Date());
 		return count == 1;
 	}
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional
 	public boolean unbindProvider(String userId,long providerId){
-		int count = merchantInfoDao.unbindProvider(userId,providerId);
+		int count = merchantInfoRepository.unbindProvider(userId, providerId, MerchantOrderEntity.DEL_FLAG_NORMAL, null, "");
 		return count == 1;
 	}
 }
