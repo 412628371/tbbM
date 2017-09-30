@@ -1,14 +1,15 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
-import com.xinguang.tubobo.impl.merchant.dao.MerchantMessageSettingsDao;
-import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
+import com.xinguang.tubobo.impl.merchant.dao.MerchantMessageSettingsRepository;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * Created by yanx on 2017/9/15.
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MerchantMessageSettingsService {
     @Autowired
-    MerchantMessageSettingsDao messageDao;
+    MerchantMessageSettingsRepository messageRepository;
 
     /**
      * 短信设置 Settings
@@ -25,8 +26,18 @@ public class MerchantMessageSettingsService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantMessageSettings_'+#userId")
     public boolean updateSettings(String userId,MerchantMessageSettingsEntity entity){
-        int count = messageDao.updateSettings(entity);
-        return count == 1;
+        Boolean result= true;
+        MerchantMessageSettingsEntity queryEntity = findBuUserId(userId);
+        if (null!=queryEntity){
+            BeanUtils.copyProperties(entity,queryEntity);
+            entity.setUpdateDate(new Date());
+            entity.setDelFlag(MerchantMessageSettingsEntity.DEL_FLAG_NORMAL);
+        }
+        MerchantMessageSettingsEntity resultEntity  = messageRepository.save(queryEntity);
+        if (null==resultEntity){
+            result = false;
+        }
+        return result;
     }
     /**
      * 短信设置 根据userId找设置
@@ -35,6 +46,6 @@ public class MerchantMessageSettingsService {
      */
     @Cacheable(value= RedisCache.MERCHANT,key="'merchantMessageSettings_'+#userId")
     public MerchantMessageSettingsEntity findBuUserId(String userId){
-        return messageDao.findByUserId(userId);
+        return messageRepository.findByUserIdAndDelFlag(userId,MerchantMessageSettingsEntity.DEL_FLAG_NORMAL);
     }
 }
