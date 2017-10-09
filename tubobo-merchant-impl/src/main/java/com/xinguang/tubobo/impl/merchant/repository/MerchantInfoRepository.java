@@ -13,10 +13,6 @@ import java.util.Date;
 /**
  * Created by lvhantai on 2017/9/30.
  */
-<<<<<<< Updated upstream
-
-public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity, String>, JpaSpecificationExecutor<MerchantInfoEntity> {
-=======
 public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity, String>, JpaSpecificationExecutor<MerchantInfoEntity> {
     MerchantInfoEntity  findByUserIdAndDelFlag(String userId, String delFlag);
 
@@ -45,7 +41,6 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity
     @Modifying
     @Query("update #{#entityName} a set a.providerId = :providerId, a.providerName=:providerName where a.userId = :userId and a.providerId=:oldProviderId and a.delFlag = :delFlag ")
     int unbindProvider(@Param("userId") String userId, @Param("oldProviderId") Long oldProviderId ,@Param("delFlag") String delFlag, @Param("providerId") Long providerId, @Param("providerName") String providerName);
->>>>>>> Stashed changes
 
     @Modifying
     @Query("update #{#entityName} a set a.avatarUrl = :avatarUrl, a.updateDate=:updateDate where a.userId = :userId and a.delFlag = :delFlag ")
