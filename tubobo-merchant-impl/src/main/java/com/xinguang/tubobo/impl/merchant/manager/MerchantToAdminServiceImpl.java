@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
-import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
@@ -17,6 +16,7 @@ import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -72,14 +72,14 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         }
         Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(pageNo,pageSize,entity);
         List<MerchantInfoDTO> dtoList = new ArrayList<>();
-        if (page!= null && page.getList() != null && page.getList().size() > 0){
-            for (MerchantInfoEntity merchant : page.getList()){
+        if (page.hasContent()){
+            for (MerchantInfoEntity merchant : page){
                 MerchantInfoDTO infoDto = new MerchantInfoDTO();
                 BeanUtils.copyProperties(merchant,infoDto);
                 dtoList.add(infoDto);
             }
         }
-        return new PageDTO<MerchantInfoDTO>(page.getPageNo(),page.getPageSize(),page.getCount(),dtoList);
+        return new PageDTO<MerchantInfoDTO>(pageNo,pageSize,page.getTotalElements(),dtoList);
     }
 
     /**

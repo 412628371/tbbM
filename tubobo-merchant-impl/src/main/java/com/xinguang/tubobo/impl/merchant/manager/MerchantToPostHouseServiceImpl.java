@@ -81,7 +81,7 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
                 list.add(infoDTO);
             }
         }
-        PageDTO<MerchantInfoDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getCount(),list);
+        PageDTO<MerchantInfoDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getTotalElements(),list);
         return respPage;
     }
 
