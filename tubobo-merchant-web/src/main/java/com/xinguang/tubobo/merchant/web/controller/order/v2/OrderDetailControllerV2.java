@@ -56,9 +56,7 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
                 headImage = byUserId.getHeadImage();
             }
         }
-        DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
-                EnumCarType.getNameByType(entity.getRiderCarType()),headImage);
-        CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
+
         //获取用车时间对象
         SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStr="";
@@ -87,11 +85,9 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         thirdInfo.setOriginOrderViewId(entity.getOriginOrderViewId());
 
         RespOrderDetailV2 resp = new RespOrderDetailV2();
-        resp.setCarInfo(carInfo);
         resp.setCommentsInfo(commentsInfo);
         resp.setConsignor(consignor);
         resp.setReceiver(receiver);
-        resp.setDriverInfo(driverInfo);
         resp.setOrderInfo(orderInfo);
         resp.setPayInfo(payInfo);
         resp.setAppointTask(appointTask);

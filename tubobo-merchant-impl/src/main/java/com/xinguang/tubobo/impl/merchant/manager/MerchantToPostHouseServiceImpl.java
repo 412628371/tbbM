@@ -3,6 +3,7 @@ package com.xinguang.tubobo.impl.merchant.manager;
 import com.xinguang.tubobo.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantToPostHouseServiceInterface;
 import com.xinguang.tubobo.merchant.api.condition.MerchantInfoQueryCondition;
@@ -100,18 +101,18 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         orderEntity.setSenderName(queryCondition.getShopName());
         orderEntity.setProviderId(queryCondition.getProviderId());
         orderEntity.setUnsettledStatus(queryCondition.getUnsettledStatus());
-        Page<MerchantOrderEntity> page = merchantOrderManager.postHouseQueryOrderPage(queryCondition.getPageNo(), queryCondition.getPageSize(),
+        Page<OrderEntity> page = merchantOrderManager.postHouseQueryOrderPage(queryCondition.getPageNo(), queryCondition.getPageSize(),
                                             queryCondition.getExpectFinishTimeSort(), queryCondition.getOrderTimeSort(), orderEntity);
         List<MerchantOrderDTO> list = new LinkedList<>();
-        if (null != page && page.getList()!=null&& page.getList().size()>0){
-            for (MerchantOrderEntity entity:page.getList()){
+        if (page.hasContent()){
+            for (OrderEntity entity:page){
                 MerchantOrderDTO orderDTO = new MerchantOrderDTO();
                 BeanUtils.copyProperties(entity,orderDTO);
                 orderDTO.setAmount(entity.getPayAmount());
                 list.add(orderDTO);
             }
         }
-        PageDTO<MerchantOrderDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getCount(),list);
+        PageDTO<MerchantOrderDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getTotalElements(),list);
         return respPage;
     }
 

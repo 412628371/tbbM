@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * 车辆类型信息.
  */
+@Deprecated
 public class CarInfo implements Serializable {
     private String carType;
     private String carTypeName;

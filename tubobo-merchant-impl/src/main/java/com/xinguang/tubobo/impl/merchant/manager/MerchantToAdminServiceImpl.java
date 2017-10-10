@@ -5,6 +5,7 @@ import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -130,10 +131,10 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if(StringUtils.isNotBlank(dto.getSenderAdcode())&& dto.getSenderAdcode().length()>4){
             entity.setSenderAdcode(dto.getSenderAdcode().substring(0,4));
         }
-        Page<MerchantOrderEntity> page = merchantOrderManager.adminQueryOrderPage(pageNo,pageSize,entity);
+       Page<OrderEntity> page = merchantOrderManager.adminQueryOrderPage(pageNo,pageSize,entity);
         List<MerchantOrderDTO> dtoList = new ArrayList<>();
-        if (page!= null && page.getList() != null && page.getList().size() > 0){
-            for (MerchantOrderEntity order : page.getList()){
+        if (page.hasContent()){
+            for (OrderEntity order : page){
                 MerchantOrderDTO infoDto = new MerchantOrderDTO();
                 BeanUtils.copyProperties(order,infoDto);
                 infoDto.setPayAmount(order.getPayAmount()==null?0:(int)(order.getPayAmount()*100));
@@ -147,7 +148,7 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
                 dtoList.add(infoDto);
             }
         }
-        return new PageDTO<MerchantOrderDTO>(page.getPageNo(),page.getPageSize(),page.getCount(),dtoList);
+        return new PageDTO<MerchantOrderDTO>(pageNo,pageSize,page.getTotalElements(),dtoList);
     }
 
     /**
