@@ -10,14 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 评价服务.
+ * 保存消息流水
  */
 @Service
+@Transactional
 public class MessageRecordService {
     Logger logger = LoggerFactory.getLogger(MessageRecordService.class);
     @Autowired
