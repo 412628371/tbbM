@@ -697,7 +697,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 					entity.getOrderNo(),entity.getRiderId(),accountId,messageFee);
 			MerchantMessageRecordEntity message = new MerchantMessageRecordEntity();
 			message.setOrderNo(entity.getOrderNo());
-			message.setRecordMessageId(fineRequest.getAccountId());
+			message.setRecordMessageId(fineResponse.getData().getId());
 			String msg = JSON.toJSONString(message);
 			rmqMessagePayRecordProducer.sendMessage(msg);
 

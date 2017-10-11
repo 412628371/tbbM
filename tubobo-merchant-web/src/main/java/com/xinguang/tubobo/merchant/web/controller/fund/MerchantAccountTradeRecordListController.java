@@ -106,7 +106,7 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 			if (operInfo.getAmount() > 0){
 				amount = "-"+amount;
 			}
-			if (MerchantConstants.MERCHANT_MESSAGE.equalsIgnoreCase(operInfo.getSubType())){
+			if (MerchantConstants.MERCHANT_MESSAGE_REMARK.equalsIgnoreCase(operInfo.getRemarks())){
 				record.setType("短信费");
 				record.setTradeStatus("已发送");
 
