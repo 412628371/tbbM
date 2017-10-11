@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.hzmux.hzcms.common.utils.AliOss;
+import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.sun.tools.classfile.Annotation;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
@@ -158,6 +159,12 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         }
         if (entity.getWeatherOverFee() != null){
             merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
+        }
+        //传给任务的支付金额，减去短信费用  modified by xqh on 2017-10-11
+        if(entity.getShortMessage()){
+            if (merchantOrderDTO.getPayAmount()!=null && merchantOrderDTO.getPayAmount()>MerchantConstants.MESSAGE_FEE*100){
+                merchantOrderDTO.setPayAmount(merchantOrderDTO.getPayAmount()- CalCulateUtil.mul(MerchantConstants.MESSAGE_FEE,100).intValue());
+            }
         }
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
         String [] shopUrls = new String[5];
