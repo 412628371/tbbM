@@ -71,7 +71,12 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_PAY);
         }
         TbbAccountResponse<PayInfo> response;
-        long amount = ConvertUtil.convertYuanToFen(orderEntity.getPayAmount());
+        Double amountD=orderEntity.getPayAmount();
+        //check订单短信开关,if开启--扣除短信费用,短信费用扣除发生在骑手取货时 生成额外短信流水
+        if (orderEntity.getShortMessage()){
+            amountD=  CalCulateUtil.sub(amountD,MerchantConstants.MESSAGE_FEE);
+        }
+        long amount = ConvertUtil.convertYuanToFen(amountD);
         //设置了免密支付，并且支付金额不大于免密支付额度，可以免密支付
         if (infoEntity.getEnablePwdFree()&&
                 orderEntity.getPayAmount() <= config.getNonConfidentialPaymentLimit()){

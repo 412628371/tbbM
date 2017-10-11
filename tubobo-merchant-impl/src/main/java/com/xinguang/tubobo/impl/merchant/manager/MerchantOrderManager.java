@@ -22,12 +22,15 @@ import com.xinguang.tubobo.account.api.response.*;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.api.enums.EnumOrderStatus;
+import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageRecordEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
+import com.xinguang.tubobo.impl.merchant.mq.RmqMessagePayRecordProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
 import com.xinguang.tubobo.impl.merchant.service.*;
@@ -81,6 +84,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	@Autowired private MerchantInfoService merchantInfoService;
 	@Autowired private TbbOrderServiceInterface launcherInnerTbbOrderService;
 	@Autowired private OrderService orderService;
+	@Autowired private RmqMessagePayRecordProducer rmqMessagePayRecordProducer;
+	@Autowired private MessageRecordService messageRecordService;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -308,7 +313,13 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				//短信通知骑手
 				if (entity.getShortMessage()){
 					try {
+						String accountId=null;
+						//扣除短信费用
+						payForMessage( entity);
 						adminToMerchantService.sendRiderMessageToReceiver(dto.getRiderName(), dto.getRiderPhone(), entity.getReceiverPhone());
+
+
+
 					}catch (Exception e){
 						logger.error("短信通知骑手失败",e.getMessage());
 					}
@@ -344,6 +355,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			//短信通知骑手
 			if (entity.getShortMessage()){
 				try {
+					//扣除短信费用
+					payForMessage( entity);
 					adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
 				}catch (Exception e){
 					logger.error("发送短信通知骑手失败",e.getMessage());
@@ -670,5 +683,29 @@ public class MerchantOrderManager extends OrderManagerBaseService {
         }
 	    return false;
     }
+
+
+	public void payForMessage(MerchantOrderEntity entity) throws MerchantClientException {
+		Double messageFeeD = MerchantConstants.MESSAGE_FEE;
+		long messageFee = ConvertUtil.convertYuanToFen(messageFeeD);
+		MerchantInfoEntity info = merchantInfoService.findByUserId(entity.getUserId());
+		Long accountId = info.getAccountId();
+		FineRequest fineRequest = new FineRequest(entity.getOrderNo(), (int) messageFee,accountId,MerchantConstants.MERCHANT_MESSAGE_REMARK,MerchantConstants.MERCHANT_MESSAGE);
+		TbbAccountResponse<FineInfo> fineResponse = tbbAccountService.fineAny(fineRequest);
+		if (fineResponse.isSucceeded()){
+			logger.info("商家扣除短信费用成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
+					entity.getOrderNo(),entity.getRiderId(),accountId,messageFee);
+			MerchantMessageRecordEntity message = new MerchantMessageRecordEntity();
+			message.setOrderNo(entity.getOrderNo());
+			message.setRecordMessageId(fineRequest.getAccountId());
+			String msg = JSON.toJSONString(message);
+			rmqMessagePayRecordProducer.sendMessage(msg);
+
+		}else {
+			logger.error("商家取消任务罚款 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
+					entity.getOrderNo(),entity.getRiderId(),accountId,messageFee,fineResponse.getErrorCode(),fineResponse.getMessage());
+		}
+
+	}
 
 }
