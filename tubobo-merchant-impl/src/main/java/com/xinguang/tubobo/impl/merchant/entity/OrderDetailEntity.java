@@ -27,9 +27,9 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
     private String orderRemark;
 
 
-    private Date expiredTime;//超时时间
+    //private Date expiredTime;//超时时间
 
-    private String senderId;//发货人id
+    //private String senderId;//发货人id
     private String senderName;//发货人名称
     private String senderPhone;//发货人联系方式
     private String senderAddressProvince;//收货人详细地址
@@ -58,24 +58,8 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
 
     private String merMessage; //未妥投确认消息
 
-    private String resendSourceNo; //重发订单-来源单号
-    private String resendTargetNo; //重发订单-目标单号
 
-    public String getResendSourceNo() {
-        return resendSourceNo;
-    }
 
-    public void setResendSourceNo(String resendSourceNo) {
-        this.resendSourceNo = resendSourceNo;
-    }
-
-    public String getResendTargetNo() {
-        return resendTargetNo;
-    }
-
-    public void setResendTargetNo(String resendTargetNo) {
-        this.resendTargetNo = resendTargetNo;
-    }
 
     public String getCancelReason() {
         return cancelReason;
@@ -109,21 +93,8 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
         this.orderRemark = orderRemark;
     }
 
-    public Date getExpiredTime() {
-        return expiredTime;
-    }
 
-    public void setExpiredTime(Date expiredTime) {
-        this.expiredTime = expiredTime;
-    }
 
-    public String getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
-    }
 
     public String getSenderName() {
         return senderName;

@@ -68,7 +68,7 @@ public class OrderService extends BaseService {
     public MerchantOrderEntity findByOrderNo(String orderNo) {
 
         OrderEntity orderEntity = merchantOrderDao.findByOrderNoAndDelFlag(orderNo, BaseMerchantEntity.DEL_FLAG_NORMAL);
-        OrderEntity orderDetail = merchantOrderDetailRepository.findByOrderNoAndDelFlag(orderNo, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        OrderDetailEntity orderDetail = merchantOrderDetailRepository.findByOrderNoAndDelFlag(orderNo, BaseMerchantEntity.DEL_FLAG_NORMAL);
         MerchantOrderEntity merchantOrderEntity = new MerchantOrderEntity();
         BeanUtils.copyProperties(orderEntity,merchantOrderEntity);
         BeanUtils.copyProperties(orderDetail,merchantOrderEntity);
@@ -79,7 +79,7 @@ public class OrderService extends BaseService {
     //    @Cacheable(value= RedisCache.MERCHANT,key="'merchantOrder_'+#orderNo+'_'+#orderStatus")
     public MerchantOrderEntity findByOrderNoAndStatus(String orderNo, String orderStatus) {
         OrderEntity orderEntity = merchantOrderDao.findByOrderNoAndOrderStatusAndDelFlag(orderNo,orderStatus, BaseMerchantEntity.DEL_FLAG_NORMAL);
-        OrderEntity orderDetail = merchantOrderDetailRepository.findByOrderNoAndDelFlag(orderNo, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        OrderDetailEntity orderDetail = merchantOrderDetailRepository.findByOrderNoAndDelFlag(orderNo, BaseMerchantEntity.DEL_FLAG_NORMAL);
         MerchantOrderEntity merchantOrderEntity = new MerchantOrderEntity();
         BeanUtils.copyProperties(orderEntity,merchantOrderEntity);
         BeanUtils.copyProperties(orderDetail,merchantOrderEntity);
@@ -89,7 +89,7 @@ public class OrderService extends BaseService {
     @Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_'+#orderNo")
     public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo) {
         OrderEntity orderEntity = merchantOrderDao.findByOrderNoAndUserIdAndDelFlag(orderNo,merchantId, BaseMerchantEntity.DEL_FLAG_NORMAL);
-        OrderEntity orderDetail = merchantOrderDetailRepository.findByOrderNoAndDelFlag(orderNo, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        OrderDetailEntity orderDetail = merchantOrderDetailRepository.findByOrderNoAndDelFlag(orderNo, BaseMerchantEntity.DEL_FLAG_NORMAL);
         MerchantOrderEntity merchantOrderEntity = new MerchantOrderEntity();
         BeanUtils.copyProperties(orderEntity,merchantOrderEntity);
         BeanUtils.copyProperties(orderDetail,merchantOrderEntity);

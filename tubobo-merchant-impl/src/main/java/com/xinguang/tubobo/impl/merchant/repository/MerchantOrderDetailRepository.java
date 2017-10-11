@@ -38,7 +38,7 @@ public interface MerchantOrderDetailRepository extends JpaRepository<OrderDetail
     /**
      * 订单信息
      */
-    OrderEntity findByOrderNoAndDelFlag(String orderNo, String delFlag);
+    OrderDetailEntity findByOrderNoAndDelFlag(String orderNo, String delFlag);
 
     /**
      * 设置取消原因
