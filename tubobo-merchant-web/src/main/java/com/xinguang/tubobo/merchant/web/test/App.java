@@ -1,3 +1,4 @@
+/*
 package com.xinguang.tubobo.merchant.web.test;
 
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
@@ -9,9 +10,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.net.URLEncoder;
 import java.sql.SQLException;
 
+*/
 /**
  * Created by Administrator on 2017/4/24.
- */
+ *//*
+
 public class App {
     public static void main(String[] args) throws MerchantClientException, SQLException {
 //        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-mvc.xml");
@@ -44,3 +47,4 @@ public class App {
     }
 
 }
+*/
