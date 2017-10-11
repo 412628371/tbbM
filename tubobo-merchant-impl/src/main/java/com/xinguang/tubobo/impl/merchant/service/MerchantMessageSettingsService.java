@@ -26,18 +26,19 @@ public class MerchantMessageSettingsService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantMessageSettings_'+#userId")
     public boolean updateSettings(String userId,MerchantMessageSettingsEntity entity){
-        Boolean result= true;
         MerchantMessageSettingsEntity queryEntity = findBuUserId(userId);
-        if (null!=queryEntity){
-            BeanUtils.copyProperties(entity,queryEntity);
-            entity.setUpdateDate(new Date());
-            entity.setDelFlag(MerchantMessageSettingsEntity.DEL_FLAG_NORMAL);
+        if (null==queryEntity){
+            return false;
         }
+        BeanUtils.copyProperties(entity,queryEntity);
+        entity.setUpdateDate(new Date());
+        entity.setDelFlag(MerchantMessageSettingsEntity.DEL_FLAG_NORMAL);
+
         MerchantMessageSettingsEntity resultEntity  = messageRepository.save(queryEntity);
         if (null==resultEntity){
-            result = false;
+            return false;
         }
-        return result;
+        return true;
     }
     /**
      * 短信设置 根据userId找设置
