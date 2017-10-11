@@ -31,6 +31,7 @@ public class OrderEntity extends BaseMerchantOrderEntity {
 
     private Double payAmount;//支付总金额
     private Double deliveryFee;//配送费
+
     private Double tipFee;//小费
     private String payStatus;//支付状态
     private String payMethod;//支付方式
@@ -46,7 +47,7 @@ public class OrderEntity extends BaseMerchantOrderEntity {
 
 
 
-    private String receiverId;//收货人id
+    //private String receiverId;//收货人id
     private String receiverName;//收货人姓名
     private String receiverPhone;//收货人联系方式
     private String receiverAddressProvince;//收货人详细地址
@@ -256,13 +257,7 @@ public class OrderEntity extends BaseMerchantOrderEntity {
         this.expectFinishTime = expectFinishTime;
     }
 
-    public String getReceiverId() {
-        return receiverId;
-    }
 
-    public void setReceiverId(String receiverId) {
-        this.receiverId = receiverId;
-    }
 
     public String getReceiverName() {
         return receiverName;
