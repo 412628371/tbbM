@@ -12,6 +12,7 @@ public class NoticeDTO implements Serializable {
     private String content;
     private String summary;
     private String userId;
+    private long providerId;
 
     private String orderType;
     private String orderOperateType;
@@ -25,6 +26,14 @@ public class NoticeDTO implements Serializable {
     private String recordId; //订单流水id
 
     private Double fine;//罚款金额
+
+    public long getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(long providerId) {
+        this.providerId = providerId;
+    }
 
     public String getRecordId() {
         return recordId;

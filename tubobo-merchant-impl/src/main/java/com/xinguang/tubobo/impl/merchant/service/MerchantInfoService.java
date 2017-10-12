@@ -16,6 +16,7 @@ import com.xinguang.tubobo.impl.merchant.repository.MerchantInfoRepository;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.merchant.api.enums.EnumBindStatusType;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -225,14 +226,29 @@ public class MerchantInfoService extends BaseService {
 
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional
-	public boolean bindProvider(String userId,Long providerId,String providerName){
-		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId, new Date(), providerName, new Date());
+	public boolean bindProvider(String userId,Long providerId){
+		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId, EnumBindStatusType.NOOPERATE.getValue(), null, new Date());
 		return count == 1;
 	}
+
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+	@Transactional
+	public boolean bindProviderAgree(String userId,Long providerId){
+		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId, EnumBindStatusType.SUCCESS.getValue(), new Date(), new Date());
+		return count == 1;
+	}
+
+	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+	@Transactional
+	public boolean bindProviderReject(String userId,Long providerId){
+		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId, EnumBindStatusType.REJECT.getValue(), null, new Date());
+		return count == 1;
+	}
+
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional
 	public boolean unbindProvider(String userId,long providerId){
-		int count = merchantInfoRepository.unbindProvider(userId, providerId, MerchantOrderEntity.DEL_FLAG_NORMAL, null, "");
+		int count = merchantInfoRepository.unbindProvider(userId, providerId, MerchantOrderEntity.DEL_FLAG_NORMAL, EnumBindStatusType.UNBUNDLE.getValue(),null, new Date(), new Date());
 		return count == 1;
 	}
 }

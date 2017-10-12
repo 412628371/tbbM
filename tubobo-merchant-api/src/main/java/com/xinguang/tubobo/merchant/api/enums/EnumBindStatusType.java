@@ -3,15 +3,20 @@ package com.xinguang.tubobo.merchant.api.enums;
 /**
  * Created by xuqinghua on 2017/7/14.
  */
-public enum EnumNoticeType {
-    SYSTEM("系统公告", "SYSTEM"),
-    MONEY("金额变动", "MONEY"),
-    ORDER("订单状态", "ORDER"),
-    AUDIT("审核状态", "AUDIT"),
-    BIND("商家绑定","POSTBIND"),
-    UNBIND("商家解绑","POSTUNBIND");
+public enum EnumBindStatusType {
+    INIT("初始化", "INIT"),
+    SUCCESS("绑定成功", "SUCCESS"),
+    REJECT("绑定失败", "REJECT"),
+    NOOPERATE("未绑定", "NOOPERATE"),
+    UNBUNDLE("已解绑","UNBUNDLE");
 
-    EnumNoticeType(String name, String value){
+//    INIT    	初始化
+//    SUCCESS 	同意授权（绑定成功）
+//    REJECT  	拒绝授权（绑定失败）
+//    NOOPERATE 	未操作（未绑定）
+//    UNBUNDLE	已解绑
+
+    EnumBindStatusType(String name, String value){
         this.name = name;
         this.value = value;
     }
