@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
+import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantMessageSettingsRepository;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import org.springframework.beans.BeanUtils;
@@ -26,18 +27,13 @@ public class MerchantMessageSettingsService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantMessageSettings_'+#userId")
     public boolean updateSettings(String userId,MerchantMessageSettingsEntity entity){
-        MerchantMessageSettingsEntity queryEntity = findBuUserId(userId);
-        if (null==queryEntity){
-            return false;
+        MerchantMessageSettingsEntity existEntity = messageRepository.findByUserIdAndDelFlag(userId, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (existEntity == null){
+            existEntity = new MerchantMessageSettingsEntity();
         }
-        BeanUtils.copyProperties(entity,queryEntity);
-        entity.setUpdateDate(new Date());
-        entity.setDelFlag(MerchantMessageSettingsEntity.DEL_FLAG_NORMAL);
-
-        MerchantMessageSettingsEntity resultEntity  = messageRepository.save(queryEntity);
-        if (null==resultEntity){
-            return false;
-        }
+        existEntity.setMessageOpen(entity.getMessageOpen());
+        existEntity.setUserId(entity.getUserId());
+        messageRepository.save(existEntity);
         return true;
     }
     /**

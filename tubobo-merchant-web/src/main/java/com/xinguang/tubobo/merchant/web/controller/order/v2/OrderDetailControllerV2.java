@@ -51,19 +51,24 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         BeanUtils.copyProperties(respOrderDetail,commentsInfo);
         String headImage=null;
         if (StringUtils.isNotEmpty(entity.getRiderId())){
-            RiderInfoDTO byUserId = riderToAdminServiceInterface.findByUserId(entity.getRiderId());
-            if (null!=byUserId){
-                headImage = byUserId.getHeadImage();
+            try {
+                RiderInfoDTO byUserId = riderToAdminServiceInterface.findByUserId(entity.getRiderId());
+                if (null!=byUserId){
+                    headImage = byUserId.getHeadImage();
+                }
+            }catch (Exception e){
+                logger.info("获取骑手riderd端照片失败");
             }
+
         }
 
-        //获取用车时间对象
+       /* //获取用车时间对象
         SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStr="";
         if(entity.getAppointTime() != null){
             timeStr = sm.format(entity.getAppointTime());
         }
-        AppointTask appointTask = new AppointTask(timeStr, entity.getAppointType());
+        AppointTask appointTask = new AppointTask(timeStr, entity.getAppointType());*/
 
         //封装overfee对象
         OverFeeInfo overFeeInfo = new OverFeeInfo();
@@ -90,7 +95,7 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         resp.setReceiver(receiver);
         resp.setOrderInfo(orderInfo);
         resp.setPayInfo(payInfo);
-        resp.setAppointTask(appointTask);
+      //  resp.setAppointTask(appointTask);
         resp.setOverFeeInfo(overFeeInfo);
         resp.setThirdInfo(thirdInfo);
         return resp;
