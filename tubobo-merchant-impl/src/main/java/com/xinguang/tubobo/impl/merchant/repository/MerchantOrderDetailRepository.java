@@ -4,20 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  */
 package com.xinguang.tubobo.impl.merchant.repository;
-
-import com.hzmux.hzcms.common.persistence.BaseDao;
-import com.hzmux.hzcms.common.persistence.Page;
-import com.hzmux.hzcms.common.persistence.Parameter;
-import com.hzmux.hzcms.common.utils.DateUtils;
-import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
-import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.entity.OrderDetailEntity;
-import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
-import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
-import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.data.jpa.repository.Query;
 
@@ -29,9 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
-import java.util.List;
 
-@Repository
 public interface MerchantOrderDetailRepository extends JpaRepository<OrderDetailEntity, String>, JpaSpecificationExecutor<OrderDetailEntity> {
 
     Logger logger = LoggerFactory.getLogger(MerchantOrderDetailRepository.class);

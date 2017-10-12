@@ -9,14 +9,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 /**
  * seqDAO接口
  * @author yanx
  * @version 2017-09-30
  */
-@Repository
 /*
 public interface SysSeqDao extends JpaRepository<SysSeq, Long>, JpaSpecificationExecutor<SysSeq> {
 */

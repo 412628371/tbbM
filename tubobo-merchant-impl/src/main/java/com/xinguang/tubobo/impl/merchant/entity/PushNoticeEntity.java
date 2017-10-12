@@ -4,6 +4,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -57,7 +60,9 @@ public class PushNoticeEntity {
     @Column(name = "id", unique = true, nullable = false)
     protected Long id;
     protected String delFlag;
+    @CreatedDate
     protected Date createDate;
+    @LastModifiedDate
     protected Date updateDate;
 
 
