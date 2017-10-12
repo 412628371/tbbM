@@ -79,7 +79,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
     @Modifying
     @Query("update #{#entityName} a set a.orderStatus =:orderStatus, a.updateDate =:updateDate, a.cancelTime=:cancelTime where a.orderNo =:orderNo and a.orderStatus in:whereStatus and a.delFlag =:delFlag ")
-    int orderCancel(String orderNo, Date cancelTime, String orderStatus, Date updateDate,  List<String>  whereStatus, String delFlag);
+    int orderCancel(@Param("orderNo")String orderNo, @Param("cancelTime")Date cancelTime, @Param("orderStatus")String orderStatus,@Param("updateDate") Date updateDate,  @Param("whereStatus")List<String>  whereStatus, @Param("delFlag")String delFlag);
 
     /**
      * 重新发单
@@ -88,7 +88,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
     @Modifying
     @Query("update #{#entityName} a set a.orderStatus =:orderStatus, a.updateDate =:updateDate where a.orderNo =:orderNo and orderStatus=:whereStatus and a.delFlag =:delFlag ")
-    int orderResend(String originOrderNo,String orderStatus, String whereStatus,Date updateDate,String delFlag);
+    int orderResend(@Param("orderNo")String orderNo,@Param("orderStatus")String orderStatus, @Param("whereStatus")String whereStatus,@Param("updateDate")Date updateDate,@Param("delFlag")String delFlag);
 
     /***
      * 订单支付
@@ -100,7 +100,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
     @Modifying
     @Query("update #{#entityName} a set a.orderStatus =:orderStatus,a.payStatus=:payStatus ,a.payTime=:payTime,a.payId=:payId,a.updateDate =:payTime " +
             "where a.userId=:userId and a.orderNo =:orderNo and orderStatus=:whereStatus and a.delFlag =:delFlag ")
-    int merchantPay(String orderStatus,String payStatus ,Date payTime,long payId,String merchantId,String orderNo,String whereStatus,String delFlag);
+    int merchantPay(@Param("orderStatus")String orderStatus,@Param("payStatus")String payStatus ,@Param("payTime")Date payTime,@Param("payId")long payId,@Param("userId")String userId,@Param("orderNo")String orderNo,@Param("whereStatus")String whereStatus,@Param("delFlag")String delFlag);
 
 
     /**
@@ -116,8 +116,8 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
     @Modifying
     @Query("update #{#entityName} a set a.orderStatus =:orderStatus,a.riderId=:riderId ,a.riderPhone=:riderPhone,a.riderName=:riderName,a.grabOrderTime =:grabOrderTime,a.expectFinishTime =:expectFinishTime " +
             " where a.orderNo =:orderNo  and a.delFlag =:delFlag ")
-    int riderGrabOrder(String orderStatus, String riderId, String riderName, String riderPhone, String orderNo, Date grabOrderTime,
-                       Date expectFinishTime, String delFlag);
+    int riderGrabOrder(@Param("orderStatus")String orderStatus, @Param("riderId")String riderId,@Param("riderName") String riderName, @Param("riderPhone")String riderPhone, @Param("orderNo")String orderNo, @Param("grabOrderTime")Date grabOrderTime,
+                       @Param("expectFinishTime")Date expectFinishTime, @Param("delFlag")String delFlag);
 
    /**
      * 驿站订单骑手接单与取货
@@ -134,8 +134,8 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
    @Modifying
    @Query("update #{#entityName} a set a.orderStatus =:orderStatus,a.riderId=:riderId ,a.riderPhone=:riderPhone,a.riderName=:riderName,a.grabOrderTime =:grabOrderTime,a.grabItemTime=:grabOrderTime,a.expectFinishTime =:expectFinishTime " +
            "where a.orderNo =:orderNo  and a.delFlag =:delFlag ")
-   int riderGrabOrderOfPost(String orderStatus,String riderId, String riderName, String riderPhone, String orderNo, Date grabOrderTime,
-                            Date expectFinishTime,String delFlag);
+   int riderGrabOrderOfPost(@Param("orderStatus")String orderStatus,@Param("riderId")String riderId, @Param("riderName")String riderName, @Param("riderPhone")String riderPhone, @Param("orderNo")String orderNo, @Param("grabOrderTime")Date grabOrderTime,
+                            @Param("expectFinishTime")Date expectFinishTime,@Param("delFlag")String delFlag);
 
 
    /**
@@ -146,7 +146,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
    @Modifying
    @Query("update #{#entityName} a set a.orderStatus =:orderStatus,a.grabItemTime=:grabItemTime where a.orderNo =:orderNo  and orderStatus=:whereStatus and a.delFlag =:delFlag ")
-   int riderGrabItem(String orderStatus, Date grabItemTime,String orderNo,String whereStatus,String delFlag );
+   int riderGrabItem(@Param("orderStatus")String orderStatus, @Param("grabItemTime")Date grabItemTime,@Param("orderNo")String orderNo,@Param("whereStatus")String whereStatus,@Param("delFlag")String delFlag );
 
 
 
@@ -158,7 +158,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
      @Modifying
      @Query("update #{#entityName} a set a.orderStatus =:orderStatus,a.finishOrderTime=:finishOrderTime where a.orderNo =:orderNo  and orderStatus=:whereStatus and a.delFlag =:delFlag ")
-     int riderFinishOrder(String orderStatus, Date finishOrderTime,String orderNo,String whereStatus,String delFlag );
+     int riderFinishOrder(@Param("orderStatus")String orderStatus,@Param("finishOrderTime") Date finishOrderTime,@Param("orderNo")String orderNo,@Param("whereStatus")String whereStatus,@Param("delFlag")String delFlag );
 
 
 
@@ -171,7 +171,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
     @Modifying
     @Query("update #{#entityName} a set a.delFlag =:delFlag where a.userId=:userId and a.orderNo =:orderNo and a.orderStatus in:whereStatus and a.delFlag =:whereDelFlag  ")
-    int deleteOrder(String delFlag,String userId,String orderNo, List<String>  whereStatus,String whereDelFlag);
+    int deleteOrder(@Param("delFlag")String delFlag,@Param("userId")String userId,@Param("orderNo")String orderNo, @Param("whereStatus")List<String>  whereStatus,@Param("whereDelFlag")String whereDelFlag);
 
 
     /**
@@ -199,7 +199,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
     //TODO
     @Query(value ="select count(order_no) FROM tubobo_order WHERE finish_order_time >:now and user_id=:user_id  and del_flag=:del_flag  ", nativeQuery = true )
-    Long getTodayFinishOrderNum(Date now,String user_id,String del_flag);
+    Long getTodayFinishOrderNum(@Param("now")Date now,@Param("user_id")String user_id,@Param("del_flag")String del_flag);
 
 
 
@@ -209,7 +209,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
     //TODO
     @Query(value ="select count(order_no) FROM tubobo_order WHERE grab_item_time >:now and user_id=:user_id and short_message=:short_message and del_flag=:del_flag  ", nativeQuery = true )
-    Long getTodayFinishOrderWithShortTextNum(Date now,String user_id,Boolean short_message,String del_flag);
+    Long getTodayFinishOrderWithShortTextNum(@Param("now")Date now,@Param("user_id")String user_id,@Param("short_message")Boolean short_message,@Param("del_flag")String del_flag);
 
     /**
      * 更新订单的状态为已评价
@@ -217,22 +217,22 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
     @Modifying
     @Query("update #{#entityName} a set a.ratedFlag =:ratedFlag where a.orderNo=:orderNo  and a.delFlag =:whereDelFlag  ")
-    int rateOrder(Boolean ratedFlag,String orderNo,String whereDelFlag);
+    int rateOrder(@Param("ratedFlag")Boolean ratedFlag,@Param("orderNo")String orderNo,@Param("whereDelFlag")String whereDelFlag);
 
 
     @Query(value ="select order_no FROM tubobo_order WHERE order_status=:order_status and  rated_flag=:rated_flag and finish_order_time >:beginDate and finish_order_time <:endDate and del_flag=:del_flag  ", nativeQuery = true )
-    List<String> getUnRatedOrderNos(String order_status,Boolean rated_flag,Date beginDate,Date endDate, String  del_flag);
+    List<String> getUnRatedOrderNos(@Param("order_status")String order_status,@Param("rated_flag")Boolean rated_flag,@Param("beginDate")Date beginDate,@Param("endDate")Date endDate, @Param("del_flag")String  del_flag);
 
 
     @Modifying
     @Query("update #{#entityName} a set a.unsettledStatus =:unsettledStatus,a.finishOrderTime =:finishOrderTime where a.orderNo=:orderNo and orderStatus=:orderStatus and unsettledStatus is null and a.delFlag =:delFlag")
-    int riderUnsettledOrder(String unsettledStatus, Date finishOrderTime, String orderNo, String orderStatus);
+    int riderUnsettledOrder(@Param("unsettledStatus")String unsettledStatus, @Param("finishOrderTime")Date finishOrderTime,@Param("orderNo") String orderNo, @Param("orderStatus")String orderStatus);
 
 
     @Modifying
     @Query("update #{#entityName} a set a.unsettledStatus =:unsettledStatus,a.orderStatus =:orderStatus,a.unsettledTime =:unsettledTime" +
             " where a.orderNo=:orderNo and a.orderStatus=:orderStatus and a.unsettledStatus =:whereUnsettledStatus and a.delFlag =:delFlag")
-    int merchantHandlerUnsettledOrder(String unsettledStatus, String orderStatus, Date unsettledTime,String orderNo,String whereUnsettledStatus, String  delFlag);
+    int merchantHandlerUnsettledOrder(@Param("unsettledStatus")String unsettledStatus, @Param("orderStatus")String orderStatus,@Param("unsettledTime") Date unsettledTime,@Param("orderNo")String orderNo,@Param("whereUnsettledStatus")String whereUnsettledStatus,@Param("delFlag") String  delFlag);
 
 
 
