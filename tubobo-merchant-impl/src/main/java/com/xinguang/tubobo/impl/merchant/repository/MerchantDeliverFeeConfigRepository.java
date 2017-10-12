@@ -14,14 +14,20 @@ import java.util.List;
  */
 public interface MerchantDeliverFeeConfigRepository extends JpaRepository<MerchantDeliverFeeConfigEntity, String>, JpaSpecificationExecutor<MerchantDeliverFeeConfigEntity> {
     List<MerchantDeliverFeeConfigEntity> findAllByDelFlagOrderByBeginDistance(String delFlag);
+    List<MerchantDeliverFeeConfigEntity> findAllByDelFlagAndOrderTypeOrderByBeginDistance(String delFlag,String orderType);
 
     /**
      * 根据区查具体区的定价
      */
     List<MerchantDeliverFeeConfigEntity> findByAreaCodeAndDelFlagOrderByBeginDistance(String areaCode, String delFlag);
 
+    /**
+     * 根据区查具体区的定价
+     */
+    List<MerchantDeliverFeeConfigEntity> findByAreaCodeAndDelFlagAndOrderTypeOrderByBeginDistance(String areaCode, String delFlag,String orderType);
+
     @Modifying
-    @Query("update #{#entityName} a set a.delFlag = :delFlag where a.areaCode = :areaCode ")
-    int deleteFeeByAreaCode(@Param("delFlag") String delFlag, @Param("areaCode") String areaCode);
+    @Query("update #{#entityName} a set a.delFlag = :delFlag where a.areaCode = :areaCode and a.orderType =:orderType")
+    int deleteFeeByAreaCodeAndOrderType(@Param("delFlag") String delFlag, @Param("areaCode") String areaCode,@Param("orderType") String orderType);
 
 }

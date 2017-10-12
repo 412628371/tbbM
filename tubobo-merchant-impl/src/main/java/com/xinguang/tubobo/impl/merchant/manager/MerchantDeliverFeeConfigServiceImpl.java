@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
-import com.xinguang.tubobo.impl.merchant.dao.MerchantDeliverFeeConfigDao;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantDeliverFeeConfigEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantDeliverFeeConfigRepository;
@@ -36,6 +35,18 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
         List<MerchantDeliverFeeConfigEntity> all = feeConfigRepository.findAllByDelFlagOrderByBeginDistance(MerchantInfoEntity.DEL_FLAG_NORMAL);
         return copyFeeEntityToDto(all);
     }
+
+    /**
+     * 查询不同类型的起送费全部数据
+     * @param
+     * @return
+     */
+    @Override
+    public List<MerchantDeliverFeeConfigDTO> findByOrderType(String orderType){
+        List<MerchantDeliverFeeConfigEntity> all = feeConfigRepository.findAllByDelFlagAndOrderTypeOrderByBeginDistance(MerchantInfoEntity.DEL_FLAG_NORMAL,orderType);
+        return copyFeeEntityToDto(all);
+    }
+
     /**
      * 根据区code查询具体区的费用
      */
@@ -44,6 +55,15 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
         List<MerchantDeliverFeeConfigEntity> list = feeConfigRepository.findByAreaCodeAndDelFlagOrderByBeginDistance(areaCode, MerchantInfoEntity.DEL_FLAG_NORMAL);
         return copyFeeEntityToDto(list);
     }
+    /**
+     * 根据区code和orderType查询具体区的费用
+     */
+    @Override
+    public List<MerchantDeliverFeeConfigDTO> findFeeByAreaCodeAndOrderType(String areaCode,String orderType){
+        List<MerchantDeliverFeeConfigEntity> list = feeConfigRepository.findByAreaCodeAndDelFlagAndOrderTypeOrderByBeginDistance(areaCode, MerchantInfoEntity.DEL_FLAG_NORMAL,orderType);
+        return copyFeeEntityToDto(list);
+    }
+
     private List<MerchantDeliverFeeConfigDTO> copyFeeEntityToDto(List<MerchantDeliverFeeConfigEntity> list){
         ArrayList<MerchantDeliverFeeConfigDTO> returnList = new ArrayList<>();
         if (null!=list&&list.size()>0){
@@ -78,11 +98,11 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
     }
 
     @Override
-    public void clearAndSaveListByAreaCode(List<MerchantDeliverFeeConfigDTO> list) {
+    public void clearAndSaveListByAreaCodeAndOrderType(List<MerchantDeliverFeeConfigDTO> list) {
         ArrayList<MerchantDeliverFeeConfigEntity> saveList = new ArrayList<>();
         if(null!=list&&list.size()>0){
             MerchantDeliverFeeConfigDTO deliverFeeConfigDTO = list.get(0);
-            feeConfigRepository.deleteFeeByAreaCode(MerchantInfoEntity.DEL_FLAG_DELETE, deliverFeeConfigDTO.getAreaCode());
+            feeConfigRepository.deleteFeeByAreaCodeAndOrderType(MerchantInfoEntity.DEL_FLAG_DELETE, deliverFeeConfigDTO.getAreaCode(),deliverFeeConfigDTO.getOrderType());
             for (MerchantDeliverFeeConfigDTO dto : list) {
                 MerchantDeliverFeeConfigEntity merchantDeliverFeeConfigEntity = new MerchantDeliverFeeConfigEntity();
                 BeanUtils.copyProperties(dto,merchantDeliverFeeConfigEntity);
