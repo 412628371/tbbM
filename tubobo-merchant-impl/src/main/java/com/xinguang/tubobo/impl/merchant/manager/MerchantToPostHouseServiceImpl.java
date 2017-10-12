@@ -51,10 +51,10 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         if (EnumBindStatusType.NOOPERATE.getValue().equals(infoEntity.getBindStatus())) {
             return EnumMerchantPostExceptionCode.SHOP_ALREADY_UNBOUND;
         }
-        boolean result = merchantInfoService.bindProvider(userId, providerId);
+        boolean result = merchantInfoService.bindProvider(userId, providerId, providerName);
         if (result) {
             //发送绑定通知
-            rmqNoticeProducer.sendMerchantBindNotice(infoEntity.getUserId(), infoEntity.getProviderName());
+            rmqNoticeProducer.sendMerchantBindNotice(infoEntity.getUserId(), providerName);
             return EnumMerchantPostExceptionCode.SUCCESS;
         }
         return EnumMerchantPostExceptionCode.FAIL;

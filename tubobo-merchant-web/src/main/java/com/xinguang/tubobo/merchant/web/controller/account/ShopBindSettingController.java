@@ -29,9 +29,9 @@ public class ShopBindSettingController extends MerchantBaseController<ReqBindSet
         }
         boolean result;
         if(req.isAgreeBind()){
-            result = merchantInfoService.bindProviderAgree(userId, req.getProviderId());
+            result = merchantInfoService.bindProviderAgree(userId, entity.getProviderId(), entity.getProviderName());
         }else {
-            result = merchantInfoService.bindProviderReject(userId, req.getProviderId());
+            result = merchantInfoService.bindProviderReject(userId, entity.getProviderId(), entity.getProviderName());
         }
         if(result){
             return "";
