@@ -1,6 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.hzmux.hzcms.common.utils.AliOss;
+import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.sun.tools.classfile.Annotation;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
@@ -70,7 +71,12 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_PAY);
         }
         TbbAccountResponse<PayInfo> response;
-        long amount = ConvertUtil.convertYuanToFen(orderEntity.getPayAmount());
+        Double amountD=orderEntity.getPayAmount();
+        //check订单短信开关,if开启--扣除短信费用,短信费用扣除发生在骑手取货时 生成额外短信流水
+        if (orderEntity.getShortMessage()){
+            amountD=  CalCulateUtil.sub(amountD,MerchantConstants.MESSAGE_FEE);
+        }
+        long amount = ConvertUtil.convertYuanToFen(amountD);
         //设置了免密支付，并且支付金额不大于免密支付额度，可以免密支付
         if (infoEntity.getEnablePwdFree()&&
                 orderEntity.getPayAmount() <= config.getNonConfidentialPaymentLimit()){
@@ -158,6 +164,12 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         }
         if (entity.getWeatherOverFee() != null){
             merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
+        }
+        //传给任务的支付金额，减去短信费用  modified by xqh on 2017-10-11
+        if(entity.getShortMessage()){
+            if (merchantOrderDTO.getPayAmount()!=null && merchantOrderDTO.getPayAmount()>MerchantConstants.MESSAGE_FEE*100){
+                merchantOrderDTO.setPayAmount(merchantOrderDTO.getPayAmount()- CalCulateUtil.mul(MerchantConstants.MESSAGE_FEE,100).intValue());
+            }
         }
         merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
         String [] shopUrls = new String[5];

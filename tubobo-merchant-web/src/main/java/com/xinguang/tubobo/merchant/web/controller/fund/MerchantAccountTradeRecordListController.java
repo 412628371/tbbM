@@ -11,6 +11,7 @@ import com.xinguang.tubobo.account.api.response.AccountOperationInfo;
 import com.xinguang.tubobo.account.api.response.AccountRecordInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
+import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqAccountTradeRecordList;
 import com.xinguang.tubobo.merchant.web.response.trade.ResAccountTradeRecord;
@@ -104,6 +105,11 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 		if (TbbConstants.OperationType.FINE == operInfo.getType()){
 			if (operInfo.getAmount() > 0){
 				amount = "-"+amount;
+			}
+			if (MerchantConstants.MERCHANT_MESSAGE_REMARK.equalsIgnoreCase(operInfo.getRemarks())){
+				record.setType("短信费");
+				record.setTradeStatus("已发送");
+
 			}
 		}
 		if(TbbConstants.OperationType.RECHARGE.equals(operInfo.getType())&&TbbConstants.OperationStatus.SUCCEED.equals(operInfo.getStatus())){

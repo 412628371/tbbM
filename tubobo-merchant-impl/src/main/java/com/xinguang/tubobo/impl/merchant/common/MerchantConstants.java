@@ -50,6 +50,8 @@ public class MerchantConstants {
     public static final String MERCHANT_CANCEL_FINE = "罚款: 骑手接单后取消订单";
     public static final String MERCHANT_CANCEL_BY_RIDER_SUBSIDY = "赔付: 骑手取消订单";
     public static final String OVERTIME_DELIVERY = "赔付: 订单超时送达";
+    public static final String MERCHANT_MESSAGE = "MERCHANT_MESSAGE";
+    public static final String MERCHANT_MESSAGE_REMARK = "短信费";
 
     public static final boolean ORDER_MESSAGE_OPEN = true;
     public static final boolean ORDER_MESSAGE_CLOSE = false;

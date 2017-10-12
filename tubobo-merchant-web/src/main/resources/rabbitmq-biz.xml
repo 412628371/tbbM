@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/rabbit
+		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
+       default-lazy-init="true">
+
+    <import resource="rabbitmq-base.xml"/>
+
+    <!-- 创建rabbitTemplate 消息模板类 -->
+    <!--<rabbit:template id="addressInfoTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="merchant_addressInfo_query_exchange" />-->
+    <!-- 生产者 队列声明-->
+    <rabbit:queue id="merchant_messageRecord_queue" durable="true" auto-delete="false" exclusive="false" name="merchant_messageRecord_queue" />
+    <!-- work exchange -->
+    <rabbit:direct-exchange name="merchant_biz_exchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="merchant_messageRecord_queue" key="merchant_messageRecord_queue"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!-- 用于接收消息的处理类 -->
+    <bean id="rmqTakeoutMessageHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqMessagePayRecordHandler"></bean>
+
+    <!-- 用于消息的监听的容器类SimpleMessageListenerContainer,监听队列  queues可以传多个-->
+    <bean id="takeoutListenerContainer"  class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        <property name="queues" ref="merchant_messageRecord_queue"></property>
+        <property name="connectionFactory" ref="rabbitmqConnectionFactory"></property>
+        <property name="messageListener" ref="rmqTaskOperateListenerAdapter"></property>
+    </bean>
+    <bean id="rmqTaskOperateListenerAdapter"  class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
+        <constructor-arg ref="rmqTakeoutMessageHandler" />
+        <property name="defaultListenerMethod" value="onMessage"></property>
+    </bean>
+</beans>
