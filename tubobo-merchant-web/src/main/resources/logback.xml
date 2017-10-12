@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
     <configuration>
         <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
@@ -23,7 +22,6 @@
             <appender-ref ref="Console"/>
             <appender-ref ref="RollingFile"/>
         </root>
-    </configuration>
 </configuration>
 
 
