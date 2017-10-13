@@ -53,7 +53,6 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
 
     private String unsettledReason;         //驿站订单 未妥投原因
     private Date unsettledTime;             //驿站订单 商家确认未妥投时间
-    private Boolean shortMessage;            //订单是否发送短信通知收件人
 
 
     private String merMessage; //未妥投确认消息
@@ -241,13 +240,7 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
         this.unsettledTime = unsettledTime;
     }
 
-    public Boolean getShortMessage() {
-        return shortMessage;
-    }
 
-    public void setShortMessage(Boolean shortMessage) {
-        this.shortMessage = shortMessage;
-    }
 
     public String getMerMessage() {
         return merMessage;
