@@ -157,6 +157,9 @@ public class MerchantInfoService extends BaseService {
 				if(null != entity.getProviderId()){
 					list.add(criteriaBuilder.equal(root.get("providerId").as(Long.class), entity.getProviderId()));
 				}
+				if (StringUtils.isNotBlank(entity.getBindStatus())){
+					list.add(criteriaBuilder.equal(root.get("bindStatus").as(String.class), entity.getBindStatus()));
+				}
 				if (StringUtils.isNotBlank(entity.getMerchantStatus())){
 					list.add(criteriaBuilder.equal(root.get("merchantStatus").as(String.class), entity.getMerchantStatus()));
 				}

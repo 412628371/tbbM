@@ -7,7 +7,7 @@ public enum EnumBindStatusType {
     INIT("初始化", "INIT"),
     SUCCESS("绑定成功", "SUCCESS"),
     REJECT("绑定失败", "REJECT"),
-    NOOPERATE("未绑定", "NOOPERATE"),
+    NOOPERATE("绑定中", "NOOPERATE"),
     UNBUNDLE("已解绑","UNBUNDLE");
 
 //    INIT    	初始化
