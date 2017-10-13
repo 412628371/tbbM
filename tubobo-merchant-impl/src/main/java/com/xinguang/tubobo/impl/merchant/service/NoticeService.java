@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -74,7 +73,9 @@ public class NoticeService {
     public void pushUnbind(NoticeDTO dto){
         PushNoticeEntity entity = new PushNoticeEntity();
         BeanUtils.copyProperties(dto, entity);
-        pushNoticeDao.saveEntity(entity);
+        entity.setProcessed(false);
+        entity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
+        pushNoticeDao.save(entity);
         merchantPushService.pushUnbindNotice(dto);
     }
 
