@@ -64,6 +64,20 @@ public class NoticeService {
         merchantPushService.pushSystemNotice(dto);
     }
 
+    public void pushBind(NoticeDTO dto){
+        //PushNoticeEntity entity = new PushNoticeEntity();
+        //BeanUtils.copyProperties(dto, entity);
+        //pushNoticeDao.saveEntity(entity);
+        merchantPushService.pushBindNotice(dto);
+    }
+
+    public void pushUnbind(NoticeDTO dto){
+        PushNoticeEntity entity = new PushNoticeEntity();
+        BeanUtils.copyProperties(dto, entity);
+        pushNoticeDao.saveEntity(entity);
+        merchantPushService.pushUnbindNotice(dto);
+    }
+
     /**
      * 查找全部通知，包括已读和未读
      * @param userId

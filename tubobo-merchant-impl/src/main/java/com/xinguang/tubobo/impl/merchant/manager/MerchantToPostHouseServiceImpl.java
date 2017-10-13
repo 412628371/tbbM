@@ -4,6 +4,7 @@ import com.xinguang.tubobo.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
+import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantToPostHouseServiceInterface;
 import com.xinguang.tubobo.merchant.api.condition.MerchantInfoQueryCondition;
@@ -12,6 +13,7 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
+import com.xinguang.tubobo.merchant.api.enums.EnumBindStatusType;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,42 +27,55 @@ import java.util.List;
  */
 public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServiceInterface {
 
-    @Autowired private MerchantInfoService merchantInfoService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
-    @Autowired private MerchantOrderManager merchantOrderManager;
+    @Autowired
+    private MerchantOrderManager merchantOrderManager;
+
+    @Autowired
+    private RmqNoticeProducer rmqNoticeProducer;
+
     @Override
     public EnumMerchantPostExceptionCode bindProvider(String userId, Long providerId, String providerName) {
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
-        if (null == infoEntity){
+        if (null == infoEntity) {
             return EnumMerchantPostExceptionCode.SHOP_NOT_EXIST;
         }
-        if (!EnumAuthentication.SUCCESS.getValue().equals(infoEntity.getMerchantStatus()) ){
+        if (!EnumAuthentication.SUCCESS.getValue().equals(infoEntity.getMerchantStatus())) {
             return EnumMerchantPostExceptionCode.SHOP_NOT_AUTHED;
         }
-        if (null != infoEntity.getProviderId()){
+        if (EnumBindStatusType.SUCCESS.getValue().equals(infoEntity.getBindStatus())) {
             return EnumMerchantPostExceptionCode.SHOP_ALREADY_BOUND;
         }
-        boolean result = merchantInfoService.bindProvider(userId,providerId,providerName);
-        if (result)
+        if (EnumBindStatusType.NOOPERATE.getValue().equals(infoEntity.getBindStatus())) {
+            return EnumMerchantPostExceptionCode.SHOP_ALREADY_UNBOUND;
+        }
+        boolean result = merchantInfoService.bindProvider(userId, providerId, providerName);
+        if (result) {
+            //发送绑定通知
+            rmqNoticeProducer.sendMerchantBindNotice(infoEntity.getUserId(), providerName);
             return EnumMerchantPostExceptionCode.SUCCESS;
+        }
         return EnumMerchantPostExceptionCode.FAIL;
     }
 
     @Override
     public EnumMerchantPostExceptionCode unbindProvider(String userId, long providerId) {
         MerchantInfoEntity riderInfoEntity = merchantInfoService.findByUserId(userId);
-        if (null == riderInfoEntity){
+        if (null == riderInfoEntity) {
             return EnumMerchantPostExceptionCode.SHOP_NOT_EXIST;
         }
-        if (null == riderInfoEntity.getProviderId()){
-            return EnumMerchantPostExceptionCode.SHOP_ALREADY_UNBOUND;
+        if (!EnumAuthentication.SUCCESS.getValue().equals(riderInfoEntity.getMerchantStatus())) {
+            return EnumMerchantPostExceptionCode.SHOP_NOT_AUTHED;
         }
-        if (providerId != riderInfoEntity.getProviderId()){
+        if (null == riderInfoEntity.getProviderId() || providerId != riderInfoEntity.getProviderId()) {
             return EnumMerchantPostExceptionCode.SHOP_NO_PERMISSION;
         }
-        boolean result = merchantInfoService.unbindProvider(userId,providerId);
-        if (result){
-            //TODO 通知
+        boolean result = merchantInfoService.unbindProvider(userId, providerId);
+        if (result) {
+            //发送解绑通知
+            rmqNoticeProducer.sendMerchantUnbindMotice(riderInfoEntity.getUserId(), riderInfoEntity.getProviderName());
             return EnumMerchantPostExceptionCode.SUCCESS;
         }
         return EnumMerchantPostExceptionCode.FAIL;
@@ -73,16 +88,16 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         infoEntity.setMerchantName(queryCondition.getShopName());
         infoEntity.setUserId(queryCondition.getShopId());
         infoEntity.setProviderId(queryCondition.getProviderId());
-        Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(queryCondition.getPageNo(),queryCondition.getPageSize(),infoEntity);
+        Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(queryCondition.getPageNo(), queryCondition.getPageSize(), infoEntity);
         List<MerchantInfoDTO> list = new LinkedList<>();
-        if (page.hasContent()){
-            for (MerchantInfoEntity entity:page){
+        if (page.hasContent()) {
+            for (MerchantInfoEntity entity : page) {
                 MerchantInfoDTO infoDTO = new MerchantInfoDTO();
-                BeanUtils.copyProperties(entity,infoDTO);
+                BeanUtils.copyProperties(entity, infoDTO);
                 list.add(infoDTO);
             }
         }
-        PageDTO<MerchantInfoDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getTotalElements(),list);
+        PageDTO<MerchantInfoDTO> respPage = new PageDTO(queryCondition.getPageNo(), queryCondition.getPageSize(), page.getTotalElements(), list);
         return respPage;
     }
 
@@ -102,17 +117,17 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         orderEntity.setProviderId(queryCondition.getProviderId());
         orderEntity.setUnsettledStatus(queryCondition.getUnsettledStatus());
         Page<OrderEntity> page = merchantOrderManager.postHouseQueryOrderPage(queryCondition.getPageNo(), queryCondition.getPageSize(),
-                                            queryCondition.getExpectFinishTimeSort(), queryCondition.getOrderTimeSort(), orderEntity);
+                queryCondition.getExpectFinishTimeSort(), queryCondition.getOrderTimeSort(), orderEntity);
         List<MerchantOrderDTO> list = new LinkedList<>();
-        if (page.hasContent()){
-            for (OrderEntity entity:page){
+        if (page.hasContent()) {
+            for (OrderEntity entity : page) {
                 MerchantOrderDTO orderDTO = new MerchantOrderDTO();
-                BeanUtils.copyProperties(entity,orderDTO);
+                BeanUtils.copyProperties(entity, orderDTO);
                 orderDTO.setAmount(entity.getPayAmount());
                 list.add(orderDTO);
             }
         }
-        PageDTO<MerchantOrderDTO> respPage = new PageDTO(queryCondition.getPageNo(),queryCondition.getPageSize(),page.getTotalElements(),list);
+        PageDTO<MerchantOrderDTO> respPage = new PageDTO(queryCondition.getPageNo(), queryCondition.getPageSize(), page.getTotalElements(), list);
         return respPage;
     }
 

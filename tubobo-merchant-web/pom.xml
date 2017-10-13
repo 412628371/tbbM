@@ -49,18 +49,16 @@
             <groupId>com.xinguang</groupId>
             <artifactId>tubobo-merchant-api</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.xinguang</groupId>
             <artifactId>tubobo-merchant-impl</artifactId>
         </dependency>
 
-        <!-- zookeeper -->
-
-
-
-
-
-
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>tubobo-posthouse-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
