@@ -29,11 +29,17 @@ public class MerchantSettingsService {
        MerchantSettingsEntity settingsEntity = settingsDao.findByUserIdAndDelFlag(userId, BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (null==settingsEntity){
             settingsEntity = new MerchantSettingsEntity();
+            settingsEntity.setPushMsgOrderExpired(true);
+            settingsEntity.setPushMsgOrderFinished(true);
+            settingsEntity.setPushMsgOrderGrabed(true);
+            settingsEntity.setPushMsgVoiceOpen(true);
+            settingsEntity.setUserId(userId);
+        }else{
+            settingsEntity.setPushMsgOrderExpired(entity.getPushMsgOrderExpired());
+            settingsEntity.setPushMsgOrderFinished(entity.getPushMsgOrderFinished());
+            settingsEntity.setPushMsgOrderGrabed(entity.getPushMsgOrderGrabed());
+            settingsEntity.setPushMsgVoiceOpen(entity.getPushMsgVoiceOpen());
         }
-        settingsEntity.setPushMsgOrderExpired(entity.getPushMsgOrderExpired());
-        settingsEntity.setPushMsgOrderFinished(entity.getPushMsgOrderFinished());
-        settingsEntity.setPushMsgOrderGrabed(entity.getPushMsgOrderGrabed());
-        settingsEntity.setPushMsgVoiceOpen(entity.getPushMsgVoiceOpen());
         MerchantSettingsEntity saveEntity = settingsDao.save(settingsEntity);
         return null==saveEntity?false:true;
 

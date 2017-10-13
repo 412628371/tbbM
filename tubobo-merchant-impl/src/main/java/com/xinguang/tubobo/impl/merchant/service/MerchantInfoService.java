@@ -44,7 +44,7 @@ public class MerchantInfoService extends BaseService {
 	private MerchantInfoRepository merchantInfoRepository;
 
 	@Autowired
-	MerchantPushSettingsDao merchantPushSettingsDao;
+	MerchantSettingsService merchantPushSettingsService;
 
 	@Cacheable(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	public MerchantInfoEntity findByUserId(String userId){
@@ -67,7 +67,7 @@ public class MerchantInfoService extends BaseService {
 		merchantInfoRepository.save(entity);
 		MerchantSettingsEntity settingsEntity = new MerchantSettingsEntity();
 		settingsEntity.setUserId(userId);
-		merchantPushSettingsDao.save(settingsEntity);
+		merchantPushSettingsService.updateSettings(userId,settingsEntity);
 		return true;
 	}
 

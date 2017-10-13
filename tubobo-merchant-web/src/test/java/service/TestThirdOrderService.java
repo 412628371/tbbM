@@ -1,3 +1,4 @@
+/*
 package java.service;
 
 import com.xinguang.tubobo.impl.merchant.dao.ThirdOrderDao;
@@ -11,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.BaseJunit4Test;
 
+*/
 /**
  * Created by xuqinghua on 2017/7/10.
- */
+ *//*
+
 public class TestThirdOrderService extends BaseJunit4Test {
     @Resource  //自动注入,默认按名称
     private ThirdOrderDao thirdOrderDao;
@@ -40,3 +43,4 @@ public class TestThirdOrderService extends BaseJunit4Test {
         Assert.assertEquals("1243",expected.getOriginOrderId());
     }
 }
+*/
