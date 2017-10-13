@@ -26,6 +26,15 @@ public class MerchantDeliverFeeConfigEntity extends BaseMerchantEntity {
 	private String cityCode;
 	private String provinceCode;
 	private String orderType;
+	private Long temId;			//定价模板id
+
+	public Long getTemId() {
+		return temId;
+	}
+
+	public void setTemId(Long temId) {
+		this.temId = temId;
+	}
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;

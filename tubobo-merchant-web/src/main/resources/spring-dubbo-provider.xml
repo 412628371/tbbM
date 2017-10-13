@@ -20,6 +20,10 @@
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantDeliverFeeConfigInterface" group="${dubbo.group}" version="0.0.1" ref="merchantDeliverFeeConfigService" timeout="3000"/>
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToPostHouseServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToPostHouseService" timeout="3000"/>
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToThirdPartyServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToThirdPartyService" timeout="3000"/>
+	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantTypeInterface" group="${dubbo.group}" version="0.0.1" ref="merchantTypeInterface" timeout="3000"/>
+	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantDeliverFeeTemInterface" group="${dubbo.group}" version="0.0.1" ref="merchantDeliverFeeTemInterface" timeout="3000"/>
+
+
 
 	<!-- 和本地bean一样实现服务 -->
 	<bean id="merchantToTaskCenterService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToTaskCenterServiceImpl" />
@@ -27,4 +31,6 @@
 	<bean id="merchantDeliverFeeConfigService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantDeliverFeeConfigServiceImpl" />
 	<bean id="merchantToPostHouseService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToPostHouseServiceImpl" />
 	<bean id="merchantToThirdPartyService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToThirdPartyServiceImpl" />
+	<bean id="merchantTypeInterface" class="com.xinguang.tubobo.impl.merchant.service.MerchantTypeService" />
+	<bean id="merchantDeliverFeeTemInterface" class="com.xinguang.tubobo.impl.merchant.service.MerchantDeliverTemService" />
 </beans>

@@ -6,8 +6,6 @@
 package com.xinguang.tubobo.impl.merchant.entity;
 
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -64,6 +62,16 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private String providerName;			 //服务商名称
 	private String bindStatus;			 //绑定状态INIT 初始化，SUCCESS 同意授权（绑定成功，REJECT 拒绝授权（绑定失败），NOOPERATE 	未操作（未绑定），UNBUNDLE 已解绑
 	private Date unbundleTime;			 //解绑时间
+
+	private Long merTypeId;			//商家类型id
+
+	public Long getMerTypeId() {
+		return merTypeId;
+	}
+
+	public void setMerTypeId(Long merTypeId) {
+		this.merTypeId = merTypeId;
+	}
 
 	public String getBindStatus() {
 		return bindStatus;
