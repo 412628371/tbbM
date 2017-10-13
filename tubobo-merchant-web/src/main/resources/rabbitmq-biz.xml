@@ -6,10 +6,6 @@
 		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
        default-lazy-init="true">
 
-    <import resource="rabbitmq-base.xml"/>
-
-    <!-- 创建rabbitTemplate 消息模板类 -->
-    <!--<rabbit:template id="addressInfoTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="merchant_addressInfo_query_exchange" />-->
     <!-- 生产者 队列声明-->
     <rabbit:queue id="merchant_messageRecord_queue" durable="true" auto-delete="false" exclusive="false" name="merchant_messageRecord_queue" />
     <!-- work exchange -->

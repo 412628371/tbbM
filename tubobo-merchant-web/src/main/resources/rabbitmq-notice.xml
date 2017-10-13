@@ -6,8 +6,6 @@
 		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
        default-lazy-init="true">
 
-    <import resource="rabbitmq-base.xml"/>
-
     <rabbit:queue id="tbb_notice_queue_merchant" durable="true" auto-delete="false" exclusive="false" name="tbb_notice_queue_merchant" />
     <!-- work exchange -->
     <rabbit:topic-exchange name="tbb_notice_exchange" durable="true" auto-delete="false">

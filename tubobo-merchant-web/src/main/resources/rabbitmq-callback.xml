@@ -6,8 +6,6 @@
 		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
        default-lazy-init="true">
 
-    <import resource="rabbitmq-base.xml"/>
-
     <rabbit:queue id="merchantTaskCallbackQueue" durable="true" auto-delete="false" exclusive="false"
                   name="merchantTaskCallbackQueue" />
     <bean id="rmqTaskCallbackHandler"   class="com.xinguang.tubobo.impl.merchant.mq.RmqTaskCallbackHandler"></bean>
