@@ -6,8 +6,6 @@
 package com.hzmux.hzcms.common.utils;
 
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 import org.springframework.cache.CacheManager;
 
 /**

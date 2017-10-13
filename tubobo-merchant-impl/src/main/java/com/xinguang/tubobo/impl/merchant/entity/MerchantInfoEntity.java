@@ -19,7 +19,7 @@ import java.util.Date;
 @Table(name = "tubobo_merchant_info")
 @DynamicInsert
 @DynamicUpdate
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -62,6 +62,24 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Date enterTime;			 //入住驿站时间
 	private Long providerId;			 //服务商ID
 	private String providerName;			 //服务商名称
+	private String bindStatus;			 //绑定状态INIT 初始化，SUCCESS 同意授权（绑定成功，REJECT 拒绝授权（绑定失败），NOOPERATE 	未操作（未绑定），UNBUNDLE 已解绑
+	private Date unbundleTime;			 //解绑时间
+
+	public String getBindStatus() {
+		return bindStatus;
+	}
+
+	public void setBindStatus(String bindStatus) {
+		this.bindStatus = bindStatus;
+	}
+
+	public Date getUnbundleTime() {
+		return unbundleTime;
+	}
+
+	public void setUnbundleTime(Date unbundleTime) {
+		this.unbundleTime = unbundleTime;
+	}
 
 	public Date getEnterTime() {
 		return enterTime;

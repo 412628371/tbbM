@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
 	   default-lazy-init="true">
 
 	<description>Spring Configuration</description>
@@ -23,18 +23,18 @@
 	<!--<context:property-placeholder ignore-unresolvable="true" location="classpath*:/hzcms.properties" />-->
 	
 	<!-- 使用Annotation自动注册Bean，解决事物失效问题：在主容器中不扫描@Controller注解，在SpringMvc中只扫描@Controller注解。  -->
-	<context:component-scan base-package="com.hzmux.hzcms,com.xinguang.tubobo.impl.merchant"><!-- base-package 如果多个，用“,”分隔 -->
+<!--	<context:component-scan base-package="com.hzmux.hzcms,com.xinguang.tubobo.impl.merchant">&lt;!&ndash; base-package 如果多个，用“,”分隔 &ndash;&gt;
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-	</context:component-scan>
-	
-	<!-- 定义Hibernate Session工厂 -->
+	</context:component-scan>-->
+
+	<!--&lt;!&ndash; 定义Hibernate Session工厂 &ndash;&gt;
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"> 
 		<property name="dataSource" ref="dataSource"/>
-		<property name="packagesToScan" value="com.xinguang.tubobo.impl.merchant"/><!-- 如果多个，用“,”分隔 -->
+		<property name="packagesToScan" value="com.xinguang.tubobo.impl.merchant"/>&lt;!&ndash; 如果多个，用“,”分隔 &ndash;&gt;
 		<property name="hibernateProperties">
 			<props>
-				<!--<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>-->
-				<!--<prop key="net.sf.ehcache.configurationResourceName">${hibernate.ehcache.configFile}</prop>-->
+				&lt;!&ndash;<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>&ndash;&gt;
+				&lt;!&ndash;<prop key="net.sf.ehcache.configurationResourceName">${hibernate.ehcache.configFile}</prop>&ndash;&gt;
 			<prop key="hibernate.cache.use_second_level_cache">false</prop>
 				<prop key="hibernate.cache.use_query_cache">false</prop>
 				<prop key="hibernate.search.default.directory_provider">filesystem</prop>
@@ -45,18 +45,20 @@
 		<property name="namingStrategy">
 			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
 		</property>
-	</bean>
+	</bean>-->
        
-	<!-- 定义事务 -->
+<!--
+	&lt;!&ndash; 定义事务 &ndash;&gt;
 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">  
         <property name="sessionFactory" ref="sessionFactory" />  
     </bean>
     
-	<!-- 配置 Annotation 驱动，扫描@Transactional注解的类定义事务  -->
+	&lt;!&ndash; 配置 Annotation 驱动，扫描@Transactional注解的类定义事务  &ndash;&gt;
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 	
-	<!-- 配置 JSR303 Bean Validator 定义 -->
+	&lt;!&ndash; 配置 JSR303 Bean Validator 定义 &ndash;&gt;
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+-->
 
 	<!-- 缓存配置 -->
 	<!--<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
@@ -73,26 +75,26 @@
 	</bean>
 
 	<!-- 数据源配置, 使用 BoneCP 数据库连接池 -->
-	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
-		<!-- 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass -->
+	<!--<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		&lt;!&ndash; 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass &ndash;&gt;
 		<property name="driverClassName" value="${jdbc.driver}" />
 
-		<!-- 基本属性 url、user、password -->
+		&lt;!&ndash; 基本属性 url、user、password &ndash;&gt;
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
 
-		<!-- 配置初始化大小、最小、最大 -->
+		&lt;!&ndash; 配置初始化大小、最小、最大 &ndash;&gt;
 		<property name="initialSize" value="${jdbc.pool.minIdle}" />
 		<property name="minIdle" value="${jdbc.pool.minIdle}" />
 		<property name="maxActive" value="${jdbc.pool.maxActive}" />
 
-		<!-- 配置获取连接等待超时的时间 -->
+		&lt;!&ndash; 配置获取连接等待超时的时间 &ndash;&gt;
 		<property name="maxWait" value="600000" />
 
-		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 TODO 60000-->
+		&lt;!&ndash; 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 TODO 60000&ndash;&gt;
 		<property name="timeBetweenEvictionRunsMillis" value="600000" />
-		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		&lt;!&ndash; 配置一个连接在池中最小生存的时间，单位是毫秒 &ndash;&gt;
 		<property name="minEvictableIdleTimeMillis" value="600000" />
 
 		<property name="validationQuery" value="SELECT 1" />
@@ -106,13 +108,13 @@
 
 
 
-		<!-- 打开PSCache，并且指定每个连接上PSCache的大小（Oracle使用）
+		&lt;!&ndash; 打开PSCache，并且指定每个连接上PSCache的大小（Oracle使用）
         <property name="poolPreparedStatements" value="true" />
-        <property name="maxPoolPreparedStatementPerConnectionSize" value="20" /> -->
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20" /> &ndash;&gt;
 
-		<!-- 配置监控统计拦截的filters -->
+		&lt;!&ndash; 配置监控统计拦截的filters &ndash;&gt;
 		<property name="filters" value="stat" />
-	</bean>
+	</bean>-->
 	<!-- Production 环境 -->
  	<!--<beans profile="production">-->
  		<!---->
@@ -128,6 +130,8 @@
 		<!--</bean>&ndash;&gt;-->
 		<!---->
 	<!--</beans>-->
+
+
 
 
 

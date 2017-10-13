@@ -38,6 +38,7 @@ public enum EnumRespCode {
 	PASSWORD_FIRSTCREATE_FAIL("10003", "该账户已设置密码,首次创建密码失败"),
 	MERCHANT_MESSAGE_PUSH_SETTINGS_FAILURE("10004", "短信推送设置失败"),
 	POST_ORDER_STATUS_PUSH_FAILURE("10005", "驿站订单状态推送失败"),
+	MERCHANT_AUTO_RESEND_POST_SETTINGS_FAILURE("10006", "驿站自动发单设置失败"),
 
 
 	MERCHANT_DELIVERY_DISTANCE_TOO_FAR("10301", "超过配送范围 请重新输入地址"),
@@ -64,7 +65,10 @@ public enum EnumRespCode {
 	OVERFEE_VERSION_LOW("30074","您的版本过低，请先去更新版本再发单哦~"),
 	VERIFY_CODE_FAIL("30075","验证码错误"),
 	CANT_FIND_DELIVERY_RULE("30076","该区域尚未配置配送费规则"),
-	CANT_CANCEL_DUE_BALANCE("30077","余额不足,取消订单失败");
+	CANT_CANCEL_DUE_BALANCE("30077","余额不足,取消订单失败"),
+
+	SHOP_NOT_AUTHED("20001", "店铺审核未通过"),
+	SHOP_PROVIDERID_DIFFER("20002", "服务商ID不一致");
 
 
 

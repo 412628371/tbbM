@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web;
+package com.xinguang.tubobo.merchant.web.test;
 
 import com.xinguang.tubobo.impl.merchant.manager.MerchantToPostHouseServiceImpl;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;

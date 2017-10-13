@@ -1,11 +1,11 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
-import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
@@ -17,6 +17,7 @@ import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -72,14 +73,14 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         }
         Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(pageNo,pageSize,entity);
         List<MerchantInfoDTO> dtoList = new ArrayList<>();
-        if (page!= null && page.getList() != null && page.getList().size() > 0){
-            for (MerchantInfoEntity merchant : page.getList()){
+        if (page.hasContent()){
+            for (MerchantInfoEntity merchant : page){
                 MerchantInfoDTO infoDto = new MerchantInfoDTO();
                 BeanUtils.copyProperties(merchant,infoDto);
                 dtoList.add(infoDto);
             }
         }
-        return new PageDTO<MerchantInfoDTO>(page.getPageNo(),page.getPageSize(),page.getCount(),dtoList);
+        return new PageDTO<MerchantInfoDTO>(pageNo,pageSize,page.getTotalElements(),dtoList);
     }
 
     /**
@@ -130,10 +131,10 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
         if(StringUtils.isNotBlank(dto.getSenderAdcode())&& dto.getSenderAdcode().length()>4){
             entity.setSenderAdcode(dto.getSenderAdcode().substring(0,4));
         }
-        Page<MerchantOrderEntity> page = merchantOrderManager.adminQueryOrderPage(pageNo,pageSize,entity);
+       Page<OrderEntity> page = merchantOrderManager.adminQueryOrderPage(pageNo,pageSize,entity);
         List<MerchantOrderDTO> dtoList = new ArrayList<>();
-        if (page!= null && page.getList() != null && page.getList().size() > 0){
-            for (MerchantOrderEntity order : page.getList()){
+        if (page.hasContent()){
+            for (OrderEntity order : page){
                 MerchantOrderDTO infoDto = new MerchantOrderDTO();
                 BeanUtils.copyProperties(order,infoDto);
                 infoDto.setPayAmount(order.getPayAmount()==null?0:(int)(order.getPayAmount()*100));
@@ -147,7 +148,7 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
                 dtoList.add(infoDto);
             }
         }
-        return new PageDTO<MerchantOrderDTO>(page.getPageNo(),page.getPageSize(),page.getCount(),dtoList);
+        return new PageDTO<MerchantOrderDTO>(pageNo,pageSize,page.getTotalElements(),dtoList);
     }
 
     /**

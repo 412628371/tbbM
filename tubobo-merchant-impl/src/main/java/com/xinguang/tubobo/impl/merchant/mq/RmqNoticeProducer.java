@@ -130,6 +130,31 @@ public class RmqNoticeProducer {
         }
         sendNotice(noticeDTO);
     }
+
+    /**
+     * 发送商家绑定通知
+     */
+    public void sendMerchantBindNotice(String userId, String providerName){
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setNoticeType(EnumNoticeType.BIND.getValue());
+        noticeDTO.setUserId(userId);
+        noticeDTO.setTitle(config.getNoticeBindTitle());
+        noticeDTO.setContent("（服务商"+ providerName + "）" + config.getNoticeBindTemplate());
+        sendNotice(noticeDTO);
+    }
+
+    /**
+     * 发送商家解绑通知
+     */
+    public void sendMerchantUnbindMotice(String userId, String providerName){
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setNoticeType(EnumNoticeType.UNBIND.getValue());
+        noticeDTO.setUserId(userId);
+        noticeDTO.setTitle(config.getNoticeUnbindTitle());
+        noticeDTO.setContent("您与（服务商"+ providerName + "）" + config.getNoticeUnbindTemplate());
+        sendNotice(noticeDTO);
+    }
+
     /**
      * 组装订单类型推送的DTO
      * @param userId

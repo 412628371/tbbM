@@ -6,7 +6,6 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.alibaba.fastjson.JSON;
-import com.hzmux.hzcms.common.persistence.Page;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
@@ -28,6 +27,7 @@ import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageRecordEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqMessagePayRecordProducer;
@@ -49,6 +49,7 @@ import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.takeout.answer.DispatcherInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -447,12 +448,12 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	/**
 	 * 商家查询订单分页（缓存）
 	 */
-	public Page<MerchantOrderEntity> merchantQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
+	public Page<OrderEntity> merchantQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
 		return orderService.merchantQueryOrderPage(pageNo,pageSize,entity);
 	}
 
-	public Page<MerchantOrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
-														 String orderTimeSort, MerchantOrderEntity entity){
+	public Page<OrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
+													 String orderTimeSort, MerchantOrderEntity entity){
 		return orderService.postHouseQueryOrderPage(pageNo, pageSize, expectFinishTimeSort, orderTimeSort, entity);
 	}
 
@@ -482,7 +483,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	/**
 	 * 后台查询分页（不缓存）
 	 */
-	public Page<MerchantOrderEntity> adminQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
+	public Page<OrderEntity> adminQueryOrderPage(int pageNo, int pageSize, MerchantOrderEntity entity){
 		return orderService.adminQueryOrderPage(pageNo,pageSize,entity);
 	}
 

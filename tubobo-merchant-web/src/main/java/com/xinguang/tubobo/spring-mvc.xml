@@ -11,7 +11,7 @@
     <!-- 加载配置属性文件 -->
 	<!--<context:property-placeholder ignore-unresolvable="true" location="classpath*:/hzcms.properties" />-->
 
-	<import resource="spring-context.xml" />
+	<import resource="../../../../resources/spring-context.xml" />
 
 	<!-- 使用Annotation自动注册Bean,只扫描@Controller -->
 	<context:component-scan base-package="com.xinguang.tubobo.merchant.web" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->

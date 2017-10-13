@@ -51,21 +51,24 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         BeanUtils.copyProperties(respOrderDetail,commentsInfo);
         String headImage=null;
         if (StringUtils.isNotEmpty(entity.getRiderId())){
-            RiderInfoDTO byUserId = riderToAdminServiceInterface.findByUserId(entity.getRiderId());
-            if (null!=byUserId){
-                headImage = byUserId.getHeadImage();
+            try {
+                RiderInfoDTO byUserId = riderToAdminServiceInterface.findByUserId(entity.getRiderId());
+                if (null!=byUserId){
+                    headImage = byUserId.getHeadImage();
+                }
+            }catch (Exception e){
+                logger.info("获取骑手riderd端照片失败");
             }
+
         }
-        DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
-                EnumCarType.getNameByType(entity.getRiderCarType()),headImage);
-        CarInfo carInfo = new CarInfo(entity.getCarType(),entity.getCarTypeName());
-        //获取用车时间对象
+
+       /* //获取用车时间对象
         SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStr="";
         if(entity.getAppointTime() != null){
             timeStr = sm.format(entity.getAppointTime());
         }
-        AppointTask appointTask = new AppointTask(timeStr, entity.getAppointType());
+        AppointTask appointTask = new AppointTask(timeStr, entity.getAppointType());*/
 
         //封装overfee对象
         OverFeeInfo overFeeInfo = new OverFeeInfo();
@@ -87,14 +90,12 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         thirdInfo.setOriginOrderViewId(entity.getOriginOrderViewId());
 
         RespOrderDetailV2 resp = new RespOrderDetailV2();
-        resp.setCarInfo(carInfo);
         resp.setCommentsInfo(commentsInfo);
         resp.setConsignor(consignor);
         resp.setReceiver(receiver);
-        resp.setDriverInfo(driverInfo);
         resp.setOrderInfo(orderInfo);
         resp.setPayInfo(payInfo);
-        resp.setAppointTask(appointTask);
+      //  resp.setAppointTask(appointTask);
         resp.setOverFeeInfo(overFeeInfo);
         resp.setThirdInfo(thirdInfo);
         return resp;

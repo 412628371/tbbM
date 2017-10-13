@@ -12,6 +12,7 @@ import java.util.Date;
  */
 @Repository
 public class MerchantThirdBindDao extends BaseDao<MerchantThirdBindEntity> {
+
     public void updateMtBindInfo(String userId,boolean bound,String authToken){
         MerchantThirdBindEntity entity = findByUserId(userId);
         if (null == entity){
@@ -23,6 +24,7 @@ public class MerchantThirdBindDao extends BaseDao<MerchantThirdBindEntity> {
         entity.setUpdateDate(new Date());
         save(entity);
     }
+
     public void updateEleBindInfo(String userId,boolean bound){
         MerchantThirdBindEntity entity = findByUserId(userId);
         if (null == entity){
@@ -33,6 +35,7 @@ public class MerchantThirdBindDao extends BaseDao<MerchantThirdBindEntity> {
         entity.setUpdateDate(new Date());
         save(entity);
     }
+
     public void updateYzBindInfo(String userId,boolean bound){
         MerchantThirdBindEntity entity = findByUserId(userId);
         if (null == entity){
@@ -43,6 +46,7 @@ public class MerchantThirdBindDao extends BaseDao<MerchantThirdBindEntity> {
         entity.setUpdateDate(new Date());
         save(entity);
     }
+
     public MerchantThirdBindEntity findByUserId(String userId){
         String hql = "from MerchantThirdBindEntity where userId=:userId and delFlag='0'";
         Parameter parameter = new Parameter();
@@ -50,4 +54,6 @@ public class MerchantThirdBindDao extends BaseDao<MerchantThirdBindEntity> {
         MerchantThirdBindEntity entity = getByHql(hql,parameter);
         return entity;
     }
+
+
 }
