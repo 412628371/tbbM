@@ -13,9 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 
-@Entity
+/*@Entity
 @Table(name = "tubobo_merchant_order")
-@DynamicInsert @DynamicUpdate
+@DynamicInsert @DynamicUpdate*/
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MerchantOrderEntity extends BaseMerchantEntity {
 
@@ -113,6 +113,15 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private Long providerId;//所属服务商ID
 	private String providerName;//所属服务商名称
 	private String merMessage; //未妥投确认消息
+	private String orderFeature;//订单特征值 RIDER_CANCEL_RESEND  骑手取消重发单
+
+	public String getOrderFeature() {
+		return orderFeature;
+	}
+
+	public void setOrderFeature(String orderFeature) {
+		this.orderFeature = orderFeature;
+	}
 
 	public Boolean getShortMessage() {
 		return shortMessage;

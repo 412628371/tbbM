@@ -159,6 +159,26 @@ public class OrderService extends BaseService {
         return orderNo;
     }
 
+
+    /**
+     * 骑手取消订单后自动支付,重新发单
+     */
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#userId+'_*'")
+    @Transactional(readOnly = false)
+    public String resendOrderByRiderCancel(String userId, OrderEntity orderEntity,OrderDetailEntity detailEntity){
+        String orderNo = codeGenerator.nextCustomerCode(orderEntity.getOrderType());
+        //重新设置
+        orderEntity.setOrderNo(orderNo);
+        orderEntity.setOrderNo(orderNo);
+        merchantOrderDao.save(orderEntity);
+        merchantOrderDetailRepository.save(detailEntity);
+        return orderNo;
+
+
+    }
+
+
+
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public int merchantPay(String merchantId, String orderNo, long payId, Date payDate,String orderStatus) {
@@ -196,7 +216,7 @@ public class OrderService extends BaseService {
     public boolean riderCancel(String orderNo, String cancelReason, Date now, Double subsidy,String merchantId) {
         List<String> orderStatusArr=new ArrayList<>();
         orderStatusArr.add(EnumMerchantOrderStatus.WAITING_PICK.getValue());
-        merchantOrderDao.orderCancel(orderNo, now,EnumMerchantOrderStatus.CANCEL.getValue(),new Date(),orderStatusArr, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        merchantOrderDao.orderCancel(orderNo, now,EnumMerchantOrderStatus.RESEND.getValue(),new Date(),orderStatusArr, BaseMerchantEntity.DEL_FLAG_NORMAL);
         return  merchantOrderDetailRepository.updateCancelReasonWithFine(new Date(), cancelReason,null, null,subsidy,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL)==1;
 
 

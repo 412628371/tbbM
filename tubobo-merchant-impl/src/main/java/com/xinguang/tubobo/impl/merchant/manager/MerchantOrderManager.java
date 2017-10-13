@@ -6,6 +6,7 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.alibaba.fastjson.JSON;
+import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
@@ -16,6 +17,7 @@ import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.FineRequest;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
+import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
 import com.xinguang.tubobo.account.api.request.SubsidyRequest;
 import com.xinguang.tubobo.account.api.response.*;
 import com.xinguang.tubobo.api.AdminToMerchantService;
@@ -24,10 +26,7 @@ import com.xinguang.tubobo.api.enums.EnumOrderStatus;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageRecordEntity;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
+import com.xinguang.tubobo.impl.merchant.entity.*;
 import com.xinguang.tubobo.impl.merchant.handler.TimeoutTaskProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqAddressInfoProducer;
 import com.xinguang.tubobo.impl.merchant.mq.RmqMessagePayRecordProducer;
@@ -43,11 +42,9 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTaskOperatorCallbackDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
-import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
-import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
-import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import com.xinguang.tubobo.merchant.api.enums.*;
 import com.xinguang.tubobo.takeout.answer.DispatcherInfoDTO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -579,7 +576,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
     * */
 	public void dealFromRiderCancelOrders(MerchantTaskOperatorCallbackDTO dtoCancel) {
 		String orderNo = dtoCancel.getTaskNo();
+
 		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
+		Boolean messageOpen=entity.getShortMessage();
 		if (null == entity || !EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
 			logger.info("骑手取消配送，未找到订单或订单状态异常。orderNo:{} orderStatus:{}",entity.getOrderStatus());
 			return;
@@ -626,8 +625,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 					logger.error("骑手取消订单推送食集失败 orderNo: "+orderNo);
 				}
 			}
-
-
+			//重新发单
+			riderCancelResend(entity,messageOpen);
 
 			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 		}else{
@@ -636,9 +635,75 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 
 		logger.info("骑手取消配送：orderNo:{}",orderNo);
 	}
+	/**
+	 * 骑手取消订单后 重新发单
+	 * @return
+	 */
+	private void riderCancelResend(MerchantOrderEntity entity,Boolean messageOpen) {
+		MerchantInfoEntity merchant = merchantInfoService.findByUserId(entity.getUserId());
+		OrderEntity orderEntity = new OrderEntity();
+		OrderDetailEntity detailEntity = new OrderDetailEntity();
+		//复制原有信息
+		BeanUtils.copyProperties(entity,orderEntity);
+		BeanUtils.copyProperties(entity,detailEntity);
+		orderEntity.setId(null);
+		orderEntity.setCreateDate(null);
+		orderEntity.setUpdateDate(null);
+		orderEntity.setRatedFlag(null);
+		detailEntity.setId(null);
+		detailEntity.setCreateDate(null);
+		detailEntity.setUpdateDate(null);
+
+		//设置重发特殊标记位
+		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
+		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
+		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
+		orderEntity.setOrderTime(new Date());
+		orderEntity.setShortMessage(messageOpen);
+		//保存订单
+		String newOrderNo=orderService.resendOrderByRiderCancel(entity.getUserId(),orderEntity,detailEntity);
+
+		//进行支付
+		Double amountD=entity.getPayAmount();
+		//check订单短信开关,if开启--扣除短信费用,短信费用扣除发生在骑手取货时 生成额外短信流水
+		if (messageOpen){
+			amountD=  CalCulateUtil.sub(amountD,MerchantConstants.MESSAGE_FEE);
+		}
+		long amount = ConvertUtil.convertYuanToFen(amountD);
+		PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
+		payWithOutPwdRequest.setOrderId(newOrderNo);
+		payWithOutPwdRequest.setAccountId(merchant.getAccountId());
+		payWithOutPwdRequest.setAmount(amount);
+		logger.info("骑手取消订单,免密重新支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),newOrderNo,payWithOutPwdRequest.getAmount());
+		TbbAccountResponse<PayInfo> response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+		if (response != null && response.isSucceeded()){
+			long payId = response.getData().getId();
+			TaskCreateDTO orderDTO = buildMerchantOrderDTO(entity,merchant);
+			orderDTO.setPayId(payId);
+			logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",newOrderNo
+					,merchant.getAccountId(),response.getData().getId(),amount);
+			try {
+				merchantPay(orderDTO,merchant.getUserId(),newOrderNo,payId);
+			} catch (MerchantClientException e) {
+				logger.info("骑手取消订单后重新发单失败:该订单已支付 orderNo:{}",newOrderNo);
+			}
+		}else {
+			if (response == null){
+				logger.error("pay  FAIL.orderNo:{}, accountId:{}}",
+						newOrderNo,merchant.getAccountId());
+			}else {
+				if (response.getErrorCode().equals(TbbAccountResponse.ErrorCode.ERROR_AMOUNT_NOT_ENOUGH.getCode())){
+					logger.error("pay  FAIL.,余额不足。orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
+							newOrderNo,merchant.getAccountId(),response.getErrorCode(),response.getMessage());
+				}
+				logger.error("pay  FAIL.,orderNo:{}, accountId:{}, errorCode:{}, errorMsg{}",
+						newOrderNo,merchant.getAccountId(),response.getErrorCode(),response.getMessage());
+			}
+		}
+	}
 
 
-    /**
+	/**
      * 骑手提交未妥投请求
      * @return
      */
@@ -719,4 +784,48 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 
 	}
 
+
+
+	public TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
+		TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
+		BeanUtils.copyProperties(entity,merchantOrderDTO);
+		merchantOrderDTO.setOrderRemark(entity.getOrderRemark());
+		merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
+		if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
+			merchantOrderDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
+		}else if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
+			merchantOrderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
+			merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
+			merchantOrderDTO.setProviderId(entity.getProviderId());
+			merchantOrderDTO.setProviderName(entity.getProviderName());
+		}
+		if (entity.getPayAmount() != null){
+			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
+		}
+		if (entity.getDeliveryFee() != null){
+			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getDeliveryFee()).intValue());
+		}
+		if (entity.getTipFee() != null){
+			merchantOrderDTO.setTipFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
+		}
+		if (entity.getPeekOverFee() != null){
+			merchantOrderDTO.setPeekOverFee(ConvertUtil.convertYuanToFen(entity.getPeekOverFee()).intValue());
+		}
+		if (entity.getWeatherOverFee() != null){
+			merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
+		}
+		//传给任务的支付金额，减去短信费用  modified by xqh on 2017-10-11
+		if(entity.getShortMessage()){
+			if (merchantOrderDTO.getPayAmount()!=null && merchantOrderDTO.getPayAmount()>MerchantConstants.MESSAGE_FEE*100){
+				merchantOrderDTO.setPayAmount(merchantOrderDTO.getPayAmount()- CalCulateUtil.mul(MerchantConstants.MESSAGE_FEE,100).intValue());
+			}
+		}
+		merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
+		String [] shopUrls = new String[5];
+		shopUrls[0] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));
+		shopUrls[1] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl2()));
+		merchantOrderDTO.setSenderShopUrls(shopUrls);
+		merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
+		return merchantOrderDTO;
+	}
 }
