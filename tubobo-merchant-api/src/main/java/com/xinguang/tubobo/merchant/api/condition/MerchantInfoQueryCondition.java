@@ -12,6 +12,15 @@ public class MerchantInfoQueryCondition implements Serializable{
     private Long providerId;
     private Integer pageNo;
     private Integer pageSize;
+    private String bindStatus;
+
+    public String getBindStatus() {
+        return bindStatus;
+    }
+
+    public void setBindStatus(String bindStatus) {
+        this.bindStatus = bindStatus;
+    }
 
     public String getShopId() {
         return shopId;
