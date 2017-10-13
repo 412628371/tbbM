@@ -49,10 +49,13 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
 
                 OrderInfo orderInfo = new OrderInfo();
                 BeanUtils.copyProperties(entity,orderInfo);
+                if (null==entity.getUnsettledStatus()){
+                    orderInfo.setUnsettledStatus("");
+                }
                 CommentsInfo commentsInfo = new CommentsInfo(entity.getRatedFlag());
                 BeanUtils.copyProperties(entity,commentsInfo);
 
-
+                DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),null);
 
                 ThirdInfo thirdInfo = new ThirdInfo();
                 thirdInfo.setPlatformCode(entity.getPlatformCode());
@@ -75,6 +78,7 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
 
                 detailVo.setOrderInfo(orderInfo);
                 detailVo.setPayInfo(payInfo);
+                detailVo.setDriverInfo(driverInfo);
                 detailVo.setConsignor(consignor);
                 detailVo.setCommentsInfo(commentsInfo);
                 detailVo.setReceiver(receiver);

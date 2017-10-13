@@ -47,6 +47,9 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
 
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(respOrderDetail,orderInfo);
+        if (null==entity.getUnsettledStatus()){
+            orderInfo.setUnsettledStatus("");
+        }
         CommentsInfo commentsInfo = new CommentsInfo(respOrderDetail.getRatedFlag());
         BeanUtils.copyProperties(respOrderDetail,commentsInfo);
         String headImage=null;
@@ -60,8 +63,8 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
                 logger.info("获取骑手riderd端照片失败");
             }
         }
-        DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
-                EnumCarType.getNameByType(entity.getRiderCarType()),headImage);
+        DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone()
+           ,headImage);
 
        /* //获取用车时间对象
         SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
