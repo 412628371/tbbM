@@ -30,11 +30,11 @@ public class MerchantSettingsService {
         if (null==settingsEntity){
             settingsEntity = new MerchantSettingsEntity();
         }
-        settingsEntity.setPushMsgOrderExpired(true);
-        settingsEntity.setPushMsgOrderFinished(true);
-        settingsEntity.setPushMsgOrderGrabed(true);
-        settingsEntity.setPushMsgVoiceOpen(true);
-        MerchantSettingsEntity saveEntity = settingsDao.save(entity);
+        settingsEntity.setPushMsgOrderExpired(entity.getPushMsgOrderExpired());
+        settingsEntity.setPushMsgOrderFinished(entity.getPushMsgOrderFinished());
+        settingsEntity.setPushMsgOrderGrabed(entity.getPushMsgOrderGrabed());
+        settingsEntity.setPushMsgVoiceOpen(entity.getPushMsgVoiceOpen());
+        MerchantSettingsEntity saveEntity = settingsDao.save(settingsEntity);
         return null==saveEntity?false:true;
 
     }
