@@ -28,7 +28,7 @@ public class MerchantTypeService implements MerchantTypeInterface {
     @Override
     @Cacheable(value= RedisCache.MERCHANT,key="'merchantType_all'")
     public List<MerchantTypeDTO> findAll() {
-        List<MerchantTypeEntity> merchantTypeEntities = merchantTypeRepository.findAllByDelFlagOrderOrderByName(MerchantTypeEntity.DEL_FLAG_NORMAL);
+        List<MerchantTypeEntity> merchantTypeEntities = merchantTypeRepository.findAllByDelFlagOrderByName(MerchantTypeEntity.DEL_FLAG_NORMAL);
         List<MerchantTypeDTO> merchantTypeDTOS = new ArrayList<>();
 
         if (merchantTypeEntities!=null&&merchantTypeEntities.size()>0){

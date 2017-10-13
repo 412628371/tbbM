@@ -13,7 +13,7 @@ import java.util.List;
  * Created by lvhantai on 2017/9/30.
  */
 public interface MerchantTypeRepository extends JpaRepository<MerchantTypeEntity, Long>, JpaSpecificationExecutor<MerchantTypeEntity> {
-    List<MerchantTypeEntity> findAllByDelFlagOrderOrderByName(String delFlag);
+    List<MerchantTypeEntity> findAllByDelFlagOrderByName(String delFlag);
     MerchantTypeEntity findByIdAndDelFlag(Long id, String delFlag);
     MerchantTypeEntity findByNameAndDelFlag(String name, String delFlag);
 
