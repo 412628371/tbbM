@@ -747,6 +747,10 @@ public class OrderService extends BaseService {
               ,unsettledTime ,orderNo,PostOrderUnsettledStatusEnum.ING.getValue(),BaseMerchantEntity.DEL_FLAG_NORMAL);
         return merchantOrderDetailRepository.merchantHandlerUnsettledOrder(unsettledTime,message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
     }
-
+    @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
+    @Transactional(readOnly = false)
+    public int  updateShortMessage(Boolean setting,String  orderNo,String userId){
+        return merchantOrderDao.updateShortMessage(setting,userId,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+    }
 
 }

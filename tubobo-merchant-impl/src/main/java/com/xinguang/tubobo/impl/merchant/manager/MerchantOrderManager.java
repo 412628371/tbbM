@@ -596,6 +596,10 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			//订单返还
 			// 被取消任务补贴
 			result = orderService.riderCancel(orderNo, EnumCancelReason.RIDER_CANCEL.getValue(), dtoCancel.getOperateTime(), dtoCancel.getSubsidy(),entity.getUserId());
+			if (entity.getShortMessage()){
+				//取消短信标记位
+				orderService.updateShortMessage(false,entity.getOrderNo(),entity.getUserId());
+			}
 			if (dtoCancel.getSubsidy() != null && dtoCancel.getSubsidy() > 0){
 				double subsidy=dtoCancel.getSubsidy();
 				double subsidyFen=CalCulateUtil.mul(subsidy,100);
@@ -610,6 +614,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 							entity.getOrderNo(),entity.getRiderId(),accountId,subsidy,subsidyResponse.getErrorCode(),subsidyResponse.getMessage());
 				}
 			}
+			//有必要?驿站单骑手无法取消
 			if(EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
 				try {
 					// 通知食集
@@ -621,6 +626,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 					logger.error("骑手取消订单推送食集失败 orderNo: "+orderNo);
 				}
 			}
+
+
+
 			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 		}else{
 			logger.error("骑手取消订单，更改订单状态出错,退款失败 ,orderNo:{}" ,orderNo);
@@ -703,6 +711,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			rmqMessagePayRecordProducer.sendMessage(msg);
 
 		}else {
+			//更改短信标志
+			orderService.updateShortMessage(false,entity.getOrderNo(),entity.getUserId());
 			logger.error("商家取消任务罚款 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
 					entity.getOrderNo(),entity.getRiderId(),accountId,messageFee,fineResponse.getErrorCode(),fineResponse.getMessage());
 		}

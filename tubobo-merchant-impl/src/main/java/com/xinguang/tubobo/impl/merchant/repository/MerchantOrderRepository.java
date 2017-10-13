@@ -220,6 +220,11 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
     int merchantHandlerUnsettledOrder(@Param("unsettledStatus")String unsettledStatus, @Param("orderStatus")String orderStatus,@Param("unsettledTime") Date unsettledTime,@Param("orderNo")String orderNo,@Param("whereUnsettledStatus")String whereUnsettledStatus,@Param("delFlag") String  delFlag);
 
 
+    @Modifying
+    @Query("update #{#entityName} a set a.shortMessage =:shortMessage where a.orderNo=:orderNo and userId=:userId and a.delFlag =:delFlag")
+    int updateShortMessage(@Param("shortMessage")Boolean shortMessage, @Param("userId")String userId,@Param("orderNo") String orderNo, @Param("delFlag")String delFlag);
+
+
 
 
 
