@@ -570,7 +570,7 @@ public class OrderService extends BaseService {
 
                 }
                 if (StringUtils.isNotBlank(entity.getProviderName())){
-                    list.add(cb.equal(root.get("providerName").as(Long.class),entity.getProviderName()));
+                    list.add(cb.equal(root.get("providerName").as(String.class),entity.getProviderName()));
                 }
 
 
@@ -654,10 +654,10 @@ public class OrderService extends BaseService {
                     list.add(cb.equal(root.get("providerId").as(Long.class), providerId));
                 }
                 if(StringUtils.isNotBlank(orderStatus) ){
-                    list.add(cb.equal(root.get("orderStatus").as(Long.class), orderStatus));
+                    list.add(cb.equal(root.get("orderStatus").as(String.class), orderStatus));
                 }
                 if(StringUtils.isNotBlank(unsettledStatus) ){
-                    list.add(cb.equal(root.get("unsettledStatus").as(Long.class), unsettledStatus));
+                    list.add(cb.equal(root.get("unsettledStatus").as(String.class), unsettledStatus));
                 }
                 return criteriaQuery.where(list.toArray(new Predicate[list.size()])).getRestriction();
             }

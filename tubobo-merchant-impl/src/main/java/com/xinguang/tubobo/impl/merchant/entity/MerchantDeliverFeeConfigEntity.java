@@ -3,15 +3,11 @@
  */
 package com.xinguang.tubobo.impl.merchant.entity;
 
-import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Entity
 @Table(name = "tubobo_merchant_deliver_fee_config")
@@ -29,6 +25,19 @@ public class MerchantDeliverFeeConfigEntity extends BaseMerchantEntity {
 	private String areaCode;
 	private String cityCode;
 	private String provinceCode;
+	private String orderType;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
 
 	public String getAreaCode() {
 		return areaCode;
