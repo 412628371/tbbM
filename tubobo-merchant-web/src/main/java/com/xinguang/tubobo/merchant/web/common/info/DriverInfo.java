@@ -5,7 +5,6 @@ import java.io.Serializable;
 /**
  * 司机/骑手信息.
  */
-@Deprecated
 public class DriverInfo implements Serializable{
 
     private String carNo;

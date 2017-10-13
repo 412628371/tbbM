@@ -59,8 +59,9 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
             }catch (Exception e){
                 logger.info("获取骑手riderd端照片失败");
             }
-
         }
+        DriverInfo driverInfo = new DriverInfo(entity.getRiderName(),entity.getRiderPhone(),entity.getRiderCarNo(),
+                EnumCarType.getNameByType(entity.getRiderCarType()),headImage);
 
        /* //获取用车时间对象
         SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -93,6 +94,7 @@ public class OrderDetailControllerV2 extends MerchantBaseController<ReqOrderDeta
         resp.setCommentsInfo(commentsInfo);
         resp.setConsignor(consignor);
         resp.setReceiver(receiver);
+        resp.setDriverInfo(driverInfo);
         resp.setOrderInfo(orderInfo);
         resp.setPayInfo(payInfo);
       //  resp.setAppointTask(appointTask);
