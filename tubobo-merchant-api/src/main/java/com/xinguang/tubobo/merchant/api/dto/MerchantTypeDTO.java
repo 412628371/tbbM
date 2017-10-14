@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.merchant.api.dto;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -9,13 +8,29 @@ import java.io.Serializable;
 public class MerchantTypeDTO implements Serializable {
 
     private Long id;
-    @NotNull(message = "名称不能为null")
     private String name; //名称
     private String describtion; //描述
-    @NotNull(message = "模板不能为null")
     private Long temId;//对应模板id
     private String temName;//对应模板名称
     private Integer commissionRate;// 佣金比例
+    private String createBy;
+    private String updateBy;
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
 
     public Integer getCommissionRate() {
         return commissionRate;
