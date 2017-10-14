@@ -626,7 +626,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				}
 			}
 			//重新发单
-			riderCancelResend(entity,messageOpen);
+			riderCancelResend(entity,messageOpen,dtoCancel.getSubsidy());
 
 			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 		}else{
@@ -639,7 +639,12 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	 * 骑手取消订单后 重新发单
 	 * @return
 	 */
-	private void riderCancelResend(MerchantOrderEntity entity,Boolean messageOpen) {
+	private void riderCancelResend(MerchantOrderEntity entity,Boolean messageOpen,Double subsidyFromRider) {
+		Double amountD=entity.getPayAmount();
+		//新建订单的金额为原来订单金额+骑手罚款
+		if (null!=subsidyFromRider){
+			amountD=CalCulateUtil.add(amountD,subsidyFromRider);
+		}
 		MerchantInfoEntity merchant = merchantInfoService.findByUserId(entity.getUserId());
 		OrderEntity orderEntity = new OrderEntity();
 		OrderDetailEntity detailEntity = new OrderDetailEntity();
@@ -650,6 +655,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setCreateDate(null);
 		orderEntity.setUpdateDate(null);
 		orderEntity.setRatedFlag(null);
+		orderEntity.setGrabItemTime(null);
+		orderEntity.setGrabOrderTime(null);
+		orderEntity.setExpectFinishTime(null);
 		detailEntity.setId(null);
 		detailEntity.setCreateDate(null);
 		detailEntity.setUpdateDate(null);
@@ -664,11 +672,13 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		String newOrderNo=orderService.resendOrderByRiderCancel(entity.getUserId(),orderEntity,detailEntity);
 
 		//进行支付
-		Double amountD=entity.getPayAmount();
+		MerchantOrderEntity newOrderEntity = orderService.findByOrderNo(newOrderNo);
+
 		//check订单短信开关,if开启--扣除短信费用,短信费用扣除发生在骑手取货时 生成额外短信流水
 		if (messageOpen){
 			amountD=  CalCulateUtil.sub(amountD,MerchantConstants.MESSAGE_FEE);
 		}
+
 		long amount = ConvertUtil.convertYuanToFen(amountD);
 		PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
 		payWithOutPwdRequest.setOrderId(newOrderNo);
@@ -678,7 +688,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		TbbAccountResponse<PayInfo> response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
 		if (response != null && response.isSucceeded()){
 			long payId = response.getData().getId();
-			TaskCreateDTO orderDTO = buildMerchantOrderDTO(entity,merchant);
+			TaskCreateDTO orderDTO = buildMerchantOrderDTO(newOrderEntity,merchant);
 			orderDTO.setPayId(payId);
 			logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",newOrderNo
 					,merchant.getAccountId(),response.getData().getId(),amount);

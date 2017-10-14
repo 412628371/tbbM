@@ -169,7 +169,7 @@ public class OrderService extends BaseService {
         String orderNo = codeGenerator.nextCustomerCode(orderEntity.getOrderType());
         //重新设置
         orderEntity.setOrderNo(orderNo);
-        orderEntity.setOrderNo(orderNo);
+        detailEntity.setOrderNo(orderNo);
         merchantOrderDao.save(orderEntity);
         merchantOrderDetailRepository.save(detailEntity);
         return orderNo;
