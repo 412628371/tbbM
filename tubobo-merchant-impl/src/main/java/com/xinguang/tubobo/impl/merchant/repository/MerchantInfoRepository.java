@@ -25,9 +25,9 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity
 
     @Modifying
     @Query("update #{#entityName} a set a.merchantStatus = :merchantStatus, a.consignorStatus=:consignorStatus, a.updateDate=:updateDate,a.updateBy=:updateBy, " +
-            " a.verifyDate=:verifyDate, a.reason=:reason where a.userId = :userId and a.delFlag = :delFlag ")
+            " a.verifyDate=:verifyDate, a.reason=:reason ,a.merTypeId=:merTypeId where a.userId = :userId and a.delFlag = :delFlag ")
     int updateVerifyStatus(@Param("userId") String userId, @Param("delFlag") String delFlag, @Param("merchantStatus") String merchantStatus, @Param("consignorStatus") String consignorStatus,
-                           @Param("updateDate") Date updateDate, @Param("verifyDate") Date verifyDate,@Param("updateBy") String updateBy, @Param("reason") String reason);
+                           @Param("updateDate") Date updateDate, @Param("verifyDate") Date verifyDate,@Param("updateBy") String updateBy, @Param("reason") String reason,@Param("merTypeId") Long merTypeId);
 
     @Modifying
     @Query("update #{#entityName} a set a.bdCode = :bdCode, a.bdUpdateDate=:bdUpdateDate, a.updateDate=:updateDate where a.userId = :userId and a.delFlag = :delFlag ")

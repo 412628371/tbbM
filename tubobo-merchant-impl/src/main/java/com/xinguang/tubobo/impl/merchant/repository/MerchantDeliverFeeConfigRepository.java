@@ -24,10 +24,10 @@ public interface MerchantDeliverFeeConfigRepository extends JpaRepository<Mercha
     /**
      * 根据区查具体区的定价
      */
-    List<MerchantDeliverFeeConfigEntity> findByAreaCodeAndDelFlagAndOrderTypeOrderByBeginDistance(String areaCode, String delFlag,String orderType);
+    List<MerchantDeliverFeeConfigEntity> findByAreaCodeAndDelFlagAndOrderTypeAndTemIdOrderByBeginDistance(String areaCode, String delFlag,String orderType,Long temId);
 
     @Modifying
-    @Query("update #{#entityName} a set a.delFlag = :delFlag where a.areaCode = :areaCode and a.orderType =:orderType")
-    int deleteFeeByAreaCodeAndOrderType(@Param("delFlag") String delFlag, @Param("areaCode") String areaCode,@Param("orderType") String orderType);
+    @Query("update #{#entityName} a set a.delFlag = :delFlag where a.areaCode = :areaCode and a.orderType =:orderType and a.temId = :temId")
+    int deleteFeeByAreaCodeAndOrderType(@Param("delFlag") String delFlag, @Param("areaCode") String areaCode,@Param("orderType") String orderType,@Param("temId") Long temId);
 
 }

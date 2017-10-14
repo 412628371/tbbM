@@ -24,6 +24,14 @@ public interface MerchantDeliverFeeConfigInterface {
     List<MerchantDeliverFeeConfigDTO> findByOrderType(String orderType);
 
     /**
+     * 多类型查询条件下  查询数据
+     * @param
+     * @return
+     */
+    List<MerchantDeliverFeeConfigDTO> queryAllByCondition(MerchantDeliverFeeConfigDTO merchantDeliverFeeConfigDTO);
+
+
+    /**
      * 根据区code查询具体区的费用
      * @return
      */
@@ -32,7 +40,7 @@ public interface MerchantDeliverFeeConfigInterface {
      * 根据区code和订单类型查询具体区的费用
      * @return
      */
-    List<MerchantDeliverFeeConfigDTO> findFeeByAreaCodeAndOrderType(String areaCode,String orderType);
+    List<MerchantDeliverFeeConfigDTO> findFeeByAreaCodeAndOrderTypeAndTemId(String areaCode,String orderType,Long temId);
 
     /**
      * 保存商家起送费全部信息
@@ -52,6 +60,6 @@ public interface MerchantDeliverFeeConfigInterface {
      * 根据areaCode先清除然后保存指定区域商家起送费全部信息
      * @param list
      */
-    void clearAndSaveListByAreaCodeAndOrderType(List<MerchantDeliverFeeConfigDTO> list);
+    void clearAndSaveListByAreaCodeAndOrderTypeAndTemId(List<MerchantDeliverFeeConfigDTO> list);
 
 }

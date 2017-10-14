@@ -5,17 +5,15 @@
  */
 package com.xinguang.tubobo.impl.merchant.service;
 
-import com.hzmux.hzcms.common.persistence.Parameter;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
-import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
+import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantInfoRepository;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
-import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.merchant.api.enums.EnumBindStatusType;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +90,7 @@ public class MerchantInfoService extends BaseService {
      */
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional(readOnly = false)
-	public int merchantStatusVerify(String userId,String status,String updateBy,String identifyType,String reason) {
+	public int merchantStatusVerify(String userId,String status,String updateBy,String identifyType,String reason,Long merTypeId) {
 		MerchantInfoEntity entity = merchantInfoRepository.findByUserIdAndDelFlag(userId, MerchantInfoEntity.DEL_FLAG_NORMAL);
 		if (entity == null)
 			return 0;
@@ -125,7 +123,7 @@ public class MerchantInfoService extends BaseService {
 		}
 
 		result = merchantInfoRepository.updateVerifyStatus(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, merchantStatus,consignorStatus,
-																								new Date(), new Date(), updateBy, reason);
+																								new Date(), new Date(), updateBy, reason,merTypeId);
 		return result;
 	}
 
@@ -186,6 +184,9 @@ public class MerchantInfoService extends BaseService {
 				}
 				if (StringUtils.isNotBlank(entity.getAddressAdCode())){
 					list.add(criteriaBuilder.like(root.get("addressAdCode").as(String.class), entity.getAddressAdCode()));
+				}
+				if (null!=entity.getMerTypeId()){
+					list.add(criteriaBuilder.equal(root.get("merTypeId").as(Long.class),entity.getMerTypeId()));
 				}
 				return criteriaQuery.where(list.toArray(new Predicate[list.size()])).getRestriction();
 			}

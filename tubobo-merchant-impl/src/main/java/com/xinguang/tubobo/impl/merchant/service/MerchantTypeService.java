@@ -43,6 +43,7 @@ public class MerchantTypeService implements MerchantTypeInterface {
     }
 
     @Override
+    @Cacheable(value= RedisCache.MERCHANT,key="'merchantType_'+#id")
     public MerchantTypeDTO findById(Long id) {
 
        MerchantTypeEntity merchantTypeEntity = merchantTypeRepository.findByIdAndDelFlag(id, MerchantTypeEntity.DEL_FLAG_NORMAL);
@@ -54,6 +55,7 @@ public class MerchantTypeService implements MerchantTypeInterface {
         return merchantTypeDTO;
     }
     @Override
+    @Cacheable(value= RedisCache.MERCHANT,key="'merchantType_'+#name")
     public MerchantTypeDTO findByName(String name) {
 
         MerchantTypeEntity merchantTypeEntity = merchantTypeRepository.findByNameAndDelFlag(name, MerchantTypeEntity.DEL_FLAG_NORMAL);
@@ -66,7 +68,7 @@ public class MerchantTypeService implements MerchantTypeInterface {
     }
 
     @Override
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_all'")
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_*'")
     @Transactional(readOnly = false)
     public Boolean update(MerchantTypeDTO merchantTypeDTO) {
 
@@ -83,7 +85,7 @@ public class MerchantTypeService implements MerchantTypeInterface {
     }
 
     @Override
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_all'")
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_*'")
     @Transactional(readOnly = false)
     public Boolean delete(Long id) {
         MerchantTypeEntity merchantTypeEntity  = merchantTypeRepository.findByIdAndDelFlag(id, MerchantTypeEntity.DEL_FLAG_NORMAL);
@@ -95,7 +97,7 @@ public class MerchantTypeService implements MerchantTypeInterface {
     }
 
     @Override
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_all'")
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_*'")
     @Transactional(readOnly = false)
     public Boolean save(MerchantTypeDTO merchantTypeDTO) {
 

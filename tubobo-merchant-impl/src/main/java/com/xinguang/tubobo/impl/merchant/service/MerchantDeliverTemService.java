@@ -45,6 +45,7 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
     }
 
     @Override
+    @Cacheable(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_'+#id")
     public MerchantDeliverFeeTemDTO findById(Long id) {
         MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity = merchantDeliverFeeTemRepository.findByIdAndDelFlag(id, MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
         MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO = new MerchantDeliverFeeTemDTO();
@@ -56,6 +57,7 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
     }
 
     @Override
+    @Cacheable(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_'+#name")
     public MerchantDeliverFeeTemDTO findByName(String name) {
         MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity = merchantDeliverFeeTemRepository.findByNameAndDelFlag(name, MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
         MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO = new MerchantDeliverFeeTemDTO();
@@ -67,7 +69,7 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
     }
 
     @Override
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_all'")
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_*'")
     @Transactional(readOnly = false)
     public Boolean update(MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO) {
         MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity  = new MerchantDeliverFeeTemEntity();
@@ -87,7 +89,7 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
     }
 
     @Override
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_all'")
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_*'")
     @Transactional(readOnly = false)
     public Boolean delete(Long id) {
         MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity  = merchantDeliverFeeTemRepository.findByIdAndDelFlag(id, MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
@@ -100,7 +102,7 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
     }
 
     @Override
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_all'")
+    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_*'")
     @Transactional(readOnly = false)
     public Boolean save(MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO) {
         String name = merchantDeliverFeeTemDTO.getName();

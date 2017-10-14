@@ -91,11 +91,11 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
      * @return
      */
     @Override
-    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType,String reason) {
+    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType,String reason,Long merTypeId) {
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
         if (null == infoEntity )
             return false;
-        int i = merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy,identifyType,reason);
+        int i = merchantInfoService.merchantStatusVerify(userId,merchantStatus,updateBy,identifyType,reason,merTypeId);
         if (i > 0){
             //消息放入报表mq
             if("CONSIGNOR".equals(identifyType)){

@@ -1,14 +1,18 @@
 package com.xinguang.tubobo.merchant.api.dto;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
  * Created by yangxb on 2017/10/13.
  */
 public class MerchantTypeDTO implements Serializable {
+
     private Long id;
+    @NotNull(message = "名称不能为null")
     private String name; //名称
     private String describtion; //描述
+    @NotNull(message = "模板不能为null")
     private Long temId;//对应模板id
     private String temName;//对应模板名称
     private Integer commissionRate;// 佣金比例
