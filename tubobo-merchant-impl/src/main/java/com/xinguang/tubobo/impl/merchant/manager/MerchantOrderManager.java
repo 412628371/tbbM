@@ -826,6 +826,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		shopUrls[1] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl2()));
 		merchantOrderDTO.setSenderShopUrls(shopUrls);
 		merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
+		merchantOrderDTO.setSenderId(infoEntity.getUserId());
 		return merchantOrderDTO;
 	}
 }
