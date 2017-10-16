@@ -105,17 +105,28 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_*'")
     @Transactional(readOnly = false)
     public Boolean save(MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO) {
-        String name = merchantDeliverFeeTemDTO.getName();
-
-        if (StringUtils.isNotBlank(name)){
-            MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity = merchantDeliverFeeTemRepository.findByNameAndDelFlag(name, MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
-            if (merchantDeliverFeeTemEntity ==null){
-                merchantDeliverFeeTemEntity = new MerchantDeliverFeeTemEntity();
-                BeanUtils.copyProperties(merchantDeliverFeeTemDTO, merchantDeliverFeeTemEntity);
-                merchantDeliverFeeTemRepository.save(merchantDeliverFeeTemEntity);
-                return true;
-            }
+        if (merchantDeliverFeeTemDTO == null){
+            return false;
         }
-        return false;
+        String name = merchantDeliverFeeTemDTO.getName();
+        Long id = merchantDeliverFeeTemDTO.getId();
+        if (id != null){
+            MerchantDeliverFeeTemEntity entity = new MerchantDeliverFeeTemEntity();
+            BeanUtils.copyProperties(merchantDeliverFeeTemDTO, entity);
+            entity.setDelFlag(MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
+            merchantDeliverFeeTemRepository.save(entity);
+            return true;
+        } else{
+            if (StringUtils.isNotBlank(name)){
+                MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity = merchantDeliverFeeTemRepository.findByNameAndDelFlag(name, MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
+                if (merchantDeliverFeeTemEntity ==null){
+                    merchantDeliverFeeTemEntity = new MerchantDeliverFeeTemEntity();
+                    BeanUtils.copyProperties(merchantDeliverFeeTemDTO, merchantDeliverFeeTemEntity);
+                    merchantDeliverFeeTemRepository.save(merchantDeliverFeeTemEntity);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
