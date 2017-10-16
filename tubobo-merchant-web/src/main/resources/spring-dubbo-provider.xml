@@ -20,7 +20,7 @@
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantDeliverFeeConfigInterface" group="${dubbo.group}" version="0.0.1" ref="merchantDeliverFeeConfigService" timeout="3000"/>
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToPostHouseServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToPostHouseService" timeout="3000"/>
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToThirdPartyServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToThirdPartyService" timeout="3000"/>
-	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantTypeInterface" group="${dubbo.group}" version="0.0.1" ref="merchantTypeInterface" timeout="3000"/>
+	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantTypeInterface" group="lht" version="0.0.1" ref="merchantTypeInterface" timeout="3000"/>
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantDeliverFeeTemInterface" group="${dubbo.group}" version="0.0.1" ref="merchantDeliverFeeTemInterface" timeout="3000"/>
 
 

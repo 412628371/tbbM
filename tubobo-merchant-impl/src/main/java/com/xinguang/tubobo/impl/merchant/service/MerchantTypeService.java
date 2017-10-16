@@ -109,6 +109,7 @@ public class MerchantTypeService implements MerchantTypeInterface {
         if (id != null){
             MerchantTypeEntity entity = new MerchantTypeEntity();
             BeanUtils.copyProperties(merchantTypeDTO, entity);
+            entity.setDelFlag(MerchantTypeEntity.DEL_FLAG_NORMAL);
             merchantTypeRepository.save(entity);
             return true;
         }else {
