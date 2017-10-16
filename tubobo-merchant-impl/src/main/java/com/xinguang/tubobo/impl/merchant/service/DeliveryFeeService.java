@@ -7,10 +7,14 @@ import com.xinguang.tubobo.api.dto.CarTypeDTO;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.dto.DeliveryFeeDto;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantDeliverFeeConfigServiceImpl;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.merchant.api.dto.MerchantDeliverFeeConfigDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
+import com.xinguang.tubobo.merchant.api.enums.EnumBindStatusType;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -41,6 +44,8 @@ public class DeliveryFeeService  {
     MerchantDeliverFeeConfigServiceImpl merchantDeliverFeeConfigService;
     @Autowired
     AdminToMerchantService adminToMerchantService;
+    @Autowired
+    MerchantTypeService merchantTypeService;
 
 /*  //TODO 1.3版本 待1.6稳定后删除
     public double sumDeliveryFeeByDistance(double distance) throws MerchantClientException {
@@ -76,8 +81,50 @@ public class DeliveryFeeService  {
 //        map.put(distance,sumDeliveryFeeByDistance(distance));
 //        return map;
 //    }
-    public Double sumDeliveryFeeByLocation(Double distance,String areaCode,String goodsType) throws MerchantClientException {
-        return sumDeliveryFeeByDistance(distance, areaCode);
+
+    /**
+     * 获取配送费
+     * @param distance
+     * @param merchantInfoEntity
+     * @param goodsType
+     * @return
+     * @throws MerchantClientException
+     */
+    public DeliveryFeeDto sumDeliveryFeeByLocation(Double distance, MerchantInfoEntity merchantInfoEntity, String goodsType) throws MerchantClientException {
+        String orderType;
+        MerchantTypeDTO merchantTypeDTO = null;
+        DeliveryFeeDto deliveryFeeDto;
+        double riderFee;
+        double platformFee;
+        double totalFee;
+        int commissionRate;
+        double commissionRateDl = 0.0;
+        Long merTypeId =  merchantInfoEntity.getMerTypeId();
+        if (merTypeId!=null){
+            merchantTypeDTO = merchantTypeService.findById(merTypeId);
+        }
+        if (merchantTypeDTO==null){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
+        }
+        if (EnumBindStatusType.SUCCESS.equals(merchantInfoEntity.getBindStatus())){
+            orderType = EnumOrderType.POSTORDER.getValue();
+        }else {
+            orderType = EnumOrderType.SMALLORDER.getValue();
+        }
+        totalFee = sumDeliveryFeeByDistance(distance, merchantInfoEntity.getAddressAdCode(),orderType,merchantTypeDTO.getTemId());
+        commissionRate = merchantTypeDTO.getCommissionRate();
+        if (commissionRate!=0){
+            commissionRateDl = commissionRate/100;
+       }
+
+        riderFee = CalCulateUtil.mul(totalFee,commissionRateDl);
+        platformFee = CalCulateUtil.sub(totalFee,riderFee);
+
+        riderFee =  CalCulateUtil.round(riderFee,2);
+        platformFee = CalCulateUtil.round(platformFee,2);
+
+        deliveryFeeDto = new DeliveryFeeDto(totalFee,riderFee,platformFee);
+        return deliveryFeeDto;
     }
     public Double sumChepeiFee(String carType, Double distance) throws MerchantClientException {
         Double distanceByKm = Math.ceil(distance/1000);
@@ -160,8 +207,8 @@ public class DeliveryFeeService  {
      * @param distance 单位km
      * @return
      */
-    public Double sumDeliveryFeeByDistance(Double distance, String areaCode) throws MerchantClientException {
-        List<MerchantDeliverFeeConfigDTO> all = merchantDeliverFeeConfigService.findFeeByAreaCode(areaCode);
+    public Double sumDeliveryFeeByDistance(Double distance, String areaCode,String orderType,Long temId) throws MerchantClientException {
+        List<MerchantDeliverFeeConfigDTO> all = merchantDeliverFeeConfigService.findFeeByAreaCodeAndOrderTypeAndTemId(areaCode,orderType,temId);
         //double distanceInKm = Math.ceil((distance/1000));
         double distanceInKm = (distance/1000);
 

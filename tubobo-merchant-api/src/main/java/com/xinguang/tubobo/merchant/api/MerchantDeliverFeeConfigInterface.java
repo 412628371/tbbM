@@ -37,7 +37,10 @@ public interface MerchantDeliverFeeConfigInterface {
      */
     List<MerchantDeliverFeeConfigDTO> findFeeByAreaCode(String areaCode);
     /**
-     * 根据区code和订单类型查询具体区的费用
+     * 根据区code和订单类型和模板类型查询具体区的费用
+     * @param areaCode
+     * @param orderType
+     * @param temId
      * @return
      */
     List<MerchantDeliverFeeConfigDTO> findFeeByAreaCodeAndOrderTypeAndTemId(String areaCode,String orderType,Long temId);

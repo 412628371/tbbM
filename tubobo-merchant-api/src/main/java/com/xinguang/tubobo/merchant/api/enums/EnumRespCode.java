@@ -13,6 +13,7 @@ public enum EnumRespCode {
 	MERCHANT_FROZEN("10103", "商家被冻结,请联系客服"),
 	MERCHANT_ALREADY_APPLY_RIDER("10104", "您已申请骑手/司机，不能申请成为商家或货主"),
 	MERCHANT_NEED_TOBE_CONSIGNOR_FIRST("10105", "成功认证成为货主后，才能完善店铺信息"),
+	MERCHANT_TYPEERROR("10106", "商家类型有误,请联系客服"),
 
 	MERCHANT_CANT_CANCEL("10200", "订单状态不允许取消"),
 	MERCHANT_CANT_DELETE("10201", "订单状态不允许删除"),
