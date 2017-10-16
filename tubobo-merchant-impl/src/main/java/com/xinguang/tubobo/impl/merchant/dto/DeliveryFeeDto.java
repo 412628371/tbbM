@@ -40,4 +40,13 @@ public class DeliveryFeeDto {
     public void setPlatformFee(Double platformFee) {
         this.platformFee = platformFee;
     }
+
+    @Override
+    public String toString() {
+        return "DeliveryFeeDto{" +
+                "totalFee=" + totalFee +
+                ", riderFee=" + riderFee +
+                ", platformFee=" + platformFee +
+                '}';
+    }
 }

@@ -115,6 +115,25 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private String merMessage; //未妥投确认消息
 	private String orderFeature;//订单特征值 RIDER_CANCEL_RESEND  骑手取消重发单
 
+	private Double platformFee; 	 //平台抽佣
+	private Double riderFee ;  		//付给骑手配送费
+	public Double getPlatformFee() {
+		return platformFee;
+	}
+
+	public void setPlatformFee(Double platformFee) {
+		this.platformFee = platformFee;
+	}
+
+	public Double getRiderFee() {
+		return riderFee;
+	}
+
+	public void setRiderFee(Double riderFee) {
+		this.riderFee = riderFee;
+	}
+
+
 	public String getOrderFeature() {
 		return orderFeature;
 	}

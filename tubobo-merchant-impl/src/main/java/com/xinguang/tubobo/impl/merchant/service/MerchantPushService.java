@@ -239,7 +239,16 @@ public class MerchantPushService {
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
-
+    /**
+     * 推送自动发单余额不足通知
+     */
+    public void pushMoneyShortForAutoSendNotice(NoticeDTO entity){
+        if (entity == null){
+            return;
+        }
+        String data = generateCommonPushParam(entity.getUserId(), EnumNoticeType.MONEYSHORT, entity.getId());
+        pushToUser(entity.getUserId(), entity.getContent(), entity.getTitle(), data);
+    }
     /**
      * 推送商家绑定通知
      */

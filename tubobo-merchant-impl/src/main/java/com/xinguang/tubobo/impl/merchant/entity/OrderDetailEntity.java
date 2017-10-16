@@ -57,9 +57,23 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
 
     private String merMessage; //未妥投确认消息
 
+    private Double platformFee; 	 //平台抽佣
+    private Double riderFee ;  		//付给骑手配送费
+    public Double getPlatformFee() {
+        return platformFee;
+    }
 
+    public void setPlatformFee(Double platformFee) {
+        this.platformFee = platformFee;
+    }
 
+    public Double getRiderFee() {
+        return riderFee;
+    }
 
+    public void setRiderFee(Double riderFee) {
+        this.riderFee = riderFee;
+    }
     public String getCancelReason() {
         return cancelReason;
     }

@@ -98,10 +98,12 @@ public class RmqNoticeProducer {
      * @param platformCode
      * @param originOrderViewId
      */
-    public void sendOrderCancelByRiderNotice(String userId, String orderNo, String orderType,String platformCode,String originOrderViewId){
+    public void sendOrderCancelByRiderNotice(String userId, String orderNo, String orderType,String platformCode,String originOrderViewId,Double subsidy){
         NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
         noticeDTO.setTitle(config.getNoticeRiderOrderCanceledTitle());
-        noticeDTO.setContent(config.getNoticeRiderOrderCanceledTemplate());
+        subsidy=subsidy==null?0.0:subsidy;
+        String sub= String.valueOf(subsidy);
+        noticeDTO.setContent("很抱歉您的订单被骑手取消，并获得骑手赔付"+sub+"元；为了保证优先送单（赔付费添加至配送费），帮您重新发单啦！");
         noticeDTO.setOrderOperateType(EnumOrderNoticeType.RIDER_CANCEL.getValue());
         sendNotice(noticeDTO);
     }
@@ -155,6 +157,7 @@ public class RmqNoticeProducer {
         sendNotice(noticeDTO);
     }
 
+
     /**
      * 组装订单类型推送的DTO
      * @param userId
@@ -174,6 +177,19 @@ public class RmqNoticeProducer {
         noticeDTO.setUserId(userId);
         return noticeDTO;
     }
+
+    /**
+     * 驿站商家自动发单 余额不足是的提醒
+     */
+    public void sendForAutoPostOrderWhenMoneyLess(String userId){
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setNoticeType(EnumNoticeType.MONEYSHORT.getValue());
+        noticeDTO.setUserId(userId);
+        noticeDTO.setTitle(config.getNoticeMoneyShortForAutoSendPostTitle());
+        noticeDTO.setContent(config.getNoticeMoneyShortForAutoSendPostTemplate());
+        sendNotice(noticeDTO);
+    }
+
     private void sendNotice(NoticeDTO noticeDTO){
         baseMqTemplate.convertAndSend("tbb_notice_exchange","notice_bindingKey_merchant",
                 JSONObject.toJSONString(noticeDTO));

@@ -59,6 +59,17 @@ public class NoticeService {
         }
         merchantPushService.pushOrderNotice(entity);
     }
+    /**
+    * 推送余额不足通知(驿站自动发单功能)
+    * */
+
+    public void pushMoneyShortForPostOrder(NoticeDTO dto) {
+        PushNoticeEntity entity = new PushNoticeEntity();
+        BeanUtils.copyProperties(dto,entity);
+        entity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
+        pushNoticeDao.save(entity);
+        merchantPushService.pushMoneyShortForAutoSendNotice(dto);
+    }
     public void pushSystem(NoticeDTO dto){
         merchantPushService.pushSystemNotice(dto);
     }
@@ -147,4 +158,6 @@ public class NoticeService {
     public Long getUnProcessedCount(String userId){
         return pushNoticeDao.getUnProcessedCount(false,userId,BaseMerchantEntity.DEL_FLAG_NORMAL);
     }
+
+
 }

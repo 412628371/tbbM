@@ -38,6 +38,9 @@ public class Config {
     private String noticeOrderCanceledTitle;
     private String noticeRiderOrderCanceledTitle;
     private String noticeRiderOrderCanceledTemplate;
+    private String noticeMoneyShortForAutoSendPostTitle;
+    private String noticeMoneyShortForAutoSendPostTemplate;
+
 
 
     private String noticeAuditSuccessTitle;
@@ -49,6 +52,7 @@ public class Config {
     private String noticeUnbindTitle;
     private String noticeBindTemplate;
     private String noticeUnbindTemplate;
+
 
     private String beginWorkTime;
     private String endWorkTime;
@@ -73,6 +77,22 @@ public class Config {
     // private Integer taskPostOrderMilSeconds;
     private String iosMusic;
 
+    @DisconfFileItem(name = "merchant.notice.moneyshort.title", associateField = "noticeMoneyShortForAutoSendPostTitle")
+    public String getNoticeMoneyShortForAutoSendPostTitle() {
+        return noticeMoneyShortForAutoSendPostTitle;
+    }
+
+    public void setNoticeMoneyShortForAutoSendPostTitle(String noticeMoneyShortForAutoSendPostTitle) {
+        this.noticeMoneyShortForAutoSendPostTitle = noticeMoneyShortForAutoSendPostTitle;
+    }
+    @DisconfFileItem(name = "merchant.notice.moneyshort.template", associateField = "noticeMoneyShortForAutoSendPostTemplate")
+    public String getNoticeMoneyShortForAutoSendPostTemplate() {
+        return noticeMoneyShortForAutoSendPostTemplate;
+    }
+
+    public void setNoticeMoneyShortForAutoSendPostTemplate(String noticeMoneyShortForAutoSendPostTemplate) {
+        this.noticeMoneyShortForAutoSendPostTemplate = noticeMoneyShortForAutoSendPostTemplate;
+    }
 
     @DisconfFileItem(name = "merchant.notice.riderCancel.title", associateField = "noticeRiderOrderCanceledTitle")
     public String getNoticeRiderOrderCanceledTitle() {

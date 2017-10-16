@@ -599,8 +599,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				//取消短信标记位
 				orderService.updateShortMessage(false,entity.getOrderNo(),entity.getUserId());
 			}
+			Double subsidy=dtoCancel.getSubsidy();
 			if (dtoCancel.getSubsidy() != null && dtoCancel.getSubsidy() > 0){
-				double subsidy=dtoCancel.getSubsidy();
 				double subsidyFen=CalCulateUtil.mul(subsidy,100);
 				SubsidyRequest subsidyRequest = new SubsidyRequest((int)(subsidyFen),accountId,orderNo,MerchantConstants.MERCHANT_CANCEL_BY_RIDER_SUBSIDY,null);
 				TbbAccountResponse<SubsidyInfo> subsidyResponse = tbbAccountService.subsidize(subsidyRequest);
@@ -628,7 +628,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			//重新发单
 			riderCancelResend(entity,messageOpen,dtoCancel.getSubsidy());
 
-			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
+			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId(),subsidy);
 		}else{
 			logger.error("骑手取消订单，更改订单状态出错,退款失败 ,orderNo:{}" ,orderNo);
 		}

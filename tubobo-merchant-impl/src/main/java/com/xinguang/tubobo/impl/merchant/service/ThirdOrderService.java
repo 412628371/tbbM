@@ -13,14 +13,17 @@ import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
 import com.xinguang.tubobo.api.OverFeeService;
 import com.xinguang.tubobo.api.dto.OverFeeDTO;
+import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.common.AddressInfoToOrderBeanHelper;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.common.OrderUtil;
 import com.xinguang.tubobo.impl.merchant.condition.ProcessQueryCondition;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.dto.DeliveryFeeDto;
 import com.xinguang.tubobo.impl.merchant.entity.*;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.repository.ThirdOrderRepository;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.*;
@@ -70,7 +73,12 @@ public class ThirdOrderService {
     TaskDispatchService taskDispatchService;
     @Autowired
     MerchantMessageSettingsService merchantSettingsService;
-
+    @Autowired
+    RmqNoticeProducer rmqNoticeService;
+    @Autowired
+    DeliveryFeeService deliveryFeeService;
+    @Autowired
+    RoutePlanning routePlanning;
     @Transactional()
     public void saveMtOrder(ThirdOrderEntity mtOrderEntity){
         ThirdOrderEntity existEntity = thirdOrderRepository.findByOriginOrderIdAndPlatformCode(mtOrderEntity.getOriginOrderId(),
@@ -87,6 +95,7 @@ public class ThirdOrderService {
     /**
     * 自动发单(针对驿站订单 且开启自动发单功能)
     * */
+    @Transactional()
     private void dealAutoSendOrder(ThirdOrderEntity mtOrderEntity) {
         Boolean isPostOrder=false;
         String userId = mtOrderEntity.getUserId();
@@ -106,7 +115,13 @@ public class ThirdOrderService {
                 return ;
             }
             //封装信息并创建订单
-            MerchantOrderEntity newOrderEntity = packageAndSaveOrder(mtOrderEntity, userId, merchant);
+            MerchantOrderEntity newOrderEntity = null;
+            try {
+                newOrderEntity = packageAndSaveOrder(mtOrderEntity, userId, merchant);
+            } catch (MerchantClientException e) {
+                logger.error("驿站商家自动返单计算配送费error,deliveryFeeDto:{},error:{}",mtOrderEntity.toString(),e.getErrorMsg());
+                return ;
+            }
             //支付
             //商家扣款 并修改数据   扣款封装小方法 短信费用抽出
             if (newOrderEntity.getShortMessage()){
@@ -123,7 +138,8 @@ public class ThirdOrderService {
     /**
      * 封装订单信息 创建订单(针对驿站订单 且开启自动发单功能)
      * */
-    private MerchantOrderEntity packageAndSaveOrder(ThirdOrderEntity mtOrderEntity, String userId, MerchantInfoEntity merchant) {
+    @Transactional()
+    private MerchantOrderEntity packageAndSaveOrder(ThirdOrderEntity mtOrderEntity, String userId, MerchantInfoEntity merchant) throws MerchantClientException {
         MerchantOrderEntity newOrderEntity = new MerchantOrderEntity();
         //开启自动发单功能
         //封装地理信息
@@ -138,6 +154,15 @@ public class ThirdOrderService {
         Double devliveryDistance=0.0;
         //获得本地区域码
         String nativeAreaCode = merchant.getAddressAdCode();
+        //获取实际距离
+        devliveryDistance = routePlanning.getDistanceWithWalkFirst(mtOrderEntity.getReceiverLongitude(),mtOrderEntity.getReceiverLatitude(),
+                merchant.getLongitude(),merchant.getLatitude());
+        DeliveryFeeDto deliveryFeeDto = deliveryFeeService.sumDeliveryFeeByLocation(devliveryDistance, merchant, null);
+        Double platformFee = deliveryFeeDto.getPlatformFee();
+        Double riderFee = deliveryFeeDto.getRiderFee();
+        platformFee=platformFee==null?0.0:platformFee;
+        riderFee=riderFee==null?0.0:riderFee;
+        devliveryFee=CalCulateUtil.add(platformFee,riderFee);
         //调用后台传来的溢价信息
         OverFeeDTO overFee = overFeeService.findOverFee(nativeAreaCode);
         Double peekOverFee=0.0;
@@ -171,6 +196,8 @@ public class ThirdOrderService {
         newOrderEntity.setWeatherOverFee(weatherOverFee);
         newOrderEntity.setPeekOverFee(peekOverFee);
         newOrderEntity.setDeliveryFee(devliveryFee);
+        newOrderEntity.setRiderFee(riderFee);
+        newOrderEntity.setPlatformFee(platformFee);
         newOrderEntity.setDeliveryDistance(devliveryDistance);
         newOrderEntity.setPayAmount(payAmount);
         newOrderEntity.setOrderType(EnumOrderType.POSTORDER.getValue());
@@ -247,9 +274,7 @@ public class ThirdOrderService {
                     newSettings.setAutoPostOrderResendOpen(false);
                     autoResendPostSettingsService.updateSettings(userId,newSettings);
                     //通知客户端余额不足
-
-
-
+                    rmqNoticeService.sendForAutoPostOrderWhenMoneyLess(userId);
                    // return new ClientResp(e.getCode() , e.getErrorMsg());
                     return;
                     //throw  new MerchantClientException(EnumRespCode.ACCOUNT_NOT_ENOUGH);
