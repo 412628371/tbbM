@@ -668,6 +668,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
 		orderEntity.setOrderTime(new Date());
 		orderEntity.setShortMessage(messageOpen);
+		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
+		detailEntity.setCancelSourceDeliverySubsidy(entity.getCancelCompensation());
+		detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
 		//保存订单
 		String newOrderNo=orderService.saveOrderOnly(entity.getUserId(),orderEntity,detailEntity);
 

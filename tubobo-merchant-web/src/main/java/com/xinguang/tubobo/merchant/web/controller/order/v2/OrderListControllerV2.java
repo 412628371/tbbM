@@ -1,11 +1,15 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
 import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
+import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
+import com.xinguang.tubobo.merchant.api.enums.EnumBindStatusType;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.common.OrderBeanToAddressInfoHelper;
 import com.xinguang.tubobo.merchant.web.common.info.*;
@@ -28,13 +32,22 @@ import java.util.List;
 public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,PageDTO<RespOrderDetailV2>>{
     @Autowired
     MerchantOrderManager merchantOrderManager;
+    @Autowired
+    MerchantInfoService merchantInfoService;
+
 
     @Override
     protected PageDTO<RespOrderDetailV2> doService(String userId, ReqOrderList req) throws MerchantClientException {
         MerchantOrderEntity queryEntity = new MerchantOrderEntity();
         queryEntity.setUserId(userId);
         queryEntity.setOrderStatus(req.getOrderStatus());
-        queryEntity.setOrderType(req.getOrderType());
+        MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
+        String orderType= EnumOrderType.SMALLORDER.getValue();
+        String bindStatus = merchant.getBindStatus();
+        if (EnumBindStatusType.SUCCESS.getValue().equalsIgnoreCase(bindStatus)){
+            orderType=EnumOrderType.POSTORDER.getValue();
+        }
+        queryEntity.setOrderType(orderType);
         Page<OrderEntity> page = merchantOrderManager.merchantQueryOrderPage(req.getPageNo(),req.getPageSize(),queryEntity);
         List<RespOrderDetailV2> list = new ArrayList<>(req.getPageNo());
         if (page.hasContent()) {

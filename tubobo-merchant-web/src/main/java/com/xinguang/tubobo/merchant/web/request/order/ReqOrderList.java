@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 public class ReqOrderList {
 //    @NotBlank(message = "订单状态不能为空")
     private String orderStatus;
+    //1.8版本删除type;
     private String orderType;
     @Range(min = 1,max = 20 ,message = "pageSize 取值为1至20")
     private Integer pageSize;

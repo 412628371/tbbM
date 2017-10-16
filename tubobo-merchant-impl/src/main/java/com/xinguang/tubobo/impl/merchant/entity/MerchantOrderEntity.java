@@ -117,6 +117,34 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	private Double platformFee; 	 //平台抽佣
 	private Double riderFee ;  		//付给骑手配送费
+	private Double cancelSourceDeliveryFee; 	        //取消订单原发配送费
+	private Double cancelSourceDeliverySubsidy ;      //取消订单原骑手补贴金额
+	private String cancelSourceOrderNo ;  		    //取消订单原单号
+
+	public Double getCancelSourceDeliveryFee() {
+		return cancelSourceDeliveryFee;
+	}
+
+	public void setCancelSourceDeliveryFee(Double cancelSourceDeliveryFee) {
+		this.cancelSourceDeliveryFee = cancelSourceDeliveryFee;
+	}
+
+	public Double getCancelSourceDeliverySubsidy() {
+		return cancelSourceDeliverySubsidy;
+	}
+
+	public void setCancelSourceDeliverySubsidy(Double cancelSourceDeliverySubsidy) {
+		this.cancelSourceDeliverySubsidy = cancelSourceDeliverySubsidy;
+	}
+
+	public String getCancelSourceOrderNo() {
+		return cancelSourceOrderNo;
+	}
+
+	public void setCancelSourceOrderNo(String cancelSourceOrderNo) {
+		this.cancelSourceOrderNo = cancelSourceOrderNo;
+	}
+
 	public Double getPlatformFee() {
 		return platformFee;
 	}

@@ -44,4 +44,6 @@ public class RmqTakeoutCallbackHandler implements ChannelAwareMessageListener {
             logger.error("mq处理外卖平台信息，出错",e);
         }
     }
+
+
 }

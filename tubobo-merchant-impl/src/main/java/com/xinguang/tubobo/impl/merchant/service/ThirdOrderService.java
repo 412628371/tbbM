@@ -191,7 +191,11 @@ public class ThirdOrderService {
         MerchantMessageSettingsEntity merchantSettings=merchantSettingsService.findBuUserId(userId);
         if (null!=merchantSettings&&merchantSettings.getMessageOpen()){
             //计算短信费
+            newOrderEntity.setShortMessage(true);
             payAmount=CalCulateUtil.add(payAmount, Double.valueOf(MerchantConstants.MESSAGE_FEE));
+        }else{
+            newOrderEntity.setShortMessage(false);
+
         }
         newOrderEntity.setWeatherOverFee(weatherOverFee);
         newOrderEntity.setPeekOverFee(peekOverFee);
@@ -200,7 +204,7 @@ public class ThirdOrderService {
         newOrderEntity.setPlatformFee(platformFee);
         newOrderEntity.setDeliveryDistance(devliveryDistance);
         newOrderEntity.setPayAmount(payAmount);
-        newOrderEntity.setOrderType(EnumOrderType.POSTORDER.getValue());
+        newOrderEntity.setOrderType(EnumOrderType.POST_NORMAL_ORDER.getValue());
         newOrderEntity.setPlatformCode(mtOrderEntity.getPlatformCode());
         newOrderEntity.setOriginOrderId(mtOrderEntity.getOriginOrderId());
         newOrderEntity.setOriginOrderViewId(mtOrderEntity.getOriginOrderViewId());
@@ -221,7 +225,7 @@ public class ThirdOrderService {
         BeanUtils.copyProperties(newOrderEntity,orderEntity);
         //创建订单
         String orderNo = orderService.saveOrderOnly(userId, orderEntity, orderDetailEntity);
-        return newOrderEntity;
+        return orderService.findByOrderNo(orderNo);
     }
 
     /**
@@ -237,6 +241,7 @@ public class ThirdOrderService {
         payWithOutPwdRequest.setAmount(amount);
         logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,orderNo,payWithOutPwdRequest.getAmount());
         TbbAccountResponse<PayInfo> response;
+        //TODO 拆分抽成金额
         response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
         if (response != null && response.isSucceeded()){
             long payId = response.getData().getId();

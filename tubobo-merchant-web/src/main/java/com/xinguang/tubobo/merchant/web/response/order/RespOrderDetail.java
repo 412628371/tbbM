@@ -72,6 +72,34 @@ public class RespOrderDetail implements Serializable{
     private Double  messageAmout;   //短信费用
     private String unsettledStatus; //未妥投状态
     private Date unsettledTime;             //驿站订单 商家确认未妥投时间
+    private Double cancelSourceDeliveryFee; 	        //取消订单原发配送费
+    private Double cancelSourceDeliverySubsidy ;      //取消订单原骑手补贴金额
+    private String cancelSourceOrderNo ;  		    //取消订单原单号
+
+    public Double getCancelSourceDeliveryFee() {
+        return cancelSourceDeliveryFee;
+    }
+
+    public void setCancelSourceDeliveryFee(Double cancelSourceDeliveryFee) {
+        this.cancelSourceDeliveryFee = cancelSourceDeliveryFee;
+    }
+
+    public Double getCancelSourceDeliverySubsidy() {
+        return cancelSourceDeliverySubsidy;
+    }
+
+    public void setCancelSourceDeliverySubsidy(Double cancelSourceDeliverySubsidy) {
+        this.cancelSourceDeliverySubsidy = cancelSourceDeliverySubsidy;
+    }
+
+    public String getCancelSourceOrderNo() {
+        return cancelSourceOrderNo;
+    }
+
+    public void setCancelSourceOrderNo(String cancelSourceOrderNo) {
+        this.cancelSourceOrderNo = cancelSourceOrderNo;
+    }
+
 
     public Date getUnsettledTime() {
         return unsettledTime;
