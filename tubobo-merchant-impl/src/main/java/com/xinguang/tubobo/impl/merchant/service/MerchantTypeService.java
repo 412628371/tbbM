@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantTypeEntity;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantTypeRepository;
 import com.xinguang.tubobo.merchant.api.MerchantTypeInterface;
@@ -100,18 +101,27 @@ public class MerchantTypeService implements MerchantTypeInterface {
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_*'")
     @Transactional(readOnly = false)
     public Boolean save(MerchantTypeDTO merchantTypeDTO) {
-
-       String name = merchantTypeDTO.getName();
-
-       if (StringUtils.isNotBlank(name)){
-           MerchantTypeEntity merchantTypeEntity = merchantTypeRepository.findByNameAndDelFlag(name, MerchantTypeEntity.DEL_FLAG_NORMAL);
-           if (merchantTypeEntity==null){
-               merchantTypeEntity = new MerchantTypeEntity();
-               BeanUtils.copyProperties(merchantTypeDTO,merchantTypeEntity);
-               merchantTypeRepository.save(merchantTypeEntity);
-               return true;
-           }
-       }
-       return false;
+        if(merchantTypeDTO == null){
+            return false;
+        }
+        Long id = merchantTypeDTO.getId();
+        String name = merchantTypeDTO.getName();
+        if (id != null){
+            MerchantTypeEntity entity = new MerchantTypeEntity();
+            BeanUtils.copyProperties(merchantTypeDTO, entity);
+            merchantTypeRepository.save(entity);
+            return true;
+        }else {
+            if (StringUtils.isNotBlank(name)){
+                MerchantTypeEntity merchantTypeEntity = merchantTypeRepository.findByNameAndDelFlag(name, MerchantTypeEntity.DEL_FLAG_NORMAL);
+                if (merchantTypeEntity==null){
+                    merchantTypeEntity = new MerchantTypeEntity();
+                    BeanUtils.copyProperties(merchantTypeDTO,merchantTypeEntity);
+                    merchantTypeRepository.save(merchantTypeEntity);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
