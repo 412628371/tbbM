@@ -117,8 +117,8 @@ public class DeliveryFeeService  {
             commissionRateDl = commissionRate/100;
        }
 
-        riderFee = CalCulateUtil.mul(totalFee,commissionRateDl);
-        platformFee = CalCulateUtil.sub(totalFee,riderFee);
+        platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
+        riderFee = CalCulateUtil.sub(totalFee,platformFee);
 
         riderFee =  CalCulateUtil.round(riderFee,2);
         platformFee = CalCulateUtil.round(platformFee,2);
