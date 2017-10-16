@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
+import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.entity.OrderEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 

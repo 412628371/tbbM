@@ -45,10 +45,8 @@ public class OrderOverFeeController extends MerchantBaseController<OverFeeInfoRe
             //boolean weatherIsOpen = overFee.getWeatherIsOpen();
             //为空时说明该区域未开启天气溢价
             Double weatherOverFeeRemote=overFee.getWeatherOverFee();
-
             String targetArea = overFee.getWeatherArea();
             //校验区域;
-
             if (peekIsOpen){
                 peekOverFee=overFee.getPeekOverFee();
                 totalOverFee=add(totalOverFee,peekOverFee);

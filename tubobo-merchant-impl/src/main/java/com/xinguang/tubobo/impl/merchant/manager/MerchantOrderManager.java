@@ -669,7 +669,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setOrderTime(new Date());
 		orderEntity.setShortMessage(messageOpen);
 		//保存订单
-		String newOrderNo=orderService.resendOrderByRiderCancel(entity.getUserId(),orderEntity,detailEntity);
+		String newOrderNo=orderService.saveOrderOnly(entity.getUserId(),orderEntity,detailEntity);
 
 		//进行支付
 		MerchantOrderEntity newOrderEntity = orderService.findByOrderNo(newOrderNo);

@@ -1,7 +1,7 @@
 package com.xinguang.tubobo.merchant.web.common;
 
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
+import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
 
 /**
  * Created by Administrator on 2017/6/5.

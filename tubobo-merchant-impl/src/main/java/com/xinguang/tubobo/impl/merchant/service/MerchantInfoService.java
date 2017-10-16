@@ -255,4 +255,12 @@ public class MerchantInfoService extends BaseService {
 		int count = merchantInfoRepository.unbindProvider(userId, providerId, MerchantOrderEntity.DEL_FLAG_NORMAL, EnumBindStatusType.UNBUNDLE.getValue(), EnumBindStatusType.SUCCESS.getValue(),new Date(), new Date());
 		return count == 1;
 	}
+	public boolean  isPostMerchant(String userId){
+		boolean flag=false;
+		MerchantInfoEntity merchant = findByUserId(userId);
+		if(EnumBindStatusType.SUCCESS.getValue().equals(merchant.getBindStatus())){
+			flag=true;
+		}
+		return flag;
+	}
 }

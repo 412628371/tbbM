@@ -1,7 +1,6 @@
 package com.xinguang.tubobo.merchant.web.response.order;
 
-import com.xinguang.tubobo.api.dto.AddressDTO;
-import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
+import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
 
 import java.io.Serializable;
 import java.util.List;

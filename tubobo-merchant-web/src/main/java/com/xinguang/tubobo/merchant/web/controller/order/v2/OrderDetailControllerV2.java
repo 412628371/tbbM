@@ -1,7 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
 import com.hzmux.hzcms.common.utils.StringUtils;
-import com.xinguang.tubobo.api.enums.EnumCarType;
+import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
@@ -17,9 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 /**

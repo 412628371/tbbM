@@ -161,11 +161,11 @@ public class OrderService extends BaseService {
 
 
     /**
-     * 骑手取消订单后自动支付,重新发单
+     * 直接保存order,orderDetail
      */
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#userId+'_*'")
     @Transactional(readOnly = false)
-    public String resendOrderByRiderCancel(String userId, OrderEntity orderEntity,OrderDetailEntity detailEntity){
+    public String saveOrderOnly(String userId, OrderEntity orderEntity,OrderDetailEntity detailEntity){
         String orderNo = codeGenerator.nextCustomerCode(orderEntity.getOrderType());
         //重新设置
         orderEntity.setOrderNo(orderNo);
@@ -173,8 +173,6 @@ public class OrderService extends BaseService {
         merchantOrderDao.save(orderEntity);
         merchantOrderDetailRepository.save(detailEntity);
         return orderNo;
-
-
     }
 
 

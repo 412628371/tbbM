@@ -1,9 +1,7 @@
-package com.xinguang.tubobo.merchant.web.common;
+package com.xinguang.tubobo.impl.merchant.common;
 
-import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
-import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
 
 /**
  * 将地址信息设置到实体的工具类.
