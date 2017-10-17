@@ -103,7 +103,7 @@ public class DeliveryFeeService  {
         if (EnumBindStatusType.SUCCESS.getValue().equals(merchantInfoEntity.getBindStatus())){
             orderType = EnumOrderType.POSTORDER.getValue();
         }else {
-            orderType = EnumOrderType.SMALLORDER.getValue();
+            orderType = EnumOrderType.CROWDORDER.getValue();
         }
         totalFee = sumDeliveryFeeByDistance(distance, merchantInfoEntity.getAddressAdCode(),orderType,merchantTypeDTO.getTemId());
         return totalFee;
