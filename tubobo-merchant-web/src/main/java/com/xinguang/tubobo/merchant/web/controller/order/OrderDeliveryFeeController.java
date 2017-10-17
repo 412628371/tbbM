@@ -45,12 +45,11 @@ public class OrderDeliveryFeeController extends MerchantBaseController<OrderDeli
         //获取实际距离
         distance = routePlanning.getDistanceWithWalkFirst(req.getReceiverLongitude(),req.getReceiverLatitude(),
                 entity.getLongitude(),entity.getLatitude());
-        deliveryFeeDto = deliveryFeeService.sumDeliveryFeeByLocation(distance, entity,null);
-        fee = deliveryFeeDto.getTotalFee();
+        fee = deliveryFeeService.sumDeliveryFeeByLocation(distance, entity);
 
         OrderDeliveryFeeResponse response = new OrderDeliveryFeeResponse();
         response.setDeliveryDistance(distance);
-        response.setDeliveryFeeDto(deliveryFeeDto);
+        response.setDeliveryFee(fee);
         logger.info("计算配送费相应, userId:{}, deliveryFee:{},deliverDistance:{}",userId,fee,distance);
         return response;
     }

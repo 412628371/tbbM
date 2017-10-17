@@ -75,6 +75,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             amountD=  CalCulateUtil.sub(amountD,MerchantConstants.MESSAGE_FEE);
         }
         long amount = ConvertUtil.convertYuanToFen(amountD);
+        long commission = ConvertUtil.convertYuanToFen(orderEntity.getPlatformFee());
         //设置了免密支付，并且支付金额不大于免密支付额度，可以免密支付
         if (infoEntity.getEnablePwdFree()&&
                 orderEntity.getPayAmount() <= config.getNonConfidentialPaymentLimit()){
@@ -82,6 +83,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             payWithOutPwdRequest.setOrderId(orderEntity.getOrderNo());
             payWithOutPwdRequest.setAccountId(infoEntity.getAccountId());
             payWithOutPwdRequest.setAmount(amount);
+            payWithOutPwdRequest.setCommission(commission);
             logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payWithOutPwdRequest.getAmount());
             response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
         }else {
@@ -93,6 +95,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             payRequest.setAccountId(infoEntity.getAccountId());
             payRequest.setAmount(amount);
             payRequest.setPwd(plainPwd);
+            payRequest.setCommission(commission);
             response = tbbAccountService.pay(payRequest);
         }
         if (response != null && response.isSucceeded()){

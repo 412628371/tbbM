@@ -88,7 +88,6 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         OverFeeInfo overFeeInfo = new OverFeeInfo();
         String orderNo =null;
         Double distance=0.0;
-        DeliveryFeeDto deliveryFeeDto;
         Double fee;
         Double peekOverFee=0.0;
         Double weatherOverFee=0.0;
@@ -107,8 +106,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
             //获取实际距离
             distance = routePlanning.getDistanceWithWalkFirst(req.getReceiver().getLongitude(),req.getReceiver().getLatitude(),
                     merchantInfoEntity.getLongitude(),merchantInfoEntity.getLatitude());
-            deliveryFeeDto = deliveryFeeService.sumDeliveryFeeByLocation(distance, merchantInfoEntity,null);
-            fee = deliveryFeeDto.getTotalFee();
+            fee = deliveryFeeService.sumDeliveryFeeByLocation(distance, merchantInfoEntity);
             // 计算溢价
             //获得本地区域码
             String nativeAreaCode = merchantInfoEntity.getAddressAdCode();
@@ -303,7 +301,9 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         payWithOutPwdRequest.setOrderId(orderNo);
         payWithOutPwdRequest.setAccountId(merchantInfoEntity.getAccountId());
         long amount = ConvertUtil.convertYuanToFen(entity.getPayAmount());
+        long commission = ConvertUtil.convertYuanToFen(entity.getPlatformFee());
         payWithOutPwdRequest.setAmount(amount);
+        payWithOutPwdRequest.setCommission(commission);
         logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),orderNo,payWithOutPwdRequest.getAmount());
         TbbAccountResponse<PayInfo> response;
         response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);

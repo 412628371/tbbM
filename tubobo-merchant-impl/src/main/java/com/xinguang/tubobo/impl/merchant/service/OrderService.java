@@ -3,7 +3,6 @@ package com.xinguang.tubobo.impl.merchant.service;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.DateUtils;
 import com.xinguang.taskcenter.api.OverTimeRuleInterface;
-
 import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
@@ -13,10 +12,8 @@ import com.xinguang.tubobo.impl.merchant.entity.*;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantOrderDetailRepository;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantOrderRepository;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
-import com.xinguang.tubobo.merchant.api.enums.EnumCancelReason;
-import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
-import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
-import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
+import com.xinguang.tubobo.merchant.api.enums.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +56,10 @@ public class OrderService extends BaseService {
     OverTimeRuleInterface overTimeRuleService;
     @Autowired
     MerchantMessageSettingsService merchantMessageSettingsService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
+    @Autowired
+    private MerchantTypeService merchantTypeService;
 
 
 
@@ -107,7 +108,17 @@ public class OrderService extends BaseService {
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#userId+'_*'")
     @Transactional(readOnly = false)
     public String order(String userId, MerchantOrderEntity entity) throws MerchantClientException {
+        OrderEntity orderEntity;
+        OrderDetailEntity detailEntity;
         double distance;
+        MerchantTypeDTO merchantTypeDTO = null;
+        MerchantInfoEntity merchantInfoEntity;
+        double totalFee;
+        double commissionRateDl = 0.0;
+        double platformFee;
+        double riderFee;
+        double commissionRate;
+
         //保存配送距离 从1.41版本保存为我们之前传给客户端的距离值,同时向下兼容
         Double deliveryDistance = entity.getDeliveryDistance();
         //1.41版本之前所展示的实时值
@@ -133,9 +144,9 @@ public class OrderService extends BaseService {
 
         if (entity.getDeliveryFee() != null) {
             if (entity.getTipFee() == null) {
-                entity.setPayAmount(CalCulateUtil.add(entity.getDeliveryFee(),textMesssgaeFee));
+                entity.setPayAmount(entity.getDeliveryFee());
             } else {
-                entity.setPayAmount(CalCulateUtil.add(CalCulateUtil.add(entity.getDeliveryFee(),entity.getTipFee()),textMesssgaeFee) );
+                entity.setPayAmount(CalCulateUtil.add(entity.getDeliveryFee(),entity.getTipFee()));
             }
         }
         if (entity.getPeekOverFee() != null) {
@@ -144,14 +155,40 @@ public class OrderService extends BaseService {
         if (entity.getWeatherOverFee() != null) {
             entity.setPayAmount(CalCulateUtil.add(entity.getPayAmount(),entity.getWeatherOverFee()) );
         }
+        // 没加短信费前 计算佣金
+        merchantInfoEntity = merchantInfoService.findByUserId(userId);
+        if (merchantInfoEntity==null){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+        }
+        totalFee = entity.getPayAmount();
+        Long merTypeId =  merchantInfoEntity.getMerTypeId();
+        if (merTypeId!=null){
+            merchantTypeDTO = merchantTypeService.findById(merTypeId);
+        }
+        if (merchantTypeDTO==null){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
+        }
+        commissionRate = merchantTypeDTO.getCommissionRate();
+        if (commissionRate!=0){
+            commissionRateDl = commissionRate/100;
+        }
+        platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
+        riderFee = CalCulateUtil.sub(totalFee,platformFee);
+        riderFee =  CalCulateUtil.round(riderFee,2);
+        platformFee = CalCulateUtil.round(platformFee,2);
+
+        entity.setRiderFee(riderFee);
+        entity.setPlatformFee(platformFee);
+
+        //加上短信费
+        entity.setPayAmount(CalCulateUtil.add(entity.getPayAmount(),textMesssgaeFee));
 
         entity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
-        OrderEntity orderEntity=new OrderEntity();
-        OrderDetailEntity detailEntity=new OrderDetailEntity();
+        orderEntity=new OrderEntity();
+        detailEntity=new OrderDetailEntity();
 
         BeanUtils.copyProperties(entity,orderEntity);
         BeanUtils.copyProperties(entity,detailEntity);
-
 
         merchantOrderDao.save(orderEntity);
         merchantOrderDetailRepository.save(detailEntity);

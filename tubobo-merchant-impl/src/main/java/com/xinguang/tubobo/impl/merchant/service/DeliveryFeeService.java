@@ -86,19 +86,13 @@ public class DeliveryFeeService  {
      * 获取配送费
      * @param distance
      * @param merchantInfoEntity
-     * @param goodsType
      * @return
      * @throws MerchantClientException
      */
-    public DeliveryFeeDto sumDeliveryFeeByLocation(Double distance, MerchantInfoEntity merchantInfoEntity, String goodsType) throws MerchantClientException {
+    public Double sumDeliveryFeeByLocation(Double distance, MerchantInfoEntity merchantInfoEntity) throws MerchantClientException {
         String orderType;
         MerchantTypeDTO merchantTypeDTO = null;
-        DeliveryFeeDto deliveryFeeDto;
-        double riderFee;
-        double platformFee;
-        double totalFee;
-        int commissionRate;
-        double commissionRateDl = 0.0;
+        double totalFee = 0.0;
         Long merTypeId =  merchantInfoEntity.getMerTypeId();
         if (merTypeId!=null){
             merchantTypeDTO = merchantTypeService.findById(merTypeId);
@@ -106,25 +100,13 @@ public class DeliveryFeeService  {
         if (merchantTypeDTO==null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
         }
-        if (EnumBindStatusType.SUCCESS.equals(merchantInfoEntity.getBindStatus())){
+        if (EnumBindStatusType.SUCCESS.getValue().equals(merchantInfoEntity.getBindStatus())){
             orderType = EnumOrderType.POSTORDER.getValue();
         }else {
             orderType = EnumOrderType.SMALLORDER.getValue();
         }
         totalFee = sumDeliveryFeeByDistance(distance, merchantInfoEntity.getAddressAdCode(),orderType,merchantTypeDTO.getTemId());
-        commissionRate = merchantTypeDTO.getCommissionRate();
-        if (commissionRate!=0){
-            commissionRateDl = commissionRate/100;
-       }
-
-        platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
-        riderFee = CalCulateUtil.sub(totalFee,platformFee);
-
-        riderFee =  CalCulateUtil.round(riderFee,2);
-        platformFee = CalCulateUtil.round(platformFee,2);
-
-        deliveryFeeDto = new DeliveryFeeDto(totalFee,riderFee,platformFee);
-        return deliveryFeeDto;
+        return totalFee;
     }
     public Double sumChepeiFee(String carType, Double distance) throws MerchantClientException {
         Double distanceByKm = Math.ceil(distance/1000);
