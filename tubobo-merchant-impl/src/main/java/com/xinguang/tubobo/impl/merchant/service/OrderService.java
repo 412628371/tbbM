@@ -110,16 +110,16 @@ public class OrderService extends BaseService {
     public String order(String userId, MerchantOrderEntity entity) throws MerchantClientException {
         OrderEntity orderEntity;
         OrderDetailEntity detailEntity;
-        double distance;
+        double distance= entity.getDeliveryDistance();;
         MerchantTypeDTO merchantTypeDTO = null;
         MerchantInfoEntity merchantInfoEntity;
         double totalFee;
         double commissionRateDl = 0.0;
         double platformFee;
         double riderFee;
-        Integer commissionRate;
+        Integer commissionRate=0;
 
-        //保存配送距离 从1.41版本保存为我们之前传给客户端的距离值,同时向下兼容
+       /* //保存配送距离 从1.41版本保存为我们之前传给客户端的距离值,同时向下兼容
         Double deliveryDistance = entity.getDeliveryDistance();
         //1.41版本之前所展示的实时值
         if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())) {
@@ -129,7 +129,7 @@ public class OrderService extends BaseService {
             distance = deliveryFeeService.sumDeliveryDistanceMerchant(userId, entity.getReceiverLatitude(), entity.getReceiverLongitude());
         }
         //此处向下兼容
-        distance = deliveryDistance == null ? distance : deliveryDistance;
+        distance = deliveryDistance == null ? distance : deliveryDistance;*/
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         //设置该单是否付短信通知收货人
@@ -169,6 +169,7 @@ public class OrderService extends BaseService {
             throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
         }
         commissionRate = merchantTypeDTO.getCommissionRate();
+        commissionRate=commissionRate==null?0:commissionRate;
         if (commissionRate!=0){
             commissionRateDl = commissionRate/100;
         }
@@ -189,7 +190,6 @@ public class OrderService extends BaseService {
 
         BeanUtils.copyProperties(entity,orderEntity);
         BeanUtils.copyProperties(entity,detailEntity);
-
         merchantOrderDao.save(orderEntity);
         merchantOrderDetailRepository.save(detailEntity);
         //将订单加入支付超时队列
@@ -202,9 +202,42 @@ public class OrderService extends BaseService {
      */
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#userId+'_*'")
     @Transactional(readOnly = false)
-    public String saveOrderOnly(String userId, OrderEntity orderEntity,OrderDetailEntity detailEntity){
+    public String saveOrderOnly(String userId, OrderEntity orderEntity,OrderDetailEntity detailEntity) throws MerchantClientException {
         String orderNo = codeGenerator.nextCustomerCode(orderEntity.getOrderType());
+        Integer commissionRate;
         //重新设置
+        // 没加短信费前 计算佣金
+        MerchantInfoEntity merchantInfoEntity = merchantInfoService.findByUserId(userId);
+        if (merchantInfoEntity==null){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+        }
+        Double totalFee = orderEntity.getPayAmount();
+        if (orderEntity.getShortMessage()){
+            totalFee=CalCulateUtil.sub(totalFee,MerchantConstants.MESSAGE_FEE);
+        }
+        Long merTypeId =  merchantInfoEntity.getMerTypeId();
+        MerchantTypeDTO   merchantTypeDTO=null;
+        double commissionRateDl = 0.0;
+        if (merTypeId!=null){
+            merchantTypeDTO = merchantTypeService.findById(merTypeId);
+        }
+        if (merchantTypeDTO==null){
+            throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
+        }
+        commissionRate = merchantTypeDTO.getCommissionRate();
+        commissionRate=commissionRate==null?0:commissionRate;
+        if (commissionRate!=0){
+            commissionRateDl = commissionRate/100;
+        }
+        double platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
+        double riderFee = CalCulateUtil.sub(totalFee,platformFee);
+        riderFee =  CalCulateUtil.round(riderFee,2);
+        platformFee = CalCulateUtil.round(platformFee,2);
+
+        detailEntity.setRiderFee(riderFee);
+        detailEntity.setPlatformFee(platformFee);
+
+
         orderEntity.setOrderNo(orderNo);
         detailEntity.setOrderNo(orderNo);
         merchantOrderDao.save(orderEntity);
@@ -813,5 +846,6 @@ public class OrderService extends BaseService {
     public int  updateShortMessage(Boolean setting,String  orderNo,String userId){
         return merchantOrderDao.updateShortMessage(setting,userId,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
     }
+
 
 }

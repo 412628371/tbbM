@@ -88,8 +88,8 @@ public class ThirdOrderService {
             mtOrderEntity.setUpdateDate(new Date());
             mtOrderEntity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
             //处理自动发单
-            dealAutoSendOrder(mtOrderEntity);
             thirdOrderRepository.save(mtOrderEntity);
+            dealAutoSendOrder(mtOrderEntity);
         }
     }
     /**
@@ -150,19 +150,14 @@ public class ThirdOrderService {
         newOrderEntity.setReceiverLatitude(mtOrderEntity.getReceiverLatitude());
         newOrderEntity.setReceiverLongitude(mtOrderEntity.getReceiverLongitude());
         //封装费用
-        Double  devliveryFee=0.0;
         Double devliveryDistance=0.0;
         //获得本地区域码
         String nativeAreaCode = merchant.getAddressAdCode();
         //获取实际距离
         devliveryDistance = routePlanning.getDistanceWithWalkFirst(mtOrderEntity.getReceiverLongitude(),mtOrderEntity.getReceiverLatitude(),
                 merchant.getLongitude(),merchant.getLatitude());
-        DeliveryFeeDto deliveryFeeDto = deliveryFeeService.sumDeliveryFeeByLocation(devliveryDistance, merchant, null);
-        Double platformFee = deliveryFeeDto.getPlatformFee();
-        Double riderFee = deliveryFeeDto.getRiderFee();
-        platformFee=platformFee==null?0.0:platformFee;
-        riderFee=riderFee==null?0.0:riderFee;
-        devliveryFee=CalCulateUtil.add(platformFee,riderFee);
+        Double deliveryFee = deliveryFeeService.sumDeliveryFeeByLocation(devliveryDistance, merchant);
+        deliveryFee=deliveryFee==null?0.0:deliveryFee;
         //调用后台传来的溢价信息
         OverFeeDTO overFee = overFeeService.findOverFee(nativeAreaCode);
         Double peekOverFee=0.0;
@@ -187,7 +182,7 @@ public class ThirdOrderService {
         }
         Double payAmount=0.0;
         payAmount= CalCulateUtil.add(payAmount,totalOverFee);
-        payAmount=CalCulateUtil.add(payAmount,devliveryFee);
+        payAmount=CalCulateUtil.add(payAmount,deliveryFee);
         MerchantMessageSettingsEntity merchantSettings=merchantSettingsService.findBuUserId(userId);
         if (null!=merchantSettings&&merchantSettings.getMessageOpen()){
             //计算短信费
@@ -199,9 +194,7 @@ public class ThirdOrderService {
         }
         newOrderEntity.setWeatherOverFee(weatherOverFee);
         newOrderEntity.setPeekOverFee(peekOverFee);
-        newOrderEntity.setDeliveryFee(devliveryFee);
-        newOrderEntity.setRiderFee(riderFee);
-        newOrderEntity.setPlatformFee(platformFee);
+        newOrderEntity.setDeliveryFee(deliveryFee);
         newOrderEntity.setDeliveryDistance(devliveryDistance);
         newOrderEntity.setPayAmount(payAmount);
         newOrderEntity.setOrderType(EnumOrderType.POST_NORMAL_ORDER.getValue());
@@ -233,12 +226,15 @@ public class ThirdOrderService {
      * */
     private void payWithoutPassword(String userId, MerchantInfoEntity merchant, MerchantOrderEntity newOrderEntity) {
         Double payAmount=newOrderEntity.getPayAmount();
+
         String orderNo=newOrderEntity.getOrderNo();
         PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
         payWithOutPwdRequest.setOrderId(orderNo);
         payWithOutPwdRequest.setAccountId(merchant.getAccountId());
         long amount = ConvertUtil.convertYuanToFen(payAmount);
+        long commission = ConvertUtil.convertYuanToFen(newOrderEntity.getPlatformFee());
         payWithOutPwdRequest.setAmount(amount);
+        payWithOutPwdRequest.setCommission(commission);
         logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,orderNo,payWithOutPwdRequest.getAmount());
         TbbAccountResponse<PayInfo> response;
         //TODO 拆分抽成金额

@@ -56,12 +56,12 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
         String orderType = req.getType();
         //post订单
-        if (null!=infoEntity.getProviderId()){
-            orderType=EnumOrderType.POSTORDER.getValue();
+        if (EnumBindStatusType.SUCCESS.getValue().equalsIgnoreCase(infoEntity.getBindStatus())){
+            orderType=EnumOrderType.POST_NORMAL_ORDER.getValue();
 
         }
         MerchantOrderEntity entity = new MerchantOrderEntity();
-      if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POSTORDER.getValue().equals(orderType)){
+      if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             OrderUtil.judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
         }else {

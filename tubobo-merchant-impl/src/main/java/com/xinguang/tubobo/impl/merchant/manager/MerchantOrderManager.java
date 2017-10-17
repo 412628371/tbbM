@@ -15,10 +15,7 @@ import com.xinguang.taskcenter.api.common.enums.PostOrderUnsettledStatusEnum;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
-import com.xinguang.tubobo.account.api.request.FineRequest;
-import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
-import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
-import com.xinguang.tubobo.account.api.request.SubsidyRequest;
+import com.xinguang.tubobo.account.api.request.*;
 import com.xinguang.tubobo.account.api.response.*;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
@@ -672,7 +669,14 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		detailEntity.setCancelSourceDeliverySubsidy(entity.getCancelCompensation());
 		detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
 		//保存订单
-		String newOrderNo=orderService.saveOrderOnly(entity.getUserId(),orderEntity,detailEntity);
+		String newOrderNo= null;
+		try {
+			newOrderNo = orderService.saveOrderOnly(entity.getUserId(),orderEntity,detailEntity);
+		} catch (MerchantClientException e) {
+			logger.error("骑手取消后自动创建订单失败,orderNo:{}",entity.getOrderNo());
+			e.printStackTrace();
+			return;
+		}
 
 		//进行支付
 		MerchantOrderEntity newOrderEntity = orderService.findByOrderNo(newOrderNo);
@@ -683,10 +687,15 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		}
 
 		long amount = ConvertUtil.convertYuanToFen(amountD);
+		long commission = ConvertUtil.convertYuanToFen(newOrderEntity.getPlatformFee());
+
+
 		PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
 		payWithOutPwdRequest.setOrderId(newOrderNo);
 		payWithOutPwdRequest.setAccountId(merchant.getAccountId());
 		payWithOutPwdRequest.setAmount(amount);
+		payWithOutPwdRequest.setCommission(commission);
+
 		logger.info("骑手取消订单,免密重新支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),newOrderNo,payWithOutPwdRequest.getAmount());
 		TbbAccountResponse<PayInfo> response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
 		if (response != null && response.isSucceeded()){
@@ -777,14 +786,14 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		long messageFee = ConvertUtil.convertYuanToFen(messageFeeD);
 		MerchantInfoEntity info = merchantInfoService.findByUserId(entity.getUserId());
 		Long accountId = info.getAccountId();
-		FineRequest fineRequest = new FineRequest(entity.getOrderNo(), (int) messageFee,accountId,MerchantConstants.MERCHANT_MESSAGE_REMARK,MerchantConstants.MERCHANT_MESSAGE);
-		TbbAccountResponse<FineInfo> fineResponse = tbbAccountService.fineAny(fineRequest);
-		if (fineResponse.isSucceeded()){
+		BuyRequest fineRequest = new BuyRequest(entity.getOrderNo(), (int) messageFee,accountId,MerchantConstants.MERCHANT_MESSAGE_REMARK,MerchantConstants.MERCHANT_MESSAGE);
+		TbbAccountResponse<BuyInfo> buyResponse = tbbAccountService.buy(fineRequest);
+		if (buyResponse.isSucceeded()){
 			logger.info("商家扣除短信费用成功. taskNo:{}, riderId:{}, accountId:{}, amount:{},",
 					entity.getOrderNo(),entity.getRiderId(),accountId,messageFee);
 			MerchantMessageRecordEntity message = new MerchantMessageRecordEntity();
 			message.setOrderNo(entity.getOrderNo());
-			message.setRecordMessageId(fineResponse.getData().getId());
+			message.setRecordMessageId(buyResponse.getData().getId());
 			String msg = JSON.toJSONString(message);
 			rmqMessagePayRecordProducer.sendMessage(msg);
 
@@ -792,7 +801,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			//更改短信标志
 			orderService.updateShortMessage(false,entity.getOrderNo(),entity.getUserId());
 			logger.error("商家取消任务罚款 失败. taskNo:{}, riderId:{}, accountId:{}, amount:{},errorCode:{}, errorMsg:{}",
-					entity.getOrderNo(),entity.getRiderId(),accountId,messageFee,fineResponse.getErrorCode(),fineResponse.getMessage());
+					entity.getOrderNo(),entity.getRiderId(),accountId,messageFee,buyResponse.getErrorCode(),buyResponse.getMessage());
 		}
 
 	}
