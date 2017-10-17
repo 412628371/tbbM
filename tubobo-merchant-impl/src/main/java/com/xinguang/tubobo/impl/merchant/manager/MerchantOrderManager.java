@@ -820,6 +820,11 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
 			merchantOrderDTO.setProviderId(entity.getProviderId());
 			merchantOrderDTO.setProviderName(entity.getProviderName());
+		}else if ((EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType()))){
+			merchantOrderDTO.setTaskType(TaskTypeEnum.POST_NORMAL_ORDER);
+			merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
+			merchantOrderDTO.setProviderId(entity.getProviderId());
+			merchantOrderDTO.setProviderName(entity.getProviderName());
 		}
 		if (entity.getPayAmount() != null){
 			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
