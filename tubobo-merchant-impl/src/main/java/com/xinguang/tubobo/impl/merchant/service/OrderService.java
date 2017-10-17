@@ -117,7 +117,7 @@ public class OrderService extends BaseService {
         double commissionRateDl = 0.0;
         double platformFee;
         double riderFee;
-        double commissionRate;
+        Integer commissionRate;
 
         //保存配送距离 从1.41版本保存为我们之前传给客户端的距离值,同时向下兼容
         Double deliveryDistance = entity.getDeliveryDistance();

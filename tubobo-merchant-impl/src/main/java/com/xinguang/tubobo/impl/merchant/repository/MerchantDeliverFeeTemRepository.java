@@ -10,7 +10,7 @@ import java.util.List;
  * Created by lvhantai on 2017/9/30.
  */
 public interface MerchantDeliverFeeTemRepository extends JpaRepository<MerchantDeliverFeeTemEntity, Long>, JpaSpecificationExecutor<MerchantDeliverFeeTemEntity> {
-    List<MerchantDeliverFeeTemEntity> findAllByDelFlag(String delFlag);
+    List<MerchantDeliverFeeTemEntity> findAllByDelFlagOrderByIdDesc(String delFlag);
     MerchantDeliverFeeTemEntity findByIdAndDelFlag(Long id, String delFlag);
     MerchantDeliverFeeTemEntity findByNameAndDelFlag(String name, String delFlag);
 }

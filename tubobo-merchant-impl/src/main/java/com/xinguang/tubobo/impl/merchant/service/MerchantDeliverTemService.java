@@ -31,7 +31,7 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
     @Override
     @Cacheable(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_all'")
     public List<MerchantDeliverFeeTemDTO> findAll() {
-        List<MerchantDeliverFeeTemEntity> merchantDeliverFeeTemEntities = merchantDeliverFeeTemRepository.findAllByDelFlag(MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
+        List<MerchantDeliverFeeTemEntity> merchantDeliverFeeTemEntities = merchantDeliverFeeTemRepository.findAllByDelFlagOrderByIdDesc(MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
         List<MerchantDeliverFeeTemDTO> merchantDeliverFeeTemDTOS = new ArrayList<>();
 
         if (merchantDeliverFeeTemEntities!=null&&merchantDeliverFeeTemEntities.size()>0){
