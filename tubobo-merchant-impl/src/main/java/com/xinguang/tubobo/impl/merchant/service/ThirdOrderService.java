@@ -81,8 +81,6 @@ public class ThirdOrderService {
     DeliveryFeeService deliveryFeeService;
     @Autowired
     RoutePlanning routePlanning;
-    @Autowired
-    ServiceForTransaction serviceForTransaction;
 
     @Transactional()
     public void saveMtOrder(ThirdOrderEntity mtOrderEntity){
