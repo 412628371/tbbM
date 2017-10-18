@@ -1,15 +1,19 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
 import com.hzmux.hzcms.common.utils.StringUtils;
+import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantDeliverFeeConfigEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantDeliverFeeConfigRepository;
 import com.xinguang.tubobo.merchant.api.MerchantDeliverFeeConfigInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantDeliverFeeConfigDTO;
+import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +52,7 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
      * @return
      */
     @Override
+    @Cacheable(value= RedisCache.MERCHANT,key="'deliverFee_'+#orderType")
     public List<MerchantDeliverFeeConfigDTO> findByOrderType(String orderType){
         List<MerchantDeliverFeeConfigEntity> all = feeConfigRepository.findAllByDelFlagAndOrderTypeOrderByBeginDistance(MerchantInfoEntity.DEL_FLAG_NORMAL,orderType);
         return copyFeeEntityToDto(all);
@@ -61,17 +66,11 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
     public  List<MerchantDeliverFeeConfigDTO> queryAllByCondition(MerchantDeliverFeeConfigDTO merchantDeliverFeeConfigDTO){
         MerchantDeliverFeeConfigEntity entity = new MerchantDeliverFeeConfigEntity();
         BeanUtils.copyProperties(merchantDeliverFeeConfigDTO,entity);
-        List<MerchantDeliverFeeConfigEntity> merchantDeliverFeeConfigEntities = feeConfigRepository.findAll(where(entity));
-
-        List<MerchantDeliverFeeConfigDTO> merchantDeliverFeeConfigDTOS = new ArrayList<>();
-        if (merchantDeliverFeeConfigEntities!=null&&merchantDeliverFeeConfigEntities.size()>0){
-            for (MerchantDeliverFeeConfigEntity merchantDeliverFeeConfigEntity : merchantDeliverFeeConfigEntities) {
-                MerchantDeliverFeeConfigDTO merFeeConfig = new MerchantDeliverFeeConfigDTO();
-                BeanUtils.copyProperties(merchantDeliverFeeConfigEntity,merFeeConfig);
-                merchantDeliverFeeConfigDTOS.add(merFeeConfig);
-            }
+        if (EnumOrderType.CROWDORDER.getValue().equals(entity.getOrderType())||EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
+            entity.setOrderType(EnumOrderType.CROWDORDER.getValue());
         }
-        return merchantDeliverFeeConfigDTOS;
+        List<MerchantDeliverFeeConfigEntity> merchantDeliverFeeConfigEntities = feeConfigRepository.findAll(where(entity));
+        return copyFeeEntityToDto(merchantDeliverFeeConfigEntities);
     }
 
     private Specification<MerchantDeliverFeeConfigEntity> where(final MerchantDeliverFeeConfigEntity entity){
@@ -94,19 +93,23 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
         };
     }
 
-    /**
+/*    *//**
      * 根据区code查询具体区的费用
-     */
+     *//*
     @Override
     public List<MerchantDeliverFeeConfigDTO> findFeeByAreaCode(String areaCode) {
         List<MerchantDeliverFeeConfigEntity> list = feeConfigRepository.findByAreaCodeAndDelFlagOrderByBeginDistance(areaCode, MerchantInfoEntity.DEL_FLAG_NORMAL);
         return copyFeeEntityToDto(list);
-    }
+    }*/
     /**
      * 根据区code和orderType查询具体区的费用
      */
     @Override
     public List<MerchantDeliverFeeConfigDTO> findFeeByAreaCodeAndOrderTypeAndTemId(String areaCode,String orderType,Long temId){
+
+        if (EnumOrderType.CROWDORDER.getValue().equals(orderType)||EnumOrderType.SMALLORDER.getValue().equals(orderType)){
+            orderType = EnumOrderType.CROWDORDER.getValue();
+        }
         List<MerchantDeliverFeeConfigEntity> list = feeConfigRepository.findByAreaCodeAndDelFlagAndOrderTypeAndTemIdOrderByBeginDistance(areaCode, MerchantInfoEntity.DEL_FLAG_NORMAL,orderType,temId);
         return copyFeeEntityToDto(list);
     }
@@ -123,13 +126,13 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
         return returnList;
     }
 
-    @Override
+/*    @Override
     public void saveList(List<MerchantDeliverFeeConfigDTO> list) {
 
-    }
-    /**
+    }*/
+/*    *//**
      * 清空商家配送配置表,并保存新数据
-     */
+     *//*
     @Override
     public void clearAndSaveList(List<MerchantDeliverFeeConfigDTO> list) {
         feeConfigRepository.deleteAll();
@@ -142,9 +145,10 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
             }
         }
         feeConfigRepository.save(saveList);
-    }
+    }*/
 
     @Override
+    @CacheEvict(value= RedisCache.MERCHANT,key="'deliverFee_'+#orderType")
     public void clearAndSaveListByAreaCodeAndOrderTypeAndTemId(List<MerchantDeliverFeeConfigDTO> list) {
         ArrayList<MerchantDeliverFeeConfigEntity> saveList = new ArrayList<>();
         if(null!=list&&list.size()>0){

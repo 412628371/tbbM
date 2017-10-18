@@ -6,6 +6,8 @@ import com.xinguang.tubobo.impl.merchant.entity.MerchantTypeEntity;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantTypeRepository;
 import com.xinguang.tubobo.merchant.api.MerchantTypeInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,6 +26,8 @@ import java.util.List;
 public class MerchantTypeService implements MerchantTypeInterface {
     @Autowired
     private MerchantTypeRepository merchantTypeRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(MerchantTypeService.class);
 
     @Override
     @Cacheable(value= RedisCache.MERCHANT,key="'merchantType_all'")
@@ -100,28 +104,47 @@ public class MerchantTypeService implements MerchantTypeInterface {
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_*'")
     @Transactional(readOnly = false)
     public Boolean save(MerchantTypeDTO merchantTypeDTO) {
-        if(merchantTypeDTO == null){
-            return false;
-        }
-        Long id = merchantTypeDTO.getId();
-        String name = merchantTypeDTO.getName();
-        if (id != null){
-            MerchantTypeEntity entity = new MerchantTypeEntity();
-            BeanUtils.copyProperties(merchantTypeDTO, entity);
-            entity.setDelFlag(MerchantTypeEntity.DEL_FLAG_NORMAL);
-            merchantTypeRepository.save(entity);
-            return true;
-        }else {
-            if (StringUtils.isNotBlank(name)){
-                MerchantTypeEntity merchantTypeEntity = merchantTypeRepository.findByNameAndDelFlag(name, MerchantTypeEntity.DEL_FLAG_NORMAL);
-                if (merchantTypeEntity==null){
-                    merchantTypeEntity = new MerchantTypeEntity();
-                    BeanUtils.copyProperties(merchantTypeDTO,merchantTypeEntity);
-                    merchantTypeRepository.save(merchantTypeEntity);
-                    return true;
+        if(merchantTypeDTO != null){
+            Long id = merchantTypeDTO.getId();
+            String name = merchantTypeDTO.getName();
+            if (id != null){
+                //修改
+                merchantTypeRepository.findByIdAndDelFlag(id,MerchantTypeEntity.DEL_FLAG_NORMAL);
+                MerchantTypeEntity entity = new MerchantTypeEntity();
+                BeanUtils.copyProperties(merchantTypeDTO, entity);
+                merchantTypeRepository.save(entity);
+                return true;
+            }else {
+                //新增
+                if (StringUtils.isNotBlank(name)){
+                    MerchantTypeEntity merchantTypeEntity = merchantTypeRepository.findByNameAndDelFlag(name, MerchantTypeEntity.DEL_FLAG_NORMAL);
+                    if (merchantTypeEntity==null){
+                        merchantTypeEntity = new MerchantTypeEntity();
+                        BeanUtils.copyProperties(merchantTypeDTO,merchantTypeEntity);
+                        merchantTypeRepository.save(merchantTypeEntity);
+                        return true;
+                    }else {
+                        //用户名已存在
+            /*            try {
+                            throw new MerchantClientException(EnumRespCode.FAIL);
+                        } catch (MerchantClientException e) {
+                            wrapErrorCodeResponse(e);
+                        }*/
+                        return false;
+                    }
                 }
             }
-            return false;
         }
+        //参数错误
+        return false;
     }
+
+/*    public  <D> TbbMerchantResponse<D> wrapErrorCodeResponse(Exception e) {
+        if (e instanceof TbbMerchantBaseException){
+            logger.error("异常：code:{},message:{}",((TbbMerchantBaseException) e).getErrorCode(),e.getMessage());
+        }else{
+            logger.error("任务异常：",e);
+        }
+        return TbbMerchantBaseException.genErrorCodeResponse(e);
+    }*/
 }

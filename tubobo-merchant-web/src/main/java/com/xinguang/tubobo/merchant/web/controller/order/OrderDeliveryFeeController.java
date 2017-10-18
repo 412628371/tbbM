@@ -1,7 +1,6 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
-import com.xinguang.tubobo.impl.merchant.dto.DeliveryFeeDto;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.DeliveryFeeService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
@@ -33,7 +32,6 @@ public class OrderDeliveryFeeController extends MerchantBaseController<OrderDeli
         logger.info("计算配送费请求, userId:{}, OrderDeliveryFeeRequest:{}",userId,req.toString());
         Double distance;
         Double fee;
-        DeliveryFeeDto deliveryFeeDto;
 
         //获取商家信息
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
