@@ -75,10 +75,20 @@ public class RespOrderDetail implements Serializable{
     private Double cancelSourceDeliveryFee; 	        //取消订单原发配送费
     private Double cancelSourceDeliverySubsidy ;      //取消订单原骑手补贴金额
     private String cancelSourceOrderNo ;  		    //取消订单原单号
+    private String orderFeature;//订单特征值 RIDER_CANCEL_RESEND  骑手取消重发单
+
+    public String getOrderFeature() {
+        return orderFeature;
+    }
+
+    public void setOrderFeature(String orderFeature) {
+        this.orderFeature = orderFeature;
+    }
 
     public Double getCancelSourceDeliveryFee() {
         return cancelSourceDeliveryFee;
     }
+
 
     public void setCancelSourceDeliveryFee(Double cancelSourceDeliveryFee) {
         this.cancelSourceDeliveryFee = cancelSourceDeliveryFee;
