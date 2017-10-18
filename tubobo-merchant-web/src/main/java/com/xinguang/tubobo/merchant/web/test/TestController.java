@@ -16,10 +16,10 @@ public class TestController {
     @Autowired
     MerchantToPostHouseServiceImpl postHouseService;
 
-    @RequestMapping("unbind/{userId}/{providerId}")
-    @ResponseBody
-    public EnumMerchantPostExceptionCode test(@PathVariable String userId,@PathVariable long providerId){
-        EnumMerchantPostExceptionCode code = postHouseService.unbindProvider(userId,providerId);
-        return code;
-    }
+//    @RequestMapping("unbind/{userId}/{providerId}")
+//    @ResponseBody
+//    public EnumMerchantPostExceptionCode test(@PathVariable String userId,@PathVariable long providerId){
+////        EnumMerchantPostExceptionCode code = postHouseService.unbindProvider(userId,providerId);
+////        return code;
+//    }
 }

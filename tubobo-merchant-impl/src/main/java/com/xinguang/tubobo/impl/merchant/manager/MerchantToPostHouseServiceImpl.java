@@ -62,7 +62,7 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
     }
 
     @Override
-    public EnumMerchantPostExceptionCode unbindProvider(String userId, long providerId) {
+    public EnumMerchantPostExceptionCode unbindProvider(String userId, long providerId, String providerName) {
         MerchantInfoEntity riderInfoEntity = merchantInfoService.findByUserId(userId);
         if (null == riderInfoEntity) {
             return EnumMerchantPostExceptionCode.SHOP_NOT_EXIST;
@@ -80,7 +80,7 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         }
         if (result) {
             //发送解绑通知
-            rmqNoticeProducer.sendMerchantUnbindMotice(riderInfoEntity.getUserId(), riderInfoEntity.getProviderName());
+            rmqNoticeProducer.sendMerchantUnbindMotice(riderInfoEntity.getUserId(), providerName);
             return EnumMerchantPostExceptionCode.SUCCESS;
         }
         return EnumMerchantPostExceptionCode.FAIL;
