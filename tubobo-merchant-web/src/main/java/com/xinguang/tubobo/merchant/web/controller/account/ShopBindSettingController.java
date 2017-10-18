@@ -26,9 +26,9 @@ public class ShopBindSettingController extends MerchantBaseController<ReqBindSet
         if(!EnumAuthentication.SUCCESS.getValue().equals(entity.getMerchantStatus())){
             throw new MerchantClientException(EnumRespCode.SHOP_NOT_AUTHED);
         }
-        if(entity.getProviderId() != req.getProviderId()){
-            throw new MerchantClientException(EnumRespCode.SHOP_PROVIDERID_DIFFER);
-        }
+//        if(entity.getProviderId() != req.getProviderId()){
+//            throw new MerchantClientException(EnumRespCode.SHOP_PROVIDERID_DIFFER);
+//        }
         boolean result;
         if(req.isAgreeBind()){
             result = merchantInfoService.bindProviderAgree(userId, entity.getProviderId());
