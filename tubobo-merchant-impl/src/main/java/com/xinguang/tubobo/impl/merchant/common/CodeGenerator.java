@@ -83,7 +83,7 @@ public class CodeGenerator {
         if (EnumOrderType.BIGORDER.getValue().equals(orderType)){
             code = BusinessTypeEnum.MERCHANT_BIG_ORDER.getCode();
         }
-        if (EnumOrderType.POSTORDER.getValue().equals(orderType)){
+        if (EnumOrderType.POSTORDER.getValue().equals(orderType)||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(orderType)){
             code = BusinessTypeEnum.POST_ORDER.getCode();
         }
         String date = DateUtils.getDate("yyMMdd");

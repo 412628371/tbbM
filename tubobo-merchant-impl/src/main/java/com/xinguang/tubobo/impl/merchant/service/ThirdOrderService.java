@@ -299,7 +299,7 @@ public class ThirdOrderService {
     @Transactional()
     public Page<ThirdOrderEntity> findUnProcessedPageByUserId(ProcessQueryCondition condition, @Min(1) int pageNo,@Min(1) int pageSize){
 
-        PageRequest pageRequest = new PageRequest((pageNo-1), pageSize, new Sort(Sort.Direction.DESC, "create_date"));
+        PageRequest pageRequest = new PageRequest((pageNo-1), pageSize, new Sort(Sort.Direction.DESC, "createDate"));
         Page<ThirdOrderEntity> page = thirdOrderRepository.findAll(where(condition), pageRequest);
         return page;
     }
@@ -310,7 +310,7 @@ public class ThirdOrderService {
             public Predicate toPredicate(Root<ThirdOrderEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> list = new ArrayList<Predicate>();
                 list.add(cb.equal(root.get("delFlag").as(String.class), "0"));
-                list.add(cb.equal(root.get("processed").as(Boolean.class), false));
+                list.add(cb.equal(root.get("processed"), false));
                 if (StringUtils.isNotBlank(condition.getUserId())){
                     list.add(cb.equal(root.get("userId").as(String.class), condition.getUserId()));
                 }
