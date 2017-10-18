@@ -48,6 +48,15 @@ public class MerchantInfoResponse implements Serializable{
 
     private Long providerId;			 //服务商ID
     private String providerName;			 //服务商名称
+    private String bindStatus;
+
+    public String getBindStatus() {
+        return bindStatus;
+    }
+
+    public void setBindStatus(String bindStatus) {
+        this.bindStatus = bindStatus;
+    }
 
     public Long getProviderId() {
         return providerId;
