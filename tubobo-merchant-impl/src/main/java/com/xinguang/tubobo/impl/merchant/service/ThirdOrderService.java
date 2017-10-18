@@ -44,6 +44,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.print.DocFlavor;
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,7 +81,10 @@ public class ThirdOrderService {
     DeliveryFeeService deliveryFeeService;
     @Autowired
     RoutePlanning routePlanning;
-    //@Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Autowired
+    ServiceForTransaction serviceForTransaction;
+
+    @Transactional()
     public void saveMtOrder(ThirdOrderEntity mtOrderEntity){
         ThirdOrderEntity existEntity = thirdOrderRepository.findByOriginOrderIdAndPlatformCode(mtOrderEntity.getOriginOrderId(),
                 mtOrderEntity.getPlatformCode());
@@ -88,16 +92,15 @@ public class ThirdOrderService {
             mtOrderEntity.setCreateDate(new Date());
             mtOrderEntity.setUpdateDate(new Date());
             mtOrderEntity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
-            //处理自动发单
             thirdOrderRepository.save(mtOrderEntity);
-            dealAutoSendOrder(mtOrderEntity);
+            //dealAutoSendOrder(mtOrderEntity);
         }
     }
     /**
     * 自动发单(针对驿站订单 且开启自动发单功能)
     * */
     @Transactional()
-    private void dealAutoSendOrder(ThirdOrderEntity mtOrderEntity) {
+    public void dealAutoSendOrder(ThirdOrderEntity mtOrderEntity) {
 
         String userId = mtOrderEntity.getUserId();
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
@@ -128,9 +131,13 @@ public class ThirdOrderService {
                 Double realPayAmount=CalCulateUtil.sub(newOrderEntity.getPayAmount(),MerchantConstants.MESSAGE_FEE);
                 newOrderEntity.setPayAmount(realPayAmount);
             }
-            payWithoutPassword(userId, merchant, newOrderEntity);
-
-
+            try {
+                //支付失败,订单不回滚
+                payWithoutPassword(userId, merchant, newOrderEntity);
+                }catch (Exception e
+                        ){
+                    logger.error("自动付款失败",e);
+                }
         }
     }
     /**
@@ -224,8 +231,8 @@ public class ThirdOrderService {
      * */
     @Transactional()
     private void payWithoutPassword(String userId, MerchantInfoEntity merchant, MerchantOrderEntity newOrderEntity) {
+        int a=1/0;
         Double payAmount=newOrderEntity.getPayAmount();
-
         String orderNo=newOrderEntity.getOrderNo();
         PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
         payWithOutPwdRequest.setOrderId(orderNo);
@@ -238,6 +245,7 @@ public class ThirdOrderService {
         TbbAccountResponse<PayInfo> response;
         //TODO 拆分抽成金额
         response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+
         if (response != null && response.isSucceeded()){
             long payId = response.getData().getId();
             newOrderEntity.setPayId(payId);
