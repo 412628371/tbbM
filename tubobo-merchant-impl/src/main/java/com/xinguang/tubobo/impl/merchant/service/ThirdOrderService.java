@@ -229,7 +229,6 @@ public class ThirdOrderService {
      * */
     @Transactional()
     private void payWithoutPassword(String userId, MerchantInfoEntity merchant, MerchantOrderEntity newOrderEntity) {
-        int a=1/0;
         Double payAmount=newOrderEntity.getPayAmount();
         String orderNo=newOrderEntity.getOrderNo();
         PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
