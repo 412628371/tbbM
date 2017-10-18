@@ -221,6 +221,7 @@ public class ThirdOrderService {
         BeanUtils.copyProperties(newOrderEntity,orderEntity);
         //创建订单
         String orderNo = orderService.saveOrderOnly(userId, orderEntity, orderDetailEntity);
+        processOrder(userId,orderEntity.getPlatformCode(),orderEntity.getOriginOrderId());
         return orderService.findByOrderNo(orderNo);
     }
 
