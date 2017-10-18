@@ -228,31 +228,31 @@ public class MerchantInfoService extends BaseService {
 		return count;
 	}
 
-	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
-	@Transactional
-	public boolean bindProvider(String userId,Long providerId, String providerName){
-		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId,providerName,EnumBindStatusType.NOOPERATE.getValue(), EnumBindStatusType.SUCCESS.getValue(),null, new Date(), null);
-		return count == 1;
-	}
+//	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+//	@Transactional
+//	public boolean bindProvider(String userId,Long providerId, String providerName){
+//		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId,providerName,EnumBindStatusType.NOOPERATE.getValue(), EnumBindStatusType.SUCCESS.getValue(),null, new Date(), null);
+//		return count == 1;
+//	}
 
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional
-	public boolean bindProviderAgree(String userId,Long providerId,String providerName){
-		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId,providerName, EnumBindStatusType.SUCCESS.getValue(), EnumBindStatusType.SUCCESS.getValue(),new Date(), new Date(), null);
+	public boolean bindProviderAgree(String userId,Long providerId){
+		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId,new Date());
 		return count == 1;
 	}
 
-	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
-	@Transactional
-	public boolean bindProviderReject(String userId,Long providerId,String providerName){
-		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId, providerName,EnumBindStatusType.REJECT.getValue(), EnumBindStatusType.SUCCESS.getValue(),null, new Date(), null);
-		return count == 1;
-	}
+//	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
+//	@Transactional
+//	public boolean bindProviderReject(String userId,Long providerId,String providerName){
+//		int count = merchantInfoRepository.bindProvider(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, providerId, providerName,EnumBindStatusType.REJECT.getValue(), EnumBindStatusType.SUCCESS.getValue(),null, new Date(), null);
+//		return count == 1;
+//	}
 
 	@CacheEvict(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	@Transactional
 	public boolean unbindProvider(String userId,long providerId){
-		int count = merchantInfoRepository.unbindProvider(userId, providerId, MerchantOrderEntity.DEL_FLAG_NORMAL, EnumBindStatusType.UNBUNDLE.getValue(), EnumBindStatusType.SUCCESS.getValue(),new Date(), new Date());
+		int count = merchantInfoRepository.unbindProvider(userId, null, providerId, MerchantInfoEntity.DEL_FLAG_NORMAL,new Date());
 		return count == 1;
 	}
 	public boolean  isPostMerchant(String userId){

@@ -29,6 +29,13 @@ public interface MerchantToPostHouseServiceInterface {
     PageDTO<MerchantOrderDTO> findMerchantOrderList(MerchantOrderQueryCondition queryCondition);
 
     /**
+     * 根据用户id获取商家信息
+     * @param userId
+     * @return
+     */
+    MerchantInfoDTO findMerchantList(String userId);
+
+    /**
      * 查询正在进行中，带取货， 待配送， 未妥投的订单数目
      * @return
      */

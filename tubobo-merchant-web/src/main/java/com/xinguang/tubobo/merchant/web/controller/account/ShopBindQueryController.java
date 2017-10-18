@@ -5,7 +5,9 @@ import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.response.RespShopBindQuery;
+import com.xinguang.tubobo.postHouse.api.dto.MerchantBindInfoDto;
 import com.xinguang.tubobo.postHouse.api.dto.ProviderInfoDTO;
+import com.xinguang.tubobo.postHouse.api.service.BindToMerchantServiceInterface;
 import com.xinguang.tubobo.postHouse.api.service.ProviderServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,14 +23,14 @@ public class ShopBindQueryController extends MerchantBaseController<Object, Resp
 
     @Autowired private ProviderServiceInterface providerServiceInterface;
 
-    @Autowired private MerchantInfoService merchantInfoService;
+    @Autowired private BindToMerchantServiceInterface merchantServiceInterface;
 
     @Override
     protected RespShopBindQuery doService(String userId, Object req) throws MerchantClientException {
-        MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
-        ProviderInfoDTO providerInfoDTO = providerServiceInterface.getProviderInfoById(infoEntity.getProviderId());
+        MerchantBindInfoDto dto = merchantServiceInterface.findMerchantBindInfo(userId);
+        ProviderInfoDTO providerInfoDTO = providerServiceInterface.getProviderInfoById(dto.getProviderId());
         RespShopBindQuery respShopBindQuery = new RespShopBindQuery();
-        respShopBindQuery.setBindStatus(infoEntity.getBindStatus());
+        respShopBindQuery.setBindStatus(dto.getBindStatus());
         respShopBindQuery.setOperatorName(providerInfoDTO.getOperatorName());
         respShopBindQuery.setOperatorPhone(providerInfoDTO.getOperatorPhone());
         respShopBindQuery.setProviderId(providerInfoDTO.getId());

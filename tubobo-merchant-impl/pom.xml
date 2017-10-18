@@ -29,6 +29,10 @@
             <artifactId>tubobo-merchant-takeout</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>tubobo-posthouse-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.xinguang</groupId>
             <artifactId>tubobo-api</artifactId>
         </dependency>

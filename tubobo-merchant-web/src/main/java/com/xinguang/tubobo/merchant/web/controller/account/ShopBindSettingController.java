@@ -7,6 +7,7 @@ import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.ReqBindSetting;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
+import com.xinguang.tubobo.postHouse.api.service.BindToMerchantServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/setting/postBind")
 public class ShopBindSettingController extends MerchantBaseController<ReqBindSetting, Object>{
     @Autowired private MerchantInfoService merchantInfoService;
+    @Autowired private BindToMerchantServiceInterface merchantServiceInterface;
     @Override
     protected Object doService(String userId, ReqBindSetting req) throws MerchantClientException {
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
@@ -29,9 +31,12 @@ public class ShopBindSettingController extends MerchantBaseController<ReqBindSet
         }
         boolean result;
         if(req.isAgreeBind()){
-            result = merchantInfoService.bindProviderAgree(userId, entity.getProviderId(), entity.getProviderName());
+            result = merchantInfoService.bindProviderAgree(userId, entity.getProviderId());
+            if(result){
+                result = merchantServiceInterface.bindProviderAgree(userId, entity.getProviderId());
+            }
         }else {
-            result = merchantInfoService.bindProviderReject(userId, entity.getProviderId(), entity.getProviderName());
+            result = merchantServiceInterface.bindProviderReject(userId, entity.getProviderId());
         }
         if(result){
             return "";

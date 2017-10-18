@@ -15,6 +15,7 @@ import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumBindStatusType;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;
+import com.xinguang.tubobo.postHouse.api.service.BindToMerchantServiceInterface;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,9 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
     @Autowired
     private RmqNoticeProducer rmqNoticeProducer;
 
+    @Autowired
+    private BindToMerchantServiceInterface merchantServiceInterface;
+
     @Override
     public EnumMerchantPostExceptionCode bindProvider(String userId, Long providerId, String providerName) {
         MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
@@ -45,19 +49,16 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         if (!EnumAuthentication.SUCCESS.getValue().equals(infoEntity.getMerchantStatus())) {
             return EnumMerchantPostExceptionCode.SHOP_NOT_AUTHED;
         }
-        if (EnumBindStatusType.SUCCESS.getValue().equals(infoEntity.getBindStatus())) {
+        if (null != infoEntity.getProviderId()) {
             return EnumMerchantPostExceptionCode.SHOP_ALREADY_BOUND;
         }
-        if (EnumBindStatusType.NOOPERATE.getValue().equals(infoEntity.getBindStatus())) {
-            return EnumMerchantPostExceptionCode.SHOP_ALREADY_UNBOUND;
-        }
-        boolean result = merchantInfoService.bindProvider(userId, providerId, providerName);
-        if (result) {
-            //发送绑定通知
-            rmqNoticeProducer.sendMerchantBindNotice(infoEntity.getUserId(), providerName);
-            return EnumMerchantPostExceptionCode.SUCCESS;
-        }
-        return EnumMerchantPostExceptionCode.FAIL;
+//        if (EnumBindStatusType.NOOPERATE.getValue().equals(infoEntity.getBindStatus())) {
+//            return EnumMerchantPostExceptionCode.SHOP_ALREADY_UNBOUND;
+//        }
+        //boolean result = merchantInfoService.bindProvider(userId, providerId, providerName);
+        //发送绑定通知
+        rmqNoticeProducer.sendMerchantBindNotice(infoEntity.getUserId(), providerName);
+        return EnumMerchantPostExceptionCode.SUCCESS;
     }
 
     @Override
@@ -72,13 +73,27 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         if (null == riderInfoEntity.getProviderId() || providerId != riderInfoEntity.getProviderId()) {
             return EnumMerchantPostExceptionCode.SHOP_NO_PERMISSION;
         }
-        boolean result = merchantInfoService.unbindProvider(userId, providerId);
+        boolean result;
+        result= merchantInfoService.unbindProvider(userId, providerId);
+        if(result){
+            merchantServiceInterface.unbindProvider(userId, providerId);
+        }
         if (result) {
             //发送解绑通知
             rmqNoticeProducer.sendMerchantUnbindMotice(riderInfoEntity.getUserId(), riderInfoEntity.getProviderName());
             return EnumMerchantPostExceptionCode.SUCCESS;
         }
         return EnumMerchantPostExceptionCode.FAIL;
+    }
+
+    @Override
+    public MerchantInfoDTO findMerchantList(String userId) {
+        MerchantInfoEntity infoEntity = merchantInfoService.findByUserId(userId);
+        MerchantInfoDTO merchantInfoDTO = new MerchantInfoDTO();
+        if(null != infoEntity){
+            BeanUtils.copyProperties(infoEntity, merchantInfoDTO);
+        }
+        return merchantInfoDTO;
     }
 
     @Override

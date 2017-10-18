@@ -34,12 +34,12 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity
     int updateDBCode(@Param("userId") String userId, @Param("delFlag") String delFlag, @Param("bdCode") String bdCode, @Param("bdUpdateDate") Date bdUpdateDate, @Param("updateDate") Date updateDate);
 
     @Modifying
-    @Query("update #{#entityName} a set a.providerId = :providerId, a.enterTime=:enterTime, a.bindStatus=:bindStatus,a.updateDate=:updateDate,a.providerName=:providerName,a.unbundleTime=:unbundleTime where a.userId = :userId and a.delFlag = :delFlag and a.bindStatus <>:oldBindStatus ")
-    int bindProvider(@Param("userId") String userId, @Param("delFlag") String delFlag, @Param("providerId") Long providerId,@Param("providerName") String providerName,@Param("bindStatus") String bindStatus, @Param("oldBindStatus") String oldBindStatus,@Param("enterTime") Date enterTime, @Param("updateDate") Date updateDate, @Param("unbundleTime") Date unbundleTime);
+    @Query("update #{#entityName} a set a.providerId = :providerId,a.updateDate=:updateDate where a.userId = :userId and a.delFlag = :delFlag ")
+    int bindProvider(@Param("userId") String userId, @Param("delFlag") String delFlag, @Param("providerId") Long providerId, @Param("updateDate") Date updateDate);
 
     @Modifying
-    @Query("update #{#entityName} a set a.bindStatus=:bindStatus,a.unbundleTime=:unbundleTime, a.updateDate=:updateDate where a.userId = :userId and a.providerId=:providerId and a.delFlag = :delFlag and a.bindStatus=:oldBindStatus ")
-    int unbindProvider(@Param("userId") String userId, @Param("providerId") Long providerId ,@Param("delFlag") String delFlag,@Param("bindStatus") String bindStatus, @Param("oldBindStatus") String oldBindStatus, @Param("unbundleTime") Date unbundleTime, @Param("updateDate") Date updateDate);
+    @Query("update #{#entityName} a set a.providerId=:providerId, a.updateDate=:updateDate where a.userId = :userId and a.providerId=:oldProviderId and a.delFlag = :delFlag ")
+    int unbindProvider(@Param("userId") String userId, @Param("providerId") Long providerId, @Param("oldProviderId") Long oldProviderId ,@Param("delFlag") String delFlag, @Param("updateDate") Date updateDate);
 
     @Modifying
     @Query("update #{#entityName} a set a.avatarUrl = :avatarUrl, a.updateDate=:updateDate where a.userId = :userId and a.delFlag = :delFlag ")
