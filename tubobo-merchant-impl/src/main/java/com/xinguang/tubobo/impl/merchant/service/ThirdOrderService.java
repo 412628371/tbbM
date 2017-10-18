@@ -37,6 +37,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -52,7 +53,7 @@ import java.util.List;
  * Created by xuqinghua on 2017/7/1.
  */
 @Service
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
 public class ThirdOrderService {
     Logger logger = LoggerFactory.getLogger(ThirdOrderService.class);
 
@@ -79,7 +80,7 @@ public class ThirdOrderService {
     DeliveryFeeService deliveryFeeService;
     @Autowired
     RoutePlanning routePlanning;
-    @Transactional()
+    //@Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveMtOrder(ThirdOrderEntity mtOrderEntity){
         ThirdOrderEntity existEntity = thirdOrderRepository.findByOriginOrderIdAndPlatformCode(mtOrderEntity.getOriginOrderId(),
                 mtOrderEntity.getPlatformCode());
@@ -97,7 +98,7 @@ public class ThirdOrderService {
     * */
     @Transactional()
     private void dealAutoSendOrder(ThirdOrderEntity mtOrderEntity) {
-        Boolean isPostOrder=false;
+
         String userId = mtOrderEntity.getUserId();
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
         if (!EnumBindStatusType.SUCCESS.getValue().equalsIgnoreCase(merchant.getBindStatus())){
@@ -110,8 +111,7 @@ public class ThirdOrderService {
             try {
                 OrderUtil.judgeOrderCondition(merchant.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
             } catch (MerchantClientException e) {
-                e.printStackTrace();
-                logger.error("三方订单自动发单审核权限error,:originOrder:{}",mtOrderEntity.toString());
+                logger.error("三方订单自动发单审核权限error,:originOrder:{}",mtOrderEntity.toString(), e);
                 return ;
             }
             //封装信息并创建订单
@@ -119,7 +119,7 @@ public class ThirdOrderService {
             try {
                 newOrderEntity = packageAndSaveOrder(mtOrderEntity, userId, merchant);
             } catch (MerchantClientException e) {
-                logger.error("驿站商家自动返单计算配送费error,deliveryFeeDto:{},error:{}",mtOrderEntity.toString(),e.getErrorMsg());
+                logger.error("驿站商家自动返单计算配送费error,deliveryFeeDto:{}",mtOrderEntity.toString(),e);
                 return ;
             }
             //支付
@@ -129,8 +129,6 @@ public class ThirdOrderService {
                 newOrderEntity.setPayAmount(realPayAmount);
             }
             payWithoutPassword(userId, merchant, newOrderEntity);
-
-
 
 
         }
@@ -224,6 +222,7 @@ public class ThirdOrderService {
     /**
      * 自动发单(直接免密支付并createTask)
      * */
+    @Transactional()
     private void payWithoutPassword(String userId, MerchantInfoEntity merchant, MerchantOrderEntity newOrderEntity) {
         Double payAmount=newOrderEntity.getPayAmount();
 
@@ -291,14 +290,14 @@ public class ThirdOrderService {
     public void processOrder(String userId,String platformCode,String originOrderId){
         thirdOrderRepository.processOrder(true,new Date(),userId,platformCode,originOrderId);
     }
-
+    @Transactional()
     public Page<ThirdOrderEntity> findUnProcessedPageByUserId(ProcessQueryCondition condition, @Min(1) int pageNo,@Min(1) int pageSize){
 
         PageRequest pageRequest = new PageRequest((pageNo-1), pageSize, new Sort(Sort.Direction.DESC, "create_date"));
         Page<ThirdOrderEntity> page = thirdOrderRepository.findAll(where(condition), pageRequest);
         return page;
     }
-
+    @Transactional()
     private Specification<ThirdOrderEntity> where(final ProcessQueryCondition condition) {
         return new Specification<ThirdOrderEntity>() {
             @Override

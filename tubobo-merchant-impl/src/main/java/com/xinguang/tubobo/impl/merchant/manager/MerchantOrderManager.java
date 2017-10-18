@@ -662,7 +662,6 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		//设置重发特殊标记位
 		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
 		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
-		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
 		orderEntity.setOrderTime(new Date());
 		orderEntity.setShortMessage(messageOpen);
 		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
@@ -673,8 +672,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		try {
 			newOrderNo = orderService.saveOrderOnly(entity.getUserId(),orderEntity,detailEntity);
 		} catch (MerchantClientException e) {
-			logger.error("骑手取消后自动创建订单失败,orderNo:{}",entity.getOrderNo());
-			e.printStackTrace();
+			logger.error("骑手取消后自动创建订单失败,orderNo:{}",entity.getOrderNo(),e);
 			return;
 		}
 
