@@ -14,12 +14,12 @@ import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;
 public interface MerchantToPostHouseServiceInterface {
     EnumMerchantPostExceptionCode bindProvider(String userId, Long providerId, String providerName);
     EnumMerchantPostExceptionCode unbindProvider(String userId, long providerId, String providerName);
-    /**
-     * 根据查询条件查询骑手数据
-     * @param queryCondition
-     * @return
-     */
-    PageDTO<MerchantInfoDTO> findMerchantList(MerchantInfoQueryCondition queryCondition);
+//    /**
+//     * 根据查询条件查询骑手数据
+//     * @param queryCondition
+//     * @return
+//     */
+//    PageDTO<MerchantInfoDTO> findMerchantList(MerchantInfoQueryCondition queryCondition);
 
     /**
      * 根据查询条件查询订单数据

@@ -96,26 +96,26 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         return merchantInfoDTO;
     }
 
-    @Override
-    public PageDTO<MerchantInfoDTO> findMerchantList(MerchantInfoQueryCondition queryCondition) {
-        MerchantInfoEntity infoEntity = new MerchantInfoEntity();
-        infoEntity.setPhone(queryCondition.getShopPhone());
-        infoEntity.setMerchantName(queryCondition.getShopName());
-        infoEntity.setUserId(queryCondition.getShopId());
-        infoEntity.setProviderId(queryCondition.getProviderId());
-        infoEntity.setBindStatus(queryCondition.getBindStatus());
-        Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(queryCondition.getPageNo(), queryCondition.getPageSize(), infoEntity);
-        List<MerchantInfoDTO> list = new LinkedList<>();
-        if (page.hasContent()) {
-            for (MerchantInfoEntity entity : page) {
-                MerchantInfoDTO infoDTO = new MerchantInfoDTO();
-                BeanUtils.copyProperties(entity, infoDTO);
-                list.add(infoDTO);
-            }
-        }
-        PageDTO<MerchantInfoDTO> respPage = new PageDTO(queryCondition.getPageNo(), queryCondition.getPageSize(), page.getTotalElements(), list);
-        return respPage;
-    }
+//    @Override
+//    public PageDTO<MerchantInfoDTO> findMerchantList(MerchantInfoQueryCondition queryCondition) {
+//        MerchantInfoEntity infoEntity = new MerchantInfoEntity();
+//        infoEntity.setPhone(queryCondition.getShopPhone());
+//        infoEntity.setMerchantName(queryCondition.getShopName());
+//        infoEntity.setUserId(queryCondition.getShopId());
+//        infoEntity.setProviderId(queryCondition.getProviderId());
+//        infoEntity.setBindStatus(queryCondition.getBindStatus());
+//        Page<MerchantInfoEntity> page = merchantInfoService.findMerchantInfoPage(queryCondition.getPageNo(), queryCondition.getPageSize(), infoEntity);
+//        List<MerchantInfoDTO> list = new LinkedList<>();
+//        if (page.hasContent()) {
+//            for (MerchantInfoEntity entity : page) {
+//                MerchantInfoDTO infoDTO = new MerchantInfoDTO();
+//                BeanUtils.copyProperties(entity, infoDTO);
+//                list.add(infoDTO);
+//            }
+//        }
+//        PageDTO<MerchantInfoDTO> respPage = new PageDTO(queryCondition.getPageNo(), queryCondition.getPageSize(), page.getTotalElements(), list);
+//        return respPage;
+//    }
 
     @Override
     public PageDTO<MerchantOrderDTO> findMerchantOrderList(MerchantOrderQueryCondition queryCondition) {
