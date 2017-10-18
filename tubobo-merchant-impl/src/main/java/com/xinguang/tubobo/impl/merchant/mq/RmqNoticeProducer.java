@@ -103,7 +103,7 @@ public class RmqNoticeProducer {
         noticeDTO.setTitle(config.getNoticeRiderOrderCanceledTitle());
         subsidy=subsidy==null?0.0:subsidy;
         String sub= String.valueOf(subsidy);
-        noticeDTO.setContent("很抱歉您的订单被骑手取消，并获得骑手赔付"+sub+"元；为了保证优先送单（赔付费添加至配送费），帮您重新发单啦！");
+        noticeDTO.setContent(config.getNoticeRiderOrderCanceledTemplate());
         noticeDTO.setOrderOperateType(EnumOrderNoticeType.RIDER_CANCEL.getValue());
         sendNotice(noticeDTO);
     }

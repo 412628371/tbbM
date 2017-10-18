@@ -45,6 +45,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import sun.awt.EmbeddedFrame;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -646,27 +647,68 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		OrderEntity orderEntity = new OrderEntity();
 		OrderDetailEntity detailEntity = new OrderDetailEntity();
 		//复制原有信息
-		BeanUtils.copyProperties(entity,orderEntity);
-		BeanUtils.copyProperties(entity,detailEntity);
-		orderEntity.setId(null);
+		/*BeanUtils.copyProperties(entity,orderEntity);
+		BeanUtils.copyProperties(entity,detailEntity);*/
+		orderEntity.setWeatherOverFee(entity.getWeatherOverFee());
+		orderEntity.setShortMessage(messageOpen);
+		orderEntity.setOrderType(entity.getOrderType());
+		orderEntity.setDeliveryFee(entity.getDeliveryFee());
+		orderEntity.setDeliveryDistance(entity.getDeliveryDistance());
+		orderEntity.setOriginOrderId(entity.getOriginOrderId());
+		orderEntity.setOriginOrderViewId(entity.getOriginOrderViewId());
+		orderEntity.setPayAmount(entity.getPayAmount());
+		orderEntity.setPeekOverFee(entity.getPeekOverFee());
+		orderEntity.setPlatformCode(entity.getPlatformCode());
+		orderEntity.setProviderId(entity.getProviderId());
+		orderEntity.setProviderName(entity.getProviderName());
+		orderEntity.setTipFee(entity.getTipFee());
+		orderEntity.setReceiverAddressCity(entity.getReceiverAddressCity());
+		orderEntity.setReceiverAddressDetail(entity.getReceiverAddressDetail());
+		orderEntity.setReceiverAddressDistrict(entity.getReceiverAddressDistrict());
+		orderEntity.setReceiverAddressProvince(entity.getReceiverAddressProvince());
+		orderEntity.setReceiverAddressRoomNo(entity.getReceiverAddressRoomNo());
+		orderEntity.setReceiverAddressStreet(entity.getReceiverAddressStreet());
+		orderEntity.setReceiverLatitude(entity.getReceiverLatitude());
+		orderEntity.setReceiverLongitude(entity.getReceiverLongitude());
+		orderEntity.setReceiverName(entity.getReceiverName());
+		orderEntity.setReceiverPhone(entity.getReceiverPhone());
+
+
+		detailEntity.setOrderRemark(entity.getOrderRemark());
+		detailEntity.setPickupDistance(entity.getPickupDistance());
+		detailEntity.setPlatformFee(entity.getPlatformFee());
+		detailEntity.setUserId(entity.getUserId());
+		detailEntity.setSenderName(entity.getSenderName());
+		detailEntity.setSenderPhone(entity.getSenderPhone());
+		detailEntity.setSenderAddressCity(entity.getSenderAddressCity());
+		detailEntity.setSenderAddressDetail(entity.getSenderAddressDetail());
+		detailEntity.setSenderAddressDistrict(entity.getSenderAddressDistrict());
+		detailEntity.setSenderAddressProvince(entity.getSenderAddressProvince());
+		detailEntity.setSenderAddressRoomNo(entity.getSenderAddressRoomNo());
+		detailEntity.setSenderAddressStreet(entity.getSenderAddressStreet());
+		detailEntity.setSenderLatitude(entity.getSenderLatitude());
+		detailEntity.setSenderLongitude(entity.getSenderLongitude());
+		/*orderEntity.setId(null);
 		orderEntity.setCreateDate(null);
 		orderEntity.setUpdateDate(null);
 		orderEntity.setRatedFlag(null);
 		orderEntity.setGrabItemTime(null);
 		orderEntity.setGrabOrderTime(null);
 		orderEntity.setExpectFinishTime(null);
+		orderEntity.setRiderId(null);
+		orderEntity.setRiderName(null);
+		orderEntity.setRiderPhone(null);
 		detailEntity.setId(null);
 		detailEntity.setCreateDate(null);
 		detailEntity.setUpdateDate(null);
-
+*/
 		//设置重发特殊标记位
 		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
 		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
 		orderEntity.setOrderTime(new Date());
-		orderEntity.setShortMessage(messageOpen);
 		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
 		detailEntity.setCancelSourceDeliverySubsidy(entity.getCancelCompensation());
-		detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
+			detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
 		//保存订单
 		String newOrderNo= null;
 		try {

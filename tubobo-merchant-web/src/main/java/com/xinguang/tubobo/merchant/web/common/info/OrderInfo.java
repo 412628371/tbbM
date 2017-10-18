@@ -31,8 +31,15 @@ public class OrderInfo implements Serializable {
     private  String waitPickCancelType; //带接单状态下商家取消订单原因
     private  String  unsettledReason;  //未妥投原因
     private Date unsettledTime;        //驿站订单 商家确认未妥投时间
+    private String orderFeature;//订单特征值 RIDER_CANCEL_RESEND  骑手取消重发单
 
+    public String getOrderFeature() {
+        return orderFeature;
+    }
 
+    public void setOrderFeature(String orderFeature) {
+        this.orderFeature = orderFeature;
+    }
 
     public Date getUnsettledTime() {
         return unsettledTime;
