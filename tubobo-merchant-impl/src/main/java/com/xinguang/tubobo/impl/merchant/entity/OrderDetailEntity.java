@@ -30,7 +30,6 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
     //private Date expiredTime;//超时时间
 
     //private String senderId;//发货人id
-    private String senderName;//发货人名称
     private String senderPhone;//发货人联系方式
     private String senderAddressProvince;//收货人详细地址
     private String senderAddressCity;//寄货人地址名称
@@ -138,13 +137,7 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
 
 
 
-    public String getSenderName() {
-        return senderName;
-    }
 
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
-    }
 
     public String getSenderPhone() {
         return senderPhone;

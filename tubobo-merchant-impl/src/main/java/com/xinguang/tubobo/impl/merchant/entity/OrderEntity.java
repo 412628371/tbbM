@@ -81,6 +81,15 @@ public class OrderEntity extends BaseMerchantOrderEntity {
 
     private String orderFeature;//订单特征值 RIDER_CANCEL_RESEND  骑手取消重发单
     private Boolean shortMessage;            //订单是否发送短信通知收件人
+    private String senderName;//发货人名称
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
 
     public Boolean getShortMessage() {
         return shortMessage;
