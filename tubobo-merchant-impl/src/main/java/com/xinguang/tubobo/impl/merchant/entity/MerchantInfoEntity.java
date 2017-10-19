@@ -57,11 +57,7 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Date bdUpdateDate;			 //bd邀请码绑定时间
 
 	private String hygieneLicense;		//卫生许可证
-	private Date enterTime;			 //入住驿站时间
 	private Long providerId;			 //服务商ID
-	private String providerName;			 //服务商名称
-	private String bindStatus;			 //绑定状态INIT 初始化，SUCCESS 同意授权（绑定成功，REJECT 拒绝授权（绑定失败），NOOPERATE 	未操作（未绑定），UNBUNDLE 已解绑
-	private Date unbundleTime;			 //解绑时间
 
 	private Long merTypeId;			//商家类型id
 
@@ -71,30 +67,6 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	public void setMerTypeId(Long merTypeId) {
 		this.merTypeId = merTypeId;
-	}
-
-	public String getBindStatus() {
-		return bindStatus;
-	}
-
-	public void setBindStatus(String bindStatus) {
-		this.bindStatus = bindStatus;
-	}
-
-	public Date getUnbundleTime() {
-		return unbundleTime;
-	}
-
-	public void setUnbundleTime(Date unbundleTime) {
-		this.unbundleTime = unbundleTime;
-	}
-
-	public Date getEnterTime() {
-		return enterTime;
-	}
-
-	public void setEnterTime(Date enterTime) {
-		this.enterTime = enterTime;
 	}
 
 	public Long getProviderId() {
@@ -372,14 +344,6 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	public void setConsignorStatus(String consignorStatus) {
 		this.consignorStatus = consignorStatus;
-	}
-
-	public String getProviderName() {
-		return providerName;
-	}
-
-	public void setProviderName(String providerName) {
-		this.providerName = providerName;
 	}
 
 	@Override
