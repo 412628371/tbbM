@@ -702,6 +702,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		//设置重发特殊标记位
 		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
 		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
+		orderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
 		orderEntity.setOrderTime(new Date());
 		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
 		detailEntity.setCancelSourceDeliverySubsidy(entity.getCancelCompensation());
