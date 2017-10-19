@@ -77,7 +77,7 @@ public class OrderEntity extends BaseMerchantOrderEntity {
     private String unsettledStatus;         //驿站订单 未妥投状态  默认""  0:未妥投处理中 1：未妥投已处理
 
     private Long providerId;//所属服务商ID
-    private String providerName;//所属服务商名称
+
 
     private String orderFeature;//订单特征值 RIDER_CANCEL_RESEND  骑手取消重发单
     private Boolean shortMessage;            //订单是否发送短信通知收件人
@@ -437,11 +437,4 @@ public class OrderEntity extends BaseMerchantOrderEntity {
         this.providerId = providerId;
     }
 
-    public String getProviderName() {
-        return providerName;
-    }
-
-    public void setProviderName(String providerName) {
-        this.providerName = providerName;
-    }
 }

@@ -665,9 +665,9 @@ public class OrderService extends BaseService {
                     list.add(cb.equal(root.get("providerId").as(Long.class),entity.getProviderId()));
 
                 }
-                if (StringUtils.isNotBlank(entity.getProviderName())){
+                /*if (StringUtils.isNotBlank(entity.getProviderName())){
                     list.add(cb.equal(root.get("providerName").as(String.class),entity.getProviderName()));
-                }
+                }*/
 
 
                 return criteriaQuery.where(list.toArray(new Predicate[list.size()])).getRestriction();

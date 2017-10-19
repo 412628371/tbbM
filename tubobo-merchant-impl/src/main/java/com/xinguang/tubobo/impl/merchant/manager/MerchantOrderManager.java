@@ -660,7 +660,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setPeekOverFee(entity.getPeekOverFee());
 		orderEntity.setPlatformCode(entity.getPlatformCode());
 		orderEntity.setProviderId(entity.getProviderId());
-		orderEntity.setProviderName(entity.getProviderName());
+		//orderEntity.setProviderName(entity.getProviderName());
 		orderEntity.setTipFee(entity.getTipFee());
 		orderEntity.setReceiverAddressCity(entity.getReceiverAddressCity());
 		orderEntity.setReceiverAddressDetail(entity.getReceiverAddressDetail());
@@ -672,13 +672,13 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setReceiverLongitude(entity.getReceiverLongitude());
 		orderEntity.setReceiverName(entity.getReceiverName());
 		orderEntity.setReceiverPhone(entity.getReceiverPhone());
-
+		orderEntity.setSenderName(entity.getSenderName());
 
 		detailEntity.setOrderRemark(entity.getOrderRemark());
 		detailEntity.setPickupDistance(entity.getPickupDistance());
 		detailEntity.setPlatformFee(entity.getPlatformFee());
 		detailEntity.setUserId(entity.getUserId());
-		detailEntity.setSenderName(entity.getSenderName());
+		//detailEntity.setSenderName(entity.getSenderName());
 		detailEntity.setSenderPhone(entity.getSenderPhone());
 		detailEntity.setSenderAddressCity(entity.getSenderAddressCity());
 		detailEntity.setSenderAddressDetail(entity.getSenderAddressDetail());
