@@ -250,7 +250,7 @@ public class ThirdOrderService {
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",orderNo
                     ,merchant.getAccountId(),response.getData().getId(),amount);
-            orderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
+            orderDTO.setTaskType(TaskTypeEnum.POST_NORMAL_ORDER);
             Date payDate = new Date();
             int count = orderService.merchantPay(userId,orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
             if (count != 1){

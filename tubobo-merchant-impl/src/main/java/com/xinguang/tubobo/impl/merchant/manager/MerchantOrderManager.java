@@ -122,7 +122,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		String status = EnumMerchantOrderStatus.WAITING_GRAB.getValue();
 		//TODO 分业务拆分处理，支持驿站订单的多种派发方式
 		//驿站订单，支付之后的状态变为待取货
-		if (TaskTypeEnum.POST_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
+		if (TaskTypeEnum.POST_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())||TaskTypeEnum.POST_NORMAL_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
 			status = EnumMerchantOrderStatus.WAITING_PICK.getValue();
 			taskCreateDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
 		}
