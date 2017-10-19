@@ -102,6 +102,7 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 
 			//return null;
 		}
+
 		if (TbbConstants.OperationType.FINE == operInfo.getType()){
 			if (operInfo.getAmount() > 0){
 				amount = "-"+amount;
@@ -148,6 +149,13 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 		if (TbbConstants.OperationType.WITHDRAW == operInfo.getType()){
 			if (operInfo.getAmount() > 0){
 				amount = "-"+amount;
+			}
+		}
+		if (TbbConstants.OperationType.BUY == operInfo.getType()){
+			if (operInfo.getAmount() > 0){
+				amount = "-"+amount;
+				record.setType("短信费");
+				record.setTradeStatus("已经发送");
 			}
 		}
 		record.setAmount(amount);
