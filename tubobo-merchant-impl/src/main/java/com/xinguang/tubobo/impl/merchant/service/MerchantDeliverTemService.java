@@ -111,11 +111,13 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
         String name = merchantDeliverFeeTemDTO.getName();
         Long id = merchantDeliverFeeTemDTO.getId();
         if (id != null){
-            MerchantDeliverFeeTemEntity entity = new MerchantDeliverFeeTemEntity();
-            entity.setName(merchantDeliverFeeTemDTO.getName());
-            entity.setUpdateBy(merchantDeliverFeeTemDTO.getUpdateBy());
-            merchantDeliverFeeTemRepository.save(entity);
-            return true;
+            MerchantDeliverFeeTemEntity entity = merchantDeliverFeeTemRepository.findByIdAndDelFlag(id,MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
+            if (entity!=null){
+                entity.setName(merchantDeliverFeeTemDTO.getName());
+                entity.setUpdateBy(merchantDeliverFeeTemDTO.getUpdateBy());
+                merchantDeliverFeeTemRepository.save(entity);
+                return true;
+            }
         } else{
             if (StringUtils.isNotBlank(name)){
                 MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity = merchantDeliverFeeTemRepository.findByNameAndDelFlag(name, MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
@@ -127,7 +129,7 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
                     return true;
                 }
             }
-            return false;
         }
+        return false;
     }
 }
