@@ -6,7 +6,6 @@
 package com.xinguang.tubobo.merchant.api.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class MerchantDeliverFeeConfigDTO implements Serializable{
 
@@ -18,6 +17,24 @@ public class MerchantDeliverFeeConfigDTO implements Serializable{
 	private String areaCode;
 	private String cityCode;
 	private String provinceCode;
+	private String orderType;
+	private Long temId;			//定价模板id
+
+	public Long getTemId() {
+		return temId;
+	}
+
+	public void setTemId(Long temId) {
+		this.temId = temId;
+	}
+
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
 
 	public String getAreaCode() {
 		return areaCode;

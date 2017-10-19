@@ -1,8 +1,8 @@
 package com.xinguang.tubobo.merchant.api;
 
-import com.xinguang.tubobo.merchant.api.dto.*;
-
-import java.util.List;
+import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
+import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 
 /**
  * 商家端提供给后台的dubbo接口
@@ -32,7 +32,7 @@ public interface MerchantToAdminServiceInterface {
      * @param updateBy
      * @return
      */
-    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType,String reason);
+    public boolean merchantStatusVerify(String userId, String merchantStatus, String updateBy,String identifyType,String reason,Long merTypeId);
 
 
     /**

@@ -1,12 +1,17 @@
 package com.xinguang.tubobo.impl.merchant.service;
 
+import com.hzmux.hzcms.common.persistence.BaseDao;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.dao.MerchantPushSettingsDao;
+import com.xinguang.tubobo.impl.merchant.entity.BaseMerchantEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
+import com.xinguang.tubobo.impl.merchant.repository.MerchantPushSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Administrator on 2017/4/15.
@@ -14,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MerchantSettingsService {
     @Autowired
-    MerchantPushSettingsDao settingsDao;
+    MerchantPushSettingsRepository settingsDao;
 
     /**
      * 设置Settings
@@ -23,8 +28,23 @@ public class MerchantSettingsService {
      */
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantSettings_'+#userId")
     public boolean updateSettings(String userId,MerchantSettingsEntity entity){
-        int count = settingsDao.updatePushSettings(entity);
-        return count == 1;
+       MerchantSettingsEntity settingsEntity = settingsDao.findByUserIdAndDelFlag(userId, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (null==settingsEntity){
+            settingsEntity = new MerchantSettingsEntity();
+            settingsEntity.setPushMsgOrderExpired(true);
+            settingsEntity.setPushMsgOrderFinished(true);
+            settingsEntity.setPushMsgOrderGrabed(true);
+            settingsEntity.setPushMsgVoiceOpen(true);
+            settingsEntity.setUserId(userId);
+        }else{
+            settingsEntity.setPushMsgOrderExpired(entity.getPushMsgOrderExpired());
+            settingsEntity.setPushMsgOrderFinished(entity.getPushMsgOrderFinished());
+            settingsEntity.setPushMsgOrderGrabed(entity.getPushMsgOrderGrabed());
+            settingsEntity.setPushMsgVoiceOpen(entity.getPushMsgVoiceOpen());
+        }
+        MerchantSettingsEntity saveEntity = settingsDao.save(settingsEntity);
+        return null==saveEntity?false:true;
+
     }
 
     /**
@@ -33,7 +53,7 @@ public class MerchantSettingsService {
      * @return
      */
     @Cacheable(value= RedisCache.MERCHANT,key="'merchantSettings_'+#userId")
-    public MerchantSettingsEntity findBuUserId(String userId){
-        return settingsDao.findByUserId(userId);
+    public MerchantSettingsEntity findByUserId(String userId){
+        return settingsDao.findByUserIdAndDelFlag(userId, BaseMerchantEntity.DEL_FLAG_NORMAL);
     }
 }

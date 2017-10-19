@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "tubobo_merchant_settings")
 @DynamicInsert
 @DynamicUpdate
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MerchantSettingsEntity extends BaseMerchantEntity {
     private String userId;
     private Boolean pushMsgOrderExpired;

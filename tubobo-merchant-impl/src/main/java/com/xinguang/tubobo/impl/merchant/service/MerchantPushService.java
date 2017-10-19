@@ -239,6 +239,37 @@ public class MerchantPushService {
         String s = JSON.toJSONString(noticePushVo);
         return s;
     }
+    /**
+     * 推送自动发单余额不足通知
+     */
+    public void pushMoneyShortForAutoSendNotice(NoticeDTO entity){
+        if (entity == null){
+            return;
+        }
+        String data = generateCommonPushParam(entity.getUserId(), EnumNoticeType.MONEYSHORT, entity.getId());
+        pushToUser(entity.getUserId(), entity.getContent(), entity.getTitle(), data);
+    }
+    /**
+     * 推送商家绑定通知
+     */
+    public void pushBindNotice(NoticeDTO entity){
+        if (entity == null){
+            return;
+        }
+        String data = generateCommonPushParam(entity.getUserId(), EnumNoticeType.BIND, entity.getId());
+        pushToUser(entity.getUserId(), entity.getContent(), entity.getTitle(), data);
+    }
+
+    /**
+     * 推送商家解绑通知
+     */
+    public void pushUnbindNotice(NoticeDTO entity){
+        if (entity == null){
+            return;
+        }
+        String data = generateCommonPushParam(entity.getUserId(), EnumNoticeType.UNBIND, entity.getId());
+        pushToUser(entity.getUserId(), entity.getContent(), entity.getTitle(), data);
+    }
 
     /**
      * 推送审核结果通知
@@ -250,6 +281,7 @@ public class MerchantPushService {
         String data = generateAuditPushParam(entity.getUserId(),EnumNoticeType.AUDIT,String.valueOf(entity.getId()),entity.getReason(),entity.getIdentifyType()+"_"+entity.getIdentifyStatus());
         pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
     }
+
     /**
      * 推送系统公告
      * @param dto
@@ -274,7 +306,7 @@ public class MerchantPushService {
         if (EnumOrderNoticeType.ADMIN_CANCEL.getValue().equals(entity.getOrderOperateType())){
             isOpen = true;
         }else {
-            MerchantSettingsEntity settingsEntity = settingsService.findBuUserId(entity.getUserId());
+            MerchantSettingsEntity settingsEntity = settingsService.findByUserId(entity.getUserId());
             if (null == settingsEntity)
                 return;
             if (settingsEntity.getPushMsgOrderExpired() &&

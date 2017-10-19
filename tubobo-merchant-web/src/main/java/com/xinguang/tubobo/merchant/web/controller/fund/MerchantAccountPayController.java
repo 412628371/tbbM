@@ -2,7 +2,6 @@ package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
-import com.sun.tools.classfile.Annotation;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
@@ -14,7 +13,6 @@ import com.xinguang.tubobo.impl.merchant.cache.RedisOp;
 import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
-import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
@@ -77,6 +75,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             amountD=  CalCulateUtil.sub(amountD,MerchantConstants.MESSAGE_FEE);
         }
         long amount = ConvertUtil.convertYuanToFen(amountD);
+        long commission = ConvertUtil.convertYuanToFen(orderEntity.getPlatformFee());
         //设置了免密支付，并且支付金额不大于免密支付额度，可以免密支付
         if (infoEntity.getEnablePwdFree()&&
                 orderEntity.getPayAmount() <= config.getNonConfidentialPaymentLimit()){
@@ -84,6 +83,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             payWithOutPwdRequest.setOrderId(orderEntity.getOrderNo());
             payWithOutPwdRequest.setAccountId(infoEntity.getAccountId());
             payWithOutPwdRequest.setAmount(amount);
+            payWithOutPwdRequest.setCommission(commission);
             logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payWithOutPwdRequest.getAmount());
             response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
         }else {
@@ -95,13 +95,14 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             payRequest.setAccountId(infoEntity.getAccountId());
             payRequest.setAmount(amount);
             payRequest.setPwd(plainPwd);
+            payRequest.setCommission(commission);
             response = tbbAccountService.pay(payRequest);
         }
         if (response != null && response.isSucceeded()){
             redisOp.resetPwdErrorTimes(userId);
             long payId = response.getData().getId();
             orderEntity.setPayId(payId);
-            TaskCreateDTO orderDTO = buildMerchantOrderDTO(orderEntity,infoEntity);
+            TaskCreateDTO orderDTO = merchantOrderManager.buildMerchantOrderDTO(orderEntity,infoEntity);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
                     ,infoEntity.getAccountId(),response.getData().getId(),amount);
@@ -137,48 +138,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
 
 
 
-    private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
-        TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
-        BeanUtils.copyProperties(entity,merchantOrderDTO);
-        merchantOrderDTO.setOrderRemark(entity.getOrderRemark());
-        merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
-        if (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
-            merchantOrderDTO.setTaskType(TaskTypeEnum.M_SMALL_ORDER);
-        }else if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
-            merchantOrderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
-            merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
-            merchantOrderDTO.setProviderId(entity.getProviderId());
-            merchantOrderDTO.setProviderName(entity.getProviderName());
-        }
-        if (entity.getPayAmount() != null){
-            merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
-        }
-        if (entity.getDeliveryFee() != null){
-            merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getDeliveryFee()).intValue());
-        }
-        if (entity.getTipFee() != null){
-            merchantOrderDTO.setTipFee(ConvertUtil.convertYuanToFen(entity.getTipFee()).intValue());
-        }
-        if (entity.getPeekOverFee() != null){
-            merchantOrderDTO.setPeekOverFee(ConvertUtil.convertYuanToFen(entity.getPeekOverFee()).intValue());
-        }
-        if (entity.getWeatherOverFee() != null){
-            merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
-        }
-        //传给任务的支付金额，减去短信费用  modified by xqh on 2017-10-11
-        if(entity.getShortMessage()){
-            if (merchantOrderDTO.getPayAmount()!=null && merchantOrderDTO.getPayAmount()>MerchantConstants.MESSAGE_FEE*100){
-                merchantOrderDTO.setPayAmount(merchantOrderDTO.getPayAmount()- CalCulateUtil.mul(MerchantConstants.MESSAGE_FEE,100).intValue());
-            }
-        }
-        merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
-        String [] shopUrls = new String[5];
-        shopUrls[0] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));
-        shopUrls[1] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl2()));
-        merchantOrderDTO.setSenderShopUrls(shopUrls);
-        merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
-        return merchantOrderDTO;
-    }
+
     @Override
     protected boolean needIdentify() {
         return true;

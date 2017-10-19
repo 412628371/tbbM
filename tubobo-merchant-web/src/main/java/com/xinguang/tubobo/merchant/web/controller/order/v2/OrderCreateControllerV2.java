@@ -1,11 +1,10 @@
 package com.xinguang.tubobo.merchant.web.controller.order.v2;
 
-import com.hzmux.hzcms.common.utils.DateUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.OverFeeService;
-import com.xinguang.tubobo.api.dto.CarTypeDTO;
 import com.xinguang.tubobo.api.dto.OverFeeDTO;
+import com.xinguang.tubobo.impl.merchant.common.AddressInfoToOrderBeanHelper;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.common.OrderUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
@@ -16,20 +15,15 @@ import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.*;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
-import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
-import com.xinguang.tubobo.merchant.web.common.AddressInfoToOrderBeanHelper;
+import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.info.OverFeeInfo;
 import com.xinguang.tubobo.merchant.web.common.info.ThirdInfo;
 import com.xinguang.tubobo.merchant.web.request.order.v2.ReqOrderCreateV2;
 import com.xinguang.tubobo.merchant.web.response.order.CreateOrderResponse;
-import freemarker.template.utility.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -62,12 +56,12 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
         String orderType = req.getType();
         //post订单
-        if (null!=infoEntity.getProviderId()){
-            orderType=EnumOrderType.POSTORDER.getValue();
+        if (null != infoEntity.getProviderId()){
+            orderType=EnumOrderType.POST_NORMAL_ORDER.getValue();
 
         }
         MerchantOrderEntity entity = new MerchantOrderEntity();
-      if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POSTORDER.getValue().equals(orderType)){
+      if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             OrderUtil.judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);
         }else {
@@ -122,7 +116,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setPeekOverFee(peekOverFee);
         entity.setDeliveryDistance(req.getDeliveryDistance());
         entity.setProviderId(infoEntity.getProviderId());
-        entity.setProviderName(infoEntity.getProviderName());
         String orderNo = merchantOrderManager.order(userId,entity);
         CreateOrderResponse response = new CreateOrderResponse();
         response.setOrderNo(orderNo);

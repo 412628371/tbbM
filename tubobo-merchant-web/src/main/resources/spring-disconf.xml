@@ -64,5 +64,20 @@
 		<!--<property name="noticeGrabedTimeoutTemplate" value="${merchant.notice.grabTimeout.template}" />-->
 		<!--<property name="noticeGrabedTemplate" value="${merchant.notice.grabed.template}" />-->
 	<!--</bean>-->
+	<bean id="sysConfig" class="com.xinguang.tubobo.impl.merchant.disconf.SysConfig">
+		<property name="jdbcSourceUrl" value="${jdbc.url}" />
+		<property name="jdbcSourceUserName" value="${jdbc.username}" />
+		<property name="jdbcSourcePassword" value="${jdbc.password}" />
+
+		<property name="redisHost" value="${redis.host}" />
+		<property name="redisPort" value="${redis.port}" />
+		<property name="redisPassword" value="${redis.password}" />
+		<property name="redisDbIndex" value="${redis.db.index}" />
+
+		<property name="rabbitmqAddress" value="${rabbitmq.address}" />
+		<property name="rabbitmqUsername" value="${rabbitmq.username}" />
+		<property name="rabbitmqPassword" value="${rabbitmq.password}" />
+		<property name="rabbitmqVirtualHost" value="${rabbitmq.virtualHost}" />
+	</bean>
 
 </beans>

@@ -38,12 +38,21 @@ public class Config {
     private String noticeOrderCanceledTitle;
     private String noticeRiderOrderCanceledTitle;
     private String noticeRiderOrderCanceledTemplate;
+    private String noticeMoneyShortForAutoSendPostTitle;
+    private String noticeMoneyShortForAutoSendPostTemplate;
+
 
 
     private String noticeAuditSuccessTitle;
     private String noticeAuditSuccessTemplate;
     private String noticeAuditFailTitle;
     private String noticeAuditFailTemplate;
+
+    private String noticeBindTitle;
+    private String noticeUnbindTitle;
+    private String noticeBindTemplate;
+    private String noticeUnbindTemplate;
+
 
     private String beginWorkTime;
     private String endWorkTime;
@@ -68,6 +77,22 @@ public class Config {
     // private Integer taskPostOrderMilSeconds;
     private String iosMusic;
 
+    @DisconfFileItem(name = "merchant.notice.moneyshort.title", associateField = "noticeMoneyShortForAutoSendPostTitle")
+    public String getNoticeMoneyShortForAutoSendPostTitle() {
+        return noticeMoneyShortForAutoSendPostTitle;
+    }
+
+    public void setNoticeMoneyShortForAutoSendPostTitle(String noticeMoneyShortForAutoSendPostTitle) {
+        this.noticeMoneyShortForAutoSendPostTitle = noticeMoneyShortForAutoSendPostTitle;
+    }
+    @DisconfFileItem(name = "merchant.notice.moneyshort.template", associateField = "noticeMoneyShortForAutoSendPostTemplate")
+    public String getNoticeMoneyShortForAutoSendPostTemplate() {
+        return noticeMoneyShortForAutoSendPostTemplate;
+    }
+
+    public void setNoticeMoneyShortForAutoSendPostTemplate(String noticeMoneyShortForAutoSendPostTemplate) {
+        this.noticeMoneyShortForAutoSendPostTemplate = noticeMoneyShortForAutoSendPostTemplate;
+    }
 
     @DisconfFileItem(name = "merchant.notice.riderCancel.title", associateField = "noticeRiderOrderCanceledTitle")
     public String getNoticeRiderOrderCanceledTitle() {
@@ -265,8 +290,6 @@ public class Config {
         return taskPostOrderMilSeconds;
     }
 
-
-
     @DisconfFileItem(name = "task.grab.expires.milseconds", associateField = "taskGrabExpiredMilSeconds")
     public Integer getTaskGrabExpiredMilSeconds() {
         if (null == taskGrabExpiredMilSeconds){
@@ -286,6 +309,41 @@ public class Config {
         this.noticeGrabedTemplate = noticeGrabedTemplate;
     }
 
+    @DisconfFileItem(name = "merchant.notice.bind.title", associateField = "noticeBindTitle")
+    public String getNoticeBindTitle() {
+        return noticeBindTitle;
+    }
+
+    public void setNoticeBindTitle(String noticeBindTitle) {
+        this.noticeBindTitle = noticeBindTitle;
+    }
+
+    @DisconfFileItem(name = "merchant.notice.unbind.title", associateField = "noticeUnbindTitle")
+    public String getNoticeUnbindTitle() {
+        return noticeUnbindTitle;
+    }
+
+    public void setNoticeUnbindTitle(String noticeUnbindTitle) {
+        this.noticeUnbindTitle = noticeUnbindTitle;
+    }
+
+    @DisconfFileItem(name = "merchant.notice.bind.template", associateField = "noticeBindTemplate")
+    public String getNoticeBindTemplate() {
+        return noticeBindTemplate;
+    }
+
+    public void setNoticeBindTemplate(String noticeBindTemplate) {
+        this.noticeBindTemplate = noticeBindTemplate;
+    }
+
+    @DisconfFileItem(name = "merchant.notice.unbind.template", associateField = "noticeUnbindTemplate")
+    public String getNoticeUnbindTemplate() {
+        return noticeUnbindTemplate;
+    }
+
+    public void setNoticeUnbindTemplate(String noticeUnbindTemplate) {
+        this.noticeUnbindTemplate = noticeUnbindTemplate;
+    }
 
     @DisconfFileItem(name = "merchant.notice.grabTimeout.template", associateField = "noticeGrabedTimeoutTemplate")
     public String getNoticeGrabedTimeoutTemplate() {

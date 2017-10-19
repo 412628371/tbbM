@@ -2,16 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
-	   xmlns:context="http://www.springframework.org/schema/context"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
 	   http://www.springframework.org/schema/beans/spring-beans.xsd
 	   http://code.alibabatech.com/schema/dubbo
-	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd
-	   http://www.springframework.org/schema/context
-	   http://www.springframework.org/schema/context/spring-context.xsd">
-
-	<!-- 加载配置属性文件 -->
-	<!--<context:property-placeholder ignore-unresolvable="true" location="classpath*:usercenter-gate-impl.properties" />-->
+	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
 	<!-- 提供方应用信息，用于计算依赖关系 -->
 	<dubbo:application name="${dubbo.appname}" />
@@ -26,6 +20,10 @@
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantDeliverFeeConfigInterface" group="${dubbo.group}" version="0.0.1" ref="merchantDeliverFeeConfigService" timeout="3000"/>
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToPostHouseServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToPostHouseService" timeout="3000"/>
 	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantToThirdPartyServiceInterface" group="${dubbo.group}" version="0.0.1" ref="merchantToThirdPartyService" timeout="3000"/>
+	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantTypeInterface" group="${dubbo.group}" version="0.0.1" ref="merchantTypeInterface" timeout="3000"/>
+	<dubbo:service interface="com.xinguang.tubobo.merchant.api.MerchantDeliverFeeTemInterface" group="${dubbo.group}" version="0.0.1" ref="merchantDeliverFeeTemInterface" timeout="3000"/>
+
+
 
 	<!-- 和本地bean一样实现服务 -->
 	<bean id="merchantToTaskCenterService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToTaskCenterServiceImpl" />
@@ -33,4 +31,6 @@
 	<bean id="merchantDeliverFeeConfigService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantDeliverFeeConfigServiceImpl" />
 	<bean id="merchantToPostHouseService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToPostHouseServiceImpl" />
 	<bean id="merchantToThirdPartyService" class="com.xinguang.tubobo.impl.merchant.manager.MerchantToThirdPartyServiceImpl" />
+	<bean id="merchantTypeInterface" class="com.xinguang.tubobo.impl.merchant.service.MerchantTypeService" />
+	<bean id="merchantDeliverFeeTemInterface" class="com.xinguang.tubobo.impl.merchant.service.MerchantDeliverTemService" />
 </beans>

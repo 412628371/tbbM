@@ -1,6 +1,5 @@
 package com.xinguang.tubobo.merchant.web.controller.notice;
 
-import com.hzmux.hzcms.common.persistence.Page;
 import com.xinguang.tubobo.impl.merchant.entity.PushNoticeEntity;
 import com.xinguang.tubobo.impl.merchant.service.NoticeService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -10,6 +9,7 @@ import com.xinguang.tubobo.merchant.web.request.notice.ReqNoticeList;
 import com.xinguang.tubobo.merchant.web.response.notice.RespNoticeItem;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,14 +27,14 @@ public class NoticeListController extends MerchantBaseController<ReqNoticeList,P
     protected PageDTO<RespNoticeItem> doService(String userId, ReqNoticeList req) throws MerchantClientException {
         Page<PushNoticeEntity> page = noticeService.findNoticePage(userId,req.getPageNo(),req.getPageSize());
         List<RespNoticeItem> list = new ArrayList<>();
-        if (page!= null && page.getList() != null && page.getList().size() > 0) {
-            for (PushNoticeEntity entity:page.getList()){
+        if (page.hasContent()) {
+            for (PushNoticeEntity entity:page){
                 RespNoticeItem  item = new RespNoticeItem();
                 BeanUtils.copyProperties(entity,item);
                 item.setCreateTime(entity.getCreateDate());
                 list.add(item);
             }
         }
-        return new PageDTO<>(page.getPageNo(),page.getPageSize(),page.getCount(),list);
+        return new PageDTO<>(req.getPageNo(),req.getPageSize(),page.getTotalElements(),list);
     }
 }

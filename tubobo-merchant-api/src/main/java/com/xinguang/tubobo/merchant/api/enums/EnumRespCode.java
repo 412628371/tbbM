@@ -13,6 +13,7 @@ public enum EnumRespCode {
 	MERCHANT_FROZEN("10103", "商家被冻结,请联系客服"),
 	MERCHANT_ALREADY_APPLY_RIDER("10104", "您已申请骑手/司机，不能申请成为商家或货主"),
 	MERCHANT_NEED_TOBE_CONSIGNOR_FIRST("10105", "成功认证成为货主后，才能完善店铺信息"),
+	MERCHANT_TYPEERROR("10106", "商家类型有误,请联系客服"),
 
 	MERCHANT_CANT_CANCEL("10200", "订单状态不允许取消"),
 	MERCHANT_CANT_DELETE("10201", "订单状态不允许删除"),
@@ -38,6 +39,7 @@ public enum EnumRespCode {
 	PASSWORD_FIRSTCREATE_FAIL("10003", "该账户已设置密码,首次创建密码失败"),
 	MERCHANT_MESSAGE_PUSH_SETTINGS_FAILURE("10004", "短信推送设置失败"),
 	POST_ORDER_STATUS_PUSH_FAILURE("10005", "驿站订单状态推送失败"),
+	MERCHANT_AUTO_RESEND_POST_SETTINGS_FAILURE("10006", "驿站自动发单设置失败"),
 
 
 	MERCHANT_DELIVERY_DISTANCE_TOO_FAR("10301", "超过配送范围 请重新输入地址"),
@@ -64,7 +66,12 @@ public enum EnumRespCode {
 	OVERFEE_VERSION_LOW("30074","您的版本过低，请先去更新版本再发单哦~"),
 	VERIFY_CODE_FAIL("30075","验证码错误"),
 	CANT_FIND_DELIVERY_RULE("30076","该区域尚未配置配送费规则"),
-	CANT_CANCEL_DUE_BALANCE("30077","余额不足,取消订单失败");
+	CANT_CANCEL_DUE_BALANCE("30077","余额不足,取消订单失败"),
+
+	SHOP_NOT_AUTHED("20001", "店铺审核未通过"),
+	SHOP_PROVIDERID_DIFFER("20002", "服务商ID不一致"),
+	SHOP_NOT_EXIST("20003","商家不存在"),
+	SHOP_ALREADY_BOUND("20004","商家已绑定");
 
 
 

@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.merchant.web.response.order.v2;
 
+import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.info.*;
 
 import java.io.Serializable;

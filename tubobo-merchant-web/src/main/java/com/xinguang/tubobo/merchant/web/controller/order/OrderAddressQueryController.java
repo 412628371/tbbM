@@ -7,7 +7,7 @@ import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
-import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
+import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
 import com.xinguang.tubobo.merchant.web.request.order.ReqAddressInfoQuery;
 import com.xinguang.tubobo.merchant.web.response.order.RespAddressInfoQuery;
 import org.springframework.beans.factory.annotation.Autowired;

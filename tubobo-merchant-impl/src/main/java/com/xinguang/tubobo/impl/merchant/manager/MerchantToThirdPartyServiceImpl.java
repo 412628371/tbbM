@@ -19,13 +19,13 @@ import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.common.OrderUtil;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.dto.DeliveryFeeDto;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
 import com.xinguang.tubobo.impl.merchant.service.DeliveryFeeService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.launcher.inner.api.TbbOrderServiceInterface;
-import com.xinguang.tubobo.launcher.inner.api.entity.OrderStatusInfoDTO;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.MerchantToThirdPartyServiceInterface;
 import com.xinguang.tubobo.merchant.api.TbbMerchantResponse;
@@ -42,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -85,12 +84,11 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
 
     @Override
     public TbbMerchantResponse<MerchantOrderCreateResultDto> createOrder(MerchantOrderCreateDto req) {
-        TbbMerchantResponse<MerchantOrderCreateResultDto>   merchantOrderCreateResultDtoTbbMerchantResponse;
         MerchantOrderCreateResultDto merchantOrderCreateResultDto;
         OverFeeInfo overFeeInfo = new OverFeeInfo();
         String orderNo =null;
         Double distance=0.0;
-        Double fee =0.0;
+        Double fee;
         Double peekOverFee=0.0;
         Double weatherOverFee=0.0;
         String userId = req.getUserId();
@@ -108,7 +106,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
             //获取实际距离
             distance = routePlanning.getDistanceWithWalkFirst(req.getReceiver().getLongitude(),req.getReceiver().getLatitude(),
                     merchantInfoEntity.getLongitude(),merchantInfoEntity.getLatitude());
-            fee = deliveryFeeService.sumDeliveryFeeByLocation(distance, merchantInfoEntity.getAddressAdCode(),null);
+            fee = deliveryFeeService.sumDeliveryFeeByLocation(distance, merchantInfoEntity);
             // 计算溢价
             //获得本地区域码
             String nativeAreaCode = merchantInfoEntity.getAddressAdCode();
@@ -272,7 +270,6 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
 
         //插入对应的服务商
         entity.setProviderId(merchantInfoEntity.getProviderId());
-        entity.setProviderName(merchantInfoEntity.getProviderName());
 
         //插入溢价费用
         entity.setWeatherOverFee(weatherOverFee);
@@ -303,7 +300,9 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         payWithOutPwdRequest.setOrderId(orderNo);
         payWithOutPwdRequest.setAccountId(merchantInfoEntity.getAccountId());
         long amount = ConvertUtil.convertYuanToFen(entity.getPayAmount());
+        long commission = ConvertUtil.convertYuanToFen(entity.getPlatformFee());
         payWithOutPwdRequest.setAmount(amount);
+        payWithOutPwdRequest.setCommission(commission);
         logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),orderNo,payWithOutPwdRequest.getAmount());
         TbbAccountResponse<PayInfo> response;
         response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);

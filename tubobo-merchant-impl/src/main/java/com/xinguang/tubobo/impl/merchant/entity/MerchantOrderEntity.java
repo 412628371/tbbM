@@ -13,10 +13,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 
-@Entity
+/*@Entity
 @Table(name = "tubobo_merchant_order")
-@DynamicInsert @DynamicUpdate
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@DynamicInsert @DynamicUpdate*/
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MerchantOrderEntity extends BaseMerchantEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -113,6 +113,62 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
 	private Long providerId;//所属服务商ID
 	private String providerName;//所属服务商名称
 	private String merMessage; //未妥投确认消息
+	private String orderFeature;//订单特征值 RIDER_CANCEL_RESEND  骑手取消重发单
+
+	private Double platformFee; 	 //平台抽佣
+	private Double riderFee ;  		//付给骑手配送费
+	private Double cancelSourceDeliveryFee; 	        //取消订单原发配送费
+	private Double cancelSourceDeliverySubsidy ;      //取消订单原骑手补贴金额
+	private String cancelSourceOrderNo ;  		    //取消订单原单号
+
+	public Double getCancelSourceDeliveryFee() {
+		return cancelSourceDeliveryFee;
+	}
+
+	public void setCancelSourceDeliveryFee(Double cancelSourceDeliveryFee) {
+		this.cancelSourceDeliveryFee = cancelSourceDeliveryFee;
+	}
+
+	public Double getCancelSourceDeliverySubsidy() {
+		return cancelSourceDeliverySubsidy;
+	}
+
+	public void setCancelSourceDeliverySubsidy(Double cancelSourceDeliverySubsidy) {
+		this.cancelSourceDeliverySubsidy = cancelSourceDeliverySubsidy;
+	}
+
+	public String getCancelSourceOrderNo() {
+		return cancelSourceOrderNo;
+	}
+
+	public void setCancelSourceOrderNo(String cancelSourceOrderNo) {
+		this.cancelSourceOrderNo = cancelSourceOrderNo;
+	}
+
+	public Double getPlatformFee() {
+		return platformFee;
+	}
+
+	public void setPlatformFee(Double platformFee) {
+		this.platformFee = platformFee;
+	}
+
+	public Double getRiderFee() {
+		return riderFee;
+	}
+
+	public void setRiderFee(Double riderFee) {
+		this.riderFee = riderFee;
+	}
+
+
+	public String getOrderFeature() {
+		return orderFeature;
+	}
+
+	public void setOrderFeature(String orderFeature) {
+		this.orderFeature = orderFeature;
+	}
 
 	public Boolean getShortMessage() {
 		return shortMessage;

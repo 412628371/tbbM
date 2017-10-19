@@ -1,4 +1,4 @@
-package com.xinguang.tubobo.merchant.web;
+package com.xinguang.tubobo.merchant.web.test;
 
 import com.xinguang.tubobo.impl.merchant.manager.MerchantToThirdPartyServiceImpl;
 import com.xinguang.tubobo.impl.merchant.mq.RmqTakeoutAnswerProducer;
@@ -7,6 +7,7 @@ import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.TbbMerchantResponse;
 import com.xinguang.tubobo.merchant.api.dto.MerchantAbortConfirmDTO;
+import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = "/test/abort")
-public class TestAbortController extends MerchantBaseController<MerchantAbortConfirmDTO,TbbMerchantResponse<Boolean>>{
+public class TestAbortController extends MerchantBaseController<MerchantAbortConfirmDTO,TbbMerchantResponse<Boolean>> {
     @Autowired
     private MerchantToThirdPartyServiceImpl merchaService;
 

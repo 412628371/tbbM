@@ -17,9 +17,18 @@ public class MerchantGrabCallbackDTO implements Serializable {
     private Date grabTime;
     private Double pickupDistance;
     private Date expectFinishTime;
+    private String senderAdcode;
+
+    public String getSenderAdcode() {
+        return senderAdcode;
+    }
+
+    public void setSenderAdcode(String senderAdcode) {
+        this.senderAdcode = senderAdcode;
+    }
 
     public MerchantGrabCallbackDTO(String riderId, String riderName, String riderPhone,
-                                   String taskNo, Date grabTime,Double pickupDistance,
+                                   String taskNo, Date grabTime, Double pickupDistance,
                                    Date expectFinishTime){
         this.riderId = riderId;
         this.riderName = riderName;

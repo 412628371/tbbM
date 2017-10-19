@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.*;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 
 public class RedisCache implements Cache{
@@ -166,6 +167,11 @@ public class RedisCache implements Cache{
 	public <T> T get(Object key, Class<T> type) {
 		ValueWrapper wrapper = this.get(key);
 		return wrapper == null?null: (T) wrapper.get();
+	}
+
+	@Override
+	public <T> T get(Object o, Callable<T> callable) {
+		return null;
 	}
 
 	@Override

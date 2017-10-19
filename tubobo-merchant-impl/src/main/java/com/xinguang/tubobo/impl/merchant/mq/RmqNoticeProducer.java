@@ -98,9 +98,11 @@ public class RmqNoticeProducer {
      * @param platformCode
      * @param originOrderViewId
      */
-    public void sendOrderCancelByRiderNotice(String userId, String orderNo, String orderType,String platformCode,String originOrderViewId){
+    public void sendOrderCancelByRiderNotice(String userId, String orderNo, String orderType,String platformCode,String originOrderViewId,Double subsidy){
         NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
         noticeDTO.setTitle(config.getNoticeRiderOrderCanceledTitle());
+        subsidy=subsidy==null?0.0:subsidy;
+        String sub= String.valueOf(subsidy);
         noticeDTO.setContent(config.getNoticeRiderOrderCanceledTemplate());
         noticeDTO.setOrderOperateType(EnumOrderNoticeType.RIDER_CANCEL.getValue());
         sendNotice(noticeDTO);
@@ -130,6 +132,32 @@ public class RmqNoticeProducer {
         }
         sendNotice(noticeDTO);
     }
+
+    /**
+     * 发送商家绑定通知
+     */
+    public void sendMerchantBindNotice(String userId, String providerName){
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setNoticeType(EnumNoticeType.BIND.getValue());
+        noticeDTO.setUserId(userId);
+        noticeDTO.setTitle(config.getNoticeBindTitle());
+        noticeDTO.setContent("（服务商"+ providerName + "）" + config.getNoticeBindTemplate());
+        sendNotice(noticeDTO);
+    }
+
+    /**
+     * 发送商家解绑通知
+     */
+    public void sendMerchantUnbindMotice(String userId, String providerName){
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setNoticeType(EnumNoticeType.UNBIND.getValue());
+        noticeDTO.setUserId(userId);
+        noticeDTO.setTitle(config.getNoticeUnbindTitle());
+        noticeDTO.setContent("您与（服务商"+ providerName + "）" + config.getNoticeUnbindTemplate());
+        sendNotice(noticeDTO);
+    }
+
+
     /**
      * 组装订单类型推送的DTO
      * @param userId
@@ -149,6 +177,19 @@ public class RmqNoticeProducer {
         noticeDTO.setUserId(userId);
         return noticeDTO;
     }
+
+    /**
+     * 驿站商家自动发单 余额不足是的提醒
+     */
+    public void sendForAutoPostOrderWhenMoneyLess(String userId){
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setNoticeType(EnumNoticeType.MONEYSHORT.getValue());
+        noticeDTO.setUserId(userId);
+        noticeDTO.setTitle(config.getNoticeMoneyShortForAutoSendPostTitle());
+        noticeDTO.setContent(config.getNoticeMoneyShortForAutoSendPostTemplate());
+        sendNotice(noticeDTO);
+    }
+
     private void sendNotice(NoticeDTO noticeDTO){
         baseMqTemplate.convertAndSend("tbb_notice_exchange","notice_bindingKey_merchant",
                 JSONObject.toJSONString(noticeDTO));

@@ -1,6 +1,6 @@
 package com.xinguang.tubobo.merchant.web.request.order.v2;
 
-import com.xinguang.tubobo.merchant.web.common.info.AddressInfo;
+import com.xinguang.tubobo.impl.merchant.common.AddressInfo;
 import com.xinguang.tubobo.merchant.web.common.info.AppointTask;
 import com.xinguang.tubobo.merchant.web.common.info.OverFeeInfo;
 import com.xinguang.tubobo.merchant.web.common.info.ThirdInfo;

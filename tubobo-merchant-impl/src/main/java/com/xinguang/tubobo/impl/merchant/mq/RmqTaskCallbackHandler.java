@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 /**
  * Created by Administrator on 2017/4/30.
  */
-@Service
 public class RmqTaskCallbackHandler implements ChannelAwareMessageListener {
     private static final Logger logger = LoggerFactory.getLogger(RmqTaskCallbackHandler.class);
     @Autowired

@@ -6,7 +6,6 @@
 		http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd"
        default-lazy-init="true">
 
-    <import resource="rabbitmq-base.xml"/>
     <!-- 创建rabbitTemplate 消息模板类 -->
     <rabbit:template id="delayMsgTemplate" connection-factory="rabbitmqConnectionFactory"  exchange="merchant_payExpired_delay_exchange" />
 
@@ -22,8 +21,6 @@
     <!-- 监听处理器 -->
     <!-- ################ 延迟队列生产者配置 ################ -->
     <rabbit:admin connection-factory="rabbitmqConnectionFactory" />
-    <!--<bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />-->
-    <!--<rabbit:template id="rabbitTemplate" connection-factory="connectionFactory" exchange="merchant_payExpired_delay_exchange" />-->
 
     <rabbit:queue id="queue_merchant_payExpired_delay" name="queue_merchant_payExpired_delay" durable="true" auto-delete="false" exclusive="false">
         <rabbit:queue-arguments>

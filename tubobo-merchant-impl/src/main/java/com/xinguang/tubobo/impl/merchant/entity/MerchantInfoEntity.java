@@ -6,8 +6,6 @@
 package com.xinguang.tubobo.impl.merchant.entity;
 
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -19,7 +17,7 @@ import java.util.Date;
 @Table(name = "tubobo_merchant_info")
 @DynamicInsert
 @DynamicUpdate
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -59,16 +57,16 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 	private Date bdUpdateDate;			 //bd邀请码绑定时间
 
 	private String hygieneLicense;		//卫生许可证
-	private Date enterTime;			 //入住驿站时间
 	private Long providerId;			 //服务商ID
-	private String providerName;			 //服务商名称
 
-	public Date getEnterTime() {
-		return enterTime;
+	private Long merTypeId;			//商家类型id
+
+	public Long getMerTypeId() {
+		return merTypeId;
 	}
 
-	public void setEnterTime(Date enterTime) {
-		this.enterTime = enterTime;
+	public void setMerTypeId(Long merTypeId) {
+		this.merTypeId = merTypeId;
 	}
 
 	public Long getProviderId() {
@@ -346,14 +344,6 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	public void setConsignorStatus(String consignorStatus) {
 		this.consignorStatus = consignorStatus;
-	}
-
-	public String getProviderName() {
-		return providerName;
-	}
-
-	public void setProviderName(String providerName) {
-		this.providerName = providerName;
 	}
 
 	@Override

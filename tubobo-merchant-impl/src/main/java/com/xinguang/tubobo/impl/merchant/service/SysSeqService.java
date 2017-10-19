@@ -6,6 +6,7 @@ package com.xinguang.tubobo.impl.merchant.service;
 import com.hzmux.hzcms.common.persistence.Parameter;
 import com.xinguang.tubobo.impl.merchant.dao.SysSeqDao;
 import com.xinguang.tubobo.impl.merchant.entity.SysSeq;
+import com.xinguang.tubobo.impl.merchant.repository.SysSeqRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -18,15 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
  * @version 2017-01-15
  */
 @Component
-@Transactional(readOnly = true)
+@Transactional
 public class SysSeqService extends BaseService {
-	private static final String selectQuery = " from " + SysSeq.class.getSimpleName() + " where sequenceName = :p1";
-//	private static final String insertQuery = "";
-	private static final String updateQuery = "update " + SysSeq.class.getSimpleName() + " set nextVal = :p1 where sequenceName = :p2 and nextVal = :p3";
+
 
 	@Autowired
-	private SysSeqDao sysSeqDao;
-	
+	private SysSeqRepository sysSeqDao;
+
+
 
 	@Transactional(readOnly = false, isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
 	public Long nextVal(String sequenceName, int initialValue, int incrementSize) {
@@ -58,7 +58,8 @@ public class SysSeqService extends BaseService {
 
 
 	private  Long select(String sequenceName) {
-		SysSeq sysSeq =  sysSeqDao.getByHql(selectQuery, new Parameter(sequenceName));
+		SysSeq sysSeq = sysSeqDao.findBySequenceName(sequenceName);
+		//SysSeq	sysSeq =  sysSeqDao.getByHql(selectQuery, new Parameter(sequenceName));
 		if (null == sysSeq) {
 			return null;
 		} else {
@@ -66,21 +67,26 @@ public class SysSeqService extends BaseService {
 		}
 	}
 
-	private  SysSeq save(String sequenceName, Long initialValue) {
+	private   SysSeq save(String sequenceName, Long initialValue) {
 		SysSeq sysSeq = new SysSeq(sequenceName, initialValue);
+		/*SysSeq sysSeq = new SysSeq(sequenceName, initialValue);
 		try {
-			sysSeqDao.getSession().save(sysSeq);
+			Session session = sysSeqDao.getSession();
+			session.beginTransaction();
+
+			session.save(sysSeq);
 			sysSeqDao.flush();
 		} catch (Exception e) {
 			sysSeq = null;
 			sysSeqDao.clear();
-		}
+		}*/
+		sysSeqDao.save(sysSeq);
 		return  sysSeq;
 	}
 
-	private int update(String sequenceName, long currentValue, long incrementSize) {
+	private  int update(String sequenceName, long currentValue, long incrementSize) {
 		long newvalue = currentValue + incrementSize;
-		return sysSeqDao.update(updateQuery, new Parameter(newvalue, sequenceName, currentValue));
+		return sysSeqDao.updateNextVal(newvalue, sequenceName, currentValue);
 	}
 
 }
