@@ -51,7 +51,7 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
     private Double pickupDistance;      //取货距离
 
     private String unsettledReason;         //驿站订单 未妥投原因
-    private Date unsettledTime;             //驿站订单 商家确认未妥投时间
+    //private Date unsettledTime;             //驿站订单 商家确认未妥投时间
 
 
     private String merMessage; //未妥投确认消息
@@ -268,13 +268,6 @@ public class OrderDetailEntity extends BaseMerchantOrderEntity {
         this.unsettledReason = unsettledReason;
     }
 
-    public Date getUnsettledTime() {
-        return unsettledTime;
-    }
-
-    public void setUnsettledTime(Date unsettledTime) {
-        this.unsettledTime = unsettledTime;
-    }
 
 
 
