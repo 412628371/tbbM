@@ -13,6 +13,16 @@ public class NoticeParamVo implements Serializable{
     private String verifyResult;
     private String orderStatus;
     private String  recordId;
+    private String cancelOrderNo;// 骑手取消的原订单号
+
+    public String getCancelOrderNo() {
+        return cancelOrderNo;
+    }
+
+    public void setCancelOrderNo(String cancelOrderNo) {
+        this.cancelOrderNo = cancelOrderNo;
+    }
+
 
     public String getRecordId() {
         return recordId;

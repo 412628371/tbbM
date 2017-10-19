@@ -41,6 +41,7 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
 import com.xinguang.tubobo.merchant.api.enums.*;
 import com.xinguang.tubobo.takeout.answer.DispatcherInfoDTO;
+import org.apache.catalina.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -336,13 +337,13 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	 * 骑手取货
 	 */
 	public boolean riderGrabItem(String orderNo, Date grabItemTime,boolean enableNotice){
+		logger.info("处理骑手取货：orderNo:{}",orderNo);
 		MerchantOrderEntity entity = orderService.findByOrderNoAndStatus(orderNo,
 				EnumMerchantOrderStatus.WAITING_PICK.getValue());
 		if (null == entity){
 			logger.info("骑手取货，未找到订单或已取货完成。orderNo:{}",orderNo);
 			return false;
 		}
-		logger.info("处理骑手取货：orderNo:{}",orderNo);
 		boolean flag=orderService.riderGrabItem(entity.getUserId(),orderNo,grabItemTime)>0;
 		if (flag){
 			//短信通知骑手
@@ -377,13 +378,13 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	 * 骑手完成订单
 	 */
 	public boolean riderFinishOrder(String orderNo, Date finishOrderTime, Double expiredMinute,  Double expiredCompensation, boolean enableNotice){
+		logger.info("处理骑手送达完成：orderNo:{},expiredCompensation:{}",orderNo,expiredCompensation);
 		MerchantOrderEntity entity = orderService.findByOrderNo(orderNo);
 		MerchantInfoEntity merchant = merchantInfoService.findByUserId(entity.getUserId());
 		if (null == entity || EnumMerchantOrderStatus.FINISH.getValue().equals(entity.getOrderStatus())){
 			logger.info("骑手完成配送，未找到订单或订单已完成。orderNo:{}",orderNo);
 			return false;
 		}
-		logger.info("处理骑手送达完成：orderNo:{},expiredCompensation:{}",orderNo,expiredCompensation);
 		expiredCompensation=expiredMinute==null?0.0:expiredCompensation;
 		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation/100)==1;
 		if (result){
@@ -621,9 +622,11 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				}
 			}
 			//重新发单
-			riderCancelResend(entity,messageOpen,dtoCancel.getSubsidy());
+			String newOrderNo = riderCancelResend(entity, messageOpen, dtoCancel.getSubsidy());
 
-			rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId(),subsidy);
+			if (null!=newOrderNo){
+				rmqNoticeProducer.sendOrderCancelByRiderNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId(),subsidy,newOrderNo);
+			}
 		}else{
 			logger.error("骑手取消订单，更改订单状态出错,退款失败 ,orderNo:{}" ,orderNo);
 		}
@@ -634,7 +637,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	 * 骑手取消订单后 重新发单
 	 * @return
 	 */
-	private void riderCancelResend(MerchantOrderEntity entity,Boolean messageOpen,Double subsidyFromRider) {
+	private String riderCancelResend(MerchantOrderEntity entity,Boolean messageOpen,Double subsidyFromRider) {
 		Double amountD=entity.getPayAmount();
 		//新建订单的金额为原来订单金额+骑手罚款
 		if (null!=subsidyFromRider){
@@ -670,6 +673,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setReceiverName(entity.getReceiverName());
 		orderEntity.setReceiverPhone(entity.getReceiverPhone());
 		orderEntity.setSenderName(entity.getSenderName());
+        orderEntity.setUserId(entity.getUserId());
 
 		detailEntity.setOrderRemark(entity.getOrderRemark());
 		detailEntity.setPickupDistance(entity.getPickupDistance());
@@ -685,6 +689,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		detailEntity.setSenderAddressStreet(entity.getSenderAddressStreet());
 		detailEntity.setSenderLatitude(entity.getSenderLatitude());
 		detailEntity.setSenderLongitude(entity.getSenderLongitude());
+		detailEntity.setUserId(entity.getUserId());
 		/*orderEntity.setId(null);
 		orderEntity.setCreateDate(null);
 		orderEntity.setUpdateDate(null);
@@ -702,6 +707,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		//设置重发特殊标记位
 		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
 		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
+		orderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
 		orderEntity.setOrderTime(new Date());
 		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
 		detailEntity.setCancelSourceDeliverySubsidy(entity.getCancelCompensation());
@@ -712,7 +718,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			newOrderNo = orderService.saveOrderOnly(entity.getUserId(),orderEntity,detailEntity);
 		} catch (MerchantClientException e) {
 			logger.error("骑手取消后自动创建订单失败,orderNo:{}",entity.getOrderNo(),e);
-			return;
+			return null;
 		}
 
 		//进行支付
@@ -759,6 +765,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 						newOrderNo,merchant.getAccountId(),response.getErrorCode(),response.getMessage());
 			}
 		}
+		return newOrderNo;
 	}
 
 

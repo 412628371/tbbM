@@ -26,6 +26,15 @@ public class NoticeDTO implements Serializable {
     private String recordId; //订单流水id
 
     private Double fine;//罚款金额
+    private String cancelOrderNo;// 骑手取消的原订单号
+
+    public String getCancelOrderNo() {
+        return cancelOrderNo;
+    }
+
+    public void setCancelOrderNo(String cancelOrderNo) {
+        this.cancelOrderNo = cancelOrderNo;
+    }
 
     public long getProviderId() {
         return providerId;

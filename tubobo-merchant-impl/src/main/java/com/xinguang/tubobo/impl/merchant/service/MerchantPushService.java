@@ -80,7 +80,7 @@ public class MerchantPushService {
         try{
             pushService.push(content,pushAppKey,list,options);
             logger.info("状态通知已发送给userId:{}",userId);
-            logger.info("发送的data为:{}",extraJson);
+            logger.info("带声音发送的data为:{}",extraJson);
         }catch (Exception e){
             logger.error("push to userId:{},content:{},title:{}.异常：",userId,content,title,e);
         }
@@ -186,12 +186,13 @@ public class MerchantPushService {
         return s;
     }
     private  String  generateOrderPushParam(String userId,
-                                                  Long id,String orderType,String orderNo,String orderStatus){
+                                                  Long id,String orderType,String orderNo,String orderStatus,String cancelOrderNo){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setId(String.valueOf(id));
         paramVo.setOrderNo(orderNo);
         paramVo.setOrderType(orderType);
         paramVo.setOrderStatus(orderStatus);
+        paramVo.setCancelOrderNo(cancelOrderNo);
         NoticePushVo noticePushVo = new NoticePushVo();
         noticePushVo.setNoticeType(EnumNoticeType.ORDER.getValue());
         noticePushVo.setParams(paramVo);
@@ -204,12 +205,13 @@ public class MerchantPushService {
     * 推送订单 (带声音适配安卓)
     * */
     private  String  generateOrderPushParamWithSound(String userId,
-                                                  Long id,String orderType,String orderNo,String orderStatus,String musicName){
+                                                  Long id,String orderType,String orderNo,String orderStatus,String musicName,String cancelOrderNo){
         NoticeParamVo paramVo = new NoticeParamVo();
         paramVo.setId(String.valueOf(id));
         paramVo.setOrderNo(orderNo);
         paramVo.setOrderType(orderType);
         paramVo.setOrderStatus(orderStatus);
+        paramVo.setCancelOrderNo(cancelOrderNo);
         NoticePushVo noticePushVo = new NoticePushVo();
         noticePushVo.setNoticeType(EnumNoticeType.ORDER.getValue());
         noticePushVo.setParams(paramVo);
@@ -322,9 +324,11 @@ public class MerchantPushService {
             }
             if (EnumOrderNoticeType.RIDER_CANCEL.getValue().equals(entity.getOrderOperateType())){
                 //骑手取消订单推送
+                logger.info("骑手取消订单推送");
                 isOpen = true;
                 if (settingsEntity.getPushMsgVoiceOpen()){
                     //语音提醒
+                    logger.info("骑手取消订单带声音推送");
                     musicName=iosMusicRiderCancelName;
                     pushWithSound(entity, musicName);
                     return;
@@ -342,14 +346,14 @@ public class MerchantPushService {
         }
         if (isOpen){
             String data = generateOrderPushParam(entity.getUserId(),
-                    entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType());
+                    entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType(),entity.getCancelOrderNo());
             pushToUser(entity.getUserId(),entity.getContent(),entity.getTitle(), data);
         }
     }
 
     private void pushWithSound(PushNoticeEntity entity, String musicName) {
         String data = generateOrderPushParamWithSound(entity.getUserId(),
-                entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType(),musicName);
+                entity.getId(),entity.getOrderType(),entity.getOrderNo(),entity.getOrderOperateType(),musicName,entity.getCancelOrderNo());
         pushToUserWithSound(entity.getUserId(),entity.getContent(),entity.getTitle(), data,musicName);
     }
    /* public static void main(String[] args) {

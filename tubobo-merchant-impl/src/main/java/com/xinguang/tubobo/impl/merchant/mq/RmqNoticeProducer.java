@@ -98,9 +98,10 @@ public class RmqNoticeProducer {
      * @param platformCode
      * @param originOrderViewId
      */
-    public void sendOrderCancelByRiderNotice(String userId, String orderNo, String orderType,String platformCode,String originOrderViewId,Double subsidy){
-        NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,orderNo,orderType,platformCode,originOrderViewId);
+    public void sendOrderCancelByRiderNotice(String userId, String orderNo, String orderType,String platformCode,String originOrderViewId,Double subsidy,String newOrderNo){
+        NoticeDTO noticeDTO = getBaseOrderNoticeDto(userId,newOrderNo,orderType,platformCode,originOrderViewId);
         noticeDTO.setTitle(config.getNoticeRiderOrderCanceledTitle());
+        noticeDTO.setCancelOrderNo(orderNo);
         subsidy=subsidy==null?0.0:subsidy;
         String sub= String.valueOf(subsidy);
         noticeDTO.setContent(config.getNoticeRiderOrderCanceledTemplate());

@@ -1,13 +1,6 @@
 package com.xinguang.tubobo;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-
 import com.xinguang.tubobo.impl.merchant.disconf.SysConfig;
-import com.xinguang.tubobo.impl.merchant.redis.FastJson2JsonRedisSerializer;
-import com.xinguang.tubobo.impl.merchant.redis.RedisUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +8,8 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 import org.springframework.stereotype.Service;
 
@@ -74,20 +60,20 @@ public class Application {
 
                 ;
     }
-    @Bean
+ /*   @Bean
     public RedisUtils getRedisUtils(){
         RedisUtils redisUtils = new RedisUtils("tbb_consignor", "consignor", getRedisTemplate(), 86400);
 
         return redisUtils;
-    }
+    }*/
 
-    @Bean
+   /* @Bean
     @SuppressWarnings("rawtypes")
     public RedisSerializer fastJson2JsonRedisSerializer() {
         return new FastJson2JsonRedisSerializer<Object>(Object.class);
-    }
+    }*/
 
-    @Bean
+   /* @Bean
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Jackson2JsonRedisSerializer jackson2JsonRedisSerializer() {
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
@@ -96,18 +82,18 @@ public class Application {
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
         return jackson2JsonRedisSerializer;
-    }
+    }*/
 
-    @Bean
+   /* @Bean
     public RedisTemplate<?, ?> getRedisTemplate(){
         RedisTemplate<?,?> template = new StringRedisTemplate(redisConnectionFactory());
         template.setValueSerializer(jackson2JsonRedisSerializer());
         template.afterPropertiesSet();
 
         return template;
-    }
+    }*/
 
-    @Bean
+   /* @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         JedisConnectionFactory factory = new JedisConnectionFactory();
 
@@ -120,7 +106,7 @@ public class Application {
         factory.afterPropertiesSet();
 
         return factory;
-    }
+    }*/
 
 //    @Bean
 //    public ConnectionFactory connectionFactory() {
