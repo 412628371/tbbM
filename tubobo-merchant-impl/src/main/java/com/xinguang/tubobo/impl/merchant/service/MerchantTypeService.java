@@ -109,27 +109,30 @@ public class MerchantTypeService implements MerchantTypeInterface {
             String name = merchantTypeDTO.getName();
             if (id != null){
                 //修改
-                merchantTypeRepository.findByIdAndDelFlag(id,MerchantTypeEntity.DEL_FLAG_NORMAL);
-                MerchantTypeEntity entity = new MerchantTypeEntity();
-                BeanUtils.copyProperties(merchantTypeDTO, entity);
-                merchantTypeRepository.save(entity);
-                return true;
+                MerchantTypeEntity entity;
+                entity =  merchantTypeRepository.findByIdAndDelFlag(id,MerchantTypeEntity.DEL_FLAG_NORMAL);
+                if (entity!=null){
+                    entity.setCommissionRate(merchantTypeDTO.getCommissionRate());
+                    entity.setDescribtion(merchantTypeDTO.getDescribtion());
+                    entity.setName(merchantTypeDTO.getName());
+                    entity.setUpdateBy(merchantTypeDTO.getUpdateBy());
+                    merchantTypeRepository.save(entity);
+                    return true;
+                }
             }else {
                 //新增
                 if (StringUtils.isNotBlank(name)){
                     MerchantTypeEntity merchantTypeEntity = merchantTypeRepository.findByNameAndDelFlag(name, MerchantTypeEntity.DEL_FLAG_NORMAL);
                     if (merchantTypeEntity==null){
                         merchantTypeEntity = new MerchantTypeEntity();
-                        BeanUtils.copyProperties(merchantTypeDTO,merchantTypeEntity);
+                        merchantTypeEntity.setCommissionRate(merchantTypeDTO.getCommissionRate());
+                        merchantTypeEntity.setDescribtion(merchantTypeDTO.getDescribtion());
+                        merchantTypeEntity.setName(merchantTypeDTO.getName());
+                        merchantTypeEntity.setCreateBy(merchantTypeDTO.getCreateBy());
                         merchantTypeRepository.save(merchantTypeEntity);
                         return true;
                     }else {
-                        //用户名已存在
-            /*            try {
-                            throw new MerchantClientException(EnumRespCode.FAIL);
-                        } catch (MerchantClientException e) {
-                            wrapErrorCodeResponse(e);
-                        }*/
+                        //用户名存在
                         return false;
                     }
                 }
