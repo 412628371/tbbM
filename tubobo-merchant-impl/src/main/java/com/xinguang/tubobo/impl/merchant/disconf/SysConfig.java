@@ -18,15 +18,15 @@ public class SysConfig {
     private String jdbcSourceUserName;
     private String jdbcSourcePassword;
 
-    private String redisHost;
+   /* private String redisHost;
     private int redisPort;
     private String redisPassword;
-    private int redisDbIndex;
+    private int redisDbIndex;*/
 
-    private String rabbitmqAddress;
+    /*private String rabbitmqAddress;
     private String rabbitmqUsername;
     private String rabbitmqPassword;
-    private String rabbitmqVirtualHost;
+    private String rabbitmqVirtualHost;*/
 
 
     public String getJdbcSourceUrl() {
@@ -53,7 +53,7 @@ public class SysConfig {
         this.jdbcSourcePassword = jdbcSourcePassword;
     }
 
-    public String getRedisHost() {
+  /*  public String getRedisHost() {
         return redisHost;
     }
 
@@ -116,4 +116,5 @@ public class SysConfig {
     public void setRabbitmqVirtualHost(String rabbitmqVirtualHost) {
         this.rabbitmqVirtualHost = rabbitmqVirtualHost;
     }
+*/
 }
