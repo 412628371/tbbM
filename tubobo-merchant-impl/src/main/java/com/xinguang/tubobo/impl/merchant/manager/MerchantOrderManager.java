@@ -41,6 +41,7 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
 import com.xinguang.tubobo.merchant.api.enums.*;
 import com.xinguang.tubobo.takeout.answer.DispatcherInfoDTO;
+import org.apache.catalina.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -670,6 +671,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setReceiverName(entity.getReceiverName());
 		orderEntity.setReceiverPhone(entity.getReceiverPhone());
 		orderEntity.setSenderName(entity.getSenderName());
+        orderEntity.setUserId(entity.getUserId());
 
 		detailEntity.setOrderRemark(entity.getOrderRemark());
 		detailEntity.setPickupDistance(entity.getPickupDistance());
@@ -685,6 +687,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		detailEntity.setSenderAddressStreet(entity.getSenderAddressStreet());
 		detailEntity.setSenderLatitude(entity.getSenderLatitude());
 		detailEntity.setSenderLongitude(entity.getSenderLongitude());
+		detailEntity.setUserId(entity.getUserId());
 		/*orderEntity.setId(null);
 		orderEntity.setCreateDate(null);
 		orderEntity.setUpdateDate(null);
