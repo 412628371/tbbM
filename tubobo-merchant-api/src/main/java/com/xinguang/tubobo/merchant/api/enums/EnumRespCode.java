@@ -69,7 +69,9 @@ public enum EnumRespCode {
 	CANT_CANCEL_DUE_BALANCE("30077","余额不足,取消订单失败"),
 
 	SHOP_NOT_AUTHED("20001", "店铺审核未通过"),
-	SHOP_PROVIDERID_DIFFER("20002", "服务商ID不一致");
+	SHOP_PROVIDERID_DIFFER("20002", "服务商ID不一致"),
+	SHOP_NOT_EXIST("20003","商家不存在"),
+	SHOP_ALREADY_BOUND("20004","商家已绑定");
 
 
 
