@@ -43,6 +43,6 @@ public class ShopBindSettingController extends MerchantBaseController<ReqBindSet
         if(result){
             return "";
         }
-        return EnumRespCode.FAIL;
+        return EnumRespCode.FAIL.getValue();
     }
 }

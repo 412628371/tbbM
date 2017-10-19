@@ -47,16 +47,6 @@ public class MerchantInfoResponse implements Serializable{
     private Boolean messageOpen;            //短信开关
 
     private Long providerId;			 //服务商ID
-    private String providerName;			 //服务商名称
-    private String bindStatus;
-
-    public String getBindStatus() {
-        return bindStatus;
-    }
-
-    public void setBindStatus(String bindStatus) {
-        this.bindStatus = bindStatus;
-    }
 
     public Long getProviderId() {
         return providerId;
@@ -64,14 +54,6 @@ public class MerchantInfoResponse implements Serializable{
 
     public void setProviderId(Long providerId) {
         this.providerId = providerId;
-    }
-
-    public String getProviderName() {
-        return providerName;
-    }
-
-    public void setProviderName(String providerName) {
-        this.providerName = providerName;
     }
 
     public Boolean getMessageOpen() {
