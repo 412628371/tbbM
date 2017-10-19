@@ -43,8 +43,8 @@ public class OrderListControllerV2 extends MerchantBaseController<ReqOrderList,P
         queryEntity.setOrderStatus(req.getOrderStatus());
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
         String orderType= EnumOrderType.SMALLORDER.getValue();
-        String bindStatus = merchant.getBindStatus();
-        if (EnumBindStatusType.SUCCESS.getValue().equalsIgnoreCase(bindStatus)){
+        Long providerId = merchant.getProviderId();
+        if (null != providerId){
             orderType=EnumOrderType.POSTORDER.getValue();
         }
         queryEntity.setOrderType(orderType);

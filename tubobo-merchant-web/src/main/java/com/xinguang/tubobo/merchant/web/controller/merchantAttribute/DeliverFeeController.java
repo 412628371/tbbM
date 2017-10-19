@@ -52,7 +52,7 @@ public class DeliverFeeController extends MerchantBaseController<String,RespDeli
         if (merchantTypeDTO==null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
         }
-        if (EnumBindStatusType.SUCCESS.equals(entity.getBindStatus())){
+        if (null != entity.getProviderId()){
             orderType = EnumOrderType.POSTORDER.getValue();
         }else {
             orderType = EnumOrderType.SMALLORDER.getValue();

@@ -270,7 +270,6 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
 
         //插入对应的服务商
         entity.setProviderId(merchantInfoEntity.getProviderId());
-        entity.setProviderName(merchantInfoEntity.getProviderName());
 
         //插入溢价费用
         entity.setWeatherOverFee(weatherOverFee);

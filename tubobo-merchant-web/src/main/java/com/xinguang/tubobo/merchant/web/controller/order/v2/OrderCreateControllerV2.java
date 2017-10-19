@@ -56,7 +56,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
         String orderType = req.getType();
         //post订单
-        if (EnumBindStatusType.SUCCESS.getValue().equalsIgnoreCase(infoEntity.getBindStatus())){
+        if (null != infoEntity.getProviderId()){
             orderType=EnumOrderType.POST_NORMAL_ORDER.getValue();
 
         }
@@ -116,7 +116,6 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
         entity.setPeekOverFee(peekOverFee);
         entity.setDeliveryDistance(req.getDeliveryDistance());
         entity.setProviderId(infoEntity.getProviderId());
-        entity.setProviderName(infoEntity.getProviderName());
         String orderNo = merchantOrderManager.order(userId,entity);
         CreateOrderResponse response = new CreateOrderResponse();
         response.setOrderNo(orderNo);

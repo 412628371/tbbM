@@ -100,7 +100,7 @@ public class DeliveryFeeService  {
         if (merchantTypeDTO==null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
         }
-        if (EnumBindStatusType.SUCCESS.getValue().equals(merchantInfoEntity.getBindStatus())){
+        if (null != merchantInfoEntity.getProviderId()){
             orderType = EnumOrderType.POSTORDER.getValue();
         }else {
             orderType = EnumOrderType.CROWDORDER.getValue();

@@ -155,9 +155,6 @@ public class MerchantInfoService extends BaseService {
 				if(null != entity.getProviderId()){
 					list.add(criteriaBuilder.equal(root.get("providerId").as(Long.class), entity.getProviderId()));
 				}
-				if (StringUtils.isNotBlank(entity.getBindStatus())){
-					list.add(criteriaBuilder.equal(root.get("bindStatus").as(String.class), entity.getBindStatus()));
-				}
 				if (StringUtils.isNotBlank(entity.getMerchantStatus())){
 					list.add(criteriaBuilder.equal(root.get("merchantStatus").as(String.class), entity.getMerchantStatus()));
 				}
@@ -258,7 +255,7 @@ public class MerchantInfoService extends BaseService {
 	public boolean  isPostMerchant(String userId){
 		boolean flag=false;
 		MerchantInfoEntity merchant = findByUserId(userId);
-		if(EnumBindStatusType.SUCCESS.getValue().equals(merchant.getBindStatus())){
+		if(null != merchant.getProviderId()){
 			flag=true;
 		}
 		return flag;

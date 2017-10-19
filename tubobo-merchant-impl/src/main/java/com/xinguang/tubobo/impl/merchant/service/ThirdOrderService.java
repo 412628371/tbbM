@@ -102,7 +102,7 @@ public class ThirdOrderService {
 
         String userId = mtOrderEntity.getUserId();
         MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
-        if (!EnumBindStatusType.SUCCESS.getValue().equalsIgnoreCase(merchant.getBindStatus())){
+        if (merchant.getProviderId() == null){
             //非驿站商家  不进行自动发单
             return;
         }
@@ -214,7 +214,6 @@ public class ThirdOrderService {
         newOrderEntity.setWeatherOverFee(weatherOverFee);
         newOrderEntity.setPeekOverFee(peekOverFee);
         newOrderEntity.setProviderId(merchant.getProviderId());
-        newOrderEntity.setProviderName(merchant.getProviderName());
         OrderDetailEntity orderDetailEntity = new OrderDetailEntity();
         OrderEntity orderEntity = new OrderEntity();
         BeanUtils.copyProperties(newOrderEntity,orderDetailEntity);
