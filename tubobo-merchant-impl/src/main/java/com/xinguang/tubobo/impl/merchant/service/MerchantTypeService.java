@@ -116,6 +116,8 @@ public class MerchantTypeService implements MerchantTypeInterface {
                     entity.setDescribtion(merchantTypeDTO.getDescribtion());
                     entity.setName(merchantTypeDTO.getName());
                     entity.setUpdateBy(merchantTypeDTO.getUpdateBy());
+                    entity.setTemId(merchantTypeDTO.getTemId());
+                    entity.setTemName(merchantTypeDTO.getTemName());
                     merchantTypeRepository.save(entity);
                     return true;
                 }
@@ -129,6 +131,8 @@ public class MerchantTypeService implements MerchantTypeInterface {
                         merchantTypeEntity.setDescribtion(merchantTypeDTO.getDescribtion());
                         merchantTypeEntity.setName(merchantTypeDTO.getName());
                         merchantTypeEntity.setCreateBy(merchantTypeDTO.getCreateBy());
+                        merchantTypeEntity.setTemId(merchantTypeDTO.getTemId());
+                        merchantTypeEntity.setTemName(merchantTypeDTO.getTemName());
                         merchantTypeRepository.save(merchantTypeEntity);
                         return true;
                     }else {
