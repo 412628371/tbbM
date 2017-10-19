@@ -5,9 +5,12 @@ import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantTypeEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantMessageSettingsService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantTypeService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.response.MerchantInfoResponse;
@@ -29,6 +32,8 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
     @Autowired
     MerchantMessageSettingsService settingsService;
     @Autowired
+    MerchantTypeService merchantTypeService;
+    @Autowired
     Config config;
 
     @Override
@@ -38,7 +43,9 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
         if (null == entity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
+        MerchantTypeDTO typeDto = merchantTypeService.findById(entity.getMerTypeId());
         MerchantInfoResponse response = translateEntityToResponse(entity);
+        response.setMerchantType(typeDto.getName());
         return response;
     }
 

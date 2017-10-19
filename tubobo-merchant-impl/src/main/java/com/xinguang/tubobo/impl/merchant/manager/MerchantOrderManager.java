@@ -94,9 +94,6 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		logger.info("创建订单, userId:{},orderNo:{}，orderType:{}",userId,orderNo,entity.getOrderType());
 		//将订单加入支付超时队列 商家订单和车配订单超时时间不同
 		int expiredMillSeconds = config.getPayExpiredMilSeconds();
-		if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())){
-			expiredMillSeconds = config.getConsignorPayExpiredMilliSeconds();
-		}
 		timeoutTaskProducer.sendMessage(orderNo,expiredMillSeconds);
 		if(StringUtils.isNotBlank(entity.getOrderType()) && EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())){
 			AddressDTO dto = getAddressDTO(entity);
