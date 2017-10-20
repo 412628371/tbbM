@@ -36,6 +36,7 @@ import com.xinguang.tubobo.merchant.api.condition.RiderInfo;
 import com.xinguang.tubobo.merchant.api.dto.*;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
+import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.api.exception.TbbMerchantBaseException;
 import org.slf4j.Logger;
@@ -69,6 +70,8 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
     private TaskDispatchService taskDispatchService;
     @Autowired private AdminToMerchantService adminToMerchantService;
     @Autowired private TbbOrderServiceInterface launcherInnerTbbOrderService;
+    @Autowired
+    private MerchantOrderManager merchantOrderManager;
 
 
     private static final Logger logger = LoggerFactory.getLogger(MerchantToThirdPartyServiceImpl.class);
@@ -282,6 +285,8 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         entity.setOrderTime(sysTime);
         entity.setCreateDate(sysTime);
 
+        entity.setPayStatus(EnumPayStatus.UNPAY.getValue());
+
         return  entity;
     }
     public  Double add(Number value1, Number value2) {
@@ -309,7 +314,9 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         if (response != null && response.isSucceeded()){
             long payId = response.getData().getId();
             entity.setPayId(payId);
-            TaskCreateDTO orderDTO = buildMerchantOrderDTO(entity,merchantInfoEntity);
+
+
+            TaskCreateDTO orderDTO = merchantOrderManager.buildMerchantOrderDTO(entity,merchantInfoEntity);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",orderNo
                     ,merchantInfoEntity.getAccountId(),response.getData().getId(),amount);
@@ -343,7 +350,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         }
         return orderNo;
     }
-    private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
+/*    private TaskCreateDTO buildMerchantOrderDTO(MerchantOrderEntity entity, MerchantInfoEntity infoEntity){
         TaskCreateDTO merchantOrderDTO = new TaskCreateDTO();
         BeanUtils.copyProperties(entity,merchantOrderDTO);
         merchantOrderDTO.setExpireMilSeconds(config.getTaskGrabExpiredMilSeconds());
@@ -379,6 +386,6 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         merchantOrderDTO.setSenderShopUrls(shopUrls);
         merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
         return merchantOrderDTO;
-    }
+    }*/
 }
 

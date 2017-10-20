@@ -4,8 +4,6 @@ import com.hzmux.hzcms.common.utils.AliOss;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantSettingsEntity;
-import com.xinguang.tubobo.impl.merchant.entity.MerchantTypeEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantMessageSettingsService;
 import com.xinguang.tubobo.impl.merchant.service.MerchantTypeService;
@@ -14,7 +12,6 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.response.MerchantInfoResponse;
-import com.xinguang.tubobo.merchant.web.response.RespSettingsQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,7 +52,7 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
         BeanUtils.copyProperties(merchantInfoEntity,response);
         response.setNonConfidentialPaymentLimit(config.getNonConfidentialPaymentLimit());
         //查询商家短信开关
-        MerchantMessageSettingsEntity entity = settingsService.findBuUserId(merchantInfoEntity.getUserId());
+        MerchantMessageSettingsEntity entity = settingsService.findByUserIdAndCreate(merchantInfoEntity.getUserId());
         if (entity == null){
             entity = new MerchantMessageSettingsEntity();
             entity.setMessageOpen(false);

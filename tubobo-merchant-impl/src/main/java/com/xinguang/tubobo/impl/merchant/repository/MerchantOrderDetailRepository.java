@@ -56,9 +56,8 @@ public interface MerchantOrderDetailRepository extends JpaRepository<OrderDetail
 
 
     @Modifying
-    @Query("update #{#entityName} a set a.unsettledTime =:unsettledTime" +
-            ",a.merMessage =:merMessage where a.orderNo=:orderNo and a.delFlag =:delFlag")
-    int merchantHandlerUnsettledOrder( @Param("unsettledTime")Date unsettledTime,@Param("merMessage")String merMessage,@Param("orderNo")String orderNo, @Param("delFlag")String  delFlag);
+    @Query("update #{#entityName} a set a.merMessage =:merMessage where a.orderNo=:orderNo and a.delFlag =:delFlag")
+    int merchantHandlerUnsettledOrder( @Param("merMessage")String merMessage,@Param("orderNo")String orderNo, @Param("delFlag")String  delFlag);
 
     @Modifying
     @Query("update #{#entityName} a set a.pickupDistance =:pickupDistance " +

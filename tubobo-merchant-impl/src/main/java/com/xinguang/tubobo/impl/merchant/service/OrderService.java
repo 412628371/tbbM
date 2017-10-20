@@ -133,7 +133,7 @@ public class OrderService extends BaseService {
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         //设置该单是否付短信通知收货人
-        MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findBuUserId(userId);
+        MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findByUserIdAndCreate(userId);
         if (setting == null){
             setting = new MerchantMessageSettingsEntity();
             setting.setMessageOpen(false);
@@ -168,11 +168,14 @@ public class OrderService extends BaseService {
         if (merchantTypeDTO==null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
         }
+        logger.info("merchantTypeDTO:"+merchantTypeDTO.toString());
         commissionRate = merchantTypeDTO.getCommissionRate();
         commissionRate=commissionRate==null?0:commissionRate;
         if (commissionRate!=0){
             commissionRateDl = commissionRate/100;
         }
+        logger.info("commissionRate:"+commissionRate);
+        logger.info("commissionRateDl:"+commissionRateDl);
         platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
         riderFee = CalCulateUtil.sub(totalFee,platformFee);
         riderFee =  CalCulateUtil.round(riderFee,2);
@@ -839,7 +842,7 @@ public class OrderService extends BaseService {
     public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date unsettledTime,String message) {
          merchantOrderDao.merchantHandlerUnsettledOrder(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue()
               ,unsettledTime ,orderNo,PostOrderUnsettledStatusEnum.ING.getValue(),BaseMerchantEntity.DEL_FLAG_NORMAL);
-        return merchantOrderDetailRepository.merchantHandlerUnsettledOrder(unsettledTime,message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        return merchantOrderDetailRepository.merchantHandlerUnsettledOrder(message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
     }
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)

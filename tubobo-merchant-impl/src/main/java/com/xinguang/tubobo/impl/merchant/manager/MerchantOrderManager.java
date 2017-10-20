@@ -297,7 +297,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		logger.info("处理骑手接单：orderNo:{}",orderNo);
 		boolean result =false ;
 		//驿站订单回调后直接是已取货状态，短信发送给收货人 TODO 代码拆分与整合
-		if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+		if ((EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType()))&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrderOfPost(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
 					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),entity.getGrabOrderTime(),dto.getPickupDistance())>0;
 
@@ -502,6 +502,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(orderStatus)){
 			flag=true;
 		}
+		if(EnumOrderType.POST_NORMAL_ORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(orderStatus)){
+			flag=true;
+		}
 		if(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(orderStatus)){
 			flag=true;
 		}
@@ -514,8 +517,6 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo:{},orderType,orderStatus:{} "+orderNo,type,orderStatus);
 			return flag;
 		}*/
-
-
 
 		logger.info("处理超时无人接单：orderNo:{}",orderNo);
 		PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
@@ -870,9 +871,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			merchantOrderDTO.setProviderId(entity.getProviderId());
 			merchantOrderDTO.setProviderName(entity.getProviderName());
 		}
-		if (entity.getPayAmount() != null){
+/*		if (entity.getPayAmount() != null){
 			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
-		}
+		}*/
 		if (entity.getDeliveryFee() != null){
 			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getDeliveryFee()).intValue());
 		}
@@ -885,12 +886,16 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if (entity.getWeatherOverFee() != null){
 			merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
 		}
+		//同时修改为骑手获取的金额  这个金额未计算短信费
+		if (entity.getRiderFee()!=null){
+			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getRiderFee()).intValue());
+		}
 		//传给任务的支付金额，减去短信费用  modified by xqh on 2017-10-11
-		if(entity.getShortMessage()){
+/*		if(entity.getShortMessage()){
 			if (merchantOrderDTO.getPayAmount()!=null && merchantOrderDTO.getPayAmount()>MerchantConstants.MESSAGE_FEE*100){
 				merchantOrderDTO.setPayAmount(merchantOrderDTO.getPayAmount()- CalCulateUtil.mul(MerchantConstants.MESSAGE_FEE,100).intValue());
 			}
-		}
+		}*/
 		merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
 		String [] shopUrls = new String[5];
 		shopUrls[0] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));
