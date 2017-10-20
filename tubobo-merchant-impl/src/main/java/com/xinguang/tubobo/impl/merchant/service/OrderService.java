@@ -168,14 +168,11 @@ public class OrderService extends BaseService {
         if (merchantTypeDTO==null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_TYPEERROR);
         }
-        logger.info("merchantTypeDTO:"+merchantTypeDTO.toString());
         commissionRate = merchantTypeDTO.getCommissionRate();
         commissionRate=commissionRate==null?0:commissionRate;
         if (commissionRate!=0){
-            commissionRateDl = commissionRate/100;
+            commissionRateDl = CalCulateUtil.div(commissionRate,100,2);
         }
-        logger.info("commissionRate:"+commissionRate);
-        logger.info("commissionRateDl:"+commissionRateDl);
         platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
         riderFee = CalCulateUtil.sub(totalFee,platformFee);
         riderFee =  CalCulateUtil.round(riderFee,2);
