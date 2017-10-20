@@ -635,7 +635,14 @@ public class OrderService extends BaseService {
                     }
                 }
                 if (StringUtils.isNotBlank(entity.getOrderType())){
-                    list.add(cb.equal(root.get("orderType").as(String.class),entity.getOrderType()));
+                    if (entity.getOrderType().equalsIgnoreCase(EnumOrderType.POSTORDER.getValue())){
+                        //驿站单 查询postOrder和postnormalOrder
+                        list.add(cb.or(cb.equal(root.get("orderType").as(String.class), EnumOrderType.POSTORDER.getValue()),cb.equal(root.get("orderType").as(String.class), EnumOrderType.POST_NORMAL_ORDER.getValue())));
+                    }
+                    if (entity.getOrderType().equalsIgnoreCase(EnumOrderType.SMALLORDER.getValue())){
+                        list.add(cb.equal(root.get("orderType").as(String.class),entity.getOrderType()));
+                    }
+
                 }
                 if (StringUtils.isNotBlank(entity.getOrderNo())){
                     list.add(cb.equal(root.get("orderNo").as(String.class),entity.getOrderNo()));
