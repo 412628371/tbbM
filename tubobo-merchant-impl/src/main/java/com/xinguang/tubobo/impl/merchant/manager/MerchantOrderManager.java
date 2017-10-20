@@ -871,9 +871,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			merchantOrderDTO.setProviderId(entity.getProviderId());
 			merchantOrderDTO.setProviderName(entity.getProviderName());
 		}
-		if (entity.getPayAmount() != null){
+/*		if (entity.getPayAmount() != null){
 			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getPayAmount()).intValue());
-		}
+		}*/
 		if (entity.getDeliveryFee() != null){
 			merchantOrderDTO.setDeliveryFee(ConvertUtil.convertYuanToFen(entity.getDeliveryFee()).intValue());
 		}
@@ -886,12 +886,16 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if (entity.getWeatherOverFee() != null){
 			merchantOrderDTO.setWeatherOverFee(ConvertUtil.convertYuanToFen(entity.getWeatherOverFee()).intValue());
 		}
+		//同时修改为骑手获取的金额  这个金额未计算短信费
+		if (entity.getRiderFee()!=null){
+			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getRiderFee()).intValue());
+		}
 		//传给任务的支付金额，减去短信费用  modified by xqh on 2017-10-11
-		if(entity.getShortMessage()){
+/*		if(entity.getShortMessage()){
 			if (merchantOrderDTO.getPayAmount()!=null && merchantOrderDTO.getPayAmount()>MerchantConstants.MESSAGE_FEE*100){
 				merchantOrderDTO.setPayAmount(merchantOrderDTO.getPayAmount()- CalCulateUtil.mul(MerchantConstants.MESSAGE_FEE,100).intValue());
 			}
-		}
+		}*/
 		merchantOrderDTO.setSenderAvatar(ConvertUtil.handleNullString(infoEntity.getAvatarUrl()));
 		String [] shopUrls = new String[5];
 		shopUrls[0] = AliOss.generateSignedUrlUseDefaultBucketName(ConvertUtil.handleNullString(infoEntity.getShopImageUrl()));
