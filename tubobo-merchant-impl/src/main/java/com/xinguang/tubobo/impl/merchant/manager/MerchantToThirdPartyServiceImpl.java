@@ -36,6 +36,7 @@ import com.xinguang.tubobo.merchant.api.condition.RiderInfo;
 import com.xinguang.tubobo.merchant.api.dto.*;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
+import com.xinguang.tubobo.merchant.api.enums.EnumPayStatus;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.api.exception.TbbMerchantBaseException;
 import org.slf4j.Logger;
@@ -281,6 +282,8 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
 
         entity.setOrderTime(sysTime);
         entity.setCreateDate(sysTime);
+
+        entity.setPayStatus(EnumPayStatus.UNPAY.getValue());
 
         return  entity;
     }
