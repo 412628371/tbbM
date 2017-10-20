@@ -582,7 +582,7 @@ public class OrderService extends BaseService {
                     list.add(cb.and(cb.equal(root.get("userId").as(String.class), entity.getUserId())));
                 }
 
-                if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+               /* if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
                     list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"),cb.equal(root.get("orderStatus").as(String.class), "INIT")));
                 }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
@@ -607,16 +607,13 @@ public class OrderService extends BaseService {
                         !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
                     list.add(cb.equal(root.get("orderStatus").as(String.class),entity.getOrderStatus()));
 
-                }
-                if (StringUtils.isNotBlank(entity.getOrderType())){
-                    list.add(cb.equal(root.get("orderType").as(String.class),entity.getOrderType()));
-
-                }
+                }*/
 
 
 
 
-                if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+
+               if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
 
                     if (EnumMerchantOrderStatus.UNDELIVERED.getValue().equals(entity.getOrderStatus())){
