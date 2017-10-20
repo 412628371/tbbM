@@ -297,7 +297,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		logger.info("处理骑手接单：orderNo:{}",orderNo);
 		boolean result =false ;
 		//驿站订单回调后直接是已取货状态，短信发送给收货人 TODO 代码拆分与整合
-		if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+		if ((EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType()))&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrderOfPost(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
 					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),entity.getGrabOrderTime(),dto.getPickupDistance())>0;
 
