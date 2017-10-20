@@ -30,16 +30,12 @@ TestService {
     @Test
 //    @Transactional(propagation = Propagation.NEVER)
     public void testService(){
-/*        MerchantTaskOperatorCallbackDTO dto = new MerchantTaskOperatorCallbackDTO();
+        MerchantTaskOperatorCallbackDTO dto = new MerchantTaskOperatorCallbackDTO();
         dto.setSubsidy(1.0);
         dto.setExpiredCompensation(2.0);
         dto.setFine(3.0);
-        dto.setTaskNo("031710140000106");*/
-        MerchantSettingsEntity settingsEntity = new MerchantSettingsEntity();
-        settingsEntity.setUserId("12345");
+        dto.setTaskNo("031710200001301");
 
-        merchantSettingsService.updateSettings("123",settingsEntity);
-        int a=1/0;
-       // orderManager.dealFromRiderCancelOrders(dto);
+       orderManager.dealFromRiderCancelOrders(dto);
     }
 }

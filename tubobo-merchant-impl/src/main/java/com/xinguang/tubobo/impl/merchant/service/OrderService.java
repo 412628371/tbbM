@@ -227,7 +227,7 @@ public class OrderService extends BaseService {
         commissionRate = merchantTypeDTO.getCommissionRate();
         commissionRate=commissionRate==null?0:commissionRate;
         if (commissionRate!=0){
-            commissionRateDl = commissionRate/100;
+            commissionRateDl = CalCulateUtil.div(commissionRate,100,2);
         }
         double platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
         double riderFee = CalCulateUtil.sub(totalFee,platformFee);
