@@ -502,6 +502,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(orderStatus)){
 			flag=true;
 		}
+		if(EnumOrderType.POST_NORMAL_ORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(orderStatus)){
+			flag=true;
+		}
 		if(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(orderStatus)){
 			flag=true;
 		}
@@ -514,8 +517,6 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			logger.info("超时无人接单。订单不存在或状态不允许超时取消，orderNo:{},orderType,orderStatus:{} "+orderNo,type,orderStatus);
 			return flag;
 		}*/
-
-
 
 		logger.info("处理超时无人接单：orderNo:{}",orderNo);
 		PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
