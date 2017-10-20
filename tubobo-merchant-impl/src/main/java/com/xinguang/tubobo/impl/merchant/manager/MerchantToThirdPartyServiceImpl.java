@@ -70,8 +70,6 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
     private TaskDispatchService taskDispatchService;
     @Autowired private AdminToMerchantService adminToMerchantService;
     @Autowired private TbbOrderServiceInterface launcherInnerTbbOrderService;
-    @Autowired
-    private MerchantOrderManager merchantOrderManager;
 
 
     private static final Logger logger = LoggerFactory.getLogger(MerchantToThirdPartyServiceImpl.class);
