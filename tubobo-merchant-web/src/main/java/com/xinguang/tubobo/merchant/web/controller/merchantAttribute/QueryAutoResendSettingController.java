@@ -26,7 +26,7 @@ public class QueryAutoResendSettingController extends MerchantBaseController<Str
     protected RespAutoResendPostOrderSetting doService(String userId, String req) throws MerchantClientException {
 
         RespAutoResendPostOrderSetting resp = new RespAutoResendPostOrderSetting();
-        AutoResendPostSettingEntity entity = settingsService.findBuUserId(userId);
+        AutoResendPostSettingEntity entity = settingsService.findByUserIdAndCreate(userId);
         if (null!=entity){
             resp.setAutoPostOrder(entity.getAutoPostOrderResendOpen());
         }

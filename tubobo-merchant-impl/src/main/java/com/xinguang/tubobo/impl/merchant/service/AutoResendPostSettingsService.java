@@ -30,17 +30,25 @@ public class AutoResendPostSettingsService {
             existEntity = new AutoResendPostSettingEntity();
         }
         existEntity.setAutoPostOrderResendOpen(entity.getAutoPostOrderResendOpen());
-        existEntity.setUserId(entity.getUserId());
+        existEntity.setUserId(userId);
         resendPostOrderRepository.save(existEntity);
         return true;
     }
     /**
-     * 驿站自动发单设置 根据userId找设置
+     * 驿站自动发单设置 根据userId找设置 null则插入数据
      * @param userId
      * @return
      */
     @Cacheable(value= RedisCache.MERCHANT,key="'autoResendPostSettings_'+#userId")
-    public AutoResendPostSettingEntity findBuUserId(String userId){
-        return resendPostOrderRepository.findByUserIdAndDelFlag(userId,MerchantMessageSettingsEntity.DEL_FLAG_NORMAL);
+    public AutoResendPostSettingEntity findByUserIdAndCreate(String userId){
+        AutoResendPostSettingEntity exist = resendPostOrderRepository.findByUserIdAndDelFlag(userId, MerchantMessageSettingsEntity.DEL_FLAG_NORMAL);
+       if (exist==null){
+           exist = new AutoResendPostSettingEntity();
+           exist.setAutoPostOrderResendOpen(false);
+           exist.setUserId(userId);
+           updateSettings(userId,exist);
+           exist= resendPostOrderRepository.findByUserIdAndDelFlag(userId, MerchantMessageSettingsEntity.DEL_FLAG_NORMAL);
+       }
+        return exist;
     }
 }

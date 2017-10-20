@@ -1,13 +1,21 @@
 package com.xinguang.tubobo.merchant.web.request.shop;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by Administrator on 2017/4/15.
  */
 public class ReqPushSettings {
     private String deviceToken;
+
     private Boolean pushMsgOrderExpired;
+
     private Boolean pushMsgOrderGrabed;
+
     private Boolean pushMsgOrderFinished;
+
     private Boolean pushMsgVoiceOpen;
 
     public Boolean getPushMsgVoiceOpen() {

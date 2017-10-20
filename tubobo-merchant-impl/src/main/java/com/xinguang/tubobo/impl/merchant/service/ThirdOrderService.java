@@ -20,14 +20,12 @@ import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.common.OrderUtil;
 import com.xinguang.tubobo.impl.merchant.condition.ProcessQueryCondition;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
-import com.xinguang.tubobo.impl.merchant.dto.DeliveryFeeDto;
 import com.xinguang.tubobo.impl.merchant.entity.*;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantOrderManager;
 import com.xinguang.tubobo.impl.merchant.mq.RmqNoticeProducer;
 import com.xinguang.tubobo.impl.merchant.repository.ThirdOrderRepository;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.*;
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -37,14 +35,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.print.DocFlavor;
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.Date;
@@ -106,7 +102,7 @@ public class ThirdOrderService {
             //非驿站商家  不进行自动发单
             return;
         }
-        AutoResendPostSettingEntity setting = autoResendPostSettingsService.findBuUserId(userId);
+        AutoResendPostSettingEntity setting = autoResendPostSettingsService.findByUserIdAndCreate(userId);
         if (setting.getAutoPostOrderResendOpen()){
             //自动发单开启
             try {
@@ -186,7 +182,7 @@ public class ThirdOrderService {
         Double payAmount=0.0;
         payAmount= CalCulateUtil.add(payAmount,totalOverFee);
         payAmount=CalCulateUtil.add(payAmount,deliveryFee);
-        MerchantMessageSettingsEntity merchantSettings=merchantSettingsService.findBuUserId(userId);
+        MerchantMessageSettingsEntity merchantSettings=merchantSettingsService.findByUserIdAndCreate(userId);
         if (null!=merchantSettings&&merchantSettings.getMessageOpen()){
             //计算短信费
             newOrderEntity.setShortMessage(true);

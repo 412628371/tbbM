@@ -133,7 +133,7 @@ public class OrderService extends BaseService {
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         //设置该单是否付短信通知收货人
-        MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findBuUserId(userId);
+        MerchantMessageSettingsEntity setting = merchantMessageSettingsService.findByUserIdAndCreate(userId);
         if (setting == null){
             setting = new MerchantMessageSettingsEntity();
             setting.setMessageOpen(false);
