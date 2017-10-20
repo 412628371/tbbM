@@ -386,7 +386,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			return false;
 		}
 		expiredCompensation=expiredMinute==null?0.0:expiredCompensation;
-		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation/100)==1;
+
+		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute,CalCulateUtil.div(expiredCompensation,100,2))==1;
 		if (result){
 			if (enableNotice){
 				//发送骑手完成送货通知
