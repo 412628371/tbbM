@@ -839,7 +839,7 @@ public class OrderService extends BaseService {
     public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date unsettledTime,String message) {
          merchantOrderDao.merchantHandlerUnsettledOrder(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue()
               ,unsettledTime ,orderNo,PostOrderUnsettledStatusEnum.ING.getValue(),BaseMerchantEntity.DEL_FLAG_NORMAL);
-        return merchantOrderDetailRepository.merchantHandlerUnsettledOrder(unsettledTime,message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        return merchantOrderDetailRepository.merchantHandlerUnsettledOrder(message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
     }
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
