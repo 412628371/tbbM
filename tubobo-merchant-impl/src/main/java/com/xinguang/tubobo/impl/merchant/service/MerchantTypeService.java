@@ -112,14 +112,17 @@ public class MerchantTypeService implements MerchantTypeInterface {
                 MerchantTypeEntity entity;
                 entity =  merchantTypeRepository.findByIdAndDelFlag(id,MerchantTypeEntity.DEL_FLAG_NORMAL);
                 if (entity!=null){
-                    entity.setCommissionRate(merchantTypeDTO.getCommissionRate());
-                    entity.setDescribtion(merchantTypeDTO.getDescribtion());
-                    entity.setName(merchantTypeDTO.getName());
-                    entity.setUpdateBy(merchantTypeDTO.getUpdateBy());
-                    entity.setTemId(merchantTypeDTO.getTemId());
-                    entity.setTemName(merchantTypeDTO.getTemName());
-                    merchantTypeRepository.save(entity);
-                    return true;
+                    MerchantTypeEntity merchantTypeEntity = merchantTypeRepository.findByNameAndDelFlag(name, MerchantTypeEntity.DEL_FLAG_NORMAL);
+                    if (merchantTypeEntity==null||merchantTypeEntity.getName().equals(entity.getName())){
+                        entity.setCommissionRate(merchantTypeDTO.getCommissionRate());
+                        entity.setDescribtion(merchantTypeDTO.getDescribtion());
+                        entity.setName(merchantTypeDTO.getName());
+                        entity.setUpdateBy(merchantTypeDTO.getUpdateBy());
+                        entity.setTemId(merchantTypeDTO.getTemId());
+                        entity.setTemName(merchantTypeDTO.getTemName());
+                        merchantTypeRepository.save(entity);
+                        return true;
+                    }
                 }
             }else {
                 //新增
