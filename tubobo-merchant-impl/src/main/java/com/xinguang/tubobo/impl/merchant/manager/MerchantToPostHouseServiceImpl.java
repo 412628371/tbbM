@@ -13,7 +13,6 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.dto.OrderStatusStatsDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
-import com.xinguang.tubobo.merchant.api.enums.EnumBindStatusType;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantPostExceptionCode;
 import com.xinguang.tubobo.postHouse.api.service.BindToMerchantServiceInterface;
 import org.springframework.beans.BeanUtils;

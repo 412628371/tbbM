@@ -15,6 +15,7 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
+import com.xinguang.tubobo.postHouse.api.service.BindToMerchantServiceInterface;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
     private OrderService orderService;
     @Autowired
     RmqNoticeProducer rmqNoticeProducer;
+
+    @Autowired
+    private BindToMerchantServiceInterface bindToMerchantServiceInterface;
 
     /**
      * 查询商家详细信息
@@ -105,6 +109,8 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
                     rmqNoticeProducer.sendAuditNotice(userId,false,reason);
                     if (null != infoEntity.getProviderId()){
                         merchantInfoService.unbindProvider(userId,infoEntity.getProviderId());
+                        //删除驿站商家绑定信息
+                        bindToMerchantServiceInterface.deleteMerchantBindInfo(userId);
                     }
                 }else if (EnumAuthentication.SUCCESS.getValue().equals(merchantStatus)){
                     rmqNoticeProducer.sendAuditNotice(userId,true,null);
