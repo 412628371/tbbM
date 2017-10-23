@@ -15,7 +15,9 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantOrderDTO;
 import com.xinguang.tubobo.merchant.api.dto.PageDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.api.enums.EnumMerchantOrderStatus;
+import com.xinguang.tubobo.postHouse.api.dto.ProviderInfoDTO;
 import com.xinguang.tubobo.postHouse.api.service.BindToMerchantServiceInterface;
+import com.xinguang.tubobo.postHouse.api.service.ProviderServiceInterface;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +41,8 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
 
     @Autowired
     private BindToMerchantServiceInterface bindToMerchantServiceInterface;
+    @Autowired
+    private ProviderServiceInterface providerServiceInterface;
 
     /**
      * 查询商家详细信息
@@ -53,6 +57,11 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
             AliOss.generateMerchantSignedUrl(merchant);
             MerchantInfoDTO dto = new MerchantInfoDTO();
             BeanUtils.copyProperties(merchant,dto);
+            //查询服务商信息
+            if(null != merchant.getProviderId()){
+                ProviderInfoDTO providerInfoDTO = providerServiceInterface.getProviderInfoById(merchant.getProviderId());
+                dto.setProviderName(providerInfoDTO.getName());
+            }
             return dto;
         }
         return null;
