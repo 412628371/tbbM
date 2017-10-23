@@ -386,7 +386,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			return false;
 		}
 		expiredCompensation=expiredMinute==null?0.0:expiredCompensation;
-		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute, expiredCompensation/100)==1;
+
+		boolean result = orderService.riderFinishOrder(entity.getUserId(),orderNo,finishOrderTime, expiredMinute,CalCulateUtil.div(expiredCompensation,100,2))==1;
 		if (result){
 			if (enableNotice){
 				//发送骑手完成送货通知
@@ -657,7 +658,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setDeliveryDistance(entity.getDeliveryDistance());
 		orderEntity.setOriginOrderId(entity.getOriginOrderId());
 		orderEntity.setOriginOrderViewId(entity.getOriginOrderViewId());
-		orderEntity.setPayAmount(entity.getPayAmount());
+		orderEntity.setPayAmount(amountD);
 		orderEntity.setPeekOverFee(entity.getPeekOverFee());
 		orderEntity.setPlatformCode(entity.getPlatformCode());
 		orderEntity.setProviderId(entity.getProviderId());
@@ -711,8 +712,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
 		orderEntity.setOrderTime(new Date());
 		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
-		detailEntity.setCancelSourceDeliverySubsidy(entity.getCancelCompensation());
-			detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
+		detailEntity.setCancelSourceDeliverySubsidy(subsidyFromRider);
+		detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
 		//保存订单
 		String newOrderNo= null;
 		try {

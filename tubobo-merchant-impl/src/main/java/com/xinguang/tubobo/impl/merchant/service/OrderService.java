@@ -227,7 +227,7 @@ public class OrderService extends BaseService {
         commissionRate = merchantTypeDTO.getCommissionRate();
         commissionRate=commissionRate==null?0:commissionRate;
         if (commissionRate!=0){
-            commissionRateDl = commissionRate/100;
+            commissionRateDl = CalCulateUtil.div(commissionRate,100,2);
         }
         double platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
         double riderFee = CalCulateUtil.sub(totalFee,platformFee);
@@ -582,7 +582,7 @@ public class OrderService extends BaseService {
                     list.add(cb.and(cb.equal(root.get("userId").as(String.class), entity.getUserId())));
                 }
 
-                if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+               /* if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
                     list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"),cb.equal(root.get("orderStatus").as(String.class), "INIT")));
                 }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
@@ -607,16 +607,13 @@ public class OrderService extends BaseService {
                         !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
                     list.add(cb.equal(root.get("orderStatus").as(String.class),entity.getOrderStatus()));
 
-                }
-                if (StringUtils.isNotBlank(entity.getOrderType())){
-                    list.add(cb.equal(root.get("orderType").as(String.class),entity.getOrderType()));
-
-                }
+                }*/
 
 
 
 
-                if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
+
+               if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         !MerchantConstants.ORDER_LIST_QUERY_CONDITION_ALL.equals(entity.getOrderStatus())){
 
                     if (EnumMerchantOrderStatus.UNDELIVERED.getValue().equals(entity.getOrderStatus())){
@@ -635,7 +632,14 @@ public class OrderService extends BaseService {
                     }
                 }
                 if (StringUtils.isNotBlank(entity.getOrderType())){
-                    list.add(cb.equal(root.get("orderType").as(String.class),entity.getOrderType()));
+                    if (entity.getOrderType().equalsIgnoreCase(EnumOrderType.POSTORDER.getValue())){
+                        //驿站单 查询postOrder和postnormalOrder
+                        list.add(cb.or(cb.equal(root.get("orderType").as(String.class), EnumOrderType.POSTORDER.getValue()),cb.equal(root.get("orderType").as(String.class), EnumOrderType.POST_NORMAL_ORDER.getValue())));
+                    }
+                    if (entity.getOrderType().equalsIgnoreCase(EnumOrderType.SMALLORDER.getValue())){
+                        list.add(cb.equal(root.get("orderType").as(String.class),entity.getOrderType()));
+                    }
+
                 }
                 if (StringUtils.isNotBlank(entity.getOrderNo())){
                     list.add(cb.equal(root.get("orderNo").as(String.class),entity.getOrderNo()));
