@@ -78,4 +78,18 @@ public class MerchantTypeDTO implements Serializable {
     public void setTemName(String temName) {
         this.temName = temName;
     }
+
+    @Override
+    public String toString() {
+        return "MerchantTypeDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", describtion='" + describtion + '\'' +
+                ", temId=" + temId +
+                ", temName='" + temName + '\'' +
+                ", commissionRate=" + commissionRate +
+                ", createBy='" + createBy + '\'' +
+                ", updateBy='" + updateBy + '\'' +
+                '}';
+    }
 }
