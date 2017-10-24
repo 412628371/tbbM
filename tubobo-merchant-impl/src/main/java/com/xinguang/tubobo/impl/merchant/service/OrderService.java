@@ -174,9 +174,9 @@ public class OrderService extends BaseService {
             commissionRateDl = CalCulateUtil.div(commissionRate,100,2);
         }
         platformFee  = CalCulateUtil.mul(totalFee,commissionRateDl);
+        platformFee = CalCulateUtil.round(platformFee,2);
         riderFee = CalCulateUtil.sub(totalFee,platformFee);
         riderFee =  CalCulateUtil.round(riderFee,2);
-        platformFee = CalCulateUtil.round(platformFee,2);
 
         entity.setRiderFee(riderFee);
         entity.setPlatformFee(platformFee);
