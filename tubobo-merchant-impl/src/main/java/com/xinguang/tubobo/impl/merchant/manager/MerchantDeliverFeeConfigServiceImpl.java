@@ -106,9 +106,12 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
      */
     @Override
     public List<MerchantDeliverFeeConfigDTO> findFeeByAreaCodeAndOrderTypeAndTemId(String areaCode,String orderType,Long temId){
-
         if (EnumOrderType.CROWDORDER.getValue().equals(orderType)||EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             orderType = EnumOrderType.CROWDORDER.getValue();
+        }else if (EnumOrderType.POSTORDER.getValue().equals(orderType)||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(orderType)){
+            orderType = EnumOrderType.POSTORDER.getValue();
+        }else {
+            return null;
         }
         List<MerchantDeliverFeeConfigEntity> list = feeConfigRepository.findByAreaCodeAndDelFlagAndOrderTypeAndTemIdOrderByBeginDistance(areaCode, MerchantInfoEntity.DEL_FLAG_NORMAL,orderType,temId);
         return copyFeeEntityToDto(list);
