@@ -275,7 +275,7 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public boolean adminCancel(String merchantId, String orderNo, String cancelReason) {
 
-        merchantOrderDao.orderCancel(orderNo, new Date(),EnumMerchantOrderStatus.CANCEL.getValue(),new Date(),null, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        merchantOrderDao.orderCancelIgnoreStatus(orderNo, new Date(),EnumMerchantOrderStatus.CANCEL.getValue(),new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         return   merchantOrderDetailRepository.updateCancelReason(orderNo, cancelReason,new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL)==1;
 
     }
