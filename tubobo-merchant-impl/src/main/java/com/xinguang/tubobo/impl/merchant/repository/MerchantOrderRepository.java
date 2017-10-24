@@ -74,7 +74,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      * @return
      */
     @Modifying
-    @Query("update #{#entityName} a set a.orderStatus =:orderStatus, a.updateDate =:updateDate, a.cancelTime=:cancelTime where a.orderNo =:orderNo and a.orderStatus  and a.delFlag =:delFlag ")
+    @Query("update #{#entityName} a set a.orderStatus =:orderStatus, a.updateDate =:updateDate, a.cancelTime=:cancelTime where a.orderNo =:orderNo   and a.delFlag =:delFlag ")
     int orderCancelIgnoreStatus(@Param("orderNo")String orderNo, @Param("cancelTime")Date cancelTime, @Param("orderStatus")String orderStatus,@Param("updateDate") Date updateDate,  @Param("delFlag")String delFlag);
 
     /**
