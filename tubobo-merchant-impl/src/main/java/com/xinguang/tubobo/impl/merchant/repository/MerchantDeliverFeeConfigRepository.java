@@ -19,11 +19,6 @@ public interface MerchantDeliverFeeConfigRepository extends JpaRepository<Mercha
     /**
      * 根据区查具体区的定价
      */
-    List<MerchantDeliverFeeConfigEntity> findByAreaCodeAndDelFlagOrderByBeginDistance(String areaCode, String delFlag);
-
-    /**
-     * 根据区查具体区的定价
-     */
     List<MerchantDeliverFeeConfigEntity> findByAreaCodeAndDelFlagAndOrderTypeAndTemIdOrderByBeginDistance(String areaCode, String delFlag,String orderType,Long temId);
 
     @Modifying

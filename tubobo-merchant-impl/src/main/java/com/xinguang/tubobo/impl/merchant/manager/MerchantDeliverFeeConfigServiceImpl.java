@@ -114,7 +114,7 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
         }else {
             return null;
         }
-        logger.info("根据区code和orderType查询具体区的费用 2orderType:{}",orderType);
+        logger.info("根据区code和orderType查询具体区的费用 2orderType:{} areaCode:{} temId:{}",orderType,areaCode,temId);
         List<MerchantDeliverFeeConfigEntity> list = feeConfigRepository.findByAreaCodeAndDelFlagAndOrderTypeAndTemIdOrderByBeginDistance(areaCode, MerchantInfoEntity.DEL_FLAG_NORMAL,orderType,temId);
         return copyFeeEntityToDto(list);
     }
@@ -128,6 +128,7 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
                 returnList.add(dto);
             }
         }
+        logger.info("根据区code和orderType查询具体区的费用 returnList:{}",returnList);
         return returnList;
     }
 
