@@ -289,7 +289,7 @@ public class ThirdOrderService {
 
     @Transactional()
     public void processOrder(String userId,String platformCode,String originOrderId){
-        thirdOrderRepository.processOrder(true,new Date(),userId,platformCode,originOrderId);
+         thirdOrderRepository.processOrder(true,new Date(),originOrderId,platformCode,userId,BaseMerchantEntity.DEL_FLAG_NORMAL);
     }
     @Transactional()
     public Page<ThirdOrderEntity> findUnProcessedPageByUserId(ProcessQueryCondition condition, @Min(1) int pageNo,@Min(1) int pageSize){
@@ -333,8 +333,7 @@ public class ThirdOrderService {
     @Transactional()
     public void delRecordsPastHours(int pastHours){
         Date lastValidDate = DateUtils.getHourAfterOfDate(new Date(),-pastHours);
-
-        int count = thirdOrderRepository.delRecordsPastHours(lastValidDate);
+        int count = thirdOrderRepository.delRecordsPastHours(BaseMerchantEntity.DEL_FLAG_DELETE,new Date(),lastValidDate,BaseMerchantEntity.DEL_FLAG_NORMAL);
         logger.info("删除 {} 条,{} 小时之前的第三方平台订单记录",count,pastHours);
     }
 }
