@@ -8,7 +8,6 @@ import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantDeliverFeeConfigDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
-import com.xinguang.tubobo.merchant.api.enums.EnumBindStatusType;
 import com.xinguang.tubobo.merchant.api.enums.EnumOrderType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
@@ -55,7 +54,7 @@ public class DeliverFeeController extends MerchantBaseController<String,RespDeli
         if (null != entity.getProviderId()){
             orderType = EnumOrderType.POSTORDER.getValue();
         }else {
-            orderType = EnumOrderType.SMALLORDER.getValue();
+            orderType = EnumOrderType.CROWDORDER.getValue();
         }
         List<MerchantDeliverFeeConfigDTO> list = merchantDeliverFeeConfigService.findFeeByAreaCodeAndOrderTypeAndTemId(entity.getAddressAdCode(),orderType,merchantTypeDTO.getTemId());
         RespDeliverFeeRuleQuery respDeliverFeeRuleQuery = new RespDeliverFeeRuleQuery();
