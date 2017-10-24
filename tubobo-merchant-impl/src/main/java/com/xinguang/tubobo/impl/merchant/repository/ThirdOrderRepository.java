@@ -25,15 +25,15 @@ public interface ThirdOrderRepository  extends JpaRepository<ThirdOrderEntity, L
      * @param originOrderId
      */
     @Modifying
-    @Query("update #{#entityName} a set a.processed =:processed, a.updateDate=:updateDate where a.originOrderId = :originOrderId and a.platformCode = :platformCode and a.userId=:userId  and a.delFlag = '0' ")
-    int processOrder(@Param("processed") Boolean processed, @Param("updateDate") Date updateDate, @Param("originOrderId") String originOrderId,
-                     @Param("platformCode") String platformCode, @Param("userId") String userId);
+    @Query("update #{#entityName} a set a.processed =:processed, a.updateDate=:updateDate where a.originOrderId =:originOrderId and a.platformCode =:platformCode and a.userId=:userId  and a.delFlag =:whereDelFlag ")
+    int processOrder(@Param("processed") boolean processed, @Param("updateDate") Date updateDate, @Param("originOrderId") String originOrderId,
+                     @Param("platformCode") String platformCode, @Param("userId") String userId,@Param("whereDelFlag")String whereDelFlag);
 
     /**
      * 逻辑删除所有的记录，即标志位变为删除状态
      * @return
      */
     @Modifying
-    @Query("update #{#entityName} a set a.delFlag='1', a.updateDate=:updateDate where a.delFlag = '0' and a.createDate < :lastValidDate")
-    int delRecordsPastHours(@Param("lastValidDate") Date lastValidDate);
+    @Query("update #{#entityName} a set a.delFlag =:delFlag, a.updateDate=:updateDate where a.delFlag =:whereDelFlag and a.createDate < :lastValidDate")
+    int delRecordsPastHours(@Param("delFlag")String delFlag,@Param("updateDate") Date updateDate,@Param("lastValidDate") Date lastValidDate,@Param("whereDelFlag")String whereDelFlag);
 }

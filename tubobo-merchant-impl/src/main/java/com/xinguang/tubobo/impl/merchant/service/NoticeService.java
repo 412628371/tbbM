@@ -39,6 +39,15 @@ public class NoticeService {
         pushNoticeDao.save(entity);
         merchantPushService.pushMoneyNotice(dto);
     }
+   /* public void save(NoticeDTO dto) {
+        PushNoticeEntity entity = new PushNoticeEntity();
+        BeanUtils.copyProperties(dto,entity);
+        entity.setProcessed(false);
+        entity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
+        PushNoticeEntity save = pushNoticeDao.save(entity);
+        System.out.println(save);
+        //merchantPushService.pushMoneyNotice(dto);
+    }*/
 
     public void pushAudit(NoticeDTO dto){
         PushNoticeEntity entity = new PushNoticeEntity();
@@ -123,7 +132,7 @@ public class NoticeService {
                     if (processStatus == 1) {
                         processed = true;
                     }
-                    list.add(cb.and(cb.equal(root.get("processed").as(Boolean.class), processed)));
+                    list.add(cb.and(cb.equal(root.get("processed"), processed)));
                 }
 
                 return criteriaQuery.where(list.toArray(new Predicate[list.size()])).getRestriction();

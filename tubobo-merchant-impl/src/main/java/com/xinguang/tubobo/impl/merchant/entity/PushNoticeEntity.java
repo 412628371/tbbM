@@ -40,6 +40,14 @@ public class PushNoticeEntity {
     private String recordId;
     private String cancelOrderNo;// 骑手取消的原订单号
 
+    public boolean getProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
+    }
+
     public String getCancelOrderNo() {
         return cancelOrderNo;
     }
@@ -98,13 +106,7 @@ public class PushNoticeEntity {
         this.userId = userId;
     }
 
-    public boolean isProcessed() {
-        return processed;
-    }
 
-    public void setProcessed(boolean processed) {
-        this.processed = processed;
-    }
 
     public Long getId() {
         return id;
