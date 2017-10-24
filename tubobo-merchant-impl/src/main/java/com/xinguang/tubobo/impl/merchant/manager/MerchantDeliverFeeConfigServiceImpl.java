@@ -106,7 +106,7 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
      */
     @Override
     public List<MerchantDeliverFeeConfigDTO> findFeeByAreaCodeAndOrderTypeAndTemId(String areaCode,String orderType,Long temId){
-
+        logger.info("根据区code和orderType查询具体区的费用 1orderType:{}",orderType);
         if (EnumOrderType.CROWDORDER.getValue().equals(orderType)||EnumOrderType.SMALLORDER.getValue().equals(orderType)){
             orderType = EnumOrderType.CROWDORDER.getValue();
         }else if (EnumOrderType.POSTORDER.getValue().equals(orderType)||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(orderType)){
@@ -114,6 +114,7 @@ public class MerchantDeliverFeeConfigServiceImpl implements MerchantDeliverFeeCo
         }else {
             return null;
         }
+        logger.info("根据区code和orderType查询具体区的费用 2orderType:{}",orderType);
         List<MerchantDeliverFeeConfigEntity> list = feeConfigRepository.findByAreaCodeAndDelFlagAndOrderTypeAndTemIdOrderByBeginDistance(areaCode, MerchantInfoEntity.DEL_FLAG_NORMAL,orderType,temId);
         return copyFeeEntityToDto(list);
     }

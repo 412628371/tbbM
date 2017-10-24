@@ -56,6 +56,7 @@ public class DeliverFeeController extends MerchantBaseController<String,RespDeli
         }else {
             orderType = EnumOrderType.CROWDORDER.getValue();
         }
+        logger.info("orderType:{}",orderType);
         List<MerchantDeliverFeeConfigDTO> list = merchantDeliverFeeConfigService.findFeeByAreaCodeAndOrderTypeAndTemId(entity.getAddressAdCode(),orderType,merchantTypeDTO.getTemId());
         RespDeliverFeeRuleQuery respDeliverFeeRuleQuery = new RespDeliverFeeRuleQuery();
         List<RespDeliverFeeDetailRuleQuery> listDto = new ArrayList<RespDeliverFeeDetailRuleQuery>();
