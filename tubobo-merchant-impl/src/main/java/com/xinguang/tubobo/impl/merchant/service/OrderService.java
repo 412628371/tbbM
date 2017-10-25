@@ -15,6 +15,7 @@ import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import com.xinguang.tubobo.merchant.api.enums.*;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.core.IField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -367,8 +368,10 @@ public class OrderService extends BaseService {
     public void payExpired(String merchantId, String orderNo) {
         List<String> orderStatusArr=new ArrayList<>();
         orderStatusArr.add(EnumMerchantOrderStatus.INIT.getValue());
-        merchantOrderDao.orderCancel(orderNo, new Date(),EnumMerchantOrderStatus.CANCEL.getValue(),new Date(),orderStatusArr, BaseMerchantEntity.DEL_FLAG_NORMAL);
-        merchantOrderDetailRepository.updateCancelReason(orderNo, EnumCancelReason.PAY_OVERTIME.getValue(),new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.orderCancel(orderNo, new Date(), EnumMerchantOrderStatus.CANCEL.getValue(), new Date(), orderStatusArr, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (i>0){
+            merchantOrderDetailRepository.updateCancelReason(orderNo, EnumCancelReason.PAY_OVERTIME.getValue(),new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+        }
     }
 
     /**

@@ -161,9 +161,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 				if (result){
 					//TODO
+					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType,null,null);
 					rmqNoticeProducer.sendOrderCancelNotice(entity.getUserId(),entity.getOrderNo(),
 							entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
-					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType,null,null);
 				}
 			}
 			return result;
