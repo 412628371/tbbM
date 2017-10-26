@@ -5,6 +5,7 @@ import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantTypeEntity;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantTypeRepository;
 import com.xinguang.tubobo.merchant.api.MerchantTypeInterface;
+import com.xinguang.tubobo.merchant.api.dto.MerchantDeliverFeeTemDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ import java.util.List;
 public class MerchantTypeService implements MerchantTypeInterface {
     @Autowired
     private MerchantTypeRepository merchantTypeRepository;
+    @Autowired
+    private MerchantDeliverTemService merchantDeliverTemService;
 
     private static final Logger logger = LoggerFactory.getLogger(MerchantTypeService.class);
 
@@ -39,6 +42,12 @@ public class MerchantTypeService implements MerchantTypeInterface {
             for (MerchantTypeEntity merchantTypeEntity : merchantTypeEntities) {
                 MerchantTypeDTO merchantTypeDTO = new MerchantTypeDTO();
                 BeanUtils.copyProperties(merchantTypeEntity, merchantTypeDTO);
+                if (merchantTypeEntity.getTemId()!=null){
+                    MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO = merchantDeliverTemService.findById(merchantTypeEntity.getTemId());
+                    if (merchantDeliverFeeTemDTO!=null){
+                        merchantTypeDTO.setTemName(merchantDeliverFeeTemDTO.getName());
+                    }
+                }
                 merchantTypeDTOS.add(merchantTypeDTO);
             }
         }
@@ -74,23 +83,6 @@ public class MerchantTypeService implements MerchantTypeInterface {
     @Override
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_*'")
     @Transactional(readOnly = false)
-    public Boolean update(MerchantTypeDTO merchantTypeDTO) {
-
-        MerchantTypeEntity merchantTypeEntity  = new MerchantTypeEntity();
-        if (merchantTypeEntity !=null){
-            BeanUtils.copyProperties(merchantTypeDTO, merchantTypeEntity);
-        }
-        MerchantTypeEntity result;
-        result = merchantTypeRepository.save(merchantTypeEntity);
-        if (result!=null){
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantType_*'")
-    @Transactional(readOnly = false)
     public Boolean delete(Long id) {
         MerchantTypeEntity merchantTypeEntity  = merchantTypeRepository.findByIdAndDelFlag(id, MerchantTypeEntity.DEL_FLAG_NORMAL);
         if (merchantTypeEntity!=null){
@@ -119,7 +111,6 @@ public class MerchantTypeService implements MerchantTypeInterface {
                         entity.setName(merchantTypeDTO.getName());
                         entity.setUpdateBy(merchantTypeDTO.getUpdateBy());
                         entity.setTemId(merchantTypeDTO.getTemId());
-                        entity.setTemName(merchantTypeDTO.getTemName());
                         merchantTypeRepository.save(entity);
                         return true;
                     }
@@ -135,7 +126,6 @@ public class MerchantTypeService implements MerchantTypeInterface {
                         merchantTypeEntity.setName(merchantTypeDTO.getName());
                         merchantTypeEntity.setCreateBy(merchantTypeDTO.getCreateBy());
                         merchantTypeEntity.setTemId(merchantTypeDTO.getTemId());
-                        merchantTypeEntity.setTemName(merchantTypeDTO.getTemName());
                         merchantTypeRepository.save(merchantTypeEntity);
                         return true;
                     }else {
@@ -149,12 +139,4 @@ public class MerchantTypeService implements MerchantTypeInterface {
         return false;
     }
 
-/*    public  <D> TbbMerchantResponse<D> wrapErrorCodeResponse(Exception e) {
-        if (e instanceof TbbMerchantBaseException){
-            logger.error("异常：code:{},message:{}",((TbbMerchantBaseException) e).getErrorCode(),e.getMessage());
-        }else{
-            logger.error("任务异常：",e);
-        }
-        return TbbMerchantBaseException.genErrorCodeResponse(e);
-    }*/
 }
