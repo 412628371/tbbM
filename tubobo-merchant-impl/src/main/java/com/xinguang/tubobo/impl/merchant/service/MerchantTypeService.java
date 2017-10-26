@@ -27,15 +27,12 @@ import java.util.List;
 public class MerchantTypeService implements MerchantTypeInterface {
     @Autowired
     private MerchantTypeRepository merchantTypeRepository;
-   /* @Autowired
-    private MerchantDeliverFeeTemRepository merchantDeliverFeeTemRepository;*/
    @Autowired
    private MerchantDeliverTemService merchantDeliverTemService;
 
     private static final Logger logger = LoggerFactory.getLogger(MerchantTypeService.class);
 
     @Override
-  //  @Cacheable(value= RedisCache.MERCHANT,key="'merchantType_all'")
     public List<MerchantTypeDTO> findAll() {
         List<MerchantTypeEntity> merchantTypeEntities = merchantTypeRepository.findAllByDelFlagOrderByIdDesc(MerchantTypeEntity.DEL_FLAG_NORMAL);
         List<MerchantTypeDTO> merchantTypeDTOS = new ArrayList<>();
@@ -44,12 +41,6 @@ public class MerchantTypeService implements MerchantTypeInterface {
             for (MerchantTypeEntity merchantTypeEntity : merchantTypeEntities) {
                 MerchantTypeDTO merchantTypeDTO = new MerchantTypeDTO();
                 BeanUtils.copyProperties(merchantTypeEntity, merchantTypeDTO);
-       /*         if (merchantTypeEntity.getTemId()!=null){
-                    MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity = merchantDeliverFeeTemRepository.findByIdAndDelFlag(merchantTypeEntity.getTemId(), MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
-                    if (merchantDeliverFeeTemEntity!=null){
-                        merchantTypeDTO.setTemName(merchantDeliverFeeTemEntity.getName());
-                    }
-                }*/
                 if (merchantTypeEntity.getTemId()!=null){
                     MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO = merchantDeliverTemService.findById(merchantTypeEntity.getTemId());
                     if (merchantDeliverFeeTemDTO!=null){
