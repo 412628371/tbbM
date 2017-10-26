@@ -1,7 +1,12 @@
 package com.xinguang.tubobo.impl.merchant.mq;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
+import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantTypeService;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import com.xinguang.tubobo.merchant.api.dto.NoticeDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumAuthentication;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
@@ -18,6 +23,9 @@ import org.springframework.stereotype.Service;
 public class RmqNoticeProducer {
     @Autowired private Config config;
     @Autowired private RabbitTemplate baseMqTemplate;
+    @Autowired private MerchantInfoService merchantInfoService;
+    @Autowired private MerchantTypeService merchantTypeService;
+
 
     /**
      * 发送订单被接单通知
@@ -118,9 +126,17 @@ public class RmqNoticeProducer {
         NoticeDTO noticeDTO = new NoticeDTO();
         noticeDTO.setNoticeType(EnumNoticeType.AUDIT.getValue());
         noticeDTO.setUserId(userId);
+        MerchantInfoEntity merchant = merchantInfoService.findByUserId(userId);
+        String template="您的商家身份（）已经审核通过，可以去发单啦";
+        if (null!=merchant){
+            MerchantTypeDTO type = merchantTypeService.findById(merchant.getMerTypeId());
+            String merchantTypeName=type.getName();
+            merchantTypeName=merchantTypeName==null?"":merchantTypeName;
+            template="您的商家身份（"+merchantTypeName+"）已经审核通过，可以去发单啦";
+        }
         if (auditSuccess){
             noticeDTO.setTitle(config.getNoticeAuditSuccessTitle());
-            noticeDTO.setContent(config.getNoticeAuditSuccessTemplate());
+            noticeDTO.setContent(template);
             noticeDTO.setIdentifyStatus(EnumAuthentication.SUCCESS.getValue());
             noticeDTO.setIdentifyType(EnumIdentifyType.MERCHANT.getValue());
         }else {

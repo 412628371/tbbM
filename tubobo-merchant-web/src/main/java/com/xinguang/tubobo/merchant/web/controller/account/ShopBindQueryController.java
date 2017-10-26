@@ -28,13 +28,20 @@ public class ShopBindQueryController extends MerchantBaseController<Object, Resp
     @Override
     protected RespShopBindQuery doService(String userId, Object req) throws MerchantClientException {
         MerchantBindInfoDto dto = merchantServiceInterface.findMerchantBindInfo(userId);
-        ProviderInfoDTO providerInfoDTO = providerServiceInterface.getProviderInfoById(dto.getProviderId());
+        if(null == dto){
+            return null;
+        }
         RespShopBindQuery respShopBindQuery = new RespShopBindQuery();
-        respShopBindQuery.setBindStatus(dto.getBindStatus());
-        respShopBindQuery.setOperatorName(providerInfoDTO.getOperatorName());
-        respShopBindQuery.setOperatorPhone(providerInfoDTO.getOperatorPhone());
-        respShopBindQuery.setProviderId(providerInfoDTO.getId());
-        respShopBindQuery.setProviderName(providerInfoDTO.getName());
+        if(null != dto.getProviderId()){
+            ProviderInfoDTO providerInfoDTO = providerServiceInterface.getProviderInfoById(dto.getProviderId());
+            if(null != providerInfoDTO){
+                respShopBindQuery.setBindStatus(dto.getBindStatus());
+                respShopBindQuery.setOperatorName(providerInfoDTO.getOperatorName());
+                respShopBindQuery.setOperatorPhone(providerInfoDTO.getOperatorPhone());
+                respShopBindQuery.setProviderId(providerInfoDTO.getId());
+                respShopBindQuery.setProviderName(providerInfoDTO.getName());
+            }
+        }
         return respShopBindQuery;
     }
 }

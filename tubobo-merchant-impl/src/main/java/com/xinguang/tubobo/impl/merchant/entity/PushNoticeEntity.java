@@ -1,13 +1,6 @@
 package com.xinguang.tubobo.impl.merchant.entity;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,8 +9,6 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "t_notice_entity")
-@DynamicInsert
-@DynamicUpdate
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PushNoticeEntity {
 
@@ -73,15 +64,24 @@ public class PushNoticeEntity {
 
     @Id
     @GeneratedValue
-    @Column(name = "id", unique = true, nullable = false)
-    protected Long id;
-    protected String delFlag;
+    //@Column(name = "id", unique = true, nullable = false)
+    private Long id;
+    private String delFlag;
     @CreatedDate
-    protected Date createDate;
-    @LastModifiedDate
-    protected Date updateDate;
+    private Date createDate;
+  //  @LastModifiedDate
+    private Date updateDate;
 
+     @PrePersist
+        public void prePersist(){
+            this.updateDate = new Date();
+            this.createDate = this.updateDate;
+        }
 
+        @PreUpdate
+        public void preUpdate(){
+            this.updateDate = new Date();
+        }
     public String getTitle() {
         return title;
     }
