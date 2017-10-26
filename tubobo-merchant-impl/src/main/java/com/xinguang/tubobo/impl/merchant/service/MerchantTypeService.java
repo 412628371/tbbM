@@ -27,13 +27,12 @@ import java.util.List;
 public class MerchantTypeService implements MerchantTypeInterface {
     @Autowired
     private MerchantTypeRepository merchantTypeRepository;
-    @Autowired
-    private MerchantDeliverTemService merchantDeliverTemService;
+   @Autowired
+   private MerchantDeliverTemService merchantDeliverTemService;
 
     private static final Logger logger = LoggerFactory.getLogger(MerchantTypeService.class);
 
     @Override
-    @Cacheable(value= RedisCache.MERCHANT,key="'merchantType_all'")
     public List<MerchantTypeDTO> findAll() {
         List<MerchantTypeEntity> merchantTypeEntities = merchantTypeRepository.findAllByDelFlagOrderByIdDesc(MerchantTypeEntity.DEL_FLAG_NORMAL);
         List<MerchantTypeDTO> merchantTypeDTOS = new ArrayList<>();
