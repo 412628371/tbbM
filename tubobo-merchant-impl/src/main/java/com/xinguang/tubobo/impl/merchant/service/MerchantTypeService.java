@@ -2,10 +2,11 @@ package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.impl.merchant.cache.RedisCache;
+import com.xinguang.tubobo.impl.merchant.entity.MerchantDeliverFeeTemEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantTypeEntity;
+import com.xinguang.tubobo.impl.merchant.repository.MerchantDeliverFeeTemRepository;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantTypeRepository;
 import com.xinguang.tubobo.merchant.api.MerchantTypeInterface;
-import com.xinguang.tubobo.merchant.api.dto.MerchantDeliverFeeTemDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class MerchantTypeService implements MerchantTypeInterface {
     @Autowired
     private MerchantTypeRepository merchantTypeRepository;
     @Autowired
-    private MerchantDeliverTemService merchantDeliverTemService;
+    private MerchantDeliverFeeTemRepository merchantDeliverFeeTemRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(MerchantTypeService.class);
 
@@ -43,9 +44,9 @@ public class MerchantTypeService implements MerchantTypeInterface {
                 MerchantTypeDTO merchantTypeDTO = new MerchantTypeDTO();
                 BeanUtils.copyProperties(merchantTypeEntity, merchantTypeDTO);
                 if (merchantTypeEntity.getTemId()!=null){
-                    MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO = merchantDeliverTemService.findById(merchantTypeEntity.getTemId());
-                    if (merchantDeliverFeeTemDTO!=null){
-                        merchantTypeDTO.setTemName(merchantDeliverFeeTemDTO.getName());
+                    MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity = merchantDeliverFeeTemRepository.findByIdAndDelFlag(merchantTypeEntity.getTemId(), MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
+                    if (merchantDeliverFeeTemEntity!=null){
+                        merchantTypeDTO.setTemName(merchantDeliverFeeTemEntity.getName());
                     }
                 }
                 merchantTypeDTOS.add(merchantTypeDTO);
