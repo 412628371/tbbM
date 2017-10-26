@@ -71,26 +71,6 @@ public class MerchantDeliverTemService implements MerchantDeliverFeeTemInterface
     @Override
     @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_*'")
     @Transactional(readOnly = false)
-    public Boolean update(MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO) {
-        MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity  = new MerchantDeliverFeeTemEntity();
-        if (merchantDeliverFeeTemEntity !=null){
-            if (!merchantDeliverFeeTemEntity.getName().equals(merchantDeliverFeeTemDTO.getName())){
-                merchantTypeRepository.updateTemName(merchantDeliverFeeTemDTO.getName(),merchantDeliverFeeTemEntity.getId(),MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
-            }
-            BeanUtils.copyProperties(merchantDeliverFeeTemDTO, merchantDeliverFeeTemEntity);
-        }
-
-        MerchantDeliverFeeTemEntity result;
-        result = merchantDeliverFeeTemRepository.save(merchantDeliverFeeTemEntity);
-        if (result!=null){
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    @CacheEvict(value= RedisCache.MERCHANT,key="'merchantDeliverFeeTem_*'")
-    @Transactional(readOnly = false)
     public Boolean delete(Long id) {
         MerchantDeliverFeeTemEntity merchantDeliverFeeTemEntity  = merchantDeliverFeeTemRepository.findByIdAndDelFlag(id, MerchantDeliverFeeTemEntity.DEL_FLAG_NORMAL);
         if (merchantDeliverFeeTemEntity!=null){

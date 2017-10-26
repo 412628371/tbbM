@@ -5,12 +5,12 @@ import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import java.util.List;
 
 /**
- * 商家端提供给后台的dubbo接口,用于后台修改和展示商家定价模板
+ * 商家端提供给后台的dubbo接口,用于后台修改和展示商家类型
  */
 public interface MerchantTypeInterface {
 
     /**
-     * 查询所有模板
+     * 查询所有商家类型
      * @return
      */
     List<MerchantTypeDTO> findAll();
@@ -28,12 +28,6 @@ public interface MerchantTypeInterface {
      */
     MerchantTypeDTO findByName(String name);
 
-    /**
-     * 修改模板信息
-     * @param merchantTypeDTO
-     * @return
-     */
-    Boolean update(MerchantTypeDTO merchantTypeDTO);
 
     /**
      * 删除模板
@@ -43,7 +37,7 @@ public interface MerchantTypeInterface {
     Boolean delete(Long id);
 
     /**
-     * 保存模板
+     * 保存商家类型
      * @param merchantTypeDTO
      * @return
      */

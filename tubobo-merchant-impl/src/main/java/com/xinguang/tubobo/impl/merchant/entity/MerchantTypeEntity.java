@@ -17,7 +17,6 @@ public class MerchantTypeEntity extends BaseMerchantEntityId {
     private String name; //名称
     private String describtion; //描述
     private Long temId;//对应模板id
-    private String temName;//对应模板名称
     private Integer commissionRate;// 佣金比例
 
     public Integer getCommissionRate() {
@@ -52,11 +51,4 @@ public class MerchantTypeEntity extends BaseMerchantEntityId {
         this.temId = temId;
     }
 
-    public String getTemName() {
-        return temName;
-    }
-
-    public void setTemName(String temName) {
-        this.temName = temName;
-    }
 }
