@@ -269,16 +269,22 @@ public class OrderService extends BaseService {
             //不为空说明 处于带取货状态
             orderStatusArr.add(EnumMerchantOrderStatus.WAITING_PICK.getValue());
         }
-        merchantOrderDao.orderCancel(orderNo, new Date(),EnumMerchantOrderStatus.CANCEL.getValue(),new Date(),orderStatusArr, BaseMerchantEntity.DEL_FLAG_NORMAL);
-        return  merchantOrderDetailRepository.updateCancelReasonWithFine(new Date(), cancelReason,waitPickCancelType, punishFee,subsidyFee,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL)==1;
+        int i = merchantOrderDao.orderCancel(orderNo, new Date(), EnumMerchantOrderStatus.CANCEL.getValue(), new Date(), orderStatusArr, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (i>0){
+              merchantOrderDetailRepository.updateCancelReasonWithFine(new Date(), cancelReason,waitPickCancelType, punishFee,subsidyFee,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        }
+        return i==1;
     }
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public boolean adminCancel(String merchantId, String orderNo, String cancelReason) {
 
-        merchantOrderDao.orderCancelIgnoreStatus(orderNo, new Date(),EnumMerchantOrderStatus.CANCEL.getValue(),new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
-        return   merchantOrderDetailRepository.updateCancelReason(orderNo, cancelReason,new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL)==1;
+        int i = merchantOrderDao.orderCancelIgnoreStatus(orderNo, new Date(), EnumMerchantOrderStatus.CANCEL.getValue(), new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (i>0){
+            i=merchantOrderDetailRepository.updateCancelReason(orderNo, cancelReason,new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+        }
+        return   i==1;
 
     }
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
@@ -286,9 +292,12 @@ public class OrderService extends BaseService {
     public boolean riderCancel(String orderNo, String cancelReason, Date now, Double subsidy,String merchantId) {
         List<String> orderStatusArr=new ArrayList<>();
         orderStatusArr.add(EnumMerchantOrderStatus.WAITING_PICK.getValue());
-        merchantOrderDao.orderCancel(orderNo, now,EnumMerchantOrderStatus.RESEND.getValue(),new Date(),orderStatusArr, BaseMerchantEntity.DEL_FLAG_NORMAL);
-        return  merchantOrderDetailRepository.updateCancelReasonWithFine(new Date(), cancelReason,null, null,subsidy,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL)==1;
+        int i = merchantOrderDao.orderCancel(orderNo, now, EnumMerchantOrderStatus.RESEND.getValue(), new Date(), orderStatusArr, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (i>0){
+            i= merchantOrderDetailRepository.updateCancelReasonWithFine(new Date(), cancelReason,null, null,subsidy,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
 
+        }
+        return i==1;
 
     }
 
@@ -314,9 +323,11 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int riderGrabOrder(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance) {
-        merchantOrderDao.riderGrabOrder(EnumMerchantOrderStatus.WAITING_PICK.getValue(),riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime,BaseMerchantEntity.DEL_FLAG_NORMAL);
-
-        return   merchantOrderDetailRepository.riderGrabOrder( pickupDistance,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.riderGrabOrder(EnumMerchantOrderStatus.WAITING_PICK.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (i>0){
+            i= merchantOrderDetailRepository.riderGrabOrder( pickupDistance,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        }
+        return  i;
 
     }
     /**
@@ -326,9 +337,11 @@ public class OrderService extends BaseService {
     @Transactional()
     public int riderGrabOrderOfPost(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, Date pickTime,  Double pickupDistance) {
-        merchantOrderDao.riderGrabOrderOfPost(EnumMerchantOrderStatus.DELIVERYING.getValue(),riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime,BaseMerchantEntity.DEL_FLAG_NORMAL);
-
-        return merchantOrderDetailRepository.riderGrabOrderOfPost(pickupDistance, orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.riderGrabOrderOfPost(EnumMerchantOrderStatus.DELIVERYING.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (i>0){
+          i= merchantOrderDetailRepository.riderGrabOrderOfPost(pickupDistance, orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        }
+        return i;
     }
     /**
      * 骑手取货
@@ -684,26 +697,6 @@ public class OrderService extends BaseService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * 获取
      *
@@ -838,16 +831,22 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int riderUnsettledOrder(String merchantId, String orderNo, String reason, Date finishOrderTime, Double expiredMinute) {
 
-         merchantOrderDao.riderUnsettledOrder(PostOrderUnsettledStatusEnum.ING.getValue(),finishOrderTime,orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue());
-        return merchantOrderDetailRepository.riderUnsettledOrder(reason,expiredMinute,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.riderUnsettledOrder(PostOrderUnsettledStatusEnum.ING.getValue(), finishOrderTime, orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (i>0){
+            i= merchantOrderDetailRepository.riderUnsettledOrder(reason,expiredMinute,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        }
+        return i;
     }
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date unsettledTime,String message) {
-         merchantOrderDao.merchantHandlerUnsettledOrder(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue()
-              ,unsettledTime ,orderNo,PostOrderUnsettledStatusEnum.ING.getValue(),BaseMerchantEntity.DEL_FLAG_NORMAL);
-        return merchantOrderDetailRepository.merchantHandlerUnsettledOrder(message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.merchantHandlerUnsettledOrder(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue()
+                , unsettledTime, orderNo, PostOrderUnsettledStatusEnum.ING.getValue(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+        if (i>0){
+            i= merchantOrderDetailRepository.merchantHandlerUnsettledOrder(message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
+        }
+        return i;
     }
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
