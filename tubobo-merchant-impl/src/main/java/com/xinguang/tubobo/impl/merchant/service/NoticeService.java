@@ -60,7 +60,7 @@ public class NoticeService {
     public void pushOrder(NoticeDTO dto){
         PushNoticeEntity entity = new PushNoticeEntity();
         BeanUtils.copyProperties(dto,entity);
-        if (EnumOrderNoticeType.ADMIN_CANCEL.getValue().equals(dto.getOrderOperateType())){
+        if (EnumOrderNoticeType.ADMIN_CANCEL.getValue().equals(dto.getOrderOperateType())||EnumOrderNoticeType.RIDER_CANCEL.getValue().equals(dto.getOrderOperateType())){
             entity.setContent(String.format(dto.getContent(),dto.getOrderNo()));
             entity.setProcessed(false);
             entity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
