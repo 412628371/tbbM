@@ -118,9 +118,9 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
                     rmqNoticeProducer.sendAuditNotice(userId,false,reason);
                     if (null != infoEntity.getProviderId()){
                         merchantInfoService.unbindProvider(userId,infoEntity.getProviderId());
+                        //删除驿站商家绑定信息
+                        bindToMerchantServiceInterface.deleteMerchantBindInfo(userId);
                     }
-                    //删除驿站商家绑定信息
-                    bindToMerchantServiceInterface.deleteMerchantBindInfo(userId);
                 }else if (EnumAuthentication.SUCCESS.getValue().equals(merchantStatus)){
                     rmqNoticeProducer.sendAuditNotice(userId,true,null);
                 }
