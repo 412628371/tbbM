@@ -23,7 +23,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-
+//已废弃 2017.10.26 版本后可以删除
+@Deprecated
 @Repository
 public class MerchantOrderDao extends BaseDao<MerchantOrderEntity> {
     Logger logger = LoggerFactory.getLogger(MerchantOrderDao.class);

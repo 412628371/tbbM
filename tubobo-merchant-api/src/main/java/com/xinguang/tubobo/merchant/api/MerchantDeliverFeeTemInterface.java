@@ -28,12 +28,6 @@ public interface MerchantDeliverFeeTemInterface {
      */
     MerchantDeliverFeeTemDTO findByName(String name);
 
-    /**
-     * 修改模板信息
-     * @param merchantDeliverFeeTemDTO
-     * @return
-     */
-    Boolean update(MerchantDeliverFeeTemDTO merchantDeliverFeeTemDTO);
 
     /**
      * 删除模板
