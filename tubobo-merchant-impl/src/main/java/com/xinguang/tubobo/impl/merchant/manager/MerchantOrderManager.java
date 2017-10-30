@@ -676,6 +676,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		orderEntity.setReceiverPhone(entity.getReceiverPhone());
 		orderEntity.setSenderName(entity.getSenderName());
         orderEntity.setUserId(entity.getUserId());
+        orderEntity.setSenderAdcode(entity.getSenderAdcode());
 
 		detailEntity.setOrderRemark(entity.getOrderRemark());
 		detailEntity.setPickupDistance(entity.getPickupDistance());
