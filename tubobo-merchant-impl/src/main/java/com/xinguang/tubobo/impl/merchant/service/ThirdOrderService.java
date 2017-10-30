@@ -314,12 +314,12 @@ public class ThirdOrderService {
                 }
                 if ("PHONE".equals(condition.getQueryType())){
                     if (StringUtils.isNotBlank(condition.getKeyword())){
-                        list.add(cb.like(root.get("keyword").as(String.class), "%"+condition.getKeyword()));
+                        list.add(cb.like(root.get("receiverPhone").as(String.class), "%"+condition.getKeyword()));
 
                     }
                 }else {
                     if (StringUtils.isNotBlank(condition.getKeyword())){
-                        list.add(cb.like(root.get("keyword").as(String.class), "%"+condition.getKeyword()+"%"));
+                        list.add(cb.like(root.get("originOrderViewId").as(String.class), "%"+condition.getKeyword()+"%"));
                     }
                 }
                 return query.where(list.toArray(new Predicate[list.size()])).getRestriction();
