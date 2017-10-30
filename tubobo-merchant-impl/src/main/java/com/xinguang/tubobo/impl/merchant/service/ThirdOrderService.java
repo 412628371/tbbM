@@ -210,6 +210,7 @@ public class ThirdOrderService {
         newOrderEntity.setWeatherOverFee(weatherOverFee);
         newOrderEntity.setPeekOverFee(peekOverFee);
         newOrderEntity.setProviderId(merchant.getProviderId());
+        newOrderEntity.setSenderAdcode(merchant.getAddressAdCode());
         OrderDetailEntity orderDetailEntity = new OrderDetailEntity();
         OrderEntity orderEntity = new OrderEntity();
         BeanUtils.copyProperties(newOrderEntity,orderDetailEntity);
