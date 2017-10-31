@@ -179,7 +179,7 @@ public class MerchantInfoService extends BaseService {
 					list.add(criteriaBuilder.equal(root.get("userId").as(String.class), entity.getUserId()));
 				}
 				if (StringUtils.isNotBlank(entity.getAddressAdCode())){
-					list.add(criteriaBuilder.like(root.get("addressAdCode").as(String.class), entity.getAddressAdCode()));
+					list.add(criteriaBuilder.like(root.get("addressAdCode").as(String.class), entity.getAddressAdCode()+"%"));
 				}
 				if (null!=entity.getMerTypeId()){
 					list.add(criteriaBuilder.equal(root.get("merTypeId").as(Long.class),entity.getMerTypeId()));
