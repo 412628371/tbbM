@@ -673,7 +673,7 @@ public class OrderService extends BaseService {
 
                 }
                 if (null != entity.getCreateDate()){
-                    list.add(cb.greaterThanOrEqualTo(root.get("createDate").as(Date.class),DateUtils.getDateStart(entity.getCreateDate())));
+                    list.add(cb.greaterThanOrEqualTo(root.get("orderTime").as(Date.class),DateUtils.getDateStart(entity.getCreateDate())));
 
                 }
                 if (null != entity.getUpdateDate()){
