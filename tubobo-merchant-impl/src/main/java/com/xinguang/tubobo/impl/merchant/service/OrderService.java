@@ -680,7 +680,7 @@ public class OrderService extends BaseService {
                     list.add(cb.lessThanOrEqualTo(root.get("orderTime").as(Date.class),DateUtils.getDateEnd(entity.getUpdateDate())));
                 }
                 if (StringUtils.isNotBlank(entity.getSenderAdcode())){
-                    list.add(cb.like(root.get("senderAdcode").as(String.class),entity.getSenderAdcode()));
+                    list.add(cb.like(root.get("senderAdcode").as(String.class),entity.getSenderAdcode()+"%"));
                 }
                 if (null!=entity.getProviderId()){
                     list.add(cb.equal(root.get("providerId").as(Long.class),entity.getProviderId()));
