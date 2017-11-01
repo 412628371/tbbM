@@ -61,6 +61,18 @@ public class MerchantInfoEntity extends BaseMerchantEntity {
 
 	private Long merTypeId;			//商家类型id
 
+	private String shopLicencesNo;	//营业执照编号
+
+	public String getShopLicencesNo() {
+		return shopLicencesNo;
+	}
+
+	public void setShopLicencesNo(String shopLicencesNo) {
+		this.shopLicencesNo = shopLicencesNo;
+	}
+
+
+
 	public Long getMerTypeId() {
 		return merTypeId;
 	}

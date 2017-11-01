@@ -17,6 +17,7 @@ import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.rider.api.RiderToAdminServiceInterface;
 import com.xinguang.tubobo.rider.api.dto.RiderInfoDTO;
+import com.xinguang.tubobo.rider.api.enums.EnumRiderAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,11 +54,13 @@ public class MerchantInfoManager {
      * @throws MerchantClientException
      */
     public MerchantInfoEntity identify(String userId,String payPassword,String identifyType, MerchantInfoEntity entity) throws MerchantClientException {
-        RiderInfoDTO riderInfoDTO = riderToAdminServiceInterface.findByUserId(userId);
+      //  RiderInfoDTO riderInfoDTO = riderToAdminServiceInterface.findByUserId(userId);
+       /*
         if (riderInfoDTO!= null){
             logger.error("店铺申请失败，该用户已经申请成为骑手。userId:{}",userId);
             throw new MerchantClientException(EnumRespCode.MERCHANT_ALREADY_APPLY_RIDER);
-        }
+        }*/
+        checkByIdCardIfRider(entity.getIdCardNo());
         entity.setUserId(userId);
         entity.setIdCardFrontImageUrl(AliOss.subAliossUrl(entity.getIdCardFrontImageUrl()));
         entity.setIdCardBackImageUrl(AliOss.subAliossUrl(entity.getIdCardBackImageUrl()));
@@ -175,6 +178,7 @@ public class MerchantInfoManager {
             existEntity.setMerchantName(infoEntity.getMerchantName());
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());
+            existEntity.setShopLicencesNo(infoEntity.getShopLicencesNo());
             //高德区域编码
             if(StringUtils.isBlank(infoEntity.getAddressAdCode())){
                 //地理反编码
@@ -239,6 +243,28 @@ public class MerchantInfoManager {
                 logger.error("create shop info FAIL. errorCode:{}, errorMsg:{}, request:{}, response:{}",response.getErrorCode(),response.getMessage(),request.toString(),response.toString());
             }
             throw new MerchantClientException(EnumRespCode.ACCOUNT_CREATE_FAIL) ;
+        }
+    }
+    /**
+     * 校验是否注册骑手
+     * */
+    public String checkByIdCardIfRider(String IdcardNo) throws MerchantClientException {
+        RiderInfoDTO riderInfo = riderToAdminServiceInterface.findByUserIdCardNo(IdcardNo);
+        //判断
+        boolean legalForVerify =true;
+        if (riderInfo!=null){
+            String riderStatus = riderInfo.getRiderStatus();
+            //只有init和fail才允许商家发起认证
+            if (EnumRiderAuthentication.FAIL.getValue().equals(riderStatus)||EnumRiderAuthentication.INIT.getValue().equals(riderStatus)){
+                legalForVerify=false;
+            }
+        }
+
+        if (legalForVerify){
+            throw new MerchantClientException(EnumRespCode.SUCCESS);
+        }else {
+            logger.error("店铺申请失败，该用户已经申请成为骑手。IdcardNo:{}",IdcardNo);
+            throw new MerchantClientException(EnumRespCode.SHOP_ALREADY_BOUND_RIDER);
         }
     }
 }

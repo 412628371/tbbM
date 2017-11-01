@@ -48,6 +48,17 @@ public class MerchantInfoResponse implements Serializable{
 
     private Long providerId;			 //服务商ID
     private String merchantType;       //商家类型
+    private String shopLicencesNo;  //营业执照编号
+
+    public String getShopLicencesNo() {
+        return shopLicencesNo;
+    }
+
+    public void setShopLicencesNo(String shopLicencesNo) {
+        this.shopLicencesNo = shopLicencesNo;
+    }
+
+
 
     public String getMerchantType() {
         return merchantType;

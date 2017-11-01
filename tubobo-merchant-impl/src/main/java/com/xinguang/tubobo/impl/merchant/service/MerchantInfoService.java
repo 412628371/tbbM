@@ -48,6 +48,10 @@ public class MerchantInfoService extends BaseService {
 		return merchantInfoRepository.findByUserIdAndDelFlag(userId, MerchantInfoEntity.DEL_FLAG_NORMAL);
 	}
 
+	public MerchantInfoEntity findByLicencesNo(String licencesNo){
+		return merchantInfoRepository.findByShopLicencesNoAndDelFlag(licencesNo, MerchantInfoEntity.DEL_FLAG_NORMAL);
+	}
+
 	/**
 	 * 申请商家
 	 */
