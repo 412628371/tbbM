@@ -124,9 +124,13 @@ public class MerchantInfoService extends BaseService {
 			}
 			merchantStatus = status;
 		}
-
+		//判断审核通过时间有否已经存在
+		Date verifyDate = entity.getVerifyDate();
+		if(null == verifyDate){
+			verifyDate = new Date();
+		}
 		result = merchantInfoRepository.updateVerifyStatus(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, merchantStatus,consignorStatus,
-																								new Date(), new Date(), updateBy, reason,merTypeId);
+																								new Date(), verifyDate, updateBy, reason,merTypeId);
 		return result;
 	}
 

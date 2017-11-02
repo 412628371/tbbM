@@ -53,6 +53,7 @@ public class Config {
     private String noticeBindTemplate;
     private String noticeUnbindTemplate;
 
+    private Double bdcodeBindTimeliness;
 
     private String beginWorkTime;
     private String endWorkTime;
@@ -280,6 +281,21 @@ public class Config {
     public void setTaskPostOrderMilSeconds(Integer taskPostOrderMilSeconds) {
         this.taskPostOrderMilSeconds = taskPostOrderMilSeconds;
     }
+
+    @DisconfFileItem(name = "merchant.bdcode.bind.timeliness", associateField = "bdcodeBindTimeliness")
+    public Double getBdcodeBindTimeliness() {
+        if(null == bdcodeBindTimeliness){
+            logger.info("bdcodeBindTimeliness配置为空，使用默认值：{}", MerchantConstants.BDCODE_BIND_TIMELINNESS);
+            return MerchantConstants.BDCODE_BIND_TIMELINNESS;
+        }
+        logger.info("bdcodeBindTimeliness:{}",bdcodeBindTimeliness);
+        return bdcodeBindTimeliness;
+    }
+
+    public void setBdcodeBindTimeliness(Double bdcodeBindTimeliness) {
+        this.bdcodeBindTimeliness = bdcodeBindTimeliness;
+    }
+
     @DisconfFileItem(name = "task.post.order.milseconds", associateField = "taskPostOrderMilSeconds")
     public Integer getTaskPostOrderGrabExpiredMilSeconds() {
         if (null == taskPostOrderMilSeconds){
