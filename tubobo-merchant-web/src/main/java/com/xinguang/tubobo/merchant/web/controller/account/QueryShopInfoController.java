@@ -43,6 +43,7 @@ public class QueryShopInfoController extends MerchantBaseController<Object,Merch
         MerchantTypeDTO typeDto = merchantTypeService.findById(entity.getMerTypeId());
         MerchantInfoResponse response = translateEntityToResponse(entity);
         response.setMerchantType(typeDto.getName());
+
         return response;
     }
 

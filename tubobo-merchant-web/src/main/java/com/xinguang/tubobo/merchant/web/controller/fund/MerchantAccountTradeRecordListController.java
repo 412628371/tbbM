@@ -42,6 +42,8 @@ public class MerchantAccountTradeRecordListController extends MerchantBaseContro
 	protected PageDTO<ResAccountTradeRecord> doService(String userId, ReqAccountTradeRecordList req) throws MerchantClientException {
 		Date startTime = req.getStartTime();
 		Date endTime = req.getEndTime();
+		startTime= DateUtils.getDateStart(startTime);
+		endTime= DateUtils.getDateStart(endTime);
 		Date now=new Date();
 		TbbConstants.OperationType type=TbbConstants.OperationType.fromCode(req.getType());
 		//查询默认最近三个月的交易记录
