@@ -33,6 +33,7 @@ public enum EnumRespCode {
 	MERCHANT_CAR_TYPE_NOT_SUPPORT("10214", "不支持的车辆类型"),
 	MERCHANT_APPOINTTIME_ERROR("10215", "商家预约时间超出预约时间范围"),
 	MERCHANT_BDCODE_ERROR("10216","您已提交过邀请码"),
+	MERCHANT_BDCODE_TIMEOUT("10217","您已超过填写邀请码时间"),
 
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
 	PASSWORD_DECRYPT_FAIL("10002", "密码解密失败"),
