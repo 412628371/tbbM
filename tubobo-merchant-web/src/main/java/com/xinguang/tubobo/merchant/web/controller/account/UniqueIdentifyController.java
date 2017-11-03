@@ -16,11 +16,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 查询身份证是否允许认证(认证骑手就不可认证商家)
  */
-@Controller
+@RestController
 @RequestMapping(value = "/idCardNo/status")
 public class UniqueIdentifyController extends MerchantBaseController<ReqUniquePersonIdentify,String> {
     @Autowired

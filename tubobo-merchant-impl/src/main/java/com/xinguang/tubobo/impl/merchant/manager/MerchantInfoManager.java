@@ -255,7 +255,7 @@ public class MerchantInfoManager {
         if (riderInfo!=null){
             String riderStatus = riderInfo.getRiderStatus();
             //只有init和fail才允许商家发起认证
-            if (EnumRiderAuthentication.FAIL.getValue().equals(riderStatus)||EnumRiderAuthentication.INIT.getValue().equals(riderStatus)){
+            if (!(EnumRiderAuthentication.FAIL.getValue().equals(riderStatus)||EnumRiderAuthentication.INIT.getValue().equals(riderStatus))){
                 legalForVerify=false;
             }
         }

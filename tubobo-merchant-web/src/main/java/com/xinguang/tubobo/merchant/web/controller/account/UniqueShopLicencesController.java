@@ -13,11 +13,12 @@ import com.xinguang.tubobo.rider.api.enums.EnumRiderAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 查询营业执照是否重复
  */
-@Controller
+@RestController
 @RequestMapping(value = "/licences/uniqueQuery")
 public class UniqueShopLicencesController extends MerchantBaseController<ReqUniqueLicences,String> {
     @Autowired
