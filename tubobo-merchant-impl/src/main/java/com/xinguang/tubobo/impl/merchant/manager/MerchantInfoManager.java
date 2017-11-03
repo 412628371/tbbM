@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -249,16 +250,19 @@ public class MerchantInfoManager {
      * 校验是否注册骑手
      * */
     public String checkByIdCardIfRider(String IdcardNo) throws MerchantClientException {
-        RiderInfoDTO riderInfo = riderToAdminServiceInterface.findByUserIdCardNo(IdcardNo);
+        List<RiderInfoDTO> riderInfos = riderToAdminServiceInterface.findByIdCardNo(IdcardNo);
         //判断
         boolean legalForVerify =true;
-        if (riderInfo!=null){
-            String riderStatus = riderInfo.getRiderStatus();
-            //只有init和fail才允许商家发起认证
-            if (!(EnumRiderAuthentication.FAIL.getValue().equals(riderStatus)||EnumRiderAuthentication.INIT.getValue().equals(riderStatus))){
-                legalForVerify=false;
+        if (riderInfos!=null&&riderInfos.size()>0){
+            for (RiderInfoDTO riderInfo : riderInfos) {
+                String riderStatus = riderInfo.getRiderStatus();
+                //只有init和fail才允许商家发起认证
+                if (!(EnumRiderAuthentication.FAIL.getValue().equals(riderStatus)||EnumRiderAuthentication.INIT.getValue().equals(riderStatus))){
+                    legalForVerify=false;
+                }
             }
         }
+
 
         if (legalForVerify){
             throw new MerchantClientException(EnumRespCode.SUCCESS);
