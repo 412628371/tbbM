@@ -665,11 +665,11 @@ public class OrderService extends BaseService {
                     list.add(cb.equal(root.get("riderPhone").as(String.class),entity.getRiderPhone()));
                 }
                 if (StringUtils.isNotBlank(entity.getReceiverPhone())){
-                    list.add(cb.like(root.get("receiverPhone").as(String.class),entity.getReceiverPhone()));
+                    list.add(cb.like(root.get("receiverPhone").as(String.class),entity.getReceiverPhone()+"%"));
 
                 }
                 if (StringUtils.isNotBlank(entity.getSenderName())){
-                    list.add(cb.like(root.get("senderName").as(String.class),entity.getSenderName()));
+                    list.add(cb.like(root.get("senderName").as(String.class),entity.getSenderName()+"%"));
 
                 }
                 if (null != entity.getCreateDate()){
