@@ -31,7 +31,7 @@
         <tubobo.merchant.web.version>1.0-SNAPSHOT</tubobo.merchant.web.version>
         <tubobo.merchant.impl.version>1.0-SNAPSHOT</tubobo.merchant.impl.version>
         <tubobo.lbs.version>1.0-SNAPSHOT</tubobo.lbs.version>
-        <tubobo.merchant.api.version>1.4.3-SNAPSHOT</tubobo.merchant.api.version>
+        <tubobo.merchant.api.version>1.4.4-SNAPSHOT</tubobo.merchant.api.version>
         <tubobo.posthouse.api.version>1.0-SNAPSHOT</tubobo.posthouse.api.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
         <tubobo-account-api-version>1.3.3-SNAPSHOT</tubobo-account-api-version>
@@ -42,6 +42,7 @@
         <tubobo-admin.version>0.0.3-SNAPSHOT</tubobo-admin.version>
         <tubobo-reportdata-api.version>0.0.1-SNAPSHOT</tubobo-reportdata-api.version>
         <SMSApi.version>1.0-SNAPSHOT</SMSApi.version>
+        <tubobo-data-checking.version>1.0-SNAPSHOT</tubobo-data-checking.version>
         <tubobo-launcher-inner-api.version>1.0-SNAPSHOT</tubobo-launcher-inner-api.version>
 
 
@@ -167,7 +168,11 @@
                 <artifactId>tubobo-reportdata-api</artifactId>
                 <version>${tubobo-reportdata-api.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.xinguang.tubobo</groupId>
+                <artifactId>account-checking-api</artifactId>
+                <version>${tubobo-data-checking.version}</version>
+            </dependency>
 
 
 

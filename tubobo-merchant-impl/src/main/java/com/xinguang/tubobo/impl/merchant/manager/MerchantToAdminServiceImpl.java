@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -186,5 +187,10 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
             return dto;
         }
         return null;
+    }
+
+    @Override
+    public boolean processTaskCreateException(String orderNo) {
+        return merchantOrderManager.dealGrabOvertimeOrders(orderNo,new Date(),true);
     }
 }

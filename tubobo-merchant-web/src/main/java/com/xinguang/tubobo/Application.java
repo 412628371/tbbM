@@ -1,9 +1,12 @@
 package com.xinguang.tubobo;
 
+import com.xinguang.tubobo.checking.TbbCheckingConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.SysConfig;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -56,10 +59,13 @@ public class Application {
     @Bean
     public HibernateJpaSessionFactoryBean sessionFactory() {
 
-        return new HibernateJpaSessionFactoryBean()
-
-                ;
+        return new HibernateJpaSessionFactoryBean();
     }
+    @Bean
+    public Queue dataCheckingQueue() {
+        return QueueBuilder.durable(TbbCheckingConstants.DATA_CHECKING_QUEUE).build();
+    }
+
  /*   @Bean
     public RedisUtils getRedisUtils(){
         RedisUtils redisUtils = new RedisUtils("tbb_consignor", "consignor", getRedisTemplate(), 86400);
@@ -118,8 +124,5 @@ public class Application {
 //
 //        return connectionFactory;
 //    }
-//    @Bean
-//    public Queue queue() {
-//        return QueueBuilder.durable("on_wxjsapi_pay_result").build();
-//    }
+
 }

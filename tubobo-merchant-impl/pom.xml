@@ -75,7 +75,10 @@
             <groupId>com.xinguang</groupId>
             <artifactId>tubobo-reportdata-api</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>account-checking-api</artifactId>
+        </dependency>
 
 
 
@@ -283,10 +286,34 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
         </dependency>
-
-
-
-
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>account-checking-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>account-checking-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>account-checking-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>account-checking-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xinguang.tubobo</groupId>
+            <artifactId>account-checking-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xinguang</groupId>
+            <artifactId>tubobo-merchant-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xinguang</groupId>
+            <artifactId>tubobo-merchant-api</artifactId>
+        </dependency>
 
 
     </dependencies>
