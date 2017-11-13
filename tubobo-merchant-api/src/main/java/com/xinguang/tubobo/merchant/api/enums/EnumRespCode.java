@@ -33,6 +33,7 @@ public enum EnumRespCode {
 	MERCHANT_CAR_TYPE_NOT_SUPPORT("10214", "不支持的车辆类型"),
 	MERCHANT_APPOINTTIME_ERROR("10215", "商家预约时间超出预约时间范围"),
 	MERCHANT_BDCODE_ERROR("10216","您已提交过邀请码"),
+	MERCHANT_BDCODE_TIMEOUT("10217","您已超过填写邀请码时间"),
 
 	MERCHANT_PUSH_SETTINGS_FAILURE("10001", "推送设置失败"),
 	PASSWORD_DECRYPT_FAIL("10002", "密码解密失败"),
@@ -71,7 +72,10 @@ public enum EnumRespCode {
 	SHOP_NOT_AUTHED("20001", "店铺审核未通过"),
 	SHOP_PROVIDERID_DIFFER("20002", "服务商ID不一致"),
 	SHOP_NOT_EXIST("20003","商家不存在"),
-	SHOP_ALREADY_BOUND("20004","商家已绑定");
+	SHOP_ALREADY_BOUND("20004","商家已绑定"),
+	SHOP_ALREADY_BOUND_RIDER("20005","该身份证号已认证为兔波波骑手，不能再认证为商家了哦~"),
+	SHOP_LICENCESNO_EXIST("20006","该营业执照号已被认证过，请重新填写")
+	;
 
 
 

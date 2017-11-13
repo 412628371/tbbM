@@ -4,7 +4,9 @@ import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
+import com.xinguang.tubobo.impl.merchant.service.MerchantTypeService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.response.marketing.RechargeGiftPlanItem;
@@ -31,6 +33,8 @@ public class RechargeGiftPlanController extends MerchantBaseController<Object,Re
 
     @Autowired
     MerchantInfoService merchantInfoService;
+    @Autowired
+    MerchantTypeService merchantTypeService;
 
     @Override
     protected RechargeGiftPlanResp doService(String userId, Object req) throws MerchantClientException {
@@ -39,7 +43,8 @@ public class RechargeGiftPlanController extends MerchantBaseController<Object,Re
         if (null == infoEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
-        String plan = tbbAccountService.currentRechargeGiftPlan(infoEntity.getAccountId());
+        MerchantTypeDTO type = merchantTypeService.findById(infoEntity.getMerTypeId());
+        String plan = tbbAccountService.currentRechargeGiftPlan(infoEntity.getAccountId(),type.getName());
 
         RechargeGiftPlanResp resp = new RechargeGiftPlanResp();
         List<RechargeGiftPlanItem> list;

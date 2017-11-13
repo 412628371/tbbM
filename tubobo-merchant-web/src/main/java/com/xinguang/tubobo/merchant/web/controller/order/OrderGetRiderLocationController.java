@@ -46,7 +46,10 @@ public class OrderGetRiderLocationController extends MerchantBaseController<ReqO
         logger.info("查询骑手位置信息：userId:{},orderNo:{},geoLocation:{}",userId,req.getOrderNo(),location.toString());
         RespRiderLocation respRiderLocation = new RespRiderLocation();
         respRiderLocation.setLatitude(location.getLatitude());
+
         respRiderLocation.setLongtitude(location.getLongitude());
+        //1.46 版本后采用此字段
+        respRiderLocation.setLongitude(location.getLongitude());
         return respRiderLocation;
     }
 }

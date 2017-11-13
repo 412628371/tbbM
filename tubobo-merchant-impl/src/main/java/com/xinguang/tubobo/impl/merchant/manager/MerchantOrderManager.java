@@ -5,6 +5,7 @@
  */
 package com.xinguang.tubobo.impl.merchant.manager;
 
+import com.alibaba.dubbo.remoting.TimeoutException;
 import com.alibaba.fastjson.JSON;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
@@ -20,6 +21,8 @@ import com.xinguang.tubobo.account.api.response.*;
 import com.xinguang.tubobo.api.AdminToMerchantService;
 import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.api.enums.EnumOrderStatus;
+import com.xinguang.tubobo.checking.CheckingTypeEnum;
+import com.xinguang.tubobo.checking.TbbRpcException;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
@@ -82,7 +85,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	@Autowired private TbbOrderServiceInterface launcherInnerTbbOrderService;
 	@Autowired private OrderService orderService;
 	@Autowired private RmqMessagePayRecordProducer rmqMessagePayRecordProducer;
-	@Autowired private MessageRecordService messageRecordService;
+	@Autowired private DataCheckingService dataCheckingService;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -132,14 +135,24 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",merchantId,orderNo);
 			throw new MerchantClientException(EnumRespCode.FAIL);
 		}
-		TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(taskCreateDTO);
-		if (taskResponse.isSucceeded() && taskResponse.getData()){
-		}else {
-			logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
-		}
+		createTask(taskCreateDTO);
 	}
 
-
+	private void createTask(TaskCreateDTO taskCreateDTO)  {
+		String orderNo = taskCreateDTO.getOrderNo();
+		try{
+			TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(taskCreateDTO);
+			if (taskResponse.isSucceeded() && taskResponse.getData()){
+				return;
+			}else {
+				logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
+			}
+		}catch (Exception e){
+			logger.error("调用任务中心发单出错，orderNo:{},exception:{}",orderNo,e);
+		}
+		//TODO
+		dataCheckingService.reportTaskCreateRpcException(orderNo);
+	}
 
 	/**
 	 * 商家取消订单
@@ -693,20 +706,6 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		detailEntity.setSenderLatitude(entity.getSenderLatitude());
 		detailEntity.setSenderLongitude(entity.getSenderLongitude());
 		detailEntity.setUserId(entity.getUserId());
-		/*orderEntity.setId(null);
-		orderEntity.setCreateDate(null);
-		orderEntity.setUpdateDate(null);
-		orderEntity.setRatedFlag(null);
-		orderEntity.setGrabItemTime(null);
-		orderEntity.setGrabOrderTime(null);
-		orderEntity.setExpectFinishTime(null);
-		orderEntity.setRiderId(null);
-		orderEntity.setRiderName(null);
-		orderEntity.setRiderPhone(null);
-		detailEntity.setId(null);
-		detailEntity.setCreateDate(null);
-		detailEntity.setUpdateDate(null);
-*/
 		//设置重发特殊标记位
 		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
 		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());

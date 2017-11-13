@@ -50,4 +50,6 @@ public interface MerchantToAdminServiceInterface {
      * @return
      */
     public MerchantOrderDTO findMerchantOrderDetail(String orderNo);
+
+    boolean processTaskCreateException(String orderNo);
 }

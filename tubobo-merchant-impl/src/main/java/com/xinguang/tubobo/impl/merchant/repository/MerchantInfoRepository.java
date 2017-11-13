@@ -45,4 +45,5 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity
     @Query("update #{#entityName} a set a.avatarUrl = :avatarUrl, a.updateDate=:updateDate where a.userId = :userId and a.delFlag = :delFlag ")
     int updateHeadImage(@Param("userId") String userId, @Param("delFlag") String delFlag, @Param("avatarUrl") String avatarUrl, @Param("updateDate") Date updateDate);
 
+    MerchantInfoEntity findByShopLicencesNoAndDelFlag(String licencesNo, String delFlagNormal);
 }

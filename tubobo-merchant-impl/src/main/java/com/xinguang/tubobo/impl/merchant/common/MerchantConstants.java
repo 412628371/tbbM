@@ -38,6 +38,7 @@ public class MerchantConstants {
     public static final String REQUESTID_HEADER = "requestID";
 ;
     public static final Double DISPATCH_RADIUS_BY_KiloMILLS = 3.00;
+    public static final Double BDCODE_BIND_TIMELINNESS=6.00;
     public static final int PAY_EXPIRED_TIME_BY_MilSECONDS = 1800000;
     public static final int GRAB_EXPIRED_TIME_BY_MilSECONDS = 300000;
     public static final int POST_ORDER_GRABEXPIRED_MilSECONDS = 7200000;
