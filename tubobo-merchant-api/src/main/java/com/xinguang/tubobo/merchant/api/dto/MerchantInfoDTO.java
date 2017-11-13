@@ -57,6 +57,15 @@ public class MerchantInfoDTO implements Serializable{
 	private Date unbundleTime;			 //解绑时间
 
 	private Long merTypeId;			//商家类型id
+	private String shopLicencesNo;	//营业执照编号
+	public String getShopLicencesNo() {
+		return shopLicencesNo;
+	}
+
+	public void setShopLicencesNo(String shopLicencesNo) {
+		this.shopLicencesNo = shopLicencesNo;
+	}
+
 
 	public Long getMerTypeId() {
 		return merTypeId;
