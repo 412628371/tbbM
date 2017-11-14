@@ -12,6 +12,7 @@ import com.xinguang.tubobo.merchant.web.response.MerchantInfoResponse;
 import com.xinguang.tubobo.rider.api.RiderToAdminServiceInterface;
 import com.xinguang.tubobo.rider.api.dto.RiderInfoDTO;
 import com.xinguang.tubobo.rider.api.enums.EnumRiderAuthentication;
+import com.xinguang.xingchen.SMSplatform.enums.EnumCodeType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,13 @@ public class UniqueIdentifyController extends MerchantBaseController<ReqUniquePe
     private MerchantInfoManager merchantInfoManager;
     @Override
     protected String doService(String userId, ReqUniquePersonIdentify req) throws MerchantClientException {
-        return merchantInfoManager.checkByIdCardIfRider(req.getIdCardNo());
+        boolean b = merchantInfoManager.checkByIdCardIfRider(req.getIdCardNo());
+        if (b){
+            throw new MerchantClientException(EnumRespCode.SUCCESS);
+        }else{
+            logger.error("店铺申请失败，该用户已经申请成为骑手。IdcardNo:{}",req.getIdCardNo());
+            throw new MerchantClientException(EnumRespCode.SHOP_ALREADY_BOUND_RIDER);
+        }
     }
 
 
