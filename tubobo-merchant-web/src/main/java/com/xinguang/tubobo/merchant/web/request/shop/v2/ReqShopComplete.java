@@ -51,7 +51,7 @@ public class ReqShopComplete implements Serializable {
     //@NotBlank(message = "区域编码不能为空")
     private String addressAdCode;//高德区域编码
 
-    @Size(min = 1, max = 50,message = "营业执照地址过长")
+    //@Size(min = 1, max = 50,message = "营业执照地址过长")
     private String shopLicencesNo;  //营业执照编号
 
     public String getShopLicencesNo() {
