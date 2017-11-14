@@ -249,7 +249,7 @@ public class MerchantInfoManager {
     /**
      * 校验是否注册骑手
      * */
-    public String checkByIdCardIfRider(String IdcardNo) throws MerchantClientException {
+    public void checkByIdCardIfRider(String IdcardNo) throws MerchantClientException {
         List<RiderInfoDTO> riderInfos = riderToAdminServiceInterface.findByIdCardNo(IdcardNo);
         //判断
         boolean legalForVerify =true;
@@ -264,9 +264,7 @@ public class MerchantInfoManager {
         }
 
 
-        if (legalForVerify){
-            throw new MerchantClientException(EnumRespCode.SUCCESS);
-        }else {
+        if (!legalForVerify){
             logger.error("店铺申请失败，该用户已经申请成为骑手。IdcardNo:{}",IdcardNo);
             throw new MerchantClientException(EnumRespCode.SHOP_ALREADY_BOUND_RIDER);
         }
