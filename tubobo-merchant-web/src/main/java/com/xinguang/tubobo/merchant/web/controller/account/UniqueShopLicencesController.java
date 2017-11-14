@@ -30,7 +30,7 @@ public class UniqueShopLicencesController extends MerchantBaseController<ReqUniq
 
         //判断
         boolean legalForVerify =true;
-        if (merchantInfoEntity!=null){
+        if (merchantInfoEntity!=null&&!merchantInfoEntity.getUserId().equalsIgnoreCase(userId)){
             //重复
             throw new MerchantClientException(EnumRespCode.SHOP_LICENCESNO_EXIST);
         }else {
