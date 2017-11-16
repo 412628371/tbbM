@@ -5,7 +5,9 @@ import com.xinguang.tubobo.account.api.TbbConstants;
 import com.xinguang.tubobo.account.api.request.RechargeRequest;
 import com.xinguang.tubobo.account.api.response.RechargeInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.service.MerchantTypeService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
 import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -30,6 +32,8 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
     private TbbAccountService tbbAccountService;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private MerchantTypeService merchantTypeService;
 
     @Override
     protected boolean needIdentify() {
@@ -50,6 +54,8 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
         rechargeRequest.setClientIp(ConvertUtil.handleNullString(req.getClientIp()));
         rechargeRequest.setTitle(MerchantConstants.MERCHANT_RECHARGE_TITLE);
         rechargeRequest.setChannel(TbbConstants.Channel.ALI_PAY);
+        MerchantTypeDTO tyepInfo = merchantTypeService.findById(entity.getMerTypeId());
+        rechargeRequest.setMerchantType(tyepInfo.getName());
         TbbAccountResponse<RechargeInfo> response = tbbAccountService.recharge(rechargeRequest);
         if (response != null && response.isSucceeded()){
             RespAccountRecharge respAccountRecharge = new RespAccountRecharge();
