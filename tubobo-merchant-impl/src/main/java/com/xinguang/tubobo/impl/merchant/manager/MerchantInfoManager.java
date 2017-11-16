@@ -153,6 +153,7 @@ public class MerchantInfoManager {
      */
     public MerchantInfoEntity shopComplete(String userId,MerchantInfoEntity infoEntity) throws MerchantClientException {
         MerchantInfoEntity existEntity  = merchantInfoService.findByUserId(userId);
+        logger.info("entity",existEntity.toString());
         if (null == existEntity){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
@@ -178,7 +179,7 @@ public class MerchantInfoManager {
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());
             existEntity.setShopLicencesNo(infoEntity.getShopLicencesNo());
-            existEntity.setVerifyDate(infoEntity.getVerifyDate());
+           // existEntity.setVerifyDate(infoEntity.getVerifyDate());
             //高德区域编码
             if(StringUtils.isBlank(infoEntity.getAddressAdCode())){
                 //地理反编码
@@ -197,6 +198,7 @@ public class MerchantInfoManager {
             existEntity.setApplyDate(new Date());
             existEntity.setIdentifyType(EnumIdentifyType.MERCHANT.getValue());
             existEntity.setMerchantStatus(EnumAuthentication.APPLY.getValue());
+            logger.info("entity",existEntity.toString());
             boolean result = merchantInfoService.merchantUpdate(existEntity);
             if (!result){
                 throw new MerchantClientException(EnumRespCode.FAIL);
