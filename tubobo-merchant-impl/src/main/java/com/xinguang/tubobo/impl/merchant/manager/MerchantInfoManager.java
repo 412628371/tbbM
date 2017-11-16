@@ -178,6 +178,7 @@ public class MerchantInfoManager {
             existEntity.setLongitude(infoEntity.getLongitude());
             existEntity.setLatitude(infoEntity.getLatitude());
             existEntity.setShopLicencesNo(infoEntity.getShopLicencesNo());
+            existEntity.setVerifyDate(infoEntity.getVerifyDate());
             //高德区域编码
             if(StringUtils.isBlank(infoEntity.getAddressAdCode())){
                 //地理反编码
