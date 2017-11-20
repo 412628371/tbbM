@@ -120,17 +120,6 @@ public class OrderService extends BaseService {
         double riderFee;
         Integer commissionRate=0;
 
-       /* //保存配送距离 从1.41版本保存为我们之前传给客户端的距离值,同时向下兼容
-        Double deliveryDistance = entity.getDeliveryDistance();
-        //1.41版本之前所展示的实时值
-        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())) {
-            distance = deliveryFeeService.sumDeliveryDistanceChePei(entity.getSenderLongitude(), entity.getSenderLatitude(),
-                    entity.getReceiverLongitude(), entity.getReceiverLatitude());
-        } else {
-            distance = deliveryFeeService.sumDeliveryDistanceMerchant(userId, entity.getReceiverLatitude(), entity.getReceiverLongitude());
-        }
-        //此处向下兼容
-        distance = deliveryDistance == null ? distance : deliveryDistance;*/
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         //设置该单是否付短信通知收货人

@@ -120,15 +120,17 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	 * 商家付款
 	 */
 	public void merchantPay(TaskCreateDTO taskCreateDTO, String merchantId, String orderNo, long payId) throws MerchantClientException {
-		int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
-		taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
+		//postNormalOrder,smallOrder grab时间相同 task端可以使用同一延时队列处理
+		//int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
+		//taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
 		Date payDate = new Date();
 		String status = EnumMerchantOrderStatus.WAITING_GRAB.getValue();
 		//TODO 分业务拆分处理，支持驿站订单的多种派发方式
-		//驿站订单，支付之后的状态变为待取货
-		if (TaskTypeEnum.POST_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())||TaskTypeEnum.POST_NORMAL_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
+		//postOrder驿站订单，支付之后的状态变为待取货   postNormalOrder,smallOrder-待接单
+		if (TaskTypeEnum.POST_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
 			status = EnumMerchantOrderStatus.WAITING_PICK.getValue();
-			taskCreateDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
+			//postOrder驿站订单 待取货超时时间设置 task端新开队列
+			//taskCreateDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
 		}
 		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate,status);
 		if (count != 1){
@@ -650,6 +652,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	}
 	/**
 	 * 骑手取消订单后 重新发单
+	 * order表新增字段需知会改方法()
 	 * @return
 	 */
 	private String riderCancelResend(MerchantOrderEntity entity,Boolean messageOpen,Double subsidyFromRider) {
@@ -868,7 +871,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			merchantOrderDTO.setProviderName(entity.getProviderName());
 		}else if ((EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType()))){
 			merchantOrderDTO.setTaskType(TaskTypeEnum.POST_NORMAL_ORDER);
-			merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
+			//merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
 			merchantOrderDTO.setProviderId(entity.getProviderId());
 			merchantOrderDTO.setProviderName(entity.getProviderName());
 		}
