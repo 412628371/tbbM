@@ -271,7 +271,7 @@ public class OrderService extends BaseService {
 
         int i = merchantOrderDao.orderCancelIgnoreStatus(orderNo, new Date(), EnumMerchantOrderStatus.CANCEL.getValue(), new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (i>0){
-            i=merchantOrderDetailRepository.updateCancelReason(orderNo, cancelReason,new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+            merchantOrderDetailRepository.updateCancelReason(orderNo, cancelReason,new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         }
         return   i==1;
 
@@ -312,7 +312,7 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int riderGrabOrder(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance) {
-        int i = merchantOrderDao.riderGrabOrder(EnumMerchantOrderStatus.WAITING_PICK.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.riderGrabOrder(EnumMerchantOrderStatus.WAITING_PICK.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime,EnumMerchantOrderStatus.WAITING_GRAB.getValue(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (i>0){
             i= merchantOrderDetailRepository.riderGrabOrder( pickupDistance,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
         }
@@ -321,12 +321,13 @@ public class OrderService extends BaseService {
     }
     /**
      * 骑手抢单
+     * KA订单直接改为配送中
      */
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional()
     public int riderGrabOrderOfPost(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, Date pickTime,  Double pickupDistance) {
-        int i = merchantOrderDao.riderGrabOrderOfPost(EnumMerchantOrderStatus.DELIVERYING.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.riderGrabOrderOfPost(EnumMerchantOrderStatus.DELIVERYING.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, EnumMerchantOrderStatus.WAITING_PICK.getValue(),BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (i>0){
           i= merchantOrderDetailRepository.riderGrabOrderOfPost(pickupDistance, orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
         }

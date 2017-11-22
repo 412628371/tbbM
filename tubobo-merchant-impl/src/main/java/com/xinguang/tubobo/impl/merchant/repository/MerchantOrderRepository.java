@@ -110,9 +110,9 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
     @Modifying
     @Query("update #{#entityName} a set a.orderStatus =:orderStatus,a.riderId=:riderId ,a.riderPhone=:riderPhone,a.riderName=:riderName,a.grabOrderTime =:grabOrderTime,a.expectFinishTime =:expectFinishTime " +
-            " where a.orderNo =:orderNo  and a.delFlag =:delFlag ")
+            " where a.orderNo =:orderNo  and orderStatus=:whereStatus and a.delFlag =:delFlag ")
     int riderGrabOrder(@Param("orderStatus")String orderStatus, @Param("riderId")String riderId,@Param("riderName") String riderName, @Param("riderPhone")String riderPhone, @Param("orderNo")String orderNo, @Param("grabOrderTime")Date grabOrderTime,
-                       @Param("expectFinishTime")Date expectFinishTime, @Param("delFlag")String delFlag);
+                       @Param("expectFinishTime")Date expectFinishTime, @Param("whereStatus")String whereStatus,@Param("delFlag")String delFlag);
 
    /**
      * 驿站订单骑手接单与取货
@@ -128,9 +128,9 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
      */
    @Modifying
    @Query("update #{#entityName} a set a.orderStatus =:orderStatus,a.riderId=:riderId ,a.riderPhone=:riderPhone,a.riderName=:riderName,a.grabOrderTime =:grabOrderTime,a.grabItemTime=:grabOrderTime,a.expectFinishTime =:expectFinishTime " +
-           "where a.orderNo =:orderNo  and a.delFlag =:delFlag ")
+           "where a.orderNo =:orderNo and orderStatus=:whereStatus and a.delFlag =:delFlag ")
    int riderGrabOrderOfPost(@Param("orderStatus")String orderStatus,@Param("riderId")String riderId, @Param("riderName")String riderName, @Param("riderPhone")String riderPhone, @Param("orderNo")String orderNo, @Param("grabOrderTime")Date grabOrderTime,
-                            @Param("expectFinishTime")Date expectFinishTime,@Param("delFlag")String delFlag);
+                            @Param("expectFinishTime")Date expectFinishTime,@Param("whereStatus")String whereStatus,@Param("delFlag")String delFlag);
 
 
    /**
