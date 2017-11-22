@@ -310,7 +310,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		}
 		logger.info("处理骑手接单：orderNo:{}",orderNo);
 		boolean result =false ;
-		//驿站订单回调后直接是已取货状态，短信发送给收货人 TODO 代码拆分与整合
+		//驿站订单抢单取货入口  TODO 代码拆分与整合
 		if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrderOfPost(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
 					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),entity.getGrabOrderTime(),dto.getPickupDistance())>0;
@@ -320,6 +320,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 				//短信通知骑手
 				sendTxtMessage(entity,dto.getRiderName(),dto.getRiderPhone());
+				//通知天下食集
+				notifyKASHIJI(orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), entity.getRiderId(), entity.getRiderName(), entity.getRiderPhone(), entity.getUserId(), "骑手取货通知失败.orderNo:{}");
 			}
 		}else if ( (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())||(EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType())))&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
@@ -350,22 +352,23 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if (flag){
 			//短信通知骑手
 			sendTxtMessage(entity,entity.getRiderName(),entity.getRiderPhone());
-			if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
-				try {
-					//  通知食集
-					OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
-					orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.DELIVERYING.getValue());
-					orderStatusInfoDTO.setOrderNo(orderNo);
-					orderStatusInfoDTO.setRiderId(entity.getRiderId());
-					orderStatusInfoDTO.setRiderName(entity.getRiderName());
-					orderStatusInfoDTO.setRiderPhone(entity.getRiderPhone());
-					launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
-				}catch (Exception e){
-					logger.info("骑手取货通知失败.orderNo:{}",orderNo );
-				}
-			}
 		}
 		return flag;
+	}
+
+	private void notifyKASHIJI(String orderNo, String value, String riderId, String riderName, String riderPhone, String userId, String s) {
+		try {
+			//  通知食集
+			OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+			orderStatusInfoDTO.setOrderStatus(value);
+			orderStatusInfoDTO.setOrderNo(orderNo);
+			orderStatusInfoDTO.setRiderId(riderId);
+			orderStatusInfoDTO.setRiderName(riderName);
+			orderStatusInfoDTO.setRiderPhone(riderPhone);
+			launcherInnerTbbOrderService.statusChange(userId, orderStatusInfoDTO);
+		} catch (Exception e) {
+			logger.info(s, orderNo);
+		}
 	}
 
 	/**
@@ -388,18 +391,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId(),entity.getExpiredMinute(),entity.getCancelCompensation());
 			}
 			if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
-				try {
-					//  通知食集
-					OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
-					orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.FINISH.getValue());
-					orderStatusInfoDTO.setOrderNo(orderNo);
-					orderStatusInfoDTO.setRiderId(entity.getRiderId());
-					orderStatusInfoDTO.setRiderName(entity.getRiderName());
-					orderStatusInfoDTO.setRiderPhone(entity.getRiderPhone());
-					launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
-				}catch (Exception e){
-					logger.info("骑手完成通知失败.orderNo:{}",orderNo );
-				}
+				notifyKASHIJI(orderNo, EnumMerchantOrderStatus.FINISH.getValue(), entity.getRiderId(), entity.getRiderName(), entity.getRiderPhone(), entity.getUserId(), "骑手完成通知失败.orderNo:{}");
 			}
 		}
 		if (expiredCompensation!=null&&expiredCompensation>0.0){
@@ -765,18 +757,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			logger.info("商家处理骑手未妥投,result:{}",result);
 			if (result > 0){
 				if(EnumOrderType.POSTORDER.getValue().equals(order.getOrderType())){
-					try {
-						//通知食集
-						OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
-						orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
-						orderStatusInfoDTO.setOrderNo(order.getOrderNo());
-						orderStatusInfoDTO.setRiderId(order.getRiderId());
-						orderStatusInfoDTO.setRiderName(order.getRiderName());
-						orderStatusInfoDTO.setRiderPhone(order.getRiderPhone());
-						launcherInnerTbbOrderService.statusChange(order.getUserId(),orderStatusInfoDTO);
-					}catch (Exception e){
-						logger.info("未妥投通知商家失败,orderNo:{}",order.getOrderNo());
-					}
+					notifyKASHIJI(order.getOrderNo(), EnumMerchantOrderStatus.UNDELIVERED.getValue(), order.getRiderId(), order.getRiderName(), order.getRiderPhone(), order.getUserId(), "未妥投通知商家失败,orderNo:{}");
 				}
                 return true;
             }

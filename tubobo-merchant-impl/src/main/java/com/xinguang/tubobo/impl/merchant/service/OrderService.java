@@ -424,16 +424,26 @@ public class OrderService extends BaseService {
                 }
                 if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
+
+                /*    if (entity.getOrderType().equalsIgnoreCase(EnumOrderType.POSTORDER.getValue())){
+                        list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.ING.getValue()));
+                        list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.FINISH.getValue()));
+                    }else{
+
+                    }*/
+                //TODO 驿站订单的待处理搜索 需要显示未妥投的驿站订单
                     list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"),cb.equal(root.get("orderStatus").as(String.class), "INIT")));
+
+
                 }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         MerchantConstants.ORDER_LIST_QUERY_CONDITION_FINISH.equals(entity.getOrderStatus())){
                     list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "RESEND"),cb.equal(root.get("orderStatus").as(String.class), "FINISH")));
-                }else if (EnumMerchantOrderStatus.UNDELIVERED.getValue().equals(entity.getOrderStatus())){
+                }/*else if (EnumMerchantOrderStatus.UNDELIVERED.getValue().equals(entity.getOrderStatus())){
                     //未妥投
                     list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.ING.getValue()));
                     list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.DELIVERYING.getValue()));
 
-                }else if(EnumMerchantOrderStatus.CONFIRM.getValue().equals(entity.getOrderStatus())){
+                }*/else if(EnumMerchantOrderStatus.CONFIRM.getValue().equals(entity.getOrderStatus())){
                     //已经确认
                     list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.FINISH.getValue()));
                     list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.FINISH.getValue()));
