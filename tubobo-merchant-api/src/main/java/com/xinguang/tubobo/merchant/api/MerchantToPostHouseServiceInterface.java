@@ -36,7 +36,7 @@ public interface MerchantToPostHouseServiceInterface {
     MerchantInfoDTO findMerchantList(String userId);
 
     /**
-     * 查询正在进行中，带取货， 待配送， 未妥投的订单数目
+     * 查询正在进行中，带取货， 待接单， 待配送， 未妥投的订单数目
      * @return
      */
     OrderStatusStatsDTO findMerchantOrderCounts(Long providerId);

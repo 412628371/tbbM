@@ -441,6 +441,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		OrderStatusStatsDTO statusStatsDTO = new OrderStatusStatsDTO();
 		Long deliveryingCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.DELIVERYING.getValue(), null);
 		Long waitingPickCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.WAITING_PICK.getValue(), null);
+		Long waitingGrabCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.WAITING_GRAB.getValue(), null);
 		Long undeliveredCounts = orderService.getOrderWithProviderIdAndStatus(providerId, null, PostOrderUnsettledStatusEnum.ING.getValue());
 		if(null != undeliveredCounts){
 			statusStatsDTO.setUndeliveredCounts(undeliveredCounts);
@@ -448,15 +449,18 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if(null != waitingPickCounts){
 			statusStatsDTO.setWaitingPickCounts(waitingPickCounts);
 		}
+		if(null != waitingGrabCounts){
+			statusStatsDTO.setWaitingGrabCounts(waitingGrabCounts);
+		}
 		if(null != deliveryingCounts){
 			statusStatsDTO.setDeliveryingCounts(deliveryingCounts);
 			if(null != undeliveredCounts){
 				statusStatsDTO.setDeliveryingCounts(deliveryingCounts-undeliveredCounts);
 			}
 		}
-		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts()+statusStatsDTO.getUndeliveredCounts());
-		logger.info("订单进行中：{}， 配送中：{}，待接单：{}，未妥投：{}", statusStatsDTO.getProgressCounts(), statusStatsDTO.getDeliveryingCounts(),
-				statusStatsDTO.getWaitingPickCounts(), statusStatsDTO.getUndeliveredCounts());
+		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts()+statusStatsDTO.getUndeliveredCounts()+statusStatsDTO.getWaitingGrabCounts());
+		logger.info("订单进行中：{}， 配送中：{}，待接单：{}，未妥投：{}, 待接单：{}", statusStatsDTO.getProgressCounts(), statusStatsDTO.getDeliveryingCounts(),
+				statusStatsDTO.getWaitingPickCounts(), statusStatsDTO.getUndeliveredCounts(), statusStatsDTO.getWaitingGrabCounts());
 		return statusStatsDTO;
 	}
 
