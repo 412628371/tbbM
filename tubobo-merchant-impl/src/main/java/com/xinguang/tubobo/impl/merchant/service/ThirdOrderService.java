@@ -203,7 +203,7 @@ public class ThirdOrderService {
         newOrderEntity.setTipFee(0.0);
         newOrderEntity.setUserId(userId);
         newOrderEntity.setSenderId(userId);
-        newOrderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
+        newOrderEntity.setOrderStatus(EnumMerchantOrderStatus.WAITING_GRAB.getValue());
         newOrderEntity.setOrderTime(new Date());
         newOrderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
         newOrderEntity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
