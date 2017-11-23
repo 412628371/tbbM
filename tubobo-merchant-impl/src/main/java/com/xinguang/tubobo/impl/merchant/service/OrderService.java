@@ -425,15 +425,18 @@ public class OrderService extends BaseService {
                 if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
 
-                /*    if (entity.getOrderType().equalsIgnoreCase(EnumOrderType.POSTORDER.getValue())){
-                        list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.ING.getValue()));
-                        list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.FINISH.getValue()));
+
+                   if (entity.getOrderType().equalsIgnoreCase(EnumOrderType.POSTORDER.getValue())){
+                       // 驿站订单的待处理搜索 需要显示未妥投且已完成的驿站订单 待测
+                       // list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.ING.getValue()));
+                       // list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.FINISH.getValue()));
+                        Predicate p1 = cb.or(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"), cb.equal(root.get("orderStatus").as(String.class), "INIT")),
+                                cb.and(cb.equal(root.get("unsettledStatus").as(String.class), PostOrderUnsettledStatusEnum.ING.getValue()), cb.equal(root.get("orderStatus").as(String.class), EnumMerchantOrderStatus.FINISH.getValue())));
+                        list.add(p1);
                     }else{
+                       list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"),cb.equal(root.get("orderStatus").as(String.class), "INIT")));
 
-                    }*/
-                //TODO 驿站订单的待处理搜索 需要显示未妥投的驿站订单
-                    list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"),cb.equal(root.get("orderStatus").as(String.class), "INIT")));
-
+                    }
 
                 }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         MerchantConstants.ORDER_LIST_QUERY_CONDITION_FINISH.equals(entity.getOrderStatus())){
