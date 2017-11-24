@@ -1,7 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
-import com.xinguang.tubobo.api.AdminToMerchantService;
-import com.xinguang.tubobo.api.dto.CityOpenDTO;
+import com.xinguang.tubobo.admin.api.AdminToMerchantService;
+import com.xinguang.tubobo.admin.api.dto.CityOpenDTO;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.order.ReqOrderOpenedCity;

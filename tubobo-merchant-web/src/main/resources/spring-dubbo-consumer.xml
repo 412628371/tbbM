@@ -21,8 +21,8 @@
 	<dubbo:reference id="taskDispatchService" interface="com.xinguang.taskcenter.api.TaskDispatchService" group="${dubbo.group}" version="0.0.1" check="false"/>
 
 	<dubbo:reference id="riderToAdminServiceInterface" interface="com.xinguang.tubobo.rider.api.RiderToAdminServiceInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
-	<dubbo:reference id="adminToMerchantService" interface="com.xinguang.tubobo.api.AdminToMerchantService" version="0.0.1" group="${dubbo.group}" check="false"/>
-	<dubbo:reference id="overFeeServiceImpl" interface="com.xinguang.tubobo.api.OverFeeService" version="0.0.1" group="${dubbo.group}" check="false"/>
+	<dubbo:reference id="adminToMerchantService" interface="com.xinguang.tubobo.admin.api.AdminToMerchantService" version="0.0.1" group="${dubbo.group}" check="false"/>
+	<dubbo:reference id="overFeeServiceImpl" interface="com.xinguang.tubobo.admin.api.OverFeeService" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="tbbNotifyService" interface="com.xinguang.tubobo.notify.api.TbbNotifyService" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="overTimeRuleService" interface="com.xinguang.taskcenter.api.OverTimeRuleInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference version="0.0.1" check="false" group="${dubbo.group}" id="smsService" interface="com.xinguang.xingchen.SMSplatform.api.SMSServiceInterface" />

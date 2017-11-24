@@ -1,7 +1,7 @@
 package com.xinguang.tubobo.merchant.web.controller.order;
 
-import com.xinguang.tubobo.api.OverFeeService;
-import com.xinguang.tubobo.api.dto.OverFeeDTO;
+import com.xinguang.tubobo.admin.api.OverFeeService;
+import com.xinguang.tubobo.admin.api.dto.OverFeeDTO;
 import com.xinguang.tubobo.impl.merchant.repository.MerchantInfoRepository;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
