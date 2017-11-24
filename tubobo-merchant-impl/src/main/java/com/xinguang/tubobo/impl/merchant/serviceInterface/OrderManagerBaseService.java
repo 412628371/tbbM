@@ -15,8 +15,6 @@ import com.xinguang.tubobo.account.api.request.FineRequest;
 import com.xinguang.tubobo.account.api.request.PayConfirmRequest;
 import com.xinguang.tubobo.account.api.request.SubsidyRequest;
 import com.xinguang.tubobo.account.api.response.*;
-import com.xinguang.tubobo.api.AdminToMerchantService;
-import com.xinguang.tubobo.api.dto.AddressDTO;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
 import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;

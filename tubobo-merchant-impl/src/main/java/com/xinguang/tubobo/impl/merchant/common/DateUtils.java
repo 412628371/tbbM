@@ -7,6 +7,7 @@ package com.xinguang.tubobo.impl.merchant.common;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 
+import javax.xml.crypto.Data;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -249,7 +250,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		if (null == begin || null == end || end.before(begin)){
 			return 0;
 		}
-		double hours = (end.getTime() - begin.getTime())/(1000*3600);
+		double hours = (end.getTime() - begin.getTime())/(1000.0*3600.0);
 		return hours;
 	}
 
@@ -313,8 +314,11 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 //		for(int i=0; i<s.length; i++){
 //			System.out.println(s[i]);
 //		}
-		String s1 = "00:00:00";
-		String s2 = "00:30:00";
-		System.out.println(isBeforeBeginTimeInOneDay(s1, s2));
+//		String s1 = "00:00:00";
+//		String s2 = "00:30:00";
+//		System.out.println(isBeforeBeginTimeInOneDay(s1, s2));
+		Date data1 = parseDate("2017-11-16 11:01:00");
+		Date data2 = parseDate("2017-11-16 11:07:00");
+		System.out.println(countHourBetweenTwoDate(data1, data2));
 	}
 }

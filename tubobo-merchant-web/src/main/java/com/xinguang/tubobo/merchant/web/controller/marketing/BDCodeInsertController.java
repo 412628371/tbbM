@@ -31,11 +31,10 @@ public class BDCodeInsertController extends MerchantBaseController<ReqBDCode, Ob
     protected Object doService(String userId, ReqBDCode req) throws MerchantClientException {
         MerchantInfoEntity merchantInfoEntity = merchantInfoService.findByUserId(userId);
         //读取限制时间
-        Double timeLimit = config.getBdcodeBindTimeliness();
+        int timeLimit = config.getBdcodeBindTimeliness();
         Date createDate = merchantInfoEntity.getCreateDate();
         if(null != createDate){
-            double timeDiff = DateUtils.countHourBetweenTwoDate(createDate, new Date());
-            if(timeDiff>timeLimit){
+            if(DateUtils.addHours(createDate,timeLimit).before(new Date())){
                 throw new MerchantClientException(EnumRespCode.MERCHANT_BDCODE_TIMEOUT);
             }
         }

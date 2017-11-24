@@ -1,6 +1,8 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
+import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantInfoManager;
+import com.xinguang.tubobo.impl.merchant.service.MerchantMessageSettingsService;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyRequest,MerchantInfoResponse> {
     @Autowired
     private MerchantInfoManager merchantInfoManager;
+    @Autowired
+    MerchantMessageSettingsService settingsService;
 
     @Override
     protected MerchantInfoResponse doService(String userId, ShopIdentifyRequest req) throws MerchantClientException {
@@ -29,6 +33,13 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
         MerchantInfoEntity respEntity = merchantInfoManager.identify(userId,req.getPayPassword(), EnumIdentifyType.MERCHANT.getValue(),infoEntity);
         MerchantInfoResponse infoResponse = new MerchantInfoResponse();
         BeanUtils.copyProperties(respEntity,infoResponse);
+        //封装messageOpen
+        MerchantMessageSettingsEntity entity = settingsService.findByUserIdAndCreate(respEntity.getUserId());
+        if (entity == null){
+            entity = new MerchantMessageSettingsEntity();
+            entity.setMessageOpen(false);
+        }
+        infoResponse.setMessageOpen(entity.getMessageOpen());
         return infoResponse;
     }
 
