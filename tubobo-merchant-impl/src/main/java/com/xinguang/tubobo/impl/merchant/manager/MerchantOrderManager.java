@@ -187,7 +187,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 					return false;
 				}
 
-				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())&&
+						entity.getOrderType().equals(EnumOrderType.SMALLORDER.getValue())){//目前只有普通商家需要罚款，所以需要判断余额是否充足
 					//waitgrab时因为要判断余额是否可以支付
 					judgeBalanceForCancel(merchant);
 				}
