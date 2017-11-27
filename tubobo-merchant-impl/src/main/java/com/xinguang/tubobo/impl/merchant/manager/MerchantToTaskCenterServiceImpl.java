@@ -1,16 +1,22 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
+import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantOrderEntity;
+import com.xinguang.tubobo.impl.merchant.service.MerchantInfoService;
 import com.xinguang.tubobo.impl.merchant.service.OrderService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.MerchantToTaskCenterServiceInterface;
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServiceInterface {
 
@@ -19,7 +25,8 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
     private MerchantOrderManager merchantOrderManager;
     @Autowired
     private OrderService orderService;
-
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
     /**
      * 骑手抢单
@@ -83,5 +90,17 @@ public class MerchantToTaskCenterServiceImpl implements MerchantToTaskCenterServ
         return merchantOrderManager.riderUnsettledOrder(dto);
     }
 
-
+    @Override
+    public List<MerchantInfoDTO> findAllByProviderId(long providerId) {
+        List<MerchantInfoDTO> list = new ArrayList<>();
+        List<MerchantInfoEntity> merchantInfoEntities = merchantInfoService.findAllByProviderId(providerId);
+        if(null != merchantInfoEntities && merchantInfoEntities.size()>0){
+            for(MerchantInfoEntity entity : merchantInfoEntities){
+                MerchantInfoDTO dto = new MerchantInfoDTO();
+                BeanUtils.copyProperties(entity, dto);
+                list.add(dto);
+            }
+        }
+        return list;
+    }
 }
