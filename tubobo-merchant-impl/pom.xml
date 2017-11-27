@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>com.xinguang</groupId>
-            <artifactId>tubobo-api</artifactId>
+            <artifactId>tubobo-admin-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.xinguang.taskcenter</groupId>
