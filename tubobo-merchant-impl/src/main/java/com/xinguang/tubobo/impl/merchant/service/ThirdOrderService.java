@@ -203,7 +203,7 @@ public class ThirdOrderService {
         newOrderEntity.setTipFee(0.0);
         newOrderEntity.setUserId(userId);
         newOrderEntity.setSenderId(userId);
-        newOrderEntity.setOrderStatus(EnumMerchantOrderStatus.WAITING_GRAB.getValue());
+        newOrderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
         newOrderEntity.setOrderTime(new Date());
         newOrderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
         newOrderEntity.setDelFlag(MerchantOrderEntity.DEL_FLAG_NORMAL);
@@ -249,7 +249,7 @@ public class ThirdOrderService {
                     ,merchant.getAccountId(),response.getData().getId(),amount);
             orderDTO.setTaskType(TaskTypeEnum.POST_NORMAL_ORDER);
             Date payDate = new Date();
-            int count = orderService.merchantPay(userId,orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
+            int count = orderService.merchantPay(userId,orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
             if (count != 1){
                 logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",userId,orderNo);
                 //throw new MerchantClientException(EnumRespCode.FAIL);
