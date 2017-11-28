@@ -431,7 +431,7 @@ public class OrderService extends BaseService {
                        // list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.ING.getValue()));
                        // list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.FINISH.getValue()));
                         Predicate p1 = cb.or(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"), cb.equal(root.get("orderStatus").as(String.class), "INIT")),
-                                cb.and(cb.equal(root.get("unsettledStatus").as(String.class), PostOrderUnsettledStatusEnum.ING.getValue()), cb.equal(root.get("orderStatus").as(String.class), EnumMerchantOrderStatus.FINISH.getValue())));
+                                cb.and(cb.equal(root.get("unsettledStatus").as(String.class), PostOrderUnsettledStatusEnum.ING.getValue()), cb.equal(root.get("orderStatus").as(String.class), EnumMerchantOrderStatus.DELIVERYING.getValue())));
                         list.add(p1);
                     }else{
                        list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"),cb.equal(root.get("orderStatus").as(String.class), "INIT")));
