@@ -539,8 +539,8 @@ public class OrderService extends BaseService {
                 if (StringUtils.isNotBlank(entity.getRiderName())){
                     list.add(cb.like(root.get("riderName").as(String.class),entity.getRiderName()+"%"));
                 }
-                if (StringUtils.isNotBlank(entity.getSenderId())){
-                    list.add(cb.equal(root.get("senderId").as(String.class),entity.getSenderId()));
+                if (StringUtils.isNotBlank(entity.getUserId())){
+                    list.add(cb.equal(root.get("userId").as(String.class),entity.getUserId()));
                 }
                 if (StringUtils.isNotBlank(entity.getSenderName())){
                     list.add(cb.like(root.get("senderName").as(String.class),entity.getSenderName()+"%"));
