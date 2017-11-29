@@ -477,12 +477,8 @@ public class OrderService extends BaseService {
     }
 
 
-    //@Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")
     public Page<OrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
                                                          String orderTimeSort, MerchantOrderEntity entity) {
-
-//        PageRequest pageRequest = new PageRequest(pageNo-1, pageSize,  new Sort(Sort.Direction.DESC, "createDate"));
-        //Sort sort=new Sort(Sort.Direction.DESC, "createDate"));
         Sort sort=null;
         if(StringUtils.isNotBlank(expectFinishTimeSort)){
             if ("asc".equalsIgnoreCase(expectFinishTimeSort)){
@@ -500,27 +496,19 @@ public class OrderService extends BaseService {
                 sort.and(new Sort(new Sort.Order(Sort.Direction.DESC, "orderTime")));
             }
         }
-
-
         if (null==sort){
             sort=new Sort(Sort.Direction.DESC, "createDate");
         }
         PageRequest pageRequest = new PageRequest(pageNo - 1, pageSize, sort);
-        Page<OrderEntity> page = merchantOrderDao.findAll(wherePostHouseOrderList(entity,expectFinishTimeSort,expectFinishTimeSort), pageRequest);
+        Page<OrderEntity> page = merchantOrderDao.findAll(wherePostHouseOrderList(entity), pageRequest);
         return page;
-
-
-   //     return merchantOrderDao.findMerchantOrderPageToPostHouse(pageNo, pageSize, expectFinishTimeSort, orderTimeSort,entity);
     }
 
-    private Specification<OrderEntity> wherePostHouseOrderList(final MerchantOrderEntity entity,final String expectFinishTimeSort,
-                                                               final String orderTimeSort){
+    private Specification<OrderEntity> wherePostHouseOrderList(final MerchantOrderEntity entity){
         return new Specification<OrderEntity>() {
             @Override
             public Predicate toPredicate(Root<OrderEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
                 List<Predicate> list = new ArrayList<>();
-                List<Order> listorder = new ArrayList<>();
-
                 list.add(cb.equal(root.get("delFlag").as(String.class), MerchantInfoEntity.DEL_FLAG_NORMAL));
 
                 if (null != entity.getProviderId()){
@@ -528,17 +516,16 @@ public class OrderService extends BaseService {
                 }
                 if (StringUtils.isNotBlank(entity.getOrderType())){
                     list.add(cb.equal(root.get("orderType").as(String.class),entity.getOrderType()));
-
-
                 }
                 if (StringUtils.isNotBlank(entity.getOrderStatus())){
                     list.add(cb.equal(root.get("orderStatus").as(String.class),entity.getOrderStatus()));
 
                     if (StringUtils.isNotBlank(entity.getUnsettledStatus())){
                         list.add(cb.equal(root.get("unsettledStatus").as(String.class),entity.getUnsettledStatus()));
-                    }else{
-                        list.add(cb.isNull(root.get("unsettledStatus").as(String.class)));
                     }
+//                    else{
+//                        list.add(cb.isNull(root.get("unsettledStatus").as(String.class)));
+//                    }
                 }
                 if (StringUtils.isNotBlank(entity.getOrderNo())){
                     list.add(cb.equal(root.get("orderNo").as(String.class),entity.getOrderNo()));
@@ -557,29 +544,17 @@ public class OrderService extends BaseService {
                 }
                 if (StringUtils.isNotBlank(entity.getSenderName())){
                     list.add(cb.like(root.get("senderName").as(String.class),entity.getSenderName()+"%"));
-
                 }
                 if (null != entity.getCreateDate()){
-                    //list.add(cb.greaterThanOrEqualTo(root.get("orderTime").as(Date.class),DateUtils.formatDateTime(entity.getCreateDate())));
                     list.add(cb.greaterThanOrEqualTo(root.get("orderTime").as(Date.class),entity.getCreateDate()));
-                 /*   sb.append("and order_time >= :create_date ");
-                    parameter.put("create_date", DateUtils.formatDateTime(entity.getCreateDate()));*/
                 }
                 if (null != entity.getUpdateDate()){
                     list.add(cb.lessThanOrEqualTo(root.get("orderTime").as(Date.class),entity.getUpdateDate()));
-                 /*   sb.append("and order_time <= :update_date ");
-                    parameter.put("update_date", DateUtils.formatDateTime(entity.getUpdateDate()));*/
                 }
                 return criteriaQuery.where(list.toArray(new Predicate[list.size()])).getRestriction();
             }
         };
     }
-
-
-
-
-
-
 
     /**
      * 后台查询分页（不缓存）
