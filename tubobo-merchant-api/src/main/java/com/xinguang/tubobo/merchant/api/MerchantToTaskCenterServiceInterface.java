@@ -1,9 +1,11 @@
 package com.xinguang.tubobo.merchant.api;
 
 import com.xinguang.tubobo.merchant.api.dto.MerchantGrabCallbackDTO;
+import com.xinguang.tubobo.merchant.api.dto.MerchantInfoDTO;
 import com.xinguang.tubobo.merchant.api.dto.MerchantUnsettledDTO;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 商家端提供给任务中心的dubbo接口
@@ -35,11 +37,16 @@ public interface MerchantToTaskCenterServiceInterface {
      */
      boolean orderExpire(String orderNo,Date expireTime);
 
-    boolean adminCancel(String orderNo,Date expireTime) ;
+     boolean adminCancel(String orderNo,Date expireTime) ;
 
     /**
      * 驿站订单 未妥投
      */
-    boolean riderUnsettledOrder(MerchantUnsettledDTO dto);
+     boolean riderUnsettledOrder(MerchantUnsettledDTO dto);
 
+    /**
+     * 根据providerId查询该服务商下的所有商家信息
+     * @return
+     */
+     List<MerchantInfoDTO> findAllByProviderId(long providerId);
 }
