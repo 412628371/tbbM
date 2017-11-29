@@ -480,6 +480,11 @@ public class OrderService extends BaseService {
     public Page<OrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
                                                          String orderTimeSort, MerchantOrderEntity entity) {
         Sort sort=null;
+        if(StringUtils.isNotBlank(orderTimeSort)&&("asc".equalsIgnoreCase(expectFinishTimeSort))){
+            sort.and(new Sort(new Sort.Order(Sort.Direction.ASC, "orderTime")));
+        }else {
+            sort.and(new Sort(new Sort.Order(Sort.Direction.DESC, "orderTime")));
+        }
         if(StringUtils.isNotBlank(expectFinishTimeSort)){
             if ("asc".equalsIgnoreCase(expectFinishTimeSort)){
                 sort.and(new Sort(new Sort.Order(Sort.Direction.ASC, "expectFinishTime")));
@@ -487,17 +492,6 @@ public class OrderService extends BaseService {
             if ("desc".equalsIgnoreCase(expectFinishTimeSort)){
                 sort.and(new Sort(new Sort.Order(Sort.Direction.DESC, "expectFinishTime")));
             }
-        }
-        if(StringUtils.isNotBlank(orderTimeSort)){
-            if ("asc".equalsIgnoreCase(expectFinishTimeSort)){
-                sort.and(new Sort(new Sort.Order(Sort.Direction.ASC, "orderTime")));
-            }
-            if ("desc".equalsIgnoreCase(expectFinishTimeSort)){
-                sort.and(new Sort(new Sort.Order(Sort.Direction.DESC, "orderTime")));
-            }
-        }
-        if (null==sort){
-            sort=new Sort(Sort.Direction.DESC, "createDate");
         }
         PageRequest pageRequest = new PageRequest(pageNo - 1, pageSize, sort);
         Page<OrderEntity> page = merchantOrderDao.findAll(wherePostHouseOrderList(entity), pageRequest);
