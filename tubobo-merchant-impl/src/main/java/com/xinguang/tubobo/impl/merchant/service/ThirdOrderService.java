@@ -77,9 +77,13 @@ public class ThirdOrderService {
     DeliveryFeeService deliveryFeeService;
     @Autowired
     RoutePlanning routePlanning;
-
+    /**
+     * 保存订单到thirdOrder
+     * 返回值  true-保存成功
+     * */
     @Transactional()
-    public void saveMtOrder(ThirdOrderEntity mtOrderEntity){
+    public boolean saveMtOrder(ThirdOrderEntity mtOrderEntity){
+        boolean flag=false;
         ThirdOrderEntity existEntity = thirdOrderRepository.findByOriginOrderIdAndPlatformCode(mtOrderEntity.getOriginOrderId(),
                 mtOrderEntity.getPlatformCode());
         if (null == existEntity){
@@ -88,7 +92,9 @@ public class ThirdOrderService {
             mtOrderEntity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
             thirdOrderRepository.save(mtOrderEntity);
             //dealAutoSendOrder(mtOrderEntity);
+            flag=true;
         }
+        return flag;
     }
     /**
     * 自动发单(针对驿站订单 且开启自动发单功能)
