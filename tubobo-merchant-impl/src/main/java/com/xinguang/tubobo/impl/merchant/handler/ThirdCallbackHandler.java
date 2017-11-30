@@ -39,9 +39,11 @@ public class ThirdCallbackHandler {
                     BeanUtils.copyProperties(mtOrderDTO,mtOrderEntity);
                     mtOrderEntity.setUserId(merchantId);
                     mtOrderEntity.setPlatformCode(platformCode.getValue());
-                    mtOrderService.saveMtOrder(mtOrderEntity);
+                    boolean flag = mtOrderService.saveMtOrder(mtOrderEntity);
                     //处理自动发单逻辑(不进行事务控制)
-                    mtOrderService.dealAutoSendOrder(mtOrderEntity);
+                    if (flag){
+                        mtOrderService.dealAutoSendOrder(mtOrderEntity);
+                    }
 
                 }
                 break;
