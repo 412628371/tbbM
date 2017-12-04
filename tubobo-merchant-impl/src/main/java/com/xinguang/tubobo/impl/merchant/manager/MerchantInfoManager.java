@@ -61,7 +61,7 @@ public class MerchantInfoManager {
             logger.error("店铺申请失败，该用户已经申请成为骑手。userId:{}",userId);
             throw new MerchantClientException(EnumRespCode.MERCHANT_ALREADY_APPLY_RIDER);
         }*/
-        checkByIdCardIfRider(entity.getIdCardNo());
+        checkByIdCardIfRider(entity.getIdCardNo(),userId);
         entity.setUserId(userId);
         entity.setIdCardFrontImageUrl(AliOss.subAliossUrl(entity.getIdCardFrontImageUrl()));
         entity.setIdCardBackImageUrl(AliOss.subAliossUrl(entity.getIdCardBackImageUrl()));
@@ -252,8 +252,8 @@ public class MerchantInfoManager {
      * 校验是否注册骑手
      * true 没有注册骑手
      * */
-    public boolean checkByIdCardIfRider(String IdcardNo) throws MerchantClientException {
-        List<RiderInfoDTO> riderInfos = riderToAdminServiceInterface.findByIdCardNo(IdcardNo);
+    public boolean checkByIdCardIfRider(String IdcardNo,String userId) throws MerchantClientException {
+        List<RiderInfoDTO> riderInfos = riderToAdminServiceInterface.findByIdCardNoAndUserId(IdcardNo,userId);
         //判断
         boolean legalForVerify =true;
         if (riderInfos!=null&&riderInfos.size()>0){

@@ -815,7 +815,7 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date unsettledTime,String message) {
         int i = merchantOrderDao.merchantHandlerUnsettledOrder(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue()
-                , unsettledTime, orderNo, PostOrderUnsettledStatusEnum.ING.getValue(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+                , unsettledTime, orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.ING.getValue(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (i>0){
             i= merchantOrderDetailRepository.merchantHandlerUnsettledOrder(message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
         }

@@ -29,7 +29,7 @@ public class UniqueIdentifyController extends MerchantBaseController<ReqUniquePe
     private MerchantInfoManager merchantInfoManager;
     @Override
     protected String doService(String userId, ReqUniquePersonIdentify req) throws MerchantClientException {
-        boolean b = merchantInfoManager.checkByIdCardIfRider(req.getIdCardNo());
+        boolean b = merchantInfoManager.checkByIdCardIfRider(req.getIdCardNo(),userId);
         if (b){
             throw new MerchantClientException(EnumRespCode.SUCCESS);
         }else{
