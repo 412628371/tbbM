@@ -31,7 +31,7 @@ public class TestKaController extends MerchantBaseController<Object,Object>{
 //		rmqTakeoutAnswerProducer.sendAccepted("YZ","30126","20170001","111",null);
 
         MerchantOrderCreateDto dto = new MerchantOrderCreateDto();
-        MerchantOrderEntity merchantOrderEntity = orderService.findByOrderNo("061711290000019");
+        MerchantOrderEntity merchantOrderEntity = orderService.findByOrderNo("061712040000006");
         dto.setUserId("76941");
         AddressInfoDTO consignor = new AddressInfoDTO();
         AddressInfoDTO receiver = new AddressInfoDTO();
