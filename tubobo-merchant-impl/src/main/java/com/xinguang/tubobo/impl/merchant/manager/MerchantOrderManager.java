@@ -636,58 +636,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		OrderEntity orderEntity = new OrderEntity();
 		OrderDetailEntity detailEntity = new OrderDetailEntity();
 		//复制原有信息
-		/*BeanUtils.copyProperties(entity,orderEntity);
-		BeanUtils.copyProperties(entity,detailEntity);*/
-		orderEntity.setWeatherOverFee(entity.getWeatherOverFee());
-		orderEntity.setShortMessage(messageOpen);
-		orderEntity.setOrderType(entity.getOrderType());
-		orderEntity.setDeliveryFee(entity.getDeliveryFee());
-		orderEntity.setDeliveryDistance(entity.getDeliveryDistance());
-		orderEntity.setOriginOrderId(entity.getOriginOrderId());
-		orderEntity.setOriginOrderViewId(entity.getOriginOrderViewId());
-		orderEntity.setPayAmount(amountD);
-		orderEntity.setPeekOverFee(entity.getPeekOverFee());
-		orderEntity.setPlatformCode(entity.getPlatformCode());
-		orderEntity.setProviderId(entity.getProviderId());
-		//orderEntity.setProviderName(entity.getProviderName());
-		orderEntity.setTipFee(entity.getTipFee());
-		orderEntity.setReceiverAddressCity(entity.getReceiverAddressCity());
-		orderEntity.setReceiverAddressDetail(entity.getReceiverAddressDetail());
-		orderEntity.setReceiverAddressDistrict(entity.getReceiverAddressDistrict());
-		orderEntity.setReceiverAddressProvince(entity.getReceiverAddressProvince());
-		orderEntity.setReceiverAddressRoomNo(entity.getReceiverAddressRoomNo());
-		orderEntity.setReceiverAddressStreet(entity.getReceiverAddressStreet());
-		orderEntity.setReceiverLatitude(entity.getReceiverLatitude());
-		orderEntity.setReceiverLongitude(entity.getReceiverLongitude());
-		orderEntity.setReceiverName(entity.getReceiverName());
-		orderEntity.setReceiverPhone(entity.getReceiverPhone());
-		orderEntity.setSenderName(entity.getSenderName());
-        orderEntity.setUserId(entity.getUserId());
-        orderEntity.setSenderAdcode(entity.getSenderAdcode());
-
-		detailEntity.setOrderRemark(entity.getOrderRemark());
-		detailEntity.setPickupDistance(entity.getPickupDistance());
-		detailEntity.setPlatformFee(entity.getPlatformFee());
-		detailEntity.setUserId(entity.getUserId());
-		//detailEntity.setSenderName(entity.getSenderName());
-		detailEntity.setSenderPhone(entity.getSenderPhone());
-		detailEntity.setSenderAddressCity(entity.getSenderAddressCity());
-		detailEntity.setSenderAddressDetail(entity.getSenderAddressDetail());
-		detailEntity.setSenderAddressDistrict(entity.getSenderAddressDistrict());
-		detailEntity.setSenderAddressProvince(entity.getSenderAddressProvince());
-		detailEntity.setSenderAddressRoomNo(entity.getSenderAddressRoomNo());
-		detailEntity.setSenderAddressStreet(entity.getSenderAddressStreet());
-		detailEntity.setSenderLatitude(entity.getSenderLatitude());
-		detailEntity.setSenderLongitude(entity.getSenderLongitude());
-		detailEntity.setUserId(entity.getUserId());
-		//设置重发特殊标记位
-		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
-		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
-		orderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
-		orderEntity.setOrderTime(new Date());
-		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
-		detailEntity.setCancelSourceDeliverySubsidy(subsidyFromRider);
-		detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
+		packageOrderInfoForResend(entity, messageOpen, subsidyFromRider, amountD, orderEntity, detailEntity);
 		//保存订单
 		String newOrderNo= null;
 		try {
@@ -742,6 +691,61 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			}
 		}
 		return newOrderNo;
+	}
+	/**
+	 * 封装重发单订单信息
+	 * */
+	private void packageOrderInfoForResend(MerchantOrderEntity entity, Boolean messageOpen, Double subsidyFromRider, Double amountD, OrderEntity orderEntity, OrderDetailEntity detailEntity) {
+		orderEntity.setWeatherOverFee(entity.getWeatherOverFee());
+		orderEntity.setShortMessage(messageOpen);
+		orderEntity.setOrderType(entity.getOrderType());
+		orderEntity.setDeliveryFee(entity.getDeliveryFee());
+		orderEntity.setDeliveryDistance(entity.getDeliveryDistance());
+		orderEntity.setOriginOrderId(entity.getOriginOrderId());
+		orderEntity.setOriginOrderViewId(entity.getOriginOrderViewId());
+		orderEntity.setPayAmount(amountD);
+		orderEntity.setPeekOverFee(entity.getPeekOverFee());
+		orderEntity.setPlatformCode(entity.getPlatformCode());
+		orderEntity.setProviderId(entity.getProviderId());
+		//orderEntity.setProviderName(entity.getProviderName());
+		orderEntity.setTipFee(entity.getTipFee());
+		orderEntity.setReceiverAddressCity(entity.getReceiverAddressCity());
+		orderEntity.setReceiverAddressDetail(entity.getReceiverAddressDetail());
+		orderEntity.setReceiverAddressDistrict(entity.getReceiverAddressDistrict());
+		orderEntity.setReceiverAddressProvince(entity.getReceiverAddressProvince());
+		orderEntity.setReceiverAddressRoomNo(entity.getReceiverAddressRoomNo());
+		orderEntity.setReceiverAddressStreet(entity.getReceiverAddressStreet());
+		orderEntity.setReceiverLatitude(entity.getReceiverLatitude());
+		orderEntity.setReceiverLongitude(entity.getReceiverLongitude());
+		orderEntity.setReceiverName(entity.getReceiverName());
+		orderEntity.setReceiverPhone(entity.getReceiverPhone());
+		orderEntity.setSenderName(entity.getSenderName());
+		orderEntity.setUserId(entity.getUserId());
+		orderEntity.setSenderAdcode(entity.getSenderAdcode());
+
+		detailEntity.setOrderRemark(entity.getOrderRemark());
+		detailEntity.setPickupDistance(entity.getPickupDistance());
+		detailEntity.setPlatformFee(entity.getPlatformFee());
+		detailEntity.setUserId(entity.getUserId());
+		//detailEntity.setSenderName(entity.getSenderName());
+		detailEntity.setSenderPhone(entity.getSenderPhone());
+		detailEntity.setSenderAddressCity(entity.getSenderAddressCity());
+		detailEntity.setSenderAddressDetail(entity.getSenderAddressDetail());
+		detailEntity.setSenderAddressDistrict(entity.getSenderAddressDistrict());
+		detailEntity.setSenderAddressProvince(entity.getSenderAddressProvince());
+		detailEntity.setSenderAddressRoomNo(entity.getSenderAddressRoomNo());
+		detailEntity.setSenderAddressStreet(entity.getSenderAddressStreet());
+		detailEntity.setSenderLatitude(entity.getSenderLatitude());
+		detailEntity.setSenderLongitude(entity.getSenderLongitude());
+		detailEntity.setUserId(entity.getUserId());
+		//设置重发特殊标记位
+		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
+		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
+		orderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
+		orderEntity.setOrderTime(new Date());
+		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
+		detailEntity.setCancelSourceDeliverySubsidy(CalCulateUtil.add(subsidyFromRider,entity.getCancelSourceDeliverySubsidy()));
+		detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
 	}
 
 

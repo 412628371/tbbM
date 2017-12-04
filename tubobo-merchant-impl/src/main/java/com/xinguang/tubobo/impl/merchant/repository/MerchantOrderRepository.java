@@ -227,7 +227,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
     @Modifying
     @Query("update #{#entityName} a set a.unsettledStatus =:unsettledStatus,a.orderStatus =:orderStatus,a.unsettledTime =:unsettledTime" +
             " where a.orderNo=:orderNo and a.orderStatus=:whereStatus and a.unsettledStatus =:whereUnsettledStatus and a.delFlag =:delFlag")
-    int merchantHandlerUnsettledOrder(@Param("unsettledStatus")String unsettledStatus, @Param("orderStatus")String orderStatus,@Param("unsettledTime") Date unsettledTime,@Param("whereStatus")String  whereStatus,@Param("orderNo")String orderNo,@Param("whereUnsettledStatus")String whereUnsettledStatus,@Param("delFlag") String  delFlag);
+    int merchantHandlerUnsettledOrder(@Param("unsettledStatus")String unsettledStatus, @Param("orderStatus")String orderStatus,@Param("unsettledTime") Date unsettledTime,@Param("orderNo")String orderNo,@Param("whereStatus")String  whereStatus,@Param("whereUnsettledStatus")String whereUnsettledStatus,@Param("delFlag") String  delFlag);
 
 
 
