@@ -19,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 查询身份证是否允许认证(认证骑手就不可认证商家)
  */
@@ -26,15 +28,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/idCardNo/status")
 public class UniqueIdentifyController extends MerchantBaseController<ReqUniquePersonIdentify,String> {
     @Autowired
-    private MerchantInfoManager merchantInfoManager;
+    private RiderToAdminServiceInterface riderToAdminServiceInterface;
     @Override
     protected String doService(String userId, ReqUniquePersonIdentify req) throws MerchantClientException {
-        boolean b = merchantInfoManager.checkByIdCardIfRider(req.getIdCardNo(),userId);
-        if (b){
-            throw new MerchantClientException(EnumRespCode.SUCCESS);
-        }else{
-            logger.error("店铺申请失败，该用户已经申请成为骑手。IdcardNo:{}",req.getIdCardNo());
+        List<RiderInfoDTO> riderInfo = riderToAdminServiceInterface.findByIdCardNoAndUserId(req.getIdCardNo(), null);
+        if (riderInfo!=null&&riderInfo.size()>0){
+            logger.warn("店铺申请失败，改身份证号已注册成为骑手。IdcardNo:{}",req.getIdCardNo());
             throw new MerchantClientException(EnumRespCode.SHOP_ALREADY_BOUND_RIDER);
+        }else{
+            throw new MerchantClientException(EnumRespCode.SUCCESS);
+
         }
     }
 
