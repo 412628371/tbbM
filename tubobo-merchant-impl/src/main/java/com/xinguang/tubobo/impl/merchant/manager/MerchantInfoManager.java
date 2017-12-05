@@ -265,11 +265,9 @@ public class MerchantInfoManager {
                 }
             }
         }
-
-
         if (!legalForVerify){
             logger.error("店铺申请失败，该用户已经申请成为骑手。IdcardNo:{}",IdcardNo);
-            throw new MerchantClientException(EnumRespCode.SHOP_ALREADY_BOUND_RIDER);
+            throw new MerchantClientException(EnumRespCode.SHOP_BOUND_RIDER);
         }
         return legalForVerify;
     }

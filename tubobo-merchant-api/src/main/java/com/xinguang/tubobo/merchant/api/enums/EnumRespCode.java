@@ -74,7 +74,9 @@ public enum EnumRespCode {
 	SHOP_NOT_EXIST("20003","商家不存在"),
 	SHOP_ALREADY_BOUND("20004","商家已绑定"),
 	SHOP_ALREADY_BOUND_RIDER("20005","该身份证号已认证为兔波波骑手，不能再认证为商家了哦~"),
-	SHOP_LICENCESNO_EXIST("20006","该营业执照号已被认证过，请重新填写")
+	SHOP_LICENCESNO_EXIST("20006","该营业执照号已被认证过，请重新填写"),
+	SHOP_BOUND_RIDER("20007","该用户已认证为兔波波骑手，不能再认证为商家了哦~")
+
 	;
 
 
