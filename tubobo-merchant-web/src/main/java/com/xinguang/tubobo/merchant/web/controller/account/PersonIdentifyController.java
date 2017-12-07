@@ -1,9 +1,11 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantInfoManager;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.shop.v2.ReqPersonIdentify;
 import com.xinguang.tubobo.merchant.web.response.MerchantInfoResponse;
@@ -20,8 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PersonIdentifyController extends MerchantBaseController<ReqPersonIdentify,MerchantInfoResponse> {
     @Autowired
     private MerchantInfoManager merchantInfoManager;
+    @Autowired
+    private Config config;
     @Override
     protected MerchantInfoResponse doService(String userId, ReqPersonIdentify req) throws MerchantClientException {
+        if (config.isSysInterfaceCloseFlag()){
+            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
+        }
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         BeanUtils.copyProperties(req,infoEntity);
         MerchantInfoEntity respEntity = merchantInfoManager.identify(userId,req.getPayPassword(), EnumIdentifyType.CONSIGNOR.getValue(),infoEntity);

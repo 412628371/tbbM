@@ -31,7 +31,7 @@
         <tubobo.merchant.web.version>1.0-SNAPSHOT</tubobo.merchant.web.version>
         <tubobo.merchant.impl.version>1.0-SNAPSHOT</tubobo.merchant.impl.version>
         <tubobo.lbs.version>1.0-SNAPSHOT</tubobo.lbs.version>
-        <tubobo.merchant.api.version>1.4.5-SNAPSHOT</tubobo.merchant.api.version>
+        <tubobo.merchant.api.version>1.4.6-SNAPSHOT</tubobo.merchant.api.version>
         <tubobo.posthouse.api.version>1.0-SNAPSHOT</tubobo.posthouse.api.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
         <tubobo-account-api-version>1.3.3-SNAPSHOT</tubobo-account-api-version>

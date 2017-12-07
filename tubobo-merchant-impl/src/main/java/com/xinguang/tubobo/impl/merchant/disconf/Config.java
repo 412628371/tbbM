@@ -63,6 +63,8 @@ public class Config {
 
     private Double nonConfidentialPaymentLimit;
 
+    private boolean sysInterfaceCloseFlag;
+
    /* 1.6版本稳定后删除,该配置改为从数据库中获取
    private Double firstLevelInitPrice;
     private Double firstLevelPricePerKM;
@@ -515,5 +517,14 @@ public class Config {
 
     public void setNoticeAuditFailTemplate(String noticeAuditFailTemplate) {
         this.noticeAuditFailTemplate = noticeAuditFailTemplate;
+    }
+
+    @DisconfFileItem(name = "sysInterfaceCloseFlag", associateField = "sysInterfaceCloseFlag")
+    public boolean isSysInterfaceCloseFlag() {
+        return sysInterfaceCloseFlag;
+    }
+
+    public void setSysInterfaceCloseFlag(boolean sysInterfaceCloseFlag) {
+        this.sysInterfaceCloseFlag = sysInterfaceCloseFlag;
     }
 }
