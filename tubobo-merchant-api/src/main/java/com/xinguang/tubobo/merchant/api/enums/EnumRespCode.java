@@ -7,6 +7,7 @@ public enum EnumRespCode {
 	PARAMS_ERROR("2", "参数错误"),
 	INFO_ERROR("3", "信息错误"),
 	BUSY("4", "系统繁忙"),
+	INTERFACE_NOT_SUPPORT("5", "因系统升级,暂不支持该功能"),
 	MERCHANT_APPLY_REPEAT("10100", "商家已认证成功，不允许重复认证"),
 	MERCHANT_VERIFYING("10101", "商家信息正在审核中，请耐心等待"),
 	MERCHANT_NOT_EXISTS("10102", "商家不存在"),

@@ -5,6 +5,7 @@ import com.xinguang.tubobo.account.api.TbbConstants;
 import com.xinguang.tubobo.account.api.request.RechargeRequest;
 import com.xinguang.tubobo.account.api.response.RechargeInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.service.MerchantTypeService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
@@ -35,6 +36,9 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
     @Autowired
     private MerchantTypeService merchantTypeService;
 
+    @Autowired
+    private Config config;
+
     @Override
     protected boolean needIdentify() {
         return true;
@@ -43,6 +47,9 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
     @Override
     protected RespAccountRecharge doService(String userId, ReqAccountRecharge req) throws MerchantClientException {
 
+        if (config.isSysInterfaceCloseFlag()){
+            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
+        }
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (entity == null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
