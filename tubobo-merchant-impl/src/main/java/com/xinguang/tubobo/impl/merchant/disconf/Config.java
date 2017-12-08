@@ -60,7 +60,6 @@ public class Config {
     private String consignorBeginWorkTime;
     private String consignorEndWorkTime;
 
-    private String consignorEndWorkTime;
     private Double nonConfidentialPaymentLimit;
 
 
