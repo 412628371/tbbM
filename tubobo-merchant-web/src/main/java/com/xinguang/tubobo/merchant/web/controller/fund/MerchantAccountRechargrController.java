@@ -51,7 +51,7 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
         if (entity == null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
         }
-        if (config.isSysInterfaceCloseFlag() &&
+        if (config.isSysInterfaceCloseFlag() && null != entity.getAddressAdCode() &&
                 entity.getAddressAdCode().startsWith(config.getRechargeForbiddenArea())){
             throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
         }
