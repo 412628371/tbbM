@@ -60,10 +60,13 @@ public class Config {
     private String consignorBeginWorkTime;
     private String consignorEndWorkTime;
 
-
+    private String consignorEndWorkTime;
     private Double nonConfidentialPaymentLimit;
 
+
     private boolean sysInterfaceCloseFlag;
+
+    private String rechargeForbiddenArea;
 
    /* 1.6版本稳定后删除,该配置改为从数据库中获取
    private Double firstLevelInitPrice;
@@ -526,5 +529,14 @@ public class Config {
 
     public void setSysInterfaceCloseFlag(boolean sysInterfaceCloseFlag) {
         this.sysInterfaceCloseFlag = sysInterfaceCloseFlag;
+    }
+
+    @DisconfFileItem(name = "rechargeForbiddenArea", associateField = "rechargeForbiddenArea")
+    public String getRechargeForbiddenArea() {
+        return rechargeForbiddenArea;
+    }
+
+    public void setRechargeForbiddenArea(String rechargeForbiddenArea) {
+        this.rechargeForbiddenArea = rechargeForbiddenArea;
     }
 }
