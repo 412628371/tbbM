@@ -47,12 +47,13 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
     @Override
     protected RespAccountRecharge doService(String userId, ReqAccountRecharge req) throws MerchantClientException {
 
-        if (config.isSysInterfaceCloseFlag()){
-            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
-        }
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (entity == null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+        }
+        if (config.isSysInterfaceCloseFlag() &&
+                entity.getAddressAdCode().startsWith(config.getRechargeForbiddenArea())){
+            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
         }
         RechargeRequest rechargeRequest = new RechargeRequest();
         rechargeRequest.setAmount(ConvertUtil.convertYuanToFen(req.getAmount()));
