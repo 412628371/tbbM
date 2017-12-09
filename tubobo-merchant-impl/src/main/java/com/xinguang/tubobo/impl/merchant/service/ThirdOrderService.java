@@ -2,6 +2,7 @@ package com.xinguang.tubobo.impl.merchant.service;
 
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
 import com.hzmux.hzcms.common.utils.DateUtils;
+import com.hzmux.hzcms.common.utils.MerchantUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
@@ -11,6 +12,9 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.account.api.trade.TbbAccountTradeService;
+import com.xinguang.tubobo.account.api.trade.request.TradePayRequest;
+import com.xinguang.tubobo.account.api.trade.response.TradePayInfo;
 import com.xinguang.tubobo.admin.api.OverFeeService;
 import com.xinguang.tubobo.admin.api.dto.OverFeeDTO;
 import com.xinguang.tubobo.impl.merchant.amap.RoutePlanning;
@@ -77,6 +81,8 @@ public class ThirdOrderService {
     DeliveryFeeService deliveryFeeService;
     @Autowired
     RoutePlanning routePlanning;
+    @Autowired
+    TbbAccountTradeService tbbAccountTradeService;
     /**
      * 保存订单到thirdOrder
      * 返回值  true-保存成功
@@ -234,25 +240,28 @@ public class ThirdOrderService {
     private void payWithoutPassword(String userId, MerchantInfoEntity merchant, MerchantOrderEntity newOrderEntity) {
         Double payAmount=newOrderEntity.getPayAmount();
         String orderNo=newOrderEntity.getOrderNo();
-        PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
+     /*   PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
         payWithOutPwdRequest.setOrderId(orderNo);
-        payWithOutPwdRequest.setAccountId(merchant.getAccountId());
+        payWithOutPwdRequest.setAccountId(merchant.getAccountId());*/
         long amount = ConvertUtil.convertYuanToFen(payAmount);
         long commission = ConvertUtil.convertYuanToFen(newOrderEntity.getPlatformFee());
-        payWithOutPwdRequest.setAmount(amount);
-        payWithOutPwdRequest.setCommission(commission);
-        logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,orderNo,payWithOutPwdRequest.getAmount());
-        TbbAccountResponse<PayInfo> response;
+       /* payWithOutPwdRequest.setAmount(amount);
+        payWithOutPwdRequest.setCommission(commission);*/
+        logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,orderNo,amount);
+        //TbbAccountResponse<PayInfo> response;
         //TODO 拆分抽成金额
-        response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+        TradePayRequest.Builder payRequestBuilder = MerchantUtils.getPayRequestBuilder(merchant.getAccountId(), orderNo, amount);
+        TbbAccountResponse<TradePayInfo> response = tbbAccountTradeService.pay(payRequestBuilder.notCheckPwd().buildBalancePay());
+
+       // response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
 
         if (response != null && response.isSucceeded()){
-            long payId = response.getData().getId();
+            String payId = response.getData().getTradePayId();
             newOrderEntity.setPayId(payId);
             TaskCreateDTO orderDTO = orderManager.buildMerchantOrderDTO(newOrderEntity,merchant);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",orderNo
-                    ,merchant.getAccountId(),response.getData().getId(),amount);
+                    ,merchant.getAccountId(),response.getData().getTradePayId(),amount);
             orderDTO.setTaskType(TaskTypeEnum.POST_NORMAL_ORDER);
             Date payDate = new Date();
             int count = orderService.merchantPay(userId,orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_GRAB.getValue());

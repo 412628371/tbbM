@@ -1,5 +1,6 @@
 package com.xinguang.tubobo.impl.merchant.manager;
 
+import com.hzmux.hzcms.common.utils.MerchantUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
@@ -10,6 +11,9 @@ import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.account.api.trade.TbbAccountTradeService;
+import com.xinguang.tubobo.account.api.trade.request.TradePayRequest;
+import com.xinguang.tubobo.account.api.trade.response.TradePayInfo;
 import com.xinguang.tubobo.admin.api.AdminToMerchantService;
 import com.xinguang.tubobo.admin.api.OverFeeService;
 import com.xinguang.tubobo.admin.api.dto.OverFeeDTO;
@@ -63,11 +67,14 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
     private DeliveryFeeService deliveryFeeService;
     @Autowired
     private RoutePlanning routePlanning;
-    @Autowired private TbbAccountService tbbAccountService;
     @Autowired
     private TaskDispatchService taskDispatchService;
     @Autowired private AdminToMerchantService adminToMerchantService;
     @Autowired private TbbOrderServiceInterface launcherInnerTbbOrderService;
+    @Autowired
+    private TbbAccountTradeService tbbAccountTradeService;
+
+
 
 
     private static final Logger logger = LoggerFactory.getLogger(MerchantToThirdPartyServiceImpl.class);
@@ -305,17 +312,21 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
         payWithOutPwdRequest.setAmount(amount);
         payWithOutPwdRequest.setCommission(commission);
         logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),orderNo,payWithOutPwdRequest.getAmount());
-        TbbAccountResponse<PayInfo> response;
-        response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+        TradePayRequest.Builder builder = MerchantUtils.getPayRequestBuilder(merchantInfoEntity.getAccountId(), orderNo, amount);
+        TradePayRequest tradePayRequest = builder.notCheckPwd().buildBalancePay();
+        TbbAccountResponse<TradePayInfo> response = tbbAccountTradeService.pay(tradePayRequest);
+
+    /*    TbbAccountResponse<PayInfo> response;
+        response =  tbbAccountService.payWithOutPwd(payWithOutPwdRequest);*/
         if (response != null && response.isSucceeded()){
-            long payId = response.getData().getId();
+            String payId = response.getData().getTradePayId();
             entity.setPayId(payId);
 
 
             TaskCreateDTO orderDTO = merchantOrderManager.buildMerchantOrderDTO(entity,merchantInfoEntity);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",orderNo
-                    ,merchantInfoEntity.getAccountId(),response.getData().getId(),amount);
+                    ,merchantInfoEntity.getAccountId(),response.getData().getTradePayId(),amount);
             orderDTO.setTaskType(TaskTypeEnum.POST_ORDER);
             Date payDate = new Date();
             int count = orderService.merchantPay(entity.getUserId(),orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());

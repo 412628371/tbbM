@@ -34,11 +34,11 @@
         <tubobo.merchant.api.version>1.4.6-SNAPSHOT</tubobo.merchant.api.version>
         <tubobo.posthouse.api.version>1.0-SNAPSHOT</tubobo.posthouse.api.version>
         <usercentergate-api>0.0.1-SNAPSHOT</usercentergate-api>
-        <tubobo-account-api-version>1.3.3-SNAPSHOT</tubobo-account-api-version>
+        <tubobo-account-api-version>2.0.0-SNAPSHOT</tubobo-account-api-version>
         <tubobo-push-api-version>1.3-SNAPSHOT</tubobo-push-api-version>
         <tubobo-rate-version>1.1-SNAPSHOT</tubobo-rate-version>
         <tubobo-riddr-api-version>0.0.6-SNAPSHOT</tubobo-riddr-api-version>
-        <tubobo-taskcenter.version>1.3.2-SNAPSHOT</tubobo-taskcenter.version>
+        <tubobo-taskcenter.version>1.3.5-SNAPSHOT</tubobo-taskcenter.version>
 <!--
         <tubobo-admin.version>0.0.3-SNAPSHOT</tubobo-admin.version>
 -->
@@ -162,6 +162,16 @@
                 <groupId>com.xinguang.tubobo</groupId>
                 <artifactId>tubobo-account-api</artifactId>
                 <version>${tubobo-account-api-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>push-api</artifactId>
+                        <groupId>com.xinguang.tubobo</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>validation-api</artifactId>
+                        <groupId>javax.validation</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.xinguang.tubobo</groupId>

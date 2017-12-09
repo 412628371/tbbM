@@ -2,6 +2,7 @@ package com.xinguang.tubobo.merchant.web.controller.fund;
 
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
+import com.hzmux.hzcms.common.utils.MerchantUtils;
 import com.xinguang.taskcenter.api.common.enums.TaskTypeEnum;
 import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
@@ -9,6 +10,9 @@ import com.xinguang.tubobo.account.api.request.PayRequest;
 import com.xinguang.tubobo.account.api.request.PayWithOutPwdRequest;
 import com.xinguang.tubobo.account.api.response.PayInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.account.api.trade.TbbAccountTradeService;
+import com.xinguang.tubobo.account.api.trade.request.TradePayRequest;
+import com.xinguang.tubobo.account.api.trade.response.TradePayInfo;
 import com.xinguang.tubobo.impl.merchant.cache.RedisOp;
 import com.xinguang.tubobo.impl.merchant.common.AESUtils;
 import com.xinguang.tubobo.impl.merchant.common.MerchantConstants;
@@ -33,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -47,6 +52,8 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
     private TbbAccountService tbbAccountService;
     @Autowired
     private MerchantOrderManager merchantOrderManager;
+    @Autowired
+    private TbbAccountTradeService tbbAccountTradeService;
     @Resource
     Config config;
     @Autowired
@@ -68,7 +75,6 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         if (EnumMerchantOrderStatus.CANCEL.getValue().equals(orderEntity.getOrderStatus())){
             throw new MerchantClientException(EnumRespCode.MERCHANT_CANT_PAY);
         }
-        TbbAccountResponse<PayInfo> response;
         Double amountD=orderEntity.getPayAmount();
         //check订单短信开关,if开启--扣除短信费用,短信费用扣除发生在骑手取货时 生成额外短信流水
         if (orderEntity.getShortMessage()){
@@ -76,36 +82,46 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
         }
         long amount = ConvertUtil.convertYuanToFen(amountD);
         long commission = ConvertUtil.convertYuanToFen(orderEntity.getPlatformFee());
+        //构造通用支付请求
+        TradePayRequest.Builder builder = MerchantUtils.getPayRequestBuilder(infoEntity.getAccountId(), orderEntity.getOrderNo(), amount);
+        TbbAccountResponse<TradePayInfo> response;
         //设置了免密支付，并且支付金额不大于免密支付额度，可以免密支付
         if (infoEntity.getEnablePwdFree()&&
                 orderEntity.getPayAmount() <= config.getNonConfidentialPaymentLimit()){
-            PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
+      /*      PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
             payWithOutPwdRequest.setOrderId(orderEntity.getOrderNo());
             payWithOutPwdRequest.setAccountId(infoEntity.getAccountId());
             payWithOutPwdRequest.setAmount(amount);
-            payWithOutPwdRequest.setCommission(commission);
-            logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),payWithOutPwdRequest.getAmount());
-            response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+            payWithOutPwdRequest.setCommission(commission);*/
+
+            TradePayRequest tradePayRequest = builder.notCheckPwd().buildBalancePay();
+            logger.info("免密支付请求：userId:{}, orderNo:{} ,amount:{}分 ",userId,req.getOrderNo(),amount);
+            response = tbbAccountTradeService.pay(tradePayRequest);
+
+            //response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
         }else {
             //计算支付密码错误次数
             redisOp.checkPwdErrorTimes(MerchantConstants.KEY_PWD_WRONG_TIMES_PAY,userId);
             String plainPwd = AESUtils.decrypt(req.getPayPassword());
-            PayRequest payRequest = new PayRequest();
+            TradePayRequest tradePayRequest = builder.setPwd(plainPwd).buildBalancePay();
+            response = tbbAccountTradeService.pay(tradePayRequest);
+
+            /*PayRequest payRequest = new PayRequest();
             payRequest.setOrderId(orderEntity.getOrderNo());
             payRequest.setAccountId(infoEntity.getAccountId());
             payRequest.setAmount(amount);
             payRequest.setPwd(plainPwd);
             payRequest.setCommission(commission);
-            response = tbbAccountService.pay(payRequest);
+            response = tbbAccountService.pay(payRequest);*/
         }
         if (response != null && response.isSucceeded()){
             redisOp.resetPwdErrorTimes(userId);
-            long payId = response.getData().getId();
+            String payId = response.getData().getTradePayId();
             orderEntity.setPayId(payId);
             TaskCreateDTO orderDTO = merchantOrderManager.buildMerchantOrderDTO(orderEntity,infoEntity);
             orderDTO.setPayId(payId);
             logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",req.getOrderNo()
-                    ,infoEntity.getAccountId(),response.getData().getId(),amount);
+                    ,infoEntity.getAccountId(),response.getData().getTradePayId(),amount);
             merchantOrderManager.merchantPay(orderDTO,infoEntity.getUserId(),req.getOrderNo(),payId);
             RespOrderPay respOrderPay = new RespOrderPay();
             respOrderPay.setGrabExpiredStartTime(new Date());

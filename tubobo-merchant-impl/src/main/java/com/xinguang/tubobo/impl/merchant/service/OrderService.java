@@ -240,7 +240,7 @@ public class OrderService extends BaseService {
 
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
-    public int merchantPay(String merchantId, String orderNo, long payId, Date payDate,String orderStatus) {
+    public int merchantPay(String merchantId, String orderNo, String payId, Date payDate,String orderStatus) {
         int count = merchantOrderDao.merchantPay(orderStatus, EnumPayStatus.PAID.getValue(),payDate , payId,merchantId,
                 orderNo,EnumMerchantOrderStatus.INIT.getValue(),BaseMerchantEntity.DEL_FLAG_NORMAL);
         logger.info("支付操作数据库：count:{},merchantId:{},orderNo:{},payId:{},payDate:{}",count,merchantId,orderNo,payId,payDate);

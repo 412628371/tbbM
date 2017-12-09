@@ -29,6 +29,7 @@
 	<dubbo:reference id="launcherInnerTbbOrderService" interface="com.xinguang.tubobo.launcher.inner.api.TbbOrderServiceInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="providerServiceInterfaceImpl" interface="com.xinguang.tubobo.postHouse.api.service.ProviderServiceInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
 	<dubbo:reference id="bindToMerchantServiceInterface" interface="com.xinguang.tubobo.postHouse.api.service.BindToMerchantServiceInterface" version="0.0.1" group="${dubbo.group}" check="false"/>
+	<dubbo:reference id="tbbAccountTradeService" interface="com.xinguang.tubobo.account.api.trade.TbbAccountTradeService" version="0.0.1" group="${dubbo.group}" check="false"/>
 
 
 	<bean id="tbbRateServiceHystrixProxy" class="com.xinguang.tubobo.rate.api.hystrix.TbbRateServiceHystrixProxy" init-method="init">
