@@ -153,6 +153,13 @@ public class MerchantInfoService extends BaseService {
 		return result;
 	}
 
+    /**
+     * 商家信息查询
+     */
+    public List<MerchantInfoEntity> findMerchantInfoList(MerchantInfoEntity entity){
+        return merchantInfoRepository.findAll(where(entity));
+    }
+
 	/**
 	 * 商家信息分页查询
 	 */
