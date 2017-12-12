@@ -26,9 +26,9 @@ public class PersonIdentifyController extends MerchantBaseController<ReqPersonId
     private Config config;
     @Override
     protected MerchantInfoResponse doService(String userId, ReqPersonIdentify req) throws MerchantClientException {
-        if (config.isSysInterfaceCloseFlag()){
-            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
-        }
+//        if (config.isSysInterfaceCloseFlag()){
+//            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
+//        }
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         BeanUtils.copyProperties(req,infoEntity);
         MerchantInfoEntity respEntity = merchantInfoManager.identify(userId,req.getPayPassword(), EnumIdentifyType.CONSIGNOR.getValue(),infoEntity);
