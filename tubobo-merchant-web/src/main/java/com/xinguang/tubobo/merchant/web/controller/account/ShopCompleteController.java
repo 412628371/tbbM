@@ -30,9 +30,9 @@ public class ShopCompleteController extends MerchantBaseController<ReqShopComple
     private Config config;
     @Override
     protected MerchantInfoResponse doService(String userId, ReqShopComplete req) throws MerchantClientException {
-        if (config.isSysInterfaceCloseFlag()){
-            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
-        }
+//        if (config.isSysInterfaceCloseFlag()){
+//            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
+//        }
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         BeanUtils.copyProperties(req,infoEntity);
         MerchantInfoEntity respEntity = infoManager.shopComplete(userId,infoEntity);

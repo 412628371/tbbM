@@ -31,9 +31,9 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
 
     @Override
     protected MerchantInfoResponse doService(String userId, ShopIdentifyRequest req) throws MerchantClientException {
-        if (config.isSysInterfaceCloseFlag()){
-            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
-        }
+//        if (config.isSysInterfaceCloseFlag()){
+//            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
+//        }
         logger.info("收到店铺申请请求 ：{}，",req.toString() );
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         BeanUtils.copyProperties(req,infoEntity);
