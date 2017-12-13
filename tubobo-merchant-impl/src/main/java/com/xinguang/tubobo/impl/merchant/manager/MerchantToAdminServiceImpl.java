@@ -69,6 +69,19 @@ public class MerchantToAdminServiceImpl implements MerchantToAdminServiceInterfa
     }
 
     @Override
+    public List<MerchantInfoDTO> findByIdCardNo(String idCardNo) {
+        if (StringUtils.isBlank(idCardNo)) return null;
+        List<MerchantInfoEntity> list = merchantInfoService.findAllByIdCardNo(idCardNo);
+        List<MerchantInfoDTO> dtoList = new ArrayList<>();
+        for (MerchantInfoEntity merchant : list){
+            MerchantInfoDTO infoDto = new MerchantInfoDTO();
+            BeanUtils.copyProperties(merchant,infoDto);
+            dtoList.add(infoDto);
+        }
+        return dtoList;
+    }
+
+    @Override
     public List<MerchantInfoDTO> findMerchantInfoList(MerchantInfoDTO dto) {
         MerchantInfoEntity entity = new MerchantInfoEntity();
         if (dto != null){

@@ -19,6 +19,13 @@ public interface MerchantToAdminServiceInterface {
     public MerchantInfoDTO findByUserId(String userId);
 
     /**
+     * 查询商家详细信息
+     * @param idCardNo
+     * @return
+     */
+    public List<MerchantInfoDTO> findByIdCardNo(String idCardNo);
+
+    /**
      * 查询商家信息
      * @param dto
      * @return

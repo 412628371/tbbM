@@ -61,6 +61,10 @@ public class MerchantInfoService extends BaseService {
 		return merchantInfoRepository.findByShopLicencesNoAndDelFlag(licencesNo, MerchantInfoEntity.DEL_FLAG_NORMAL);
 	}
 
+    public List<MerchantInfoEntity> findAllByIdCardNo(String idCardNo){
+        return merchantInfoRepository.findAllByIdCardNo(idCardNo, MerchantInfoEntity.DEL_FLAG_NORMAL);
+    }
+
 	/**
 	 * 申请商家
 	 */
