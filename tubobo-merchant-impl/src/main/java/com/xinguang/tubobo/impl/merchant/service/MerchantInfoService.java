@@ -61,6 +61,10 @@ public class MerchantInfoService extends BaseService {
 		return merchantInfoRepository.findByShopLicencesNoAndDelFlag(licencesNo, MerchantInfoEntity.DEL_FLAG_NORMAL);
 	}
 
+    public List<MerchantInfoEntity> findAllByIdCardNo(String idCardNo){
+        return merchantInfoRepository.findAllByIdCardNo(idCardNo, MerchantInfoEntity.DEL_FLAG_NORMAL);
+    }
+
 	/**
 	 * 申请商家
 	 */
@@ -152,6 +156,13 @@ public class MerchantInfoService extends BaseService {
 		int result = merchantInfoRepository.updateHeadImage(userId, MerchantOrderEntity.DEL_FLAG_NORMAL, picUrl, new Date());
 		return result;
 	}
+
+    /**
+     * 商家信息查询
+     */
+    public List<MerchantInfoEntity> findMerchantInfoList(MerchantInfoEntity entity){
+        return merchantInfoRepository.findAll(where(entity));
+    }
 
 	/**
 	 * 商家信息分页查询
