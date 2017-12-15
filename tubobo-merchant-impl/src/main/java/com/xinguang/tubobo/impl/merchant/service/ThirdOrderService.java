@@ -77,9 +77,13 @@ public class ThirdOrderService {
     DeliveryFeeService deliveryFeeService;
     @Autowired
     RoutePlanning routePlanning;
-
+    /**
+     * 保存订单到thirdOrder
+     * 返回值  true-保存成功
+     * */
     @Transactional()
-    public void saveMtOrder(ThirdOrderEntity mtOrderEntity){
+    public boolean saveMtOrder(ThirdOrderEntity mtOrderEntity){
+        boolean flag=false;
         ThirdOrderEntity existEntity = thirdOrderRepository.findByOriginOrderIdAndPlatformCode(mtOrderEntity.getOriginOrderId(),
                 mtOrderEntity.getPlatformCode());
         if (null == existEntity){
@@ -88,7 +92,9 @@ public class ThirdOrderService {
             mtOrderEntity.setDelFlag(BaseMerchantEntity.DEL_FLAG_NORMAL);
             thirdOrderRepository.save(mtOrderEntity);
             //dealAutoSendOrder(mtOrderEntity);
+            flag=true;
         }
+        return flag;
     }
     /**
     * 自动发单(针对驿站订单 且开启自动发单功能)
@@ -249,7 +255,7 @@ public class ThirdOrderService {
                     ,merchant.getAccountId(),response.getData().getId(),amount);
             orderDTO.setTaskType(TaskTypeEnum.POST_NORMAL_ORDER);
             Date payDate = new Date();
-            int count = orderService.merchantPay(userId,orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_PICK.getValue());
+            int count = orderService.merchantPay(userId,orderNo,payId,payDate, EnumMerchantOrderStatus.WAITING_GRAB.getValue());
             if (count != 1){
                 logger.error("用户支付，数据更新错误，userID：{}，orderNo:{}",userId,orderNo);
                 //throw new MerchantClientException(EnumRespCode.FAIL);

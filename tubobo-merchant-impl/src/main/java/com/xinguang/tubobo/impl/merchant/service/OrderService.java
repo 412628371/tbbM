@@ -120,17 +120,6 @@ public class OrderService extends BaseService {
         double riderFee;
         Integer commissionRate=0;
 
-       /* //保存配送距离 从1.41版本保存为我们之前传给客户端的距离值,同时向下兼容
-        Double deliveryDistance = entity.getDeliveryDistance();
-        //1.41版本之前所展示的实时值
-        if (EnumOrderType.BIGORDER.getValue().equals(entity.getOrderType())) {
-            distance = deliveryFeeService.sumDeliveryDistanceChePei(entity.getSenderLongitude(), entity.getSenderLatitude(),
-                    entity.getReceiverLongitude(), entity.getReceiverLatitude());
-        } else {
-            distance = deliveryFeeService.sumDeliveryDistanceMerchant(userId, entity.getReceiverLatitude(), entity.getReceiverLongitude());
-        }
-        //此处向下兼容
-        distance = deliveryDistance == null ? distance : deliveryDistance;*/
         entity.setDeliveryDistance(distance);
         String orderNo = codeGenerator.nextCustomerCode(entity.getOrderType());
         //设置该单是否付短信通知收货人
@@ -282,7 +271,7 @@ public class OrderService extends BaseService {
 
         int i = merchantOrderDao.orderCancelIgnoreStatus(orderNo, new Date(), EnumMerchantOrderStatus.CANCEL.getValue(), new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (i>0){
-            i=merchantOrderDetailRepository.updateCancelReason(orderNo, cancelReason,new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+            merchantOrderDetailRepository.updateCancelReason(orderNo, cancelReason,new Date(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         }
         return   i==1;
 
@@ -323,7 +312,7 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int riderGrabOrder(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, String riderCarNo, String riderCarType, Double pickupDistance) {
-        int i = merchantOrderDao.riderGrabOrder(EnumMerchantOrderStatus.WAITING_PICK.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.riderGrabOrder(EnumMerchantOrderStatus.WAITING_PICK.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime,EnumMerchantOrderStatus.WAITING_GRAB.getValue(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (i>0){
             i= merchantOrderDetailRepository.riderGrabOrder( pickupDistance,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
         }
@@ -332,12 +321,13 @@ public class OrderService extends BaseService {
     }
     /**
      * 骑手抢单
+     * KA订单直接改为配送中
      */
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional()
     public int riderGrabOrderOfPost(String merchantId, String riderId, String riderName, String riderPhone, String orderNo,
                               Date grabOrderTime, Date expectFinishTime, Date pickTime,  Double pickupDistance) {
-        int i = merchantOrderDao.riderGrabOrderOfPost(EnumMerchantOrderStatus.DELIVERYING.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, BaseMerchantEntity.DEL_FLAG_NORMAL);
+        int i = merchantOrderDao.riderGrabOrderOfPost(EnumMerchantOrderStatus.DELIVERYING.getValue(), riderId, riderName, riderPhone, orderNo, grabOrderTime, expectFinishTime, EnumMerchantOrderStatus.WAITING_PICK.getValue(),BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (i>0){
           i= merchantOrderDetailRepository.riderGrabOrderOfPost(pickupDistance, orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
         }
@@ -434,16 +424,29 @@ public class OrderService extends BaseService {
                 }
                 if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         MerchantConstants.ORDER_LIST_QUERY_CONDITION_UNHANDLE.equals(entity.getOrderStatus())){
-                    list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"),cb.equal(root.get("orderStatus").as(String.class), "INIT")));
+
+
+                   if (entity.getOrderType().equalsIgnoreCase(EnumOrderType.POSTORDER.getValue())){
+                       // 驿站订单的待处理搜索 需要显示未妥投且已完成的驿站订单 待测
+                       // list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.ING.getValue()));
+                       // list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.FINISH.getValue()));
+                        Predicate p1 = cb.or(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"), cb.equal(root.get("orderStatus").as(String.class), "INIT")),
+                                cb.and(cb.equal(root.get("unsettledStatus").as(String.class), PostOrderUnsettledStatusEnum.ING.getValue()), cb.equal(root.get("orderStatus").as(String.class), EnumMerchantOrderStatus.DELIVERYING.getValue())));
+                        list.add(p1);
+                    }else{
+                       list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "CANCEL"),cb.equal(root.get("orderStatus").as(String.class), "INIT")));
+
+                    }
+
                 }else if (StringUtils.isNotBlank(entity.getOrderStatus()) &&
                         MerchantConstants.ORDER_LIST_QUERY_CONDITION_FINISH.equals(entity.getOrderStatus())){
                     list.add(cb.or(cb.equal(root.get("orderStatus").as(String.class), "RESEND"),cb.equal(root.get("orderStatus").as(String.class), "FINISH")));
-                }else if (EnumMerchantOrderStatus.UNDELIVERED.getValue().equals(entity.getOrderStatus())){
+                }/*else if (EnumMerchantOrderStatus.UNDELIVERED.getValue().equals(entity.getOrderStatus())){
                     //未妥投
                     list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.ING.getValue()));
                     list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.DELIVERYING.getValue()));
 
-                }else if(EnumMerchantOrderStatus.CONFIRM.getValue().equals(entity.getOrderStatus())){
+                }*/else if(EnumMerchantOrderStatus.CONFIRM.getValue().equals(entity.getOrderStatus())){
                     //已经确认
                     list.add(cb.equal(root.get("unsettledStatus").as(String.class),PostOrderUnsettledStatusEnum.FINISH.getValue()));
                     list.add(cb.equal(root.get("orderStatus").as(String.class),EnumMerchantOrderStatus.FINISH.getValue()));
@@ -474,50 +477,33 @@ public class OrderService extends BaseService {
     }
 
 
-    //@Cacheable(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#entity.getOrderType()+'_'+#entity.getOrderStatus()+'_'+#pageNo+'_'+#pageSize")
     public Page<OrderEntity> postHouseQueryOrderPage(int pageNo, int pageSize, String expectFinishTimeSort,
                                                          String orderTimeSort, MerchantOrderEntity entity) {
-
-//        PageRequest pageRequest = new PageRequest(pageNo-1, pageSize,  new Sort(Sort.Direction.DESC, "createDate"));
-        //Sort sort=new Sort(Sort.Direction.DESC, "createDate"));
-        Sort sort=null;
+        List<Sort.Order> sorts = new ArrayList<>();
+        if(StringUtils.isNotBlank(orderTimeSort)&&("asc".equalsIgnoreCase(orderTimeSort))){
+            sorts.add(new Sort.Order(Sort.Direction.ASC, "orderTime"));
+        }else {
+            sorts.add(new Sort.Order(Sort.Direction.DESC, "orderTime"));
+        }
         if(StringUtils.isNotBlank(expectFinishTimeSort)){
             if ("asc".equalsIgnoreCase(expectFinishTimeSort)){
-                sort.and(new Sort(new Sort.Order(Sort.Direction.ASC, "expectFinishTime")));
+                sorts.add(new Sort.Order(Sort.Direction.ASC, "expectFinishTime"));
             }
             if ("desc".equalsIgnoreCase(expectFinishTimeSort)){
-                sort.and(new Sort(new Sort.Order(Sort.Direction.DESC, "expectFinishTime")));
+                sorts.add(new Sort.Order(Sort.Direction.DESC, "expectFinishTime"));
             }
         }
-        if(StringUtils.isNotBlank(orderTimeSort)){
-            if ("asc".equalsIgnoreCase(expectFinishTimeSort)){
-                sort.and(new Sort(new Sort.Order(Sort.Direction.ASC, "orderTime")));
-            }
-            if ("desc".equalsIgnoreCase(expectFinishTimeSort)){
-                sort.and(new Sort(new Sort.Order(Sort.Direction.DESC, "orderTime")));
-            }
-        }
-
-
-        if (null==sort){
-            sort=new Sort(Sort.Direction.DESC, "createDate");
-        }
+        Sort sort = new Sort(sorts);
         PageRequest pageRequest = new PageRequest(pageNo - 1, pageSize, sort);
-        Page<OrderEntity> page = merchantOrderDao.findAll(wherePostHouseOrderList(entity,expectFinishTimeSort,expectFinishTimeSort), pageRequest);
+        Page<OrderEntity> page = merchantOrderDao.findAll(wherePostHouseOrderList(entity), pageRequest);
         return page;
-
-
-   //     return merchantOrderDao.findMerchantOrderPageToPostHouse(pageNo, pageSize, expectFinishTimeSort, orderTimeSort,entity);
     }
 
-    private Specification<OrderEntity> wherePostHouseOrderList(final MerchantOrderEntity entity,final String expectFinishTimeSort,
-                                                               final String orderTimeSort){
+    private Specification<OrderEntity> wherePostHouseOrderList(final MerchantOrderEntity entity){
         return new Specification<OrderEntity>() {
             @Override
             public Predicate toPredicate(Root<OrderEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
                 List<Predicate> list = new ArrayList<>();
-                List<Order> listorder = new ArrayList<>();
-
                 list.add(cb.equal(root.get("delFlag").as(String.class), MerchantInfoEntity.DEL_FLAG_NORMAL));
 
                 if (null != entity.getProviderId()){
@@ -525,17 +511,16 @@ public class OrderService extends BaseService {
                 }
                 if (StringUtils.isNotBlank(entity.getOrderType())){
                     list.add(cb.equal(root.get("orderType").as(String.class),entity.getOrderType()));
-
-
                 }
                 if (StringUtils.isNotBlank(entity.getOrderStatus())){
                     list.add(cb.equal(root.get("orderStatus").as(String.class),entity.getOrderStatus()));
 
                     if (StringUtils.isNotBlank(entity.getUnsettledStatus())){
                         list.add(cb.equal(root.get("unsettledStatus").as(String.class),entity.getUnsettledStatus()));
-                    }else{
-                        list.add(cb.isNull(root.get("unsettledStatus").as(String.class)));
                     }
+//                    else{
+//                        list.add(cb.isNull(root.get("unsettledStatus").as(String.class)));
+//                    }
                 }
                 if (StringUtils.isNotBlank(entity.getOrderNo())){
                     list.add(cb.equal(root.get("orderNo").as(String.class),entity.getOrderNo()));
@@ -549,34 +534,22 @@ public class OrderService extends BaseService {
                 if (StringUtils.isNotBlank(entity.getRiderName())){
                     list.add(cb.like(root.get("riderName").as(String.class),entity.getRiderName()+"%"));
                 }
-                if (StringUtils.isNotBlank(entity.getSenderId())){
-                    list.add(cb.equal(root.get("senderId").as(String.class),entity.getSenderId()));
+                if (StringUtils.isNotBlank(entity.getUserId())){
+                    list.add(cb.equal(root.get("userId").as(String.class),entity.getUserId()));
                 }
                 if (StringUtils.isNotBlank(entity.getSenderName())){
                     list.add(cb.like(root.get("senderName").as(String.class),entity.getSenderName()+"%"));
-
                 }
                 if (null != entity.getCreateDate()){
-                    //list.add(cb.greaterThanOrEqualTo(root.get("orderTime").as(Date.class),DateUtils.formatDateTime(entity.getCreateDate())));
                     list.add(cb.greaterThanOrEqualTo(root.get("orderTime").as(Date.class),entity.getCreateDate()));
-                 /*   sb.append("and order_time >= :create_date ");
-                    parameter.put("create_date", DateUtils.formatDateTime(entity.getCreateDate()));*/
                 }
                 if (null != entity.getUpdateDate()){
                     list.add(cb.lessThanOrEqualTo(root.get("orderTime").as(Date.class),entity.getUpdateDate()));
-                 /*   sb.append("and order_time <= :update_date ");
-                    parameter.put("update_date", DateUtils.formatDateTime(entity.getUpdateDate()));*/
                 }
                 return criteriaQuery.where(list.toArray(new Predicate[list.size()])).getRestriction();
             }
         };
     }
-
-
-
-
-
-
 
     /**
      * 后台查询分页（不缓存）
@@ -826,7 +799,6 @@ public class OrderService extends BaseService {
         return returnOverMinute;
 
     }
-
     @CacheEvict(value = RedisCache.MERCHANT, key = "'merchantOrder_'+#merchantId+'_*'")
     @Transactional(readOnly = false)
     public int riderUnsettledOrder(String merchantId, String orderNo, String reason, Date finishOrderTime, Double expiredMinute) {
@@ -842,7 +814,7 @@ public class OrderService extends BaseService {
     @Transactional(readOnly = false)
     public int merchantHandlerUnsettledOrder(String merchantId, String orderNo,Date unsettledTime,String message) {
         int i = merchantOrderDao.merchantHandlerUnsettledOrder(PostOrderUnsettledStatusEnum.FINISH.getValue(), EnumMerchantOrderStatus.FINISH.getValue()
-                , unsettledTime, orderNo, PostOrderUnsettledStatusEnum.ING.getValue(), BaseMerchantEntity.DEL_FLAG_NORMAL);
+                , unsettledTime, orderNo,EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.ING.getValue(), BaseMerchantEntity.DEL_FLAG_NORMAL);
         if (i>0){
             i= merchantOrderDetailRepository.merchantHandlerUnsettledOrder(message,orderNo,BaseMerchantEntity.DEL_FLAG_NORMAL);
         }

@@ -5,6 +5,7 @@ import com.xinguang.tubobo.account.api.TbbConstants;
 import com.xinguang.tubobo.account.api.request.RechargeRequest;
 import com.xinguang.tubobo.account.api.response.RechargeInfo;
 import com.xinguang.tubobo.account.api.response.TbbAccountResponse;
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.service.MerchantTypeService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.merchant.api.dto.MerchantTypeDTO;
@@ -35,6 +36,9 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
     @Autowired
     private MerchantTypeService merchantTypeService;
 
+    @Autowired
+    private Config config;
+
     @Override
     protected boolean needIdentify() {
         return true;
@@ -46,6 +50,10 @@ public class MerchantAccountRechargrController extends MerchantBaseController<Re
         MerchantInfoEntity entity = merchantInfoService.findByUserId(userId);
         if (entity == null){
             throw new MerchantClientException(EnumRespCode.MERCHANT_NOT_EXISTS);
+        }
+        if (config.isSysInterfaceCloseFlag() && null != entity.getAddressAdCode() &&
+                entity.getAddressAdCode().startsWith(config.getRechargeForbiddenArea())){
+            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
         }
         RechargeRequest rechargeRequest = new RechargeRequest();
         rechargeRequest.setAmount(ConvertUtil.convertYuanToFen(req.getAmount()));

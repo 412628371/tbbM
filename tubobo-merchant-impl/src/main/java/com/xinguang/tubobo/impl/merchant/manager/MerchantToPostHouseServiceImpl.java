@@ -126,7 +126,7 @@ public class MerchantToPostHouseServiceImpl implements MerchantToPostHouseServic
         orderEntity.setReceiverPhone(queryCondition.getReceiverPhone());
         orderEntity.setRiderId(queryCondition.getRiderId());
         orderEntity.setRiderName(queryCondition.getRiderName());
-        orderEntity.setSenderId(queryCondition.getShopId());
+        orderEntity.setUserId(queryCondition.getShopId());
         orderEntity.setSenderName(queryCondition.getShopName());
         orderEntity.setProviderId(queryCondition.getProviderId());
         orderEntity.setUnsettledStatus(queryCondition.getUnsettledStatus());

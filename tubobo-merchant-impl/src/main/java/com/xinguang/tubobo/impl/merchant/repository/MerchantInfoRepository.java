@@ -8,12 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by lvhantai on 2017/9/30.
  */
 public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity, String>, JpaSpecificationExecutor<MerchantInfoEntity> {
     MerchantInfoEntity  findByUserIdAndDelFlag(String userId, String delFlag);
+
+    List<MerchantInfoEntity> findAllByProviderIdAndDelFlag(long providerId, String delFlag);
 
     @Modifying
     @Query("update #{#entityName} a set a.enablePwdFree = :enablePwdFree where a.userId = :userId and a.delFlag = :delFlag ")

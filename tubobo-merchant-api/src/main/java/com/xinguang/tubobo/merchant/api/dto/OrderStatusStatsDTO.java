@@ -10,6 +10,15 @@ public class OrderStatusStatsDTO implements Serializable{
     private long waitingPickCounts;
     private long deliveryingCounts;
     private long undeliveredCounts; //驿站单  骑手未妥投
+    private long waitingGrabCounts; //待接单
+
+    public long getWaitingGrabCounts() {
+        return waitingGrabCounts;
+    }
+
+    public void setWaitingGrabCounts(long waitingGrabCounts) {
+        this.waitingGrabCounts = waitingGrabCounts;
+    }
 
     public long getProgressCounts() {
         return progressCounts;

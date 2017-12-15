@@ -110,6 +110,7 @@ public class MerchantAccountPayController extends MerchantBaseController<ReqAcco
             RespOrderPay respOrderPay = new RespOrderPay();
             respOrderPay.setGrabExpiredStartTime(new Date());
             //驿站订单不做倒计时 不处理
+            // 1.47之后驿站订单处理,配置同众包单
             respOrderPay.setGrabExpiredMilSeconds(config.getTaskGrabExpiredMilSeconds());
             return respOrderPay;
         }else {
