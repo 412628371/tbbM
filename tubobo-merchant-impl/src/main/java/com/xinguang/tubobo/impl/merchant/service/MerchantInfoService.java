@@ -43,6 +43,15 @@ public class MerchantInfoService extends BaseService {
 	@Autowired
 	MerchantSettingsService merchantPushSettingsService;
 
+	/**
+	 * 查询指定服务商id下的所有商家
+	 * @return
+	 */
+	//@Cacheable(value= RedisCache.MERCHANT,key="'merchantInfo_'+#")
+	public List<MerchantInfoEntity> findAllByProviderId(long providerId){
+		return merchantInfoRepository.findAllByProviderIdAndDelFlag(providerId, MerchantInfoEntity.DEL_FLAG_NORMAL);
+	}
+
 	@Cacheable(value= RedisCache.MERCHANT,key="'merchantInfo_'+#userId")
 	public MerchantInfoEntity findByUserId(String userId){
 		return merchantInfoRepository.findByUserIdAndDelFlag(userId, MerchantInfoEntity.DEL_FLAG_NORMAL);

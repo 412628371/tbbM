@@ -1,11 +1,13 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
 import com.hzmux.hzcms.common.utils.AliOss;
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantInfoManager;
 import com.xinguang.tubobo.impl.merchant.service.MerchantMessageSettingsService;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.web.request.shop.v2.ReqShopComplete;
 import com.xinguang.tubobo.merchant.web.response.MerchantInfoResponse;
@@ -24,8 +26,13 @@ public class ShopCompleteController extends MerchantBaseController<ReqShopComple
     MerchantInfoManager infoManager;
     @Autowired
     MerchantMessageSettingsService settingsService;
+    @Autowired
+    private Config config;
     @Override
     protected MerchantInfoResponse doService(String userId, ReqShopComplete req) throws MerchantClientException {
+//        if (config.isSysInterfaceCloseFlag()){
+//            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
+//        }
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         BeanUtils.copyProperties(req,infoEntity);
         MerchantInfoEntity respEntity = infoManager.shopComplete(userId,infoEntity);

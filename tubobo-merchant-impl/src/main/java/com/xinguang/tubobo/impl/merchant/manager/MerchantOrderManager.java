@@ -115,15 +115,17 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	 * 商家付款
 	 */
 	public void merchantPay(TaskCreateDTO taskCreateDTO, String merchantId, String orderNo, long payId) throws MerchantClientException {
-		int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
-		taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
+		//postNormalOrder,smallOrder grab时间相同 task端可以使用同一延时队列处理
+		//int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
+		//taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
 		Date payDate = new Date();
 		String status = EnumMerchantOrderStatus.WAITING_GRAB.getValue();
 		//TODO 分业务拆分处理，支持驿站订单的多种派发方式
-		//驿站订单，支付之后的状态变为待取货
-		if (TaskTypeEnum.POST_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())||TaskTypeEnum.POST_NORMAL_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
+		//postOrder驿站订单，支付之后的状态变为待取货   postNormalOrder,smallOrder-待接单
+		if (TaskTypeEnum.POST_ORDER.getValue().equals(taskCreateDTO.getTaskType().getValue())){
 			status = EnumMerchantOrderStatus.WAITING_PICK.getValue();
-			taskCreateDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
+			//postOrder驿站订单 待取货超时时间设置 task端新开队列
+			//taskCreateDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
 		}
 		int count = orderService.merchantPay(merchantId,orderNo,payId,payDate,status);
 		if (count != 1){
@@ -180,15 +182,17 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
 				return dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.PAY_MERCHANT.getValue(),false,waitPickCancelType,null,null);
 			}else if (EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())||EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
-				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())&&null==waitPickCancelType){
+				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())&&StringUtils.isBlank(waitPickCancelType)){
 					//历史状态拦截 骑手已取货 商家端仍停留在带接单取消页面
 					return false;
 				}
 
-				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+				if (EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())&&
+						entity.getOrderType().equals(EnumOrderType.SMALLORDER.getValue())){//目前只有普通商家需要罚款，所以需要判断余额是否充足
 					//waitgrab时因为要判断余额是否可以支付
 					judgeBalanceForCancel(merchant);
 				}
+				//TODO 补偿处理没有做
 				TbbTaskResponse<Double> taskResp = taskDispatchService.cancelTask(orderNo);
 				if (taskResp.isSucceeded()){
 					result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
@@ -209,8 +213,6 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 							}
 						}
 						result = dealCancel(entity.getUserId(),entity.getOrderNo(),EnumCancelReason.GRAB_MERCHANT.getValue(),false,waitPickCancelType,punishFee,null);
-
-
 					}
 
 
@@ -304,8 +306,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		}
 		logger.info("处理骑手接单：orderNo:{}",orderNo);
 		boolean result =false ;
-		//驿站订单回调后直接是已取货状态，短信发送给收货人 TODO 代码拆分与整合
-		if ((EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType()))&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
+		//驿站订单抢单取货入口  TODO 代码拆分与整合
+		if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrderOfPost(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
 					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),entity.getGrabOrderTime(),dto.getPickupDistance())>0;
 
@@ -313,21 +315,11 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				//推送
 				rmqNoticeProducer.sendGrabNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
 				//短信通知骑手
-				if (entity.getShortMessage()){
-					try {
-						String accountId=null;
-						//扣除短信费用
-						payForMessage( entity);
-						adminToMerchantService.sendRiderMessageToReceiver(dto.getRiderName(), dto.getRiderPhone(), entity.getReceiverPhone());
-
-
-
-					}catch (Exception e){
-						logger.error("短信通知骑手失败",e.getMessage());
-					}
-				}
+				sendTxtMessage(entity,dto.getRiderName(),dto.getRiderPhone());
+				//通知天下食集
+				notifyKASHIJI(orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), dto.getRiderId(), dto.getRiderName(), dto.getRiderPhone(), dto.getRiderId(), "骑手取货通知失败.orderNo:{}");
 			}
-		}else if ( EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
+		}else if ( (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())||(EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType())))&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
 					orderNo,dto.getGrabTime(),dto.getExpectFinishTime(),dto.getRiderCarNo(),dto.getRiderCarType(),dto.getPickupDistance()) > 0;
 			if (enableNotice){
@@ -355,31 +347,24 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		boolean flag=orderService.riderGrabItem(entity.getUserId(),orderNo,grabItemTime)>0;
 		if (flag){
 			//短信通知骑手
-			if (entity.getShortMessage()){
-				try {
-					//扣除短信费用
-					payForMessage( entity);
-					adminToMerchantService.sendRiderMessageToReceiver(entity.getRiderName(), entity.getRiderPhone(), entity.getReceiverPhone());
-				}catch (Exception e){
-					logger.error("发送短信通知骑手失败",e.getMessage());
-				}
-			}
-			if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
-				try {
-					//  通知食集
-					OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
-					orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.DELIVERYING.getValue());
-					orderStatusInfoDTO.setOrderNo(orderNo);
-					orderStatusInfoDTO.setRiderId(entity.getRiderId());
-					orderStatusInfoDTO.setRiderName(entity.getRiderName());
-					orderStatusInfoDTO.setRiderPhone(entity.getRiderPhone());
-					launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
-				}catch (Exception e){
-					logger.info("骑手取货通知失败.orderNo:{}",orderNo );
-				}
-			}
+			sendTxtMessage(entity,entity.getRiderName(),entity.getRiderPhone());
 		}
 		return flag;
+	}
+
+	private void notifyKASHIJI(String orderNo, String value, String riderId, String riderName, String riderPhone, String userId, String s) {
+		try {
+			//  通知食集
+			OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
+			orderStatusInfoDTO.setOrderStatus(value);
+			orderStatusInfoDTO.setOrderNo(orderNo);
+			orderStatusInfoDTO.setRiderId(riderId);
+			orderStatusInfoDTO.setRiderName(riderName);
+			orderStatusInfoDTO.setRiderPhone(riderPhone);
+			launcherInnerTbbOrderService.statusChange(userId, orderStatusInfoDTO);
+		} catch (Exception e) {
+			logger.info(s, orderNo);
+		}
 	}
 
 	/**
@@ -402,18 +387,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				rmqNoticeProducer.sendOrderFinishNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId(),entity.getExpiredMinute(),entity.getCancelCompensation());
 			}
 			if (EnumOrderType.POSTORDER.getValue().equals(entity.getOrderType())){
-				try {
-					//  通知食集
-					OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
-					orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.FINISH.getValue());
-					orderStatusInfoDTO.setOrderNo(orderNo);
-					orderStatusInfoDTO.setRiderId(entity.getRiderId());
-					orderStatusInfoDTO.setRiderName(entity.getRiderName());
-					orderStatusInfoDTO.setRiderPhone(entity.getRiderPhone());
-					launcherInnerTbbOrderService.statusChange(entity.getUserId(),orderStatusInfoDTO);
-				}catch (Exception e){
-					logger.info("骑手完成通知失败.orderNo:{}",orderNo );
-				}
+				notifyKASHIJI(orderNo, EnumMerchantOrderStatus.FINISH.getValue(), entity.getRiderId(), entity.getRiderName(), entity.getRiderPhone(), entity.getUserId(), "骑手完成通知失败.orderNo:{}");
 			}
 		}
 		if (expiredCompensation!=null&&expiredCompensation>0.0){
@@ -463,12 +437,16 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		OrderStatusStatsDTO statusStatsDTO = new OrderStatusStatsDTO();
 		Long deliveryingCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.DELIVERYING.getValue(), null);
 		Long waitingPickCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.WAITING_PICK.getValue(), null);
-		Long undeliveredCounts = orderService.getOrderWithProviderIdAndStatus(providerId, null, PostOrderUnsettledStatusEnum.ING.getValue());
+		Long waitingGrabCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.WAITING_GRAB.getValue(), null);
+		Long undeliveredCounts = orderService.getOrderWithProviderIdAndStatus(providerId, EnumMerchantOrderStatus.DELIVERYING.getValue(), PostOrderUnsettledStatusEnum.ING.getValue());
 		if(null != undeliveredCounts){
 			statusStatsDTO.setUndeliveredCounts(undeliveredCounts);
 		}
 		if(null != waitingPickCounts){
 			statusStatsDTO.setWaitingPickCounts(waitingPickCounts);
+		}
+		if(null != waitingGrabCounts){
+			statusStatsDTO.setWaitingGrabCounts(waitingGrabCounts);
 		}
 		if(null != deliveryingCounts){
 			statusStatsDTO.setDeliveryingCounts(deliveryingCounts);
@@ -476,9 +454,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				statusStatsDTO.setDeliveryingCounts(deliveryingCounts-undeliveredCounts);
 			}
 		}
-		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts()+statusStatsDTO.getUndeliveredCounts());
-		logger.info("订单进行中：{}， 配送中：{}，待接单：{}，未妥投：{}", statusStatsDTO.getProgressCounts(), statusStatsDTO.getDeliveryingCounts(),
-				statusStatsDTO.getWaitingPickCounts(), statusStatsDTO.getUndeliveredCounts());
+		statusStatsDTO.setProgressCounts(statusStatsDTO.getDeliveryingCounts()+statusStatsDTO.getWaitingPickCounts()+statusStatsDTO.getUndeliveredCounts()+statusStatsDTO.getWaitingGrabCounts());
+		logger.info("订单进行中：{}， 配送中：{}，待接单：{}，未妥投：{}, 待接单：{}", statusStatsDTO.getProgressCounts(), statusStatsDTO.getDeliveryingCounts(),
+				statusStatsDTO.getWaitingPickCounts(), statusStatsDTO.getUndeliveredCounts(), statusStatsDTO.getWaitingGrabCounts());
 		return statusStatsDTO;
 	}
 
@@ -511,7 +489,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if(EnumOrderType.POSTORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(orderStatus)){
 			flag=true;
 		}
-		if(EnumOrderType.POST_NORMAL_ORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_PICK.getValue().equals(orderStatus)){
+		if(EnumOrderType.POST_NORMAL_ORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(orderStatus)){
 			flag=true;
 		}
 		if(EnumOrderType.SMALLORDER.getValue().equals(type)&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(orderStatus)){
@@ -645,6 +623,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	}
 	/**
 	 * 骑手取消订单后 重新发单
+	 * order表新增字段需知会改方法()
 	 * @return
 	 */
 	private String riderCancelResend(MerchantOrderEntity entity,Boolean messageOpen,Double subsidyFromRider) {
@@ -657,58 +636,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		OrderEntity orderEntity = new OrderEntity();
 		OrderDetailEntity detailEntity = new OrderDetailEntity();
 		//复制原有信息
-		/*BeanUtils.copyProperties(entity,orderEntity);
-		BeanUtils.copyProperties(entity,detailEntity);*/
-		orderEntity.setWeatherOverFee(entity.getWeatherOverFee());
-		orderEntity.setShortMessage(messageOpen);
-		orderEntity.setOrderType(entity.getOrderType());
-		orderEntity.setDeliveryFee(entity.getDeliveryFee());
-		orderEntity.setDeliveryDistance(entity.getDeliveryDistance());
-		orderEntity.setOriginOrderId(entity.getOriginOrderId());
-		orderEntity.setOriginOrderViewId(entity.getOriginOrderViewId());
-		orderEntity.setPayAmount(amountD);
-		orderEntity.setPeekOverFee(entity.getPeekOverFee());
-		orderEntity.setPlatformCode(entity.getPlatformCode());
-		orderEntity.setProviderId(entity.getProviderId());
-		//orderEntity.setProviderName(entity.getProviderName());
-		orderEntity.setTipFee(entity.getTipFee());
-		orderEntity.setReceiverAddressCity(entity.getReceiverAddressCity());
-		orderEntity.setReceiverAddressDetail(entity.getReceiverAddressDetail());
-		orderEntity.setReceiverAddressDistrict(entity.getReceiverAddressDistrict());
-		orderEntity.setReceiverAddressProvince(entity.getReceiverAddressProvince());
-		orderEntity.setReceiverAddressRoomNo(entity.getReceiverAddressRoomNo());
-		orderEntity.setReceiverAddressStreet(entity.getReceiverAddressStreet());
-		orderEntity.setReceiverLatitude(entity.getReceiverLatitude());
-		orderEntity.setReceiverLongitude(entity.getReceiverLongitude());
-		orderEntity.setReceiverName(entity.getReceiverName());
-		orderEntity.setReceiverPhone(entity.getReceiverPhone());
-		orderEntity.setSenderName(entity.getSenderName());
-        orderEntity.setUserId(entity.getUserId());
-        orderEntity.setSenderAdcode(entity.getSenderAdcode());
-
-		detailEntity.setOrderRemark(entity.getOrderRemark());
-		detailEntity.setPickupDistance(entity.getPickupDistance());
-		detailEntity.setPlatformFee(entity.getPlatformFee());
-		detailEntity.setUserId(entity.getUserId());
-		//detailEntity.setSenderName(entity.getSenderName());
-		detailEntity.setSenderPhone(entity.getSenderPhone());
-		detailEntity.setSenderAddressCity(entity.getSenderAddressCity());
-		detailEntity.setSenderAddressDetail(entity.getSenderAddressDetail());
-		detailEntity.setSenderAddressDistrict(entity.getSenderAddressDistrict());
-		detailEntity.setSenderAddressProvince(entity.getSenderAddressProvince());
-		detailEntity.setSenderAddressRoomNo(entity.getSenderAddressRoomNo());
-		detailEntity.setSenderAddressStreet(entity.getSenderAddressStreet());
-		detailEntity.setSenderLatitude(entity.getSenderLatitude());
-		detailEntity.setSenderLongitude(entity.getSenderLongitude());
-		detailEntity.setUserId(entity.getUserId());
-		//设置重发特殊标记位
-		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
-		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
-		orderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
-		orderEntity.setOrderTime(new Date());
-		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
-		detailEntity.setCancelSourceDeliverySubsidy(subsidyFromRider);
-		detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
+		packageOrderInfoForResend(entity, messageOpen, subsidyFromRider, amountD, orderEntity, detailEntity);
 		//保存订单
 		String newOrderNo= null;
 		try {
@@ -764,6 +692,61 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		}
 		return newOrderNo;
 	}
+	/**
+	 * 封装重发单订单信息
+	 * */
+	private void packageOrderInfoForResend(MerchantOrderEntity entity, Boolean messageOpen, Double subsidyFromRider, Double amountD, OrderEntity orderEntity, OrderDetailEntity detailEntity) {
+		orderEntity.setWeatherOverFee(entity.getWeatherOverFee());
+		orderEntity.setShortMessage(messageOpen);
+		orderEntity.setOrderType(entity.getOrderType());
+		orderEntity.setDeliveryFee(entity.getDeliveryFee());
+		orderEntity.setDeliveryDistance(entity.getDeliveryDistance());
+		orderEntity.setOriginOrderId(entity.getOriginOrderId());
+		orderEntity.setOriginOrderViewId(entity.getOriginOrderViewId());
+		orderEntity.setPayAmount(amountD);
+		orderEntity.setPeekOverFee(entity.getPeekOverFee());
+		orderEntity.setPlatformCode(entity.getPlatformCode());
+		orderEntity.setProviderId(entity.getProviderId());
+		//orderEntity.setProviderName(entity.getProviderName());
+		orderEntity.setTipFee(entity.getTipFee());
+		orderEntity.setReceiverAddressCity(entity.getReceiverAddressCity());
+		orderEntity.setReceiverAddressDetail(entity.getReceiverAddressDetail());
+		orderEntity.setReceiverAddressDistrict(entity.getReceiverAddressDistrict());
+		orderEntity.setReceiverAddressProvince(entity.getReceiverAddressProvince());
+		orderEntity.setReceiverAddressRoomNo(entity.getReceiverAddressRoomNo());
+		orderEntity.setReceiverAddressStreet(entity.getReceiverAddressStreet());
+		orderEntity.setReceiverLatitude(entity.getReceiverLatitude());
+		orderEntity.setReceiverLongitude(entity.getReceiverLongitude());
+		orderEntity.setReceiverName(entity.getReceiverName());
+		orderEntity.setReceiverPhone(entity.getReceiverPhone());
+		orderEntity.setSenderName(entity.getSenderName());
+		orderEntity.setUserId(entity.getUserId());
+		orderEntity.setSenderAdcode(entity.getSenderAdcode());
+
+		detailEntity.setOrderRemark(entity.getOrderRemark());
+		detailEntity.setPickupDistance(entity.getPickupDistance());
+		detailEntity.setPlatformFee(entity.getPlatformFee());
+		detailEntity.setUserId(entity.getUserId());
+		//detailEntity.setSenderName(entity.getSenderName());
+		detailEntity.setSenderPhone(entity.getSenderPhone());
+		detailEntity.setSenderAddressCity(entity.getSenderAddressCity());
+		detailEntity.setSenderAddressDetail(entity.getSenderAddressDetail());
+		detailEntity.setSenderAddressDistrict(entity.getSenderAddressDistrict());
+		detailEntity.setSenderAddressProvince(entity.getSenderAddressProvince());
+		detailEntity.setSenderAddressRoomNo(entity.getSenderAddressRoomNo());
+		detailEntity.setSenderAddressStreet(entity.getSenderAddressStreet());
+		detailEntity.setSenderLatitude(entity.getSenderLatitude());
+		detailEntity.setSenderLongitude(entity.getSenderLongitude());
+		detailEntity.setUserId(entity.getUserId());
+		//设置重发特殊标记位
+		orderEntity.setOrderFeature(EnumOrderFeature.RIDER_CANCEL_RESEND.getValue());
+		orderEntity.setOrderStatus(EnumMerchantOrderStatus.INIT.getValue());
+		orderEntity.setPayStatus(EnumPayStatus.UNPAY.getValue());
+		orderEntity.setOrderTime(new Date());
+		detailEntity.setCancelSourceDeliveryFee(entity.getDeliveryFee());
+		detailEntity.setCancelSourceDeliverySubsidy(CalCulateUtil.add(subsidyFromRider,entity.getCancelSourceDeliverySubsidy()));
+		detailEntity.setCancelSourceOrderNo(entity.getOrderNo());
+	}
 
 
 	/**
@@ -774,22 +757,11 @@ public class MerchantOrderManager extends OrderManagerBaseService {
     	logger.info("商家处理骑手未妥投,dto:{}",dto.toString());
         MerchantOrderEntity order = orderService.findByOrderNo(dto.getOrderNo());
         if (order != null){
-            int result = orderService.riderUnsettledOrder(order.getSenderId(),order.getOrderNo(),dto.getUnsettledReason(),dto.getDeliveryTime(),dto.getExpiredMinute());
+            int result = orderService.riderUnsettledOrder(order.getUserId(),order.getOrderNo(),dto.getUnsettledReason(),dto.getDeliveryTime(),dto.getExpiredMinute());
 			logger.info("商家处理骑手未妥投,result:{}",result);
 			if (result > 0){
 				if(EnumOrderType.POSTORDER.getValue().equals(order.getOrderType())){
-					try {
-						//通知食集
-						OrderStatusInfoDTO orderStatusInfoDTO = new OrderStatusInfoDTO();
-						orderStatusInfoDTO.setOrderStatus(EnumMerchantOrderStatus.UNDELIVERED.getValue());
-						orderStatusInfoDTO.setOrderNo(order.getOrderNo());
-						orderStatusInfoDTO.setRiderId(order.getRiderId());
-						orderStatusInfoDTO.setRiderName(order.getRiderName());
-						orderStatusInfoDTO.setRiderPhone(order.getRiderPhone());
-						launcherInnerTbbOrderService.statusChange(order.getUserId(),orderStatusInfoDTO);
-					}catch (Exception e){
-						logger.info("未妥投通知商家失败,orderNo:{}",order.getOrderNo());
-					}
+					notifyKASHIJI(order.getOrderNo(), EnumMerchantOrderStatus.UNDELIVERED.getValue(), order.getRiderId(), order.getRiderName(), order.getRiderPhone(), order.getUserId(), "未妥投通知商家失败,orderNo:{}");
 				}
                 return true;
             }
@@ -863,7 +835,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			merchantOrderDTO.setProviderName(entity.getProviderName());
 		}else if ((EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType()))){
 			merchantOrderDTO.setTaskType(TaskTypeEnum.POST_NORMAL_ORDER);
-			merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
+			//merchantOrderDTO.setExpireMilSeconds(config.getTaskPostOrderGrabExpiredMilSeconds());
 			merchantOrderDTO.setProviderId(entity.getProviderId());
 			merchantOrderDTO.setProviderName(entity.getProviderName());
 		}
@@ -900,5 +872,19 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
 		merchantOrderDTO.setSenderId(infoEntity.getUserId());
 		return merchantOrderDTO;
+	}
+	/**
+	 *给收货人发送短信
+	 */
+	public void sendTxtMessage(MerchantOrderEntity entity,String riderName,String riderPhone){
+		if (entity.getShortMessage()){
+			try {
+				//扣除短信费用
+				payForMessage( entity);
+				adminToMerchantService.sendRiderMessageToReceiver(riderName, riderPhone, entity.getReceiverPhone());
+			}catch (Exception e){
+				logger.error("短信通知骑手失败",e.getMessage());
+			}
+		}
 	}
 }

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Date;
 
 /**
- * 2.0版订单创建.
+ * 2.0版订单创建. 适用于创建smallOrder/postNormalOrder
  */
 @Controller
 @RequestMapping("/2.0/order/create")
@@ -61,6 +61,7 @@ public class OrderCreateControllerV2 extends MerchantBaseController<ReqOrderCrea
 
         }
         MerchantOrderEntity entity = new MerchantOrderEntity();
+      //订单类型校验
       if (EnumOrderType.SMALLORDER.getValue().equals(orderType)||EnumOrderType.POST_NORMAL_ORDER.getValue().equals(orderType)){
             AddressInfoToOrderBeanHelper.putSenderFromMerchantInfoEntity(entity,infoEntity);
             OrderUtil.judgeOrderCondition(infoEntity.getMerchantStatus(),config.getBeginWorkTime(),config.getEndWorkTime(),false);

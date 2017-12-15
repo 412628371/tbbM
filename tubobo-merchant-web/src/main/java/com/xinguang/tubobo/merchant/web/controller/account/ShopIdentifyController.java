@@ -1,9 +1,11 @@
 package com.xinguang.tubobo.merchant.web.controller.account;
 
+import com.xinguang.tubobo.impl.merchant.disconf.Config;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantMessageSettingsEntity;
 import com.xinguang.tubobo.impl.merchant.manager.MerchantInfoManager;
 import com.xinguang.tubobo.impl.merchant.service.MerchantMessageSettingsService;
 import com.xinguang.tubobo.merchant.api.enums.EnumIdentifyType;
+import com.xinguang.tubobo.merchant.api.enums.EnumRespCode;
 import com.xinguang.tubobo.merchant.web.MerchantBaseController;
 import com.xinguang.tubobo.merchant.api.MerchantClientException;
 import com.xinguang.tubobo.impl.merchant.entity.MerchantInfoEntity;
@@ -24,9 +26,14 @@ public class ShopIdentifyController extends MerchantBaseController<ShopIdentifyR
     private MerchantInfoManager merchantInfoManager;
     @Autowired
     MerchantMessageSettingsService settingsService;
+    @Autowired
+    private Config config;
 
     @Override
     protected MerchantInfoResponse doService(String userId, ShopIdentifyRequest req) throws MerchantClientException {
+//        if (config.isSysInterfaceCloseFlag()){
+//            throw new MerchantClientException(EnumRespCode.INTERFACE_NOT_SUPPORT);
+//        }
         logger.info("收到店铺申请请求 ：{}，",req.toString() );
         MerchantInfoEntity infoEntity = new MerchantInfoEntity();
         BeanUtils.copyProperties(req,infoEntity);
