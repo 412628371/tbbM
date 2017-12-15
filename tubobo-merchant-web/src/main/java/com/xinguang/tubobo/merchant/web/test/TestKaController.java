@@ -29,9 +29,8 @@ public class TestKaController extends MerchantBaseController<Object,Object>{
 
 //		bindService.bindMt(TakeoutNotifyConstant.PlatformCode.MT,userId,"aaa");
 //		rmqTakeoutAnswerProducer.sendAccepted("YZ","30126","20170001","111",null);
-
         MerchantOrderCreateDto dto = new MerchantOrderCreateDto();
-        MerchantOrderEntity merchantOrderEntity = orderService.findByOrderNo("061712040000006");
+        MerchantOrderEntity merchantOrderEntity = orderService.findByOrderNo("061711300000110");
         dto.setUserId("76941");
         AddressInfoDTO consignor = new AddressInfoDTO();
         AddressInfoDTO receiver = new AddressInfoDTO();

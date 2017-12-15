@@ -330,7 +330,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				//短信通知骑手
 				sendTxtMessage(entity,dto.getRiderName(),dto.getRiderPhone());
 				//通知天下食集
-				notifyKASHIJI(orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), entity.getRiderId(), entity.getRiderName(), entity.getRiderPhone(), entity.getUserId(), "骑手取货通知失败.orderNo:{}");
+				notifyKASHIJI(orderNo, EnumMerchantOrderStatus.DELIVERYING.getValue(), dto.getRiderId(), dto.getRiderName(), dto.getRiderPhone(), dto.getRiderId(), "骑手取货通知失败.orderNo:{}");
 			}
 		}else if ( (EnumOrderType.SMALLORDER.getValue().equals(entity.getOrderType())||(EnumOrderType.POST_NORMAL_ORDER.getValue().equals(entity.getOrderType())))&&EnumMerchantOrderStatus.WAITING_GRAB.getValue().equals(entity.getOrderStatus())){
 			result = orderService.riderGrabOrder(entity.getUserId(),dto.getRiderId(),dto.getRiderName(),dto.getRiderPhone(),
