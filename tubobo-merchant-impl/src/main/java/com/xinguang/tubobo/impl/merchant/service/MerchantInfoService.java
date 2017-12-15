@@ -62,7 +62,7 @@ public class MerchantInfoService extends BaseService {
 	}
 
     public List<MerchantInfoEntity> findAllByIdCardNo(String idCardNo){
-        return merchantInfoRepository.findAllByIdCardNo(idCardNo, MerchantInfoEntity.DEL_FLAG_NORMAL);
+        return merchantInfoRepository.findAllByIdCardNoAndDelFlag(idCardNo, MerchantInfoEntity.DEL_FLAG_NORMAL);
     }
 
 	/**

@@ -50,5 +50,5 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfoEntity
 
     MerchantInfoEntity findByShopLicencesNoAndDelFlag(String licencesNo, String delFlagNormal);
 
-    List<MerchantInfoEntity> findAllByIdCardNo(String idCardNo, String delFlagNormal);
+    List<MerchantInfoEntity> findAllByIdCardNoAndDelFlag(String idCardNo, String delFlagNormal);
 }
