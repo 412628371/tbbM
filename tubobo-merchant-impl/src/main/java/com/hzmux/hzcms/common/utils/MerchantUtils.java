@@ -14,7 +14,7 @@ public class MerchantUtils {
      * */
     public static TradePayRequest.Builder getPayRequestBuilder(Long accountId, String orderNo, long amount) {
         TradePayRequest.TradePayRequestDetail tradePayRequestDetail = new TradePayRequest.TradePayRequestDetail(MerchantConstants.MERCHANT_PAY_REMARK, amount);
-        return TradePayRequest.builder(UUID.randomUUID().toString().substring(1,8)+orderNo, amount, accountId, orderNo)
+        return TradePayRequest.builder("payOrder"+orderNo, amount, accountId, orderNo)
                 .addOrderDetails(tradePayRequestDetail);
     }
 }
