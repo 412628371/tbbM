@@ -878,6 +878,10 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		if (entity.getRiderFee()!=null){
 			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getRiderFee()).intValue());
 		}
+		//传入平台抽成费用
+		if (entity.getPlatformFee()!=null){
+			merchantOrderDTO.setPlatformFee(ConvertUtil.convertYuanToFen(entity.getPlatformFee()).intValue());
+		}
 		//传给任务的支付金额，减去短信费用  modified by xqh on 2017-10-11
 /*		if(entity.getShortMessage()){
 			if (merchantOrderDTO.getPayAmount()!=null && merchantOrderDTO.getPayAmount()>MerchantConstants.MESSAGE_FEE*100){

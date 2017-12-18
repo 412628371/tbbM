@@ -335,11 +335,7 @@ public class MerchantToThirdPartyServiceImpl implements MerchantToThirdPartyServ
                 throw new MerchantClientException(EnumRespCode.FAIL);
             }
             TbbTaskResponse<Boolean> taskResponse = taskDispatchService.createTask(orderDTO);
-            if (taskResponse.isSucceeded() && taskResponse.getData()){
-                if (TaskTypeEnum.M_BIG_ORDER.getValue().equals(orderDTO.getTaskType().getValue())){
-                    adminToMerchantService.sendDistributeTaskSmsAlert();
-                }
-            }else {
+            if (!(taskResponse.isSucceeded() && taskResponse.getData())){
                 logger.error("调用任务中心发单出错，orderNo:{},errorCode:{},errorMsg:{}",orderNo,taskResponse.getErrorCode(),taskResponse.getMessage());
             }
         }else {
