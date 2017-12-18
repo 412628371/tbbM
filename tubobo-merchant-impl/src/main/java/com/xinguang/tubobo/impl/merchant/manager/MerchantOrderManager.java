@@ -260,7 +260,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	 */
 	private boolean rejectPayConfirm(String payId,String userId,String orderNo,Long accountId) {
 		TradeRefundRequest.RefundDetail refundDetail = new TradeRefundRequest.RefundDetail(payId, orderNo);
-		TradeRefundRequest request = TradeRefundRequest.builder(UUID.randomUUID().toString(), accountId, orderNo).addRefundDetail(refundDetail).build();
+		TradeRefundRequest request = TradeRefundRequest.builder("refundOrder"+orderNo, accountId, orderNo).addRefundDetail(refundDetail).build();
 		TbbAccountResponse<TradeRefundInfo> resp = tbbAccountTradeService.refund(request);
 		/*PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(payId,
 				MerchantConstants.PAY_REJECT_REMARKS_CANCEL);
