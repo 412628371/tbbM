@@ -8,6 +8,7 @@ package com.xinguang.tubobo.impl.merchant.manager;
 import com.alibaba.fastjson.JSON;
 import com.hzmux.hzcms.common.utils.AliOss;
 import com.hzmux.hzcms.common.utils.CalCulateUtil;
+import com.hzmux.hzcms.common.utils.MerchantUtils;
 import com.hzmux.hzcms.common.utils.StringUtils;
 import com.xinguang.taskcenter.api.TaskDispatchService;
 import com.xinguang.taskcenter.api.TbbTaskResponse;
@@ -17,6 +18,11 @@ import com.xinguang.taskcenter.api.request.TaskCreateDTO;
 import com.xinguang.tubobo.account.api.TbbAccountService;
 import com.xinguang.tubobo.account.api.request.*;
 import com.xinguang.tubobo.account.api.response.*;
+import com.xinguang.tubobo.account.api.trade.TbbAccountTradeService;
+import com.xinguang.tubobo.account.api.trade.request.TradePayRequest;
+import com.xinguang.tubobo.account.api.trade.request.TradeRefundRequest;
+import com.xinguang.tubobo.account.api.trade.response.TradePayInfo;
+import com.xinguang.tubobo.account.api.trade.response.TradeRefundInfo;
 import com.xinguang.tubobo.admin.api.AdminToMerchantService;
 import com.xinguang.tubobo.admin.api.dto.AddressDTO;
 import com.xinguang.tubobo.impl.merchant.common.ConvertUtil;
@@ -49,6 +55,7 @@ import sun.awt.EmbeddedFrame;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static com.xinguang.tubobo.merchant.api.enums.EnumRespCode.CANT_CANCEL_DUE_BALANCE;
 
@@ -81,6 +88,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	@Autowired private OrderService orderService;
 	@Autowired private RmqMessagePayRecordProducer rmqMessagePayRecordProducer;
 	@Autowired private DataCheckingService dataCheckingService;
+	@Autowired private TbbAccountTradeService tbbAccountTradeService;
 
 	public MerchantOrderEntity findByMerchantIdAndOrderNo(String merchantId, String orderNo){
 		return orderService.findByMerchantIdAndOrderNo(merchantId,orderNo);
@@ -114,7 +122,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	/**
 	 * 商家付款
 	 */
-	public void merchantPay(TaskCreateDTO taskCreateDTO, String merchantId, String orderNo, long payId) throws MerchantClientException {
+	public void merchantPay(TaskCreateDTO taskCreateDTO, String merchantId, String orderNo, String payId) throws MerchantClientException {
 		//postNormalOrder,smallOrder grab时间相同 task端可以使用同一延时队列处理
 		//int grabExpiredMilliSeconds = config.getTaskGrabExpiredMilSeconds();
 		//taskCreateDTO.setExpireMilSeconds(grabExpiredMilliSeconds);
@@ -168,7 +176,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			if (EnumMerchantOrderStatus.INIT.getValue().equals(entity.getOrderStatus())){
 				result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType,null,null);
 			}else {
-				result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
+				result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo(),merchant.getAccountId()
+				);
 				if (result){
 					//TODO
 					result = dealCancel(entity.getUserId(),entity.getOrderNo(),cancelReason,true,waitPickCancelType,null,null);
@@ -195,7 +204,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 				//TODO 补偿处理没有做
 				TbbTaskResponse<Double> taskResp = taskDispatchService.cancelTask(orderNo);
 				if (taskResp.isSucceeded()){
-					result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
+					result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo(),merchant.getAccountId());
+							//result = rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 					if (result){
 						Double punishFee = taskResp.getData();
 						if (punishFee!=null&&punishFee>0.0){
@@ -248,10 +258,13 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 	 * @param orderNo
 	 * @return
 	 */
-	private boolean rejectPayConfirm(Long payId,String userId,String orderNo) {
-		PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(payId,
+	private boolean rejectPayConfirm(String payId,String userId,String orderNo,Long accountId) {
+		TradeRefundRequest.RefundDetail refundDetail = new TradeRefundRequest.RefundDetail(payId, orderNo);
+		TradeRefundRequest request = TradeRefundRequest.builder("refundOrder"+orderNo, accountId,userId, orderNo).addRefundDetail(refundDetail).build();
+		TbbAccountResponse<TradeRefundInfo> resp = tbbAccountTradeService.refund(request);
+		/*PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(payId,
 				MerchantConstants.PAY_REJECT_REMARKS_CANCEL);
-		TbbAccountResponse<PayInfo> resp = tbbAccountService.payConfirm(confirmRequest);
+		TbbAccountResponse<PayInfo> resp = tbbAccountService.payConfirm(confirmRequest);*/
 		if (resp != null || resp.isSucceeded()) {
 			logger.info("订单取消，资金平台退款成功，userId: {}  orderNo: {} ",userId,orderNo);
 			return true;
@@ -506,12 +519,19 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		}*/
 
 		logger.info("处理超时无人接单：orderNo:{}",orderNo);
-		PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
+
+
+		MerchantInfoEntity merchantInfo = merchantInfoService.findByUserId(entity.getUserId());
+		boolean	result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo(),merchantInfo.getAccountId());
+		/*TradeRefundRequest.RefundDetail refundDetail = new TradeRefundRequest.RefundDetail(entity.getPayId(), orderNo);
+		TradeRefundRequest request = TradeRefundRequest.builder(UUID.randomUUID().toString(), merchantInfo.getAccountId(), orderNo).addRefundDetail(refundDetail).build();
+		TbbAccountResponse<TradeRefundInfo> resp = tbbAccountTradeService.refund(request);*/
+		/*PayConfirmRequest confirmRequest = PayConfirmRequest.getInstanceOfReject(entity.getPayId(),
 				MerchantConstants.PAY_REJECT_REMARKS_OVERTIME);
-		TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);
-		if (resp != null && resp.isSucceeded()){
-			logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo+
-					"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
+		TbbAccountResponse<PayInfo> resp =  tbbAccountService.payConfirm(confirmRequest);*/
+		if (result){
+			logger.info("超时无人接单，资金平台退款成功，userId: "+entity.getUserId()+" orderNo: "+orderNo
+					);
 			orderExpire(entity.getUserId(),orderNo,expireTime,orderStatus);
 			if (enablePushNotice){
 				rmqNoticeProducer.sendGrabTimeoutNotice(entity.getUserId(),orderNo,entity.getOrderType(),entity.getPlatformCode(),entity.getOriginOrderViewId());
@@ -529,12 +549,7 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			}
 			return true;
 		}else {
-			if (resp == null){
 				logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo);
-			}else {
-				logger.error("超时无人接单，资金平台退款出错，userId: "+entity.getUserId()+" orderNo: "+orderNo+
-						"errorCode: "+ resp.getErrorCode()+"message: "+resp.getMessage());
-			}
 		}
 		return false;
 	}
@@ -573,8 +588,9 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 			return;
 		}
 		Long accountId= Long.valueOf(merchant.getAccountId());
-		boolean result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 
+		boolean result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo(),merchant.getAccountId());
+		//boolean result =rejectPayConfirm(entity.getPayId(),entity.getUserId(),entity.getOrderNo());
 		if (result) {
 			//订单返还
 			// 被取消任务补贴
@@ -658,20 +674,24 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		long commission = ConvertUtil.convertYuanToFen(newOrderEntity.getPlatformFee());
 
 
-		PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
+		/*PayWithOutPwdRequest payWithOutPwdRequest = new PayWithOutPwdRequest();
 		payWithOutPwdRequest.setOrderId(newOrderNo);
 		payWithOutPwdRequest.setAccountId(merchant.getAccountId());
 		payWithOutPwdRequest.setAmount(amount);
-		payWithOutPwdRequest.setCommission(commission);
+		payWithOutPwdRequest.setCommission(commission);*/
 
-		logger.info("骑手取消订单,免密重新支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),newOrderNo,payWithOutPwdRequest.getAmount());
-		TbbAccountResponse<PayInfo> response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+		logger.info("骑手取消订单,免密重新支付请求：userId:{}, orderNo:{} ,amount:{}分 ",entity.getUserId(),newOrderNo,amount);
+		//TbbAccountResponse<PayInfo> response = tbbAccountService.payWithOutPwd(payWithOutPwdRequest);
+
+		TradePayRequest tradePayRequest = MerchantUtils.getPayRequestBuilder(merchant.getAccountId(), newOrderNo, amount).notCheckPwd().buildBalancePay();
+		TbbAccountResponse<TradePayInfo> response = tbbAccountTradeService.pay(tradePayRequest);
+
 		if (response != null && response.isSucceeded()){
-			long payId = response.getData().getId();
+			String payId = response.getData().getTradePayId();
 			TaskCreateDTO orderDTO = buildMerchantOrderDTO(newOrderEntity,merchant);
 			orderDTO.setPayId(payId);
 			logger.info("pay  SUCCESS. orderNo:{}, accountId:{}, payId:{}, amount:{}",newOrderNo
-					,merchant.getAccountId(),response.getData().getId(),amount);
+					,merchant.getAccountId(),response.getData().getTradePayId(),amount);
 			try {
 				merchantPay(orderDTO,merchant.getUserId(),newOrderNo,payId);
 			} catch (MerchantClientException e) {
@@ -857,6 +877,10 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		//同时修改为骑手获取的金额  这个金额未计算短信费
 		if (entity.getRiderFee()!=null){
 			merchantOrderDTO.setPayAmount(ConvertUtil.convertYuanToFen(entity.getRiderFee()).intValue());
+		}
+		//传入平台抽成费用
+		if (entity.getPlatformFee()!=null){
+			merchantOrderDTO.setPlatformFee(ConvertUtil.convertYuanToFen(entity.getPlatformFee()).intValue());
 		}
 		//传给任务的支付金额，减去短信费用  modified by xqh on 2017-10-11
 /*		if(entity.getShortMessage()){

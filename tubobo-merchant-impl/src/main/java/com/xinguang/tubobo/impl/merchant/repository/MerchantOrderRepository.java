@@ -95,7 +95,7 @@ public interface MerchantOrderRepository extends JpaRepository<OrderEntity, Stri
     @Modifying
     @Query("update #{#entityName} a set a.orderStatus =:orderStatus,a.payStatus=:payStatus ,a.payTime=:payTime,a.payId=:payId,a.updateDate =:payTime " +
             "where a.userId=:userId and a.orderNo =:orderNo and orderStatus=:whereStatus and a.delFlag =:delFlag ")
-    int merchantPay(@Param("orderStatus")String orderStatus,@Param("payStatus")String payStatus ,@Param("payTime")Date payTime,@Param("payId")long payId,@Param("userId")String userId,@Param("orderNo")String orderNo,@Param("whereStatus")String whereStatus,@Param("delFlag")String delFlag);
+    int merchantPay(@Param("orderStatus")String orderStatus,@Param("payStatus")String payStatus ,@Param("payTime")Date payTime,@Param("payId")String payId,@Param("userId")String userId,@Param("orderNo")String orderNo,@Param("whereStatus")String whereStatus,@Param("delFlag")String delFlag);
 
 
     /**

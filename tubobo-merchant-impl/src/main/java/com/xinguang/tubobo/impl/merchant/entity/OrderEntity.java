@@ -24,7 +24,7 @@ public class OrderEntity extends BaseMerchantOrderEntity {
     private String originOrderViewId;    //第三方平台原始展示订单号
     private String originOrderId;         //第三方平台原始订单号
 
-    private Long payId;
+    private String payId;
     private String userId;//商家ID
     private String orderNo;//订单No
     private String orderStatus;//订单状态
@@ -147,11 +147,11 @@ public class OrderEntity extends BaseMerchantOrderEntity {
         this.originOrderId = originOrderId;
     }
 
-    public Long getPayId() {
+    public String getPayId() {
         return payId;
     }
 
-    public void setPayId(Long payId) {
+    public void setPayId(String payId) {
         this.payId = payId;
     }
 

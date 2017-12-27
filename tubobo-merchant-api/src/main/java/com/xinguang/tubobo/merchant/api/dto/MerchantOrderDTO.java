@@ -11,7 +11,7 @@ import java.util.Date;
 public class MerchantOrderDTO implements Serializable{
 
 	private String cancelReason;
-	private Long payId;
+	private String payId;
 	private String userId;//商家ID
 	private String orderNo;//订单No
 	private String orderStatus;//订单状态
@@ -381,11 +381,11 @@ public class MerchantOrderDTO implements Serializable{
 		this.tipFee = tipFee;
 	}
 
-	public Long getPayId() {
+	public String getPayId() {
 		return payId;
 	}
 
-	public void setPayId(Long payId) {
+	public void setPayId(String payId) {
 		this.payId = payId;
 	}
 

@@ -53,6 +53,8 @@ public class MerchantConstants {
     public static final String OVERTIME_DELIVERY = "赔付: 订单超时送达";
     public static final String MERCHANT_MESSAGE = "MERCHANT_MESSAGE";
     public static final String MERCHANT_MESSAGE_REMARK = "短信费";
+    public static final String MERCHANT_PAY_REMARK = "商家app支付订单";
+
 
     public static final boolean ORDER_MESSAGE_OPEN = true;
     public static final boolean ORDER_MESSAGE_CLOSE = false;
