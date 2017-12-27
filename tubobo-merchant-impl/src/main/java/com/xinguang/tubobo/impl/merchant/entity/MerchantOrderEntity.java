@@ -771,4 +771,89 @@ public class MerchantOrderEntity extends BaseMerchantEntity {
     public void setUnsettledTime(Date unsettledTime) {
         this.unsettledTime = unsettledTime;
     }
+
+	@Override
+	public String toString() {
+		return "MerchantOrderEntity{" +
+				"platformCode='" + platformCode + '\'' +
+				", originOrderViewId='" + originOrderViewId + '\'' +
+				", originOrderId='" + originOrderId + '\'' +
+				", cancelReason='" + cancelReason + '\'' +
+				", payId='" + payId + '\'' +
+				", userId='" + userId + '\'' +
+				", orderNo='" + orderNo + '\'' +
+				", orderStatus='" + orderStatus + '\'' +
+				", orderRemark='" + orderRemark + '\'' +
+				", payAmount=" + payAmount +
+				", deliveryFee=" + deliveryFee +
+				", tipFee=" + tipFee +
+				", payStatus='" + payStatus + '\'' +
+				", payMethod='" + payMethod + '\'' +
+				", payTime=" + payTime +
+				", orderTime=" + orderTime +
+				", cancelTime=" + cancelTime +
+				", closeTime=" + closeTime +
+				", expiredTime=" + expiredTime +
+				", grabOrderTime=" + grabOrderTime +
+				", grabItemTime=" + grabItemTime +
+				", finishOrderTime=" + finishOrderTime +
+				", expectFinishTime=" + expectFinishTime +
+				", senderId='" + senderId + '\'' +
+				", senderName='" + senderName + '\'' +
+				", senderPhone='" + senderPhone + '\'' +
+				", senderAddressProvince='" + senderAddressProvince + '\'' +
+				", senderAddressCity='" + senderAddressCity + '\'' +
+				", senderAddressDistrict='" + senderAddressDistrict + '\'' +
+				", senderAddressStreet='" + senderAddressStreet + '\'' +
+				", senderAddressDetail='" + senderAddressDetail + '\'' +
+				", senderAddressRoomNo='" + senderAddressRoomNo + '\'' +
+				", senderLongitude=" + senderLongitude +
+				", senderLatitude=" + senderLatitude +
+				", senderAdcode='" + senderAdcode + '\'' +
+				", receiverId='" + receiverId + '\'' +
+				", receiverName='" + receiverName + '\'' +
+				", receiverPhone='" + receiverPhone + '\'' +
+				", receiverAddressProvince='" + receiverAddressProvince + '\'' +
+				", receiverAddressCity='" + receiverAddressCity + '\'' +
+				", receiverAddressDistrict='" + receiverAddressDistrict + '\'' +
+				", receiverAddressStreet='" + receiverAddressStreet + '\'' +
+				", receiverAddressDetail='" + receiverAddressDetail + '\'' +
+				", receiverAddressRoomNo='" + receiverAddressRoomNo + '\'' +
+				", receiverLongitude=" + receiverLongitude +
+				", receiverLatitude=" + receiverLatitude +
+				", deliveryDistance=" + deliveryDistance +
+				", riderId='" + riderId + '\'' +
+				", riderName='" + riderName + '\'' +
+				", riderPhone='" + riderPhone + '\'' +
+				", riderCarNo='" + riderCarNo + '\'' +
+				", riderCarType='" + riderCarType + '\'' +
+				", orderType='" + orderType + '\'' +
+				", carType='" + carType + '\'' +
+				", carTypeName='" + carTypeName + '\'' +
+				", appointTime=" + appointTime +
+				", appointType='" + appointType + '\'' +
+				", ratedFlag=" + ratedFlag +
+				", peekOverFee=" + peekOverFee +
+				", weatherOverFee=" + weatherOverFee +
+				", expiredMinute=" + expiredMinute +
+				", expiredCompensation=" + expiredCompensation +
+				", waitPickCancelType='" + waitPickCancelType + '\'' +
+				", cancelCompensation=" + cancelCompensation +
+				", cancelFine=" + cancelFine +
+				", pickupDistance=" + pickupDistance +
+				", unsettledStatus='" + unsettledStatus + '\'' +
+				", unsettledReason='" + unsettledReason + '\'' +
+				", unsettledTime=" + unsettledTime +
+				", shortMessage=" + shortMessage +
+				", providerId=" + providerId +
+				", providerName='" + providerName + '\'' +
+				", merMessage='" + merMessage + '\'' +
+				", orderFeature='" + orderFeature + '\'' +
+				", platformFee=" + platformFee +
+				", riderFee=" + riderFee +
+				", cancelSourceDeliveryFee=" + cancelSourceDeliveryFee +
+				", cancelSourceDeliverySubsidy=" + cancelSourceDeliverySubsidy +
+				", cancelSourceOrderNo='" + cancelSourceOrderNo + '\'' +
+				'}';
+	}
 }

@@ -895,6 +895,8 @@ public class MerchantOrderManager extends OrderManagerBaseService {
 		merchantOrderDTO.setSenderShopUrls(shopUrls);
 		merchantOrderDTO.setAreaCode(infoEntity.getAddressAdCode());
 		merchantOrderDTO.setSenderId(infoEntity.getUserId());
+		logger.info("merchantEntity:{}",entity);
+		logger.info("taskDto:{}",merchantOrderDTO);
 		return merchantOrderDTO;
 	}
 	/**
